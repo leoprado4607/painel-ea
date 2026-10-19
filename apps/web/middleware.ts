@@ -4,8 +4,10 @@ import { NextResponse, type NextRequest } from "next/server";
 const PUBLICAS = ["/login", ...(process.env.NODE_ENV === "development" ? ["/dev/previa"] : [])];
 
 /**
- * Renova a sessão a cada requisição e protege as páginas:
- * sem login → /login; login sem o 2º fator (2FA) → /mfa.
+ * Renova a sessão a cada requisição e protege as páginas: sem login → /login.
+ * O 2º fator (autenticador) está desligado por enquanto (decisão de 19/10/2026); a tela /mfa continua no código
+ * para religar. A troca obrigatória da senha provisória é conferida no layout (que já lê o perfil), para o
+ * middleware não consultar o banco em toda requisição.
  */
 export async function middleware(req: NextRequest) {
   let res = NextResponse.next({ request: req });
@@ -19,11 +21,9 @@ export async function middleware(req: NextRequest) {
       },
     },
   });
-  // getClaims valida o token localmente (chaves de assinatura do Supabase) e renova a sessão se preciso;
-  // sem as chaves novas, faz o mesmo que getUser. O nível do 2FA (aal) vem no próprio token.
+  // getClaims valida o token localmente (chaves de assinatura do Supabase) e renova a sessão se preciso
   const { data } = await supabase.auth.getClaims();
-  const claims = data?.claims;
-  const user = claims?.sub ? { id: claims.sub } : null;
+  const logado = !!data?.claims?.sub;
   const caminho = req.nextUrl.pathname;
   const redirecionar = (para: string) => {
     const url = req.nextUrl.clone();
@@ -34,18 +34,11 @@ export async function middleware(req: NextRequest) {
     return r;
   };
 
-  if (!user) return PUBLICAS.includes(caminho) ? res : redirecionar("/login");
-  const precisa2fa = claims?.aal !== "aal2";
-  if (precisa2fa && caminho !== "/mfa") return redirecionar("/mfa");
-  if (precisa2fa) return res;
-  // Depois do 2FA: senha provisória precisa ser trocada antes de qualquer outra tela.
-  const { data: perfil } = await supabase.from("perfil").select("trocar_senha").eq("usuario_id", user.id).maybeSingle();
-  if (perfil?.trocar_senha && caminho !== "/trocar-senha") return redirecionar("/trocar-senha");
-  if (!perfil?.trocar_senha && caminho === "/trocar-senha") return redirecionar("/processos");
-  if (caminho === "/mfa" || caminho === "/login") return redirecionar("/processos");
+  if (!logado) return PUBLICAS.includes(caminho) ? res : redirecionar("/login");
+  if (caminho === "/login" || caminho === "/mfa") return redirecionar("/processos");
   return res;
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|ico)$).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|ico)$).*)"],
 };

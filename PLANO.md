@@ -176,6 +176,7 @@ A ordem garante que nada se perca: **o motor é provado contra a planilha (fase 
 **Reajustes de 19/10/2026 (substituem as decisões de usuários e acesso acima)**
 - Papéis: só **Admin** e **Operador**. O papel Gestor deixou de existir (os gestores viraram operadores).
 - **Login por CPF** (Admin e operadores). Por trás, cada usuário tem o e-mail técnico `<CPF>@cpf.painel-ea.local`, que nunca recebe mensagens. Sem e-mail não há "esqueci a senha": o Admin usa "Redefinir acesso", que gera uma nova senha provisória e apaga o autenticador.
+- **Autenticador (2FA) desligado por enquanto** (19/10/2026, pedido do usuário): login só com CPF e senha. A tela /mfa e o cadastro de fatores continuam no código para religar (middleware e redirecionamento do login).
 - **Admin e operadores veem e editam todos os processos**, de qualquer OM. O isolamento por OM foi revogado, e a auditoria passa a ser o controle de quem alterou o quê.
 - Painel **Operadores** (`/operadores`), exclusivo do Admin: cadastra (CPF, nome, posto, OM), desativa, reativa, redefine o acesso e exclui. A exclusão apaga o login; se o operador já tiver registros, o login é bloqueado e o perfil é marcado como excluído (o CPF fica livre para novo cadastro).
 - Dados da OM: só o Admin altera. Fiscal Adm e Chefe da Div Pessoal **saem dos documentos**, e as assinaturas deles passam a ser do **Auxiliar Div Pg Pes** (o operador que gera o PDF; posto e nome vêm do cadastro dele). ✅ *(fase B, 19/10/2026; as colunas fiscal_* e chefe_pessoal_* continuam no banco, sem uso)*

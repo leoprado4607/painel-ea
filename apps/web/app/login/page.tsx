@@ -25,8 +25,7 @@ export default function Login() {
             <input id="senha" name="senha" type="password" autoComplete="current-password" required className="entrada" />
           </div>
           <button className="botao w-full" disabled={enviando}>{enviando ? "Entrando…" : "Entrar"}</button>
-          <p className="ajuda text-center">Depois da senha, será pedido o código do aplicativo autenticador.</p>
-          <p className="ajuda text-center">Esqueceu a senha ou trocou de celular? Peça ao Admin para redefinir o seu acesso.</p>
+          <p className="ajuda text-center">Esqueceu a senha? Peça ao Admin para redefinir o seu acesso.</p>
         </form>
       </div>
     </main>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { sair } from "@/app/login/actions";
 import { AbasRodape } from "@/components/AbasRodape";
 import { Aviso } from "@/components/Aviso";
@@ -6,6 +7,8 @@ import { sessao } from "@/lib/sessao";
 
 export default async function LayoutApp({ children }: { children: React.ReactNode }) {
   const { perfil, om } = await sessao();
+  // senha provisória: trocar antes de usar o sistema (conferido aqui, onde o perfil já foi lido)
+  if (perfil?.trocar_senha) redirect("/trocar-senha");
   const admin = perfil?.papel === "admin";
   return (
     <div className="min-h-screen">

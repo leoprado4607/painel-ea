@@ -22,7 +22,7 @@ function SenhaProvisoria({ senha, texto }: { senha: string; texto: string }) {
           {copiado ? "Copiada" : "Copiar"}
         </button>
       </p>
-      <p className="mt-2 text-xs">No próximo acesso, o operador entra com o CPF e essa senha, cadastra o autenticador e cria a senha pessoal.</p>
+      <p className="mt-2 text-xs">No próximo acesso, o operador entra com o CPF e essa senha e cria a senha pessoal.</p>
     </Aviso>
   );
 }
@@ -98,7 +98,7 @@ export function GestaoOperadores({ usuarios, oms, euId }: { usuarios: Operador[]
                       <span className="inline-flex gap-2">
                         <button className="botao-sec py-1" disabled={ocupado}
                           onClick={() => {
-                            if (!confirm(`Redefinir o acesso de ${u.nome}? Será gerada uma nova senha provisória e o autenticador terá de ser cadastrado de novo.`)) return;
+                            if (!confirm(`Redefinir o acesso de ${u.nome}? Será gerada uma nova senha provisória.`)) return;
                             acao(() => redefinirAcesso(u.usuario_id), `Acesso de ${u.nome} redefinido.`);
                           }}>Redefinir acesso</button>
                         <button className="botao-sec py-1" disabled={ocupado}
