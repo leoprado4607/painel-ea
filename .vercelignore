@@ -1,0 +1,15 @@
+# Nada disto vai para a Vercel: dados de exemplo (inclui fichas reais), ferramentas, testes e segredos locais.
+# Regras começando com "/" valem só na raiz (sem a barra, "supabase/" pegaria também apps/web/lib/supabase).
+/exemplos/
+/tools/
+/supabase/
+/.claude/
+/.vercel/
+/.mcp.json
+/PLANO.md
+**/.env.local
+**/.env*.local
+**/node_modules/
+**/.next/
+/packages/*/test/
+/apps/web/lib/*.test.ts

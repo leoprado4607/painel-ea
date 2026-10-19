@@ -1,0 +1,599 @@
+{
+ "nome": "c03_2006_2007",
+ "escritas": [
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A3",
+   "valores": [
+    "A01 - SOLDO"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B3",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A4",
+   "valores": [
+    "A03 - ADIC HAB"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B4",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A5",
+   "valores": [
+    "A14 - ADIC MIL"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B5",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A6",
+   "valores": [
+    "AL0 - ACDM"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B6",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A7",
+   "valores": [
+    "A85 - ADIC NATAL - 2ª P"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B7",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A8",
+   "valores": [
+    "AD2 - ADICIONAL FÉRIAS"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B8",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A9",
+   "valores": [
+    null
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B9",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A10",
+   "valores": [
+    null
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B10",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A11",
+   "valores": [
+    null
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B11",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A12",
+   "valores": [
+    null
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B12",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A13",
+   "valores": [
+    null
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B13",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A14",
+   "valores": [
+    null
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B14",
+   "valores": [
+    "Receita"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A15",
+   "valores": [
+    "Z01 - FUSEX"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B15",
+   "valores": [
+    "Despesa"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A16",
+   "valores": [
+    "Z02 - P MIL 7,5/9,5/10,5%"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B16",
+   "valores": [
+    "Despesa"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A17",
+   "valores": [
+    "Z02 - P MIL 1,5%"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B17",
+   "valores": [
+    "Despesa"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A18",
+   "valores": [
+    "Z99 - PENS JUDICIARIA"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B18",
+   "valores": [
+    "Despesa"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "A19",
+   "valores": [
+    "ZM7 - DESC DEP FUSEX"
+   ]
+  },
+  {
+   "aba": "Códigos Lançamento",
+   "celula": "B19",
+   "valores": [
+    "Despesa"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B4",
+   "valores": [
+    "1º Batalhão Fictício de Testes"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B5",
+   "valores": [
+    "11ª"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B6",
+   "valores": [
+    "160000"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B7",
+   "valores": [
+    "000001"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B8",
+   "valores": [
+    "Cel Fulano de Tal"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B10",
+   "valores": [
+    "Maj Beltrano"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B12",
+   "valores": [
+    "Ten Cel Sicrano"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B14",
+   "valores": [
+    "Brasília-DF"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B15",
+   "valores": [
+    "001/2026"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B16",
+   "valores": [
+    2026
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B20",
+   "valores": [
+    "1º Sgt"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B21",
+   "valores": [
+    "João Teste da Silva"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B25",
+   "valores": [
+    "001 - Brasil"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B26",
+   "valores": [
+    "1234-5"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "B27",
+   "valores": [
+    "98765-4"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "A29",
+   "valores": [
+    "Diferença de adicional (teste)"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "A31",
+   "valores": [
+    "17 de outubro de 2026"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "A33",
+   "valores": [
+    "Ativa"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "H30",
+   "valores": [
+    "=DATE(2006,1,1)"
+   ]
+  },
+  {
+   "aba": "Informações",
+   "celula": "H31",
+   "valores": [
+    "=DATE(2010,12,1)"
+   ]
+  },
+  {
+   "aba": "Contracheque - F Financeira",
+   "celula": "D6",
+   "valores": [
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0
+   ]
+  },
+  {
+   "aba": "Contracheque - F Financeira",
+   "celula": "D18",
+   "valores": [
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0
+   ]
+  },
+  {
+   "aba": "Contracheque - F Financeira",
+   "celula": "D25",
+   "valores": [
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0
+   ]
+  },
+  {
+   "aba": "Contracheque - F Financeira",
+   "celula": "D37",
+   "valores": [
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0
+   ]
+  },
+  {
+   "aba": "Contracheque - F Financeira",
+   "celula": "D82",
+   "valores": [
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0,
+    1000.0
+   ]
+  },
+  {
+   "aba": "Contracheque - F Financeira",
+   "celula": "D94",
+   "valores": [
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0,
+    30.0
+   ]
+  },
+  {
+   "aba": "Lançar Valor Devido",
+   "celula": "D6",
+   "valores": [
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0
+   ]
+  },
+  {
+   "aba": "Lançar Valor Devido",
+   "celula": "D18",
+   "valores": [
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0
+   ]
+  },
+  {
+   "aba": "Lançar Valor Devido",
+   "celula": "D25",
+   "valores": [
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0
+   ]
+  },
+  {
+   "aba": "Lançar Valor Devido",
+   "celula": "D37",
+   "valores": [
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0
+   ]
+  },
+  {
+   "aba": "Lançar Valor Devido",
+   "celula": "D82",
+   "valores": [
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0,
+    1100.0
+   ]
+  },
+  {
+   "aba": "Lançar Valor Devido",
+   "celula": "D94",
+   "valores": [
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0,
+    33.0
+   ]
+  }
+ ]
+}

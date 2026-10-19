@@ -1,0 +1,5 @@
+# Configuração mínima para a CLI do Supabase (npx supabase ...).
+project_id = "painel-ea"
+
+[functions.coletar-ipca]
+verify_jwt = false  # a função não exige login: só lê dados públicos (ver index.ts)

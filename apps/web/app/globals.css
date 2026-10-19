@@ -1,0 +1,39 @@
+@import "tailwindcss";
+
+@theme {
+  --color-marca-50: #f3f6ef;
+  --color-marca-100: #e3ead9;
+  --color-marca-600: #4a6b2f;
+  --color-marca-700: #3b5625;
+  --color-marca-800: #2e431d;
+  --color-tinta: #1d2420;
+  --color-suave: #5b6560;
+  --color-borda: #d7ddd6;
+  --color-fundo: #f6f7f5;
+  --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+body {
+  background: var(--color-fundo);
+  color: var(--color-tinta);
+}
+
+@layer components {
+  .cartao { @apply rounded-lg border border-borda bg-white p-5 shadow-sm; }
+  .rotulo { @apply mb-1 block text-sm font-medium text-tinta; }
+  .entrada {
+    @apply w-full rounded-md border border-borda bg-white px-3 py-2 text-sm outline-none
+      focus:border-marca-600 focus:ring-2 focus:ring-marca-100 disabled:bg-fundo;
+  }
+  .entrada-erro { @apply border-red-600 focus:border-red-600 focus:ring-red-100; }
+  .botao {
+    @apply inline-flex items-center justify-center gap-2 rounded-md bg-marca-700 px-4 py-2 text-sm font-semibold
+      text-white hover:bg-marca-800 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .botao-sec {
+    @apply inline-flex items-center justify-center gap-2 rounded-md border border-borda bg-white px-4 py-2 text-sm
+      font-medium text-tinta hover:bg-fundo disabled:opacity-60;
+  }
+  .ajuda { @apply mt-1 text-xs text-suave; }
+  .erro { @apply mt-1 text-xs text-red-700; }
+}

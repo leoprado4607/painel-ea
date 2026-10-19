@@ -1,0 +1,366 @@
+﻿{
+    "cpf":  [
+                {
+                    "valor":  "462.819.482-38",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "935.181.909-46",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "865.797.543-30",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "319.487.574-53",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "118.625.276-60",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "189.555.979-18",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "114.710.497-28",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "650.752.917-67",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "423.667.127-15",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "426.846.563-47",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "223.307.924-84",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "268.599.528-67",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "078.666.617-17",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "031.372.159-94",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "092.815.901-00",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "962.459.571-25",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "777.741.215-05",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "728.038.528-20",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "841.485.253-03",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "853.933.633-20",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "500.474.395-99",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "551.313.735-65",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "990.751.163-30",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "265.167.612-80",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "202.972.997-45",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "528.820.018-29",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "263.304.348-83",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "954.862.057-18",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "868.282.880-51",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "290.222.791-46",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "588.871.803-34",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "018.780.175-53",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "898.347.887-03",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "384.837.261-49",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "513.613.412-80",
+                    "resultado":  "Erro"
+                },
+                {
+                    "valor":  "524.273.167-25",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "326.865.635-83",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "505.877.065-20",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "481.131.144-24",
+                    "resultado":  "OK"
+                },
+                {
+                    "valor":  "242.646.288-49",
+                    "resultado":  "OK"
+                }
+            ],
+    "precCp":  [
+                   {
+                       "valor":  447712782,
+                       "esperado":  "9",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  261973069,
+                       "esperado":  "4",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  523938499,
+                       "esperado":  "5",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  798935572,
+                       "esperado":  "9",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  151847156,
+                       "esperado":  "1",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  177777868,
+                       "esperado":  "5",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  981836553,
+                       "esperado":  "0",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  675398922,
+                       "esperado":  "0",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  201071364,
+                       "esperado":  "4",
+                       "resultado":  "OK"
+                   },
+                   {
+                       "valor":  492655486,
+                       "esperado":  "8",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  725763863,
+                       "esperado":  "7",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  162275869,
+                       "esperado":  "5",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  644854973,
+                       "esperado":  "2",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  330530419,
+                       "esperado":  "0",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  140260662,
+                       "esperado":  "1",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  192285142,
+                       "esperado":  "6",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  565623510,
+                       "esperado":  "7",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  549008934,
+                       "esperado":  "9",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  175006691,
+                       "esperado":  "7",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  358409929,
+                       "esperado":  "2",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  197402358,
+                       "esperado":  "7",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  691682483,
+                       "esperado":  "3",
+                       "resultado":  "OK"
+                   },
+                   {
+                       "valor":  555824009,
+                       "esperado":  "8",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  163469421,
+                       "esperado":  "6",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  987825707,
+                       "esperado":  "6",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  707151283,
+                       "esperado":  "5",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  232931336,
+                       "esperado":  "5",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  339701014,
+                       "esperado":  "2",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  777129422,
+                       "esperado":  "2",
+                       "resultado":  "OK"
+                   },
+                   {
+                       "valor":  773701293,
+                       "esperado":  "9",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  725988156,
+                       "esperado":  "9",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  166423868,
+                       "esperado":  "7",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  719659571,
+                       "esperado":  "4",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  728720317,
+                       "esperado":  "0",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  525932421,
+                       "esperado":  "1",
+                       "resultado":  "OK"
+                   },
+                   {
+                       "valor":  153246119,
+                       "esperado":  "3",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  337384804,
+                       "esperado":  "3",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  150017772,
+                       "esperado":  "2",
+                       "resultado":  "OK"
+                   },
+                   {
+                       "valor":  697714383,
+                       "esperado":  "9",
+                       "resultado":  "Erro"
+                   },
+                   {
+                       "valor":  242995371,
+                       "esperado":  "1",
+                       "resultado":  "OK"
+                   }
+               ]
+}

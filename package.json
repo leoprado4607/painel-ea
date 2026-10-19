@@ -1,0 +1,19 @@
+{
+  "name": "painel-ea",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test": "vitest run supabase && npm test --workspaces --if-present",
+    "ipca:dados-iniciais": "node tools/ipca/gerar-dados-iniciais.ts",
+    "dev": "npm run dev -w @painel-ea/web",
+    "build": "npm run build -w @painel-ea/web"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.3.7",
+    "vitest": "^3.2.4"
+  }
+}

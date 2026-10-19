@@ -1,0 +1,11 @@
+node_modules/
+tools/golden/.venv/
+tools/golden/saida/
+
+# exemplos reais (mesmo tarjados) não vão para o Git
+exemplos/
+
+.vercel
+
+# arquivos temporários da CLI do Supabase
+supabase/.temp/

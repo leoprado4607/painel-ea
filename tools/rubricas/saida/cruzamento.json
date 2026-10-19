@@ -1,0 +1,5154 @@
+[
+ {
+  "sippes": "NR0001",
+  "descricao_sippes": "SOLDO",
+  "siappes": "A01",
+  "descricao_siappes": "SOLDO",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0002",
+  "descricao_sippes": "ADICIONAL TEMPO SERVICO",
+  "siappes": "A02",
+  "descricao_siappes": "ADIC TEMPO SV",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0003",
+  "descricao_sippes": "ADICIONAL DE HABILITACAO",
+  "siappes": "A03",
+  "descricao_siappes": "ADIC HAB",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0004",
+  "descricao_sippes": "ADICIONAL DE PERMANENCIA",
+  "siappes": "A04",
+  "descricao_siappes": "ADIC PERM",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0007",
+  "descricao_sippes": "GRAT LOC ESP A",
+  "siappes": "A07",
+  "descricao_siappes": "G LOC ESP TP A",
+  "regra": "padrao",
+  "similaridade": 0.5
+ },
+ {
+  "sippes": "NR0008",
+  "descricao_sippes": "GRAT LOC ESP B",
+  "siappes": "A08",
+  "descricao_siappes": "G LOC ESP TP B",
+  "regra": "padrao",
+  "similaridade": 0.6
+ },
+ {
+  "sippes": "NR0009",
+  "descricao_sippes": "COMP ORGANICA RAIO-X",
+  "siappes": "A09",
+  "descricao_siappes": "ADIC CORG/RAIO-X",
+  "regra": "padrao",
+  "similaridade": 0.75
+ },
+ {
+  "sippes": "NR0010",
+  "descricao_sippes": "COMP ORGANICA PQDT",
+  "siappes": "A10",
+  "descricao_siappes": "ADIC CORG/PQDT",
+  "regra": "padrao",
+  "similaridade": 0.67
+ },
+ {
+  "sippes": "NR0011",
+  "descricao_sippes": "COMP ORGANICA TO-OMA- FO",
+  "siappes": "A11",
+  "descricao_siappes": "ADCORG TO/OMA/FO",
+  "regra": "padrao",
+  "similaridade": 0.75
+ },
+ {
+  "sippes": "NR0012",
+  "descricao_sippes": "COMP ORGANICA IM-MG- CTA",
+  "siappes": "A12",
+  "descricao_siappes": "ADCORG IM/MG/CTA",
+  "regra": "padrao",
+  "similaridade": 0.75
+ },
+ {
+  "sippes": "NR0013",
+  "descricao_sippes": "COMP ORGANICA HVOO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0014",
+  "descricao_sippes": "ADICIONAL MILITAR",
+  "siappes": "A14",
+  "descricao_siappes": "ADIC MIL",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0015",
+  "descricao_sippes": "GRAT REP DE FUNC DE GABINETE MILITAR-RMM",
+  "siappes": "A15",
+  "descricao_siappes": "GRAT REPRES GAB",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0016",
+  "descricao_sippes": "GRAT REPRESENTACAO CMDO",
+  "siappes": "A16",
+  "descricao_siappes": "GRAT REP 10%",
+  "regra": "padrao",
+  "similaridade": 0.67
+ },
+ {
+  "sippes": "NR0018",
+  "descricao_sippes": "SALARIO FAMILIA",
+  "siappes": "A18",
+  "descricao_siappes": "SALARIO FAMILIA",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0019",
+  "descricao_sippes": "AUXILIO ALIMENTACAO D",
+  "siappes": "A19",
+  "descricao_siappes": "AUX ALIM D",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0020",
+  "descricao_sippes": "INDENIZACAO LICENCA ESPECIAL",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0021",
+  "descricao_sippes": "AUX NATALIDADE LICENCIADO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0026",
+  "descricao_sippes": "COMPLEMENTO SALARIO MINIMO",
+  "siappes": "AGA",
+  "descricao_siappes": "COMPL SAL MIN",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0040",
+  "descricao_sippes": "AUX FUNERAL - RESSARCIMENTO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0042",
+  "descricao_sippes": "AUXILIO FUNERAL DIFERENCA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0043",
+  "descricao_sippes": "AUXILIO NATALIDADE- NATIMORTO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0046",
+  "descricao_sippes": "AJUDA CUSTO INATIVIDADE RESERVA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0049",
+  "descricao_sippes": "DEV DESP MED-DAP - EA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0052",
+  "descricao_sippes": "AUXILIO ALIMENTACAO A - 5X",
+  "siappes": "A52",
+  "descricao_siappes": "AUX ALIM A 10X",
+  "regra": "padrao",
+  "similaridade": 0.67
+ },
+ {
+  "sippes": "NR0053",
+  "descricao_sippes": "AUXILIO ALIMENTACAO A - 10X",
+  "siappes": "A53",
+  "descricao_siappes": "AUX ALIM 5X",
+  "regra": "padrao",
+  "similaridade": 0.67
+ },
+ {
+  "sippes": "NR0054",
+  "descricao_sippes": "AUXILIO ALIMENTACAO C",
+  "siappes": "A54",
+  "descricao_siappes": "AUX ALIM C",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0055",
+  "descricao_sippes": "AUXILIO ALIMENTACAO MINISTERIO DA DEFESA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0056",
+  "descricao_sippes": "AUXILIO FARDAMENTO 1 SOLDO",
+  "siappes": "A56",
+  "descricao_siappes": "AUX FARD 1 SOLDO",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0057",
+  "descricao_sippes": "AUXILIO FARDAMENTO 1,5 SOLDO",
+  "siappes": "A57",
+  "descricao_siappes": "AUX FARD 1.5 SLD",
+  "regra": "padrao",
+  "similaridade": 0.5
+ },
+ {
+  "sippes": "NR0058",
+  "descricao_sippes": "AUXILIO ALIMENTACAO B",
+  "siappes": "A58",
+  "descricao_siappes": "AUX ALIM B",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0059",
+  "descricao_sippes": "DEVOLUCAO DE PENSAO MILITAR(EA)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0060",
+  "descricao_sippes": "DEVOLUCAO DE FUSEX (EA)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0061",
+  "descricao_sippes": "GRAT REPRESENT EVENTUAL",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0063",
+  "descricao_sippes": "DIF G LOC ESP",
+  "siappes": "A63",
+  "descricao_siappes": "DIF G LOC ESP",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0064",
+  "descricao_sippes": "DEC JD A62 N TRI",
+  "siappes": "AJV",
+  "descricao_siappes": "DEC JD A62 N TRI",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0066",
+  "descricao_sippes": "COMPENSACAO PECUNIARIA",
+  "siappes": "A66",
+  "descricao_siappes": "COMP PECUNIARIA",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0068",
+  "descricao_sippes": "GRAT REPRESENT PEF/DEF",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0070",
+  "descricao_sippes": "ADICIONAL NATALINO - AJUSTE CONTAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0077",
+  "descricao_sippes": "ASSISTENCIA PRE-ESCOLAR",
+  "siappes": "A77",
+  "descricao_siappes": "ASSIST PRE-ESC",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0078",
+  "descricao_sippes": "AUXILIO PRE-ESCOLAR ATRASADO",
+  "siappes": "A78",
+  "descricao_siappes": "ASSIS PRE-ESC AT",
+  "regra": "padrao",
+  "similaridade": 0.75
+ },
+ {
+  "sippes": "NR0080",
+  "descricao_sippes": "AUXILIO FARDA SINISTRO",
+  "siappes": "A80",
+  "descricao_siappes": "AUX FARD SINISTR",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0081",
+  "descricao_sippes": "AUXILIO NATALIDADE",
+  "siappes": "A81",
+  "descricao_siappes": "AUX NATALIDADE",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0083",
+  "descricao_sippes": "ADIANTAMENTO DA 1A PRCL DO ADC NATALINO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0084",
+  "descricao_sippes": "ADICIONAL NATAL 1PARC",
+  "siappes": "A84",
+  "descricao_siappes": "ADIC NATAL-1 PAR",
+  "regra": "padrao",
+  "similaridade": 0.5
+ },
+ {
+  "sippes": "NR0085",
+  "descricao_sippes": "ADICIONAL NATAL 2PARC",
+  "siappes": "A85",
+  "descricao_siappes": "ADIC NATAL",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0088",
+  "descricao_sippes": "ADC FERIAS INATIV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0089",
+  "descricao_sippes": "INDZ FERIAS INATIV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0090",
+  "descricao_sippes": "RESSARCIMENTO DPS MED",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0091",
+  "descricao_sippes": "ADICIONAL DE FERIAS RAIO- X",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0092",
+  "descricao_sippes": "ADICIONAL DE FERIAS",
+  "siappes": "AD2",
+  "descricao_siappes": "ADICIONAL FERIAS",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0093",
+  "descricao_sippes": "ADIANTAMENTO DE FERIAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0094",
+  "descricao_sippes": "INDENIZACAO DE FERIAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0095",
+  "descricao_sippes": "AUXILIO TRANSPORTE",
+  "siappes": "A95",
+  "descricao_siappes": "AUX TRANSPORTE",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0096",
+  "descricao_sippes": "ADC FERIAS AJ C",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0097",
+  "descricao_sippes": "DECISAO JUDICIAL COMPENSACAO ORGANICA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0098",
+  "descricao_sippes": "COMP ORGANICA TJ",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0099",
+  "descricao_sippes": "ABONO PIS/PASEP",
+  "siappes": "A99",
+  "descricao_siappes": "ABONO PIS/PASEP",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0100",
+  "descricao_sippes": "DEC JD 28,86%",
+  "siappes": "AJD",
+  "descricao_siappes": "DEC JD 28,86%",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0101",
+  "descricao_sippes": "DIFERENCA DE 28,86%",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0150",
+  "descricao_sippes": "ACERTO CONTABIL",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0160",
+  "descricao_sippes": "ADC TMP SV ADM",
+  "siappes": "AJT",
+  "descricao_siappes": "ADC TMP SV ADM",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0161",
+  "descricao_sippes": "OUTRAS DECISOES JUDICIAIS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0162",
+  "descricao_sippes": "COMPL SOLDO DJ",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0163",
+  "descricao_sippes": "DEC JD AD INAT",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0164",
+  "descricao_sippes": "DEC JD AU INV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0165",
+  "descricao_sippes": "DJ AD INAT T J",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0166",
+  "descricao_sippes": "DJ AU INV TJ",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0167",
+  "descricao_sippes": "DEC JD C-ORG",
+  "siappes": "AJB",
+  "descricao_siappes": "DEC JD C-ORG",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0168",
+  "descricao_sippes": "OUTRAS DJ T J",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0169",
+  "descricao_sippes": "AJUDA DE CUSTO INATIVIDADE REFORMA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0170",
+  "descricao_sippes": "AD C DISP MIL",
+  "siappes": "AL0",
+  "descricao_siappes": "AD C DISP MIL",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "NR0171",
+  "descricao_sippes": "G REP COVID",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0172",
+  "descricao_sippes": "G REP VERDE-BR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0173",
+  "descricao_sippes": "G REP ACOLHIDA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR0174",
+  "descricao_sippes": "G REP PIPA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "NR9999",
+  "descricao_sippes": "ACERTO DE AJUSTE (BLOQUEIO E REVERSAO)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0001",
+  "descricao_sippes": "FUSEX 3%",
+  "siappes": "Z01",
+  "descricao_siappes": "FUSEX 3%",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0002",
+  "descricao_sippes": "PENSAO MILITAR -MILITAR CARREIRA",
+  "siappes": "Z02",
+  "descricao_siappes": "P MIL 10,5%",
+  "regra": "padrao",
+  "similaridade": 0.67
+ },
+ {
+  "sippes": "ND0003",
+  "descricao_sippes": "OCUPACAO PNR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0004",
+  "descricao_sippes": "TX EXTRA PNR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0005",
+  "descricao_sippes": "PENSAO MILITAR 1,5%",
+  "siappes": "Z05",
+  "descricao_siappes": "P MIL 1.5%",
+  "regra": "padrao",
+  "similaridade": 0.67
+ },
+ {
+  "sippes": "ND0006",
+  "descricao_sippes": "AQUISICAO MEDICAMENTOS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0007",
+  "descricao_sippes": "DIFERENCA 24 CONT PENSAO MILITAR",
+  "siappes": "Z07",
+  "descricao_siappes": "P MIL DIF 24 CON",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0008",
+  "descricao_sippes": "OCUPA PNR FUNDO EX MNT",
+  "siappes": "Z08",
+  "descricao_siappes": "PNR (F EX-MNT)",
+  "regra": "padrao",
+  "similaridade": 0.75
+ },
+ {
+  "sippes": "ND0009",
+  "descricao_sippes": "IR RESIDENTE NO EXTERIOR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0010",
+  "descricao_sippes": "IMPOSTO DE RENDA",
+  "siappes": "Z10",
+  "descricao_siappes": "IMPOSTO RENDA",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0011",
+  "descricao_sippes": "DESCONTO DEPENDENTE - FUSEX",
+  "siappes": "ZM7",
+  "descricao_siappes": "DESC DEP FUSEX",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0012",
+  "descricao_sippes": "DESCONTO DEPENDENTE FUSEX - AUT AJUSTE",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0013",
+  "descricao_sippes": "DESPESA MEDICA - FUSEX",
+  "siappes": "ZM3",
+  "descricao_siappes": "FUSEX DESP MED",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0014",
+  "descricao_sippes": "PENSAO ALIMENTICIA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0015",
+  "descricao_sippes": "IR ADICIONAL FERIAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0016",
+  "descricao_sippes": "DESCONTOS PARA O FEX",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0017",
+  "descricao_sippes": "AQUISICAO DE UNIFORME",
+  "siappes": "Z17",
+  "descricao_siappes": "AQUIS UNIFORME",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0018",
+  "descricao_sippes": "TAXA DE AGUA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0019",
+  "descricao_sippes": "TAXA DE LUZ",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0020",
+  "descricao_sippes": "INDENIZACAO MATERIAL",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0021",
+  "descricao_sippes": "OCUPA PNR FUNDO EX CNS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0022",
+  "descricao_sippes": "TAXA DE LIXO - CODOMX",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0023",
+  "descricao_sippes": "MULTA OCP IRREG",
+  "siappes": "Z23",
+  "descricao_siappes": "MULTA PMB",
+  "regra": "padrao",
+  "similaridade": 0.5
+ },
+ {
+  "sippes": "ND0024",
+  "descricao_sippes": "EMISSAO CARTAO FUSEX",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0025",
+  "descricao_sippes": "INDENIZACAO DE CARGA RAE",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0026",
+  "descricao_sippes": "INDENIZACAO VIATURA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0028",
+  "descricao_sippes": "IR ADICIONAL NATALINO",
+  "siappes": "Z33",
+  "descricao_siappes": "IRRF-ADIC NATAL",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0029",
+  "descricao_sippes": "REMESSA DE CONTRACHEQUE",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0030",
+  "descricao_sippes": "DEV AUX EMERGENCIAL",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0031",
+  "descricao_sippes": "HONORARIOS AGU",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0032",
+  "descricao_sippes": "VERBA DE SUCUMBENCIA",
+  "siappes": "ZS9",
+  "descricao_siappes": "VERB SUCUMBENCIA",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0033",
+  "descricao_sippes": "PA IN 025/96 SRF",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0034",
+  "descricao_sippes": "AJUSTE DE CONTAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0035",
+  "descricao_sippes": "PENS ALI EXT JUD",
+  "siappes": "ZJA",
+  "descricao_siappes": "PENS ALI EXT JUD",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0036",
+  "descricao_sippes": "PENSAO ALIMENTICIA FERIAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0037",
+  "descricao_sippes": "PENSAO ALIMENTICIA COMP PECUNIARIA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0038",
+  "descricao_sippes": "ASSISTENCIA PRE-ESCOLAR (DETENTOR LEGAL)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0039",
+  "descricao_sippes": "PENSAO MILITAR - MILITAR TEMPORARIO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0040",
+  "descricao_sippes": "PENSAO MILITAR - AT- AUTOMATICA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0041",
+  "descricao_sippes": "PENSAO MILITAR - MILITAR CARREIRA - AT",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0042",
+  "descricao_sippes": "FUSEX 3% AT AUTOMATICO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0043",
+  "descricao_sippes": "IMPOSTO ADC NATALINO AJUSTE CONTAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0068",
+  "descricao_sippes": "DESP BR PMB",
+  "siappes": "Z68",
+  "descricao_siappes": "DESP BR PMB",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0072",
+  "descricao_sippes": "DAS(AUX FIN IND)",
+  "siappes": "Z72",
+  "descricao_siappes": "DAS(AUX FIN IND)",
+  "regra": "padrao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0073",
+  "descricao_sippes": "DESCONTO EM FAVOR DA OM",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0074",
+  "descricao_sippes": "FUSEX ORIUNDO DA JUSTICA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0075",
+  "descricao_sippes": "PENSAO MILITAR ORIUNDO DA JUSTICA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0076",
+  "descricao_sippes": "HFA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0077",
+  "descricao_sippes": "Z25 MULTA PNR HFA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0078",
+  "descricao_sippes": "MIN DEF 198",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0079",
+  "descricao_sippes": "MIN DEF 493",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0080",
+  "descricao_sippes": "ZF3 TAXA PNR PMB",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0081",
+  "descricao_sippes": "TX OCUP IMOV MIN",
+  "siappes": "Z21",
+  "descricao_siappes": "TX OCUP IMOV MIN",
+  "regra": "descricao",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0090",
+  "descricao_sippes": "RESSARCIMENTO DPS MED",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0093",
+  "descricao_sippes": "DESCONTO ADIANT FERIAS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0096",
+  "descricao_sippes": "PENSAO JUDICIAL SOB 1ª PARC 13 SALARIO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0097",
+  "descricao_sippes": "PENSAO JUDICIAL SOB 2ª PARC 13 SALARIO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0154",
+  "descricao_sippes": "PNR MILITAR FORA DA FORCA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0155",
+  "descricao_sippes": "PNR MILITAR FORA DA FORCA MD",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0178",
+  "descricao_sippes": "DA EX ANT DED",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0179",
+  "descricao_sippes": "DA EA AJ CON N D",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0500",
+  "descricao_sippes": "ZR1 - POUPEX POUPANCA",
+  "siappes": "ZR1",
+  "descricao_siappes": "POUPEX POUPANCA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0501",
+  "descricao_sippes": "ZR2 - POUPEX POUPANCA",
+  "siappes": "ZR2",
+  "descricao_siappes": "POUPEX POUPANCA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0502",
+  "descricao_sippes": "ZR3 - POUPEX POUPANCA",
+  "siappes": "ZR3",
+  "descricao_siappes": "POUPEX POUPANCA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0503",
+  "descricao_sippes": "ZR4 - POUPEX POUPANCA",
+  "siappes": "ZR4",
+  "descricao_siappes": "POUPEX POUPANCA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0504",
+  "descricao_sippes": "ZR5 - POUPEX POUPANCA",
+  "siappes": "ZR5",
+  "descricao_siappes": "POUPEX POUPANCA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0505",
+  "descricao_sippes": "ZR7 - POUPEX FIN IMOB",
+  "siappes": "ZR7",
+  "descricao_siappes": "POUPEX-FIN IMOB",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0506",
+  "descricao_sippes": "ZS4 - POUPEX-FIN MAT",
+  "siappes": "ZS4",
+  "descricao_siappes": "POUPEX-FIN MAT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0507",
+  "descricao_sippes": "ZS6 - POUPEX-FIN TER",
+  "siappes": "ZS6",
+  "descricao_siappes": "POUPEX-FIN TER",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0508",
+  "descricao_sippes": "Z35 - FHE DECESSOS",
+  "siappes": "Z35",
+  "descricao_siappes": "FHE DECESSOS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0509",
+  "descricao_sippes": "ZR0 - FHE-FAM",
+  "siappes": "ZR0",
+  "descricao_siappes": "FHE-FAM",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0510",
+  "descricao_sippes": "ZR6 - FHE FIN IMOB",
+  "siappes": "ZR6",
+  "descricao_siappes": "FHE-FIN IMOB",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0511",
+  "descricao_sippes": "ZR8 - FHE-FIN MAT",
+  "siappes": "ZR8",
+  "descricao_siappes": "FHE-FIN MAT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0512",
+  "descricao_sippes": "ZR9 - FHE-FIN IMOB",
+  "siappes": "ZR9",
+  "descricao_siappes": "FHE-FIN IMOB",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0513",
+  "descricao_sippes": "ZRA - FHE EMP ESP/EXCP",
+  "siappes": "ZRA",
+  "descricao_siappes": "FHE EMP ESP/EXCP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0514",
+  "descricao_sippes": "ZS2 - FHE - SEGUROS",
+  "siappes": "ZS2",
+  "descricao_siappes": "FHE-SEGUROS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0515",
+  "descricao_sippes": "ZS3 - FHE-EMP SIMPLES",
+  "siappes": "ZS3",
+  "descricao_siappes": "FHE-EMP SIMPLES",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0516",
+  "descricao_sippes": "ZS5 - FHE-TX OCUP",
+  "siappes": "ZS5",
+  "descricao_siappes": "FHE-TX OCUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0517",
+  "descricao_sippes": "ZS7 - FHE MICRO FACIL",
+  "siappes": "ZS7",
+  "descricao_siappes": "FHE FIN DIGITAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0518",
+  "descricao_sippes": "ZGH - FHE DENTAL",
+  "siappes": "ZGH",
+  "descricao_siappes": "FHE - DENTAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0519",
+  "descricao_sippes": "ZGF - FHE EMPRES FARDA",
+  "siappes": "ZGF",
+  "descricao_siappes": "FHE EMPRES FARDA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0520",
+  "descricao_sippes": "ZGL - FHE FINANC VEIC",
+  "siappes": "ZGL",
+  "descricao_siappes": "FHE EMP ESPECIAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0521",
+  "descricao_sippes": "ZGV - FHE SEG GRAT",
+  "siappes": "ZGV",
+  "descricao_siappes": "FHE SEG GRAT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0522",
+  "descricao_sippes": "ZA3 - CAPEMI - PEC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0523",
+  "descricao_sippes": "ZXL - CAPEMI EMPREST",
+  "siappes": "ZXL",
+  "descricao_siappes": "VIA CAPITAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0524",
+  "descricao_sippes": "ZA8 - CASA SGT BR MENS",
+  "siappes": "ZA8",
+  "descricao_siappes": "CASA SGT BR MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0525",
+  "descricao_sippes": "ZUD - CMC (MENS)",
+  "siappes": "ZUD",
+  "descricao_siappes": "CMC (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0526",
+  "descricao_sippes": "ZB4 - C MIL S/EF-MENS",
+  "siappes": "ZB4",
+  "descricao_siappes": "C MIL  S/EF-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0527",
+  "descricao_sippes": "ZB5 - C MIL - AUX SAU",
+  "siappes": "ZB5",
+  "descricao_siappes": "CMIL-PLANO SAUDE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0528",
+  "descricao_sippes": "ZB7 - C MIL - EMPRESTIMO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0529",
+  "descricao_sippes": "ZC1 - PREVIMIL (SEGS)",
+  "siappes": "ZC1",
+  "descricao_siappes": "PREVIMIL(SEGS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0530",
+  "descricao_sippes": "ZN3 - PREVIMIL-P DEDUT",
+  "siappes": "ZN3",
+  "descricao_siappes": "PREVIMIL P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0531",
+  "descricao_sippes": "ZXM - PREVIMIL - EMP",
+  "siappes": "ZXM",
+  "descricao_siappes": "PREVIMIL - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0532",
+  "descricao_sippes": "ZXN - HSBC - EMPREST",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0533",
+  "descricao_sippes": "ZB3 - CSSE - SOCIO ESP",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0534",
+  "descricao_sippes": "ZC7 - CSSE (MENS)",
+  "siappes": "ZC7",
+  "descricao_siappes": "CSSE(MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0535",
+  "descricao_sippes": "ZD0 - GBOEX P DEDUT",
+  "siappes": "ZD0",
+  "descricao_siappes": "GBOEX P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0536",
+  "descricao_sippes": "ZD2 - GBOEX SEGURO",
+  "siappes": "ZD2",
+  "descricao_siappes": "GBOEX SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0537",
+  "descricao_sippes": "ZD4 - GBOEX - SEG CONF",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0538",
+  "descricao_sippes": "ZXH - SALARYFITS",
+  "siappes": "ZXH",
+  "descricao_siappes": "SALARYFITS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0539",
+  "descricao_sippes": "ZD6 - UPOFA (SEGS)",
+  "siappes": "ZD6",
+  "descricao_siappes": "UPOFA (SEGS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0540",
+  "descricao_sippes": "ZXK - UPOFA - EMPREST",
+  "siappes": "ZXK",
+  "descricao_siappes": "UPOFA - EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0541",
+  "descricao_sippes": "ZE1 - GSEGS (MENS)",
+  "siappes": "ZE1",
+  "descricao_siappes": "GSEGS(MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0542",
+  "descricao_sippes": "ZHN - GSEGS AUX SAUDE",
+  "siappes": "ZHN",
+  "descricao_siappes": "GSEGS AUX DOENCA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0543",
+  "descricao_sippes": "Z94 - C SGT WOLF MENS",
+  "siappes": "Z94",
+  "descricao_siappes": "C SGT WOLF-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0544",
+  "descricao_sippes": "ZE6 - UBSSFA (MENS)",
+  "siappes": "ZE6",
+  "descricao_siappes": "UBSSFA (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0545",
+  "descricao_sippes": "ZF2 - CASOMI (MENS)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0546",
+  "descricao_sippes": "ZY3 - CASOMI EMPREST",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0547",
+  "descricao_sippes": "ZF4 - R PANDIA CALOGER",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0548",
+  "descricao_sippes": "ZF5 - CSSE - RJ",
+  "siappes": "ZF5",
+  "descricao_siappes": "CSSE/RJ-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0549",
+  "descricao_sippes": "ZF8 - CSSVM - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0550",
+  "descricao_sippes": "ZJ2 - CSSVM SOC VINC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0551",
+  "descricao_sippes": "ZD8 - CSS 2 EX S SAUDE",
+  "siappes": "ZD8",
+  "descricao_siappes": "CSS 2 EX S SAUDE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0552",
+  "descricao_sippes": "ZF6 - CSS 2 EX MENS",
+  "siappes": "ZF6",
+  "descricao_siappes": "CSS 2 EX MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0553",
+  "descricao_sippes": "ZF7 - A S S EX (JF)",
+  "siappes": "ZF7",
+  "descricao_siappes": "ASSEX-JF-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0554",
+  "descricao_sippes": "ZF9 - C S S CURITIBA",
+  "siappes": "ZF9",
+  "descricao_siappes": "CSS CURITIBA-MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0555",
+  "descricao_sippes": "ZL3 - ASS M QUITERIA",
+  "siappes": "ZL3",
+  "descricao_siappes": "ASS M QUITERIA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0556",
+  "descricao_sippes": "Z49 - CLUBE EX (MENS)",
+  "siappes": "Z49",
+  "descricao_siappes": "CLUBE EX (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0557",
+  "descricao_sippes": "ZE4 - CLUBE EX (MES)",
+  "siappes": "ZE4",
+  "descricao_siappes": "CLUBE EX (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0558",
+  "descricao_sippes": "Z40 - FUNDACAO OSORIO",
+  "siappes": "Z40",
+  "descricao_siappes": "FUNDACAO OSORIO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0559",
+  "descricao_sippes": "Z41 - BIBLIEX - REB",
+  "siappes": "Z41",
+  "descricao_siappes": "BIBLIEX-REB",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0560",
+  "descricao_sippes": "Z42 - BIBLIEX - ADN",
+  "siappes": "Z42",
+  "descricao_siappes": "BIBLIEX-ADN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0561",
+  "descricao_sippes": "Z43 - BIBLIEX - RMCT",
+  "siappes": "Z43",
+  "descricao_siappes": "BIBLIEX-RMCT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0562",
+  "descricao_sippes": "Z71 - BIBLIEX - EDIT",
+  "siappes": "Z71",
+  "descricao_siappes": "BIBLIEX-EDIT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0563",
+  "descricao_sippes": "ZC6 - BIBLIEX - V.AVULSA",
+  "siappes": "ZC6",
+  "descricao_siappes": "BIBLIEX-V.AVULSA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0564",
+  "descricao_sippes": "Z93 - CMBH - MENS",
+  "siappes": "Z93",
+  "descricao_siappes": "CMBH (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0565",
+  "descricao_sippes": "ZJ3 - AMBRA MENS",
+  "siappes": "ZJ3",
+  "descricao_siappes": "AMBRA - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0566",
+  "descricao_sippes": "ZK3 - AMBRA - ASS SAUDE",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0567",
+  "descricao_sippes": "ZY5 - CODIGO BLOQUEADO",
+  "siappes": "ZY5",
+  "descricao_siappes": "AMBRA - EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0568",
+  "descricao_sippes": "ZNY - CBSSFA (MENS)",
+  "siappes": "ZNY",
+  "descricao_siappes": "CSSFA MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0569",
+  "descricao_sippes": "ZRY - HOJE PREV SEGURO",
+  "siappes": "ZRY",
+  "descricao_siappes": "PEC UNIAO PECULI",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0570",
+  "descricao_sippes": "ZSL - FUTURO P SEGURO",
+  "siappes": "ZSL",
+  "descricao_siappes": "FUTURO P SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0571",
+  "descricao_sippes": "ZSN - FUTURO P PECULIO",
+  "siappes": "ZSN",
+  "descricao_siappes": "FUTURO P PECULIO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0572",
+  "descricao_sippes": "CONDOMINIOS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0573",
+  "descricao_sippes": "ZJ5 - RSPP (PEC)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0574",
+  "descricao_sippes": "ZXP - RS PREV - EMP",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0575",
+  "descricao_sippes": "Z88 - ASMIR-AM (MENS)",
+  "siappes": "Z88",
+  "descricao_siappes": "ASMIR/AM (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0576",
+  "descricao_sippes": "ZL1 - ASSEX JP (MENS)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0577",
+  "descricao_sippes": "Z47 - VIVER PREV - PEC",
+  "siappes": "Z47",
+  "descricao_siappes": "VIVER PREV N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0578",
+  "descricao_sippes": "ZXQ - AMAL-EMPREST",
+  "siappes": "ZXQ",
+  "descricao_siappes": "PAN FINANCEI",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0579",
+  "descricao_sippes": "ZA1 - ASS EX-CMB MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0580",
+  "descricao_sippes": "Z50 - SAREX",
+  "siappes": "Z50",
+  "descricao_siappes": "ORD MIL BR - MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0581",
+  "descricao_sippes": "ZN1 - CIRC MIL RECIFE",
+  "siappes": "ZN1",
+  "descricao_siappes": "CIRC MIL RECIFE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0582",
+  "descricao_sippes": "ZRZ - EQUAT P PECULIO",
+  "siappes": "ZRZ",
+  "descricao_siappes": "EQUAT P PECULIO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0583",
+  "descricao_sippes": "ZL6 - ASSEN-RN (MENS)",
+  "siappes": "ZL6",
+  "descricao_siappes": "ASSEN-RN (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0584",
+  "descricao_sippes": "ZQ5 - CRUZADA MIL ESP",
+  "siappes": "ZQ5",
+  "descricao_siappes": "CRUZADA MIL ESP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0585",
+  "descricao_sippes": "ZQ6 - ASSIST JURID / JC",
+  "siappes": "ZQ6",
+  "descricao_siappes": "ASSIST JURID/JC",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0586",
+  "descricao_sippes": "ZQ3 - ASS JURID/JC AT",
+  "siappes": "ZQ3",
+  "descricao_siappes": "ASS JURID/JC AT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0587",
+  "descricao_sippes": "ZQ7 - GRESSE - MENS",
+  "siappes": "ZQ7",
+  "descricao_siappes": "GRESSE - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0588",
+  "descricao_sippes": "ZXR - BB EMPREST",
+  "siappes": "ZXR",
+  "descricao_siappes": "BB EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0589",
+  "descricao_sippes": "ZXS - B REAL EMPREST",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0590",
+  "descricao_sippes": "Z64 - CMPA (MENS)",
+  "siappes": "Z64",
+  "descricao_siappes": "CMPA (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0591",
+  "descricao_sippes": "Z91 - CSSA (MENS)",
+  "siappes": "Z91",
+  "descricao_siappes": "CSSA (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0592",
+  "descricao_sippes": "ZQ9 - ASS EXCMB CAMPOS",
+  "siappes": "ZQ9",
+  "descricao_siappes": "ASS EXCMB CAMPOS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0593",
+  "descricao_sippes": "ZJ9 - FPHMMLO MENS",
+  "siappes": "ZJ9",
+  "descricao_siappes": "FPHMMLO - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0594",
+  "descricao_sippes": "Z65 - CMM (PRESENCIAL)",
+  "siappes": "Z65",
+  "descricao_siappes": "CMM (PRESENCIAL)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0595",
+  "descricao_sippes": "Z89 - CMM (MENS EAD)",
+  "siappes": "Z89",
+  "descricao_siappes": "CMM (MENS EAD)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0596",
+  "descricao_sippes": "Z66 - CMJF (MENS)",
+  "siappes": "Z66",
+  "descricao_siappes": "CMJF (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0597",
+  "descricao_sippes": "Z67 - CMCG (MENS)",
+  "siappes": "Z67",
+  "descricao_siappes": "CMCG (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0598",
+  "descricao_sippes": "Z80 - CMF (MENS)",
+  "siappes": "Z80",
+  "descricao_siappes": "CMF (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0599",
+  "descricao_sippes": "ZWF - CSSE-BH",
+  "siappes": "ZWF",
+  "descricao_siappes": "CSSE-BH",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0600",
+  "descricao_sippes": "ZXT - CEF EMPREST",
+  "siappes": "ZXT",
+  "descricao_siappes": "CEF EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0601",
+  "descricao_sippes": "ZXU - B LUSOBRAS - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0602",
+  "descricao_sippes": "ZSA - CSSPV MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0603",
+  "descricao_sippes": "ZSB - FAMIL - MT - MENS",
+  "siappes": "ZSB",
+  "descricao_siappes": "FAMIL-MT - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0604",
+  "descricao_sippes": "ZC2 - ASMIR / PE (MENS)",
+  "siappes": "ZC2",
+  "descricao_siappes": "ASMIR/PE (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0605",
+  "descricao_sippes": "ZXV - B SCHAHIN EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0606",
+  "descricao_sippes": "ZC8 - FUNCEB - MENS",
+  "siappes": "ZC8",
+  "descricao_siappes": "FUNCEB-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0607",
+  "descricao_sippes": "ZGU - FUNCEB-D CULTURA",
+  "siappes": "ZGU",
+  "descricao_siappes": "FUNCEB-D CULTURA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0608",
+  "descricao_sippes": "ZXX - BRAD.FI.DIGIO",
+  "siappes": "ZXX",
+  "descricao_siappes": "BRAD FINAN DIGIO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0609",
+  "descricao_sippes": "ZB6 - CTG JCB - MENS",
+  "siappes": "ZB6",
+  "descricao_siappes": "CTG - JCB - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0610",
+  "descricao_sippes": "ZNF - SABEMI - SEG",
+  "siappes": "ZNF",
+  "descricao_siappes": "SABEMI - SEG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0611",
+  "descricao_sippes": "ZXY - SABEMI SEG EMPR",
+  "siappes": "ZXY",
+  "descricao_siappes": "SABEMI SEG EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0612",
+  "descricao_sippes": "ZZ5 - SABEMI-SEG-VEIC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0613",
+  "descricao_sippes": "ZN5 - MONGERAL SEGURO",
+  "siappes": "ZN5",
+  "descricao_siappes": "MONGERAL SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0614",
+  "descricao_sippes": "ZXD - SICOOB EMPR",
+  "siappes": "ZXD",
+  "descricao_siappes": "SICOOB-EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0615",
+  "descricao_sippes": "ZN8 - SABEMI P N DEDUT",
+  "siappes": "ZN8",
+  "descricao_siappes": "SABEMI P N DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0616",
+  "descricao_sippes": "ZXZ - SABEMI PREV EMP",
+  "siappes": "ZXZ",
+  "descricao_siappes": "SABEMI PREV EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0617",
+  "descricao_sippes": "ZN9 - CIRC MIL FORTAL",
+  "siappes": "ZN9",
+  "descricao_siappes": "CIRC MIL FORTAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0618",
+  "descricao_sippes": "Z95 - AMIR / JF (MENS)",
+  "siappes": "Z95",
+  "descricao_siappes": "AMIR/JF (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0619",
+  "descricao_sippes": "ZC0 - AMIR JF - SEGURO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0620",
+  "descricao_sippes": "Z76 - CEP - MATC CURSO C",
+  "siappes": "Z76",
+  "descricao_siappes": "CEP-MATC CURSO C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0621",
+  "descricao_sippes": "Z77 - CEP - PROVA",
+  "siappes": "Z77",
+  "descricao_siappes": "CEP  - PROVA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0622",
+  "descricao_sippes": "Z78 - CEP - MAT DIDAT AV",
+  "siappes": "Z78",
+  "descricao_siappes": "CEP-MAT DIDAT AV",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0623",
+  "descricao_sippes": "Z79 - INDZ MAT DIDAT",
+  "siappes": "Z79",
+  "descricao_siappes": "INDZ MAT DIDAT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0624",
+  "descricao_sippes": "ZTM - CEP - MATC DISCP",
+  "siappes": "ZTM",
+  "descricao_siappes": "CEP - MATC DISCP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0625",
+  "descricao_sippes": "ZTR - CEP - REMATC",
+  "siappes": "ZTR",
+  "descricao_siappes": "CEP - REMATC",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0626",
+  "descricao_sippes": "ZSH - ECO PARK - MENS",
+  "siappes": "ZSH",
+  "descricao_siappes": "ECO PARK - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0627",
+  "descricao_sippes": "Z83 - CMB (MENS)",
+  "siappes": "Z83",
+  "descricao_siappes": "CMB (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0628",
+  "descricao_sippes": "ZZK - B SANTANDER EMPR",
+  "siappes": "ZZK",
+  "descricao_siappes": "B SANTANDER EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0629",
+  "descricao_sippes": "ZSM - CMSM MEN ESCOLAR",
+  "siappes": "ZSM",
+  "descricao_siappes": "CMSM MEN ESCOLAR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0630",
+  "descricao_sippes": "ZY1 - BRADESCO EMPR",
+  "siappes": "ZY1",
+  "descricao_siappes": "BRADESCO EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0631",
+  "descricao_sippes": "ZFN - AQ MEDI - LQFE",
+  "siappes": "ZFN",
+  "descricao_siappes": "AQ MEDI-LQFE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0632",
+  "descricao_sippes": "ZC5 - ABEM - MENSALID",
+  "siappes": "ZC5",
+  "descricao_siappes": "ABEM - MENSALID",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0633",
+  "descricao_sippes": "ZXC - EMPREST ITAU",
+  "siappes": "ZXC",
+  "descricao_siappes": "BCO ITAU - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0634",
+  "descricao_sippes": "ZA5 - FUTURO P DEDUT",
+  "siappes": "ZA5",
+  "descricao_siappes": "FUTURO P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0635",
+  "descricao_sippes": "ZXB - FUTURO – EMPR",
+  "siappes": "ZXB",
+  "descricao_siappes": "FUTURO EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0636",
+  "descricao_sippes": "ZFP - AQ MED - LAB DIV",
+  "siappes": "ZFP",
+  "descricao_siappes": "AQ MED - LAB DIV",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0637",
+  "descricao_sippes": "ZXF - NUBANK-EMPR",
+  "siappes": "ZXF",
+  "descricao_siappes": "NUBANK-EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0638",
+  "descricao_sippes": "ZX2 - CIRC MIL CG-MENS",
+  "siappes": "ZX2",
+  "descricao_siappes": "CIRC MIL CG-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0639",
+  "descricao_sippes": "Z90 - IMBEL",
+  "siappes": "Z90",
+  "descricao_siappes": "IMBEL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0640",
+  "descricao_sippes": "ZXF - ITAU UNIB - EMPR",
+  "siappes": "ZXF",
+  "descricao_siappes": "NUBANK-EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0641",
+  "descricao_sippes": "Z92 - ASA (MENS)",
+  "siappes": "Z92",
+  "descricao_siappes": "ASA (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0642",
+  "descricao_sippes": "ZXI - BMG EMPREST",
+  "siappes": "ZXI",
+  "descricao_siappes": "BMG - EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0643",
+  "descricao_sippes": "ZHJ - BMG MASTERCARD",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0644",
+  "descricao_sippes": "ZPA - PMB - PNR FEX CNST",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0645",
+  "descricao_sippes": "ZPB - PMB - PNR FEX UA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0646",
+  "descricao_sippes": "PMB - PNR FEX MNT",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0647",
+  "descricao_sippes": "ZP0 - APM - CMRJ",
+  "siappes": "ZP0",
+  "descricao_siappes": "APM - CMRJ",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0648",
+  "descricao_sippes": "ZP1 - APM - CMB",
+  "siappes": "ZP1",
+  "descricao_siappes": "APM - CMB",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0649",
+  "descricao_sippes": "ZU2 - APM CMM",
+  "siappes": "ZU2",
+  "descricao_siappes": "APM - CMM",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0650",
+  "descricao_sippes": "ZU3 - APM CMBH",
+  "siappes": "ZU3",
+  "descricao_siappes": "APM - CMBH",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0651",
+  "descricao_sippes": "ZU4 - APM - CMSM",
+  "siappes": "ZU4",
+  "descricao_siappes": "APM - CMSM",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0652",
+  "descricao_sippes": "ZU5 - APM - CMJF",
+  "siappes": "ZU5",
+  "descricao_siappes": "APM - CMJF",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0653",
+  "descricao_sippes": "ZU6 - APM CMPA",
+  "siappes": "ZU6",
+  "descricao_siappes": "APM - CMPA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0654",
+  "descricao_sippes": "ZU7 - APM CMCG",
+  "siappes": "ZU7",
+  "descricao_siappes": "APM - CMCG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0655",
+  "descricao_sippes": "ZU8 - APM - CMF",
+  "siappes": "ZU8",
+  "descricao_siappes": "APM - CMF",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0656",
+  "descricao_sippes": "ZSC - SICREDI EMPR",
+  "siappes": "ZSC",
+  "descricao_siappes": "SICREDI EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0657",
+  "descricao_sippes": "ZUA - APM CMS",
+  "siappes": "ZUA",
+  "descricao_siappes": "APM - CMS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0658",
+  "descricao_sippes": "ZUB - APM CMC",
+  "siappes": "ZUB",
+  "descricao_siappes": "APM - CMC",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0659",
+  "descricao_sippes": "ZD3 - ASMIR PB (MENS)",
+  "siappes": "ZD3",
+  "descricao_siappes": "ASMIR/PB (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0660",
+  "descricao_sippes": "ZD5 - FAMIL - DF (MENS)",
+  "siappes": "ZD5",
+  "descricao_siappes": "FAMIL/DF (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0661",
+  "descricao_sippes": "ZE9 - FAMIL RS (MENS)",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0662",
+  "descricao_sippes": "ZX5 - METLIFE - SEGURO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0663",
+  "descricao_sippes": "ZX6 - METLIFE - P PRIV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0664",
+  "descricao_sippes": "ZX9 - BANCO ALFA EMPR",
+  "siappes": "ZX9",
+  "descricao_siappes": "BANCO ALFA-EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0665",
+  "descricao_sippes": "ZYH - B.ALFA - FIN VEIC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0666",
+  "descricao_sippes": "ZXA - BCO CETELEM – EMPR",
+  "siappes": "ZXA",
+  "descricao_siappes": "BCO CETELEM-EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0667",
+  "descricao_sippes": "ZXE - ASMIR/PR - MENS",
+  "siappes": "ZXE",
+  "descricao_siappes": "ASMIR/PR - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0668",
+  "descricao_sippes": "ZXG - UY3 SOC. CRED.",
+  "siappes": "ZXG",
+  "descricao_siappes": "UY3 SOC CRED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0669",
+  "descricao_sippes": "ZY2 - A EX-CMB-ES-MENS",
+  "siappes": "ZY2",
+  "descricao_siappes": "A EX-CMB-ES-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0670",
+  "descricao_sippes": "ZY7 - BCO PARANA - EMP",
+  "siappes": "ZY7",
+  "descricao_siappes": "BCO PARANA - EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0671",
+  "descricao_sippes": "ZXO - TAYAH ADVOGADOS",
+  "siappes": "ZXO",
+  "descricao_siappes": "TAYAH ADVOGADOS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0672",
+  "descricao_sippes": "ZY8 - GREC TIRADEN - MEN",
+  "siappes": "ZY8",
+  "descricao_siappes": "GREC TIRADEN-MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0673",
+  "descricao_sippes": "ZY9 - CODIGO BLOQUEADO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0674",
+  "descricao_sippes": "ZHK - B CRUZ SUL VISA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0675",
+  "descricao_sippes": "ZYA - BCO PINE - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0676",
+  "descricao_sippes": "ZYE - C MIL JFORA - MENS",
+  "siappes": "ZYE",
+  "descricao_siappes": "C MIL JFORA-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0677",
+  "descricao_sippes": "ZYF - B.BONSUCESSO-EMP",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0678",
+  "descricao_sippes": "ZH3 - BCO PAN VISA",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0679",
+  "descricao_sippes": "ZYG - BCO PAN-EMP",
+  "siappes": "ZYG",
+  "descricao_siappes": "BCO PAN-EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0680",
+  "descricao_sippes": "ZYI - CCB BRASIL - EMP",
+  "siappes": "ZYI",
+  "descricao_siappes": "CCB BRASIL-EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0681",
+  "descricao_sippes": "ZYJ - ANFEB-CGMS MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0682",
+  "descricao_sippes": "ZYL - BCO IND BR-EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0683",
+  "descricao_sippes": "ZYQ - B.IND BR - F VEIC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0684",
+  "descricao_sippes": "ZYM - COMPREV P DEDUT",
+  "siappes": "ZYM",
+  "descricao_siappes": "COMPREV P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0685",
+  "descricao_sippes": "ZYN - COMPREV - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0686",
+  "descricao_sippes": "ZYO - CIRC MIL MNS - MEN",
+  "siappes": "ZYO",
+  "descricao_siappes": "CIRC MIL MNS-MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0687",
+  "descricao_sippes": "ZYP - UNIV TAUBATE - MEN",
+  "siappes": "ZYP",
+  "descricao_siappes": "UNIV TAUBATE-MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0688",
+  "descricao_sippes": "ZYR - PREVICORP - PEC",
+  "siappes": "ZYR",
+  "descricao_siappes": "CELCOIN EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0689",
+  "descricao_sippes": "ZYS - CONTI ADVOGADOS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0690",
+  "descricao_sippes": "ZYV - ROMA BENF PES",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0691",
+  "descricao_sippes": "ZYW - ROMA SEGURO BENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0692",
+  "descricao_sippes": "ZYZ - MBM P PRIVADA",
+  "siappes": "ZYZ",
+  "descricao_siappes": "MBM PREV N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0693",
+  "descricao_sippes": "ZYX - BANCO BVA - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0694",
+  "descricao_sippes": "ZYT - BANCO ARBI -EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0695",
+  "descricao_sippes": "ZGM - MULTICARD - SAM",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0696",
+  "descricao_sippes": "ZGN - MULTICARD - SAM PL",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0697",
+  "descricao_sippes": "ZGZ - MULTICARD - MEDIC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0698",
+  "descricao_sippes": "ZGO - MULTICARD - CEL MV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0699",
+  "descricao_sippes": "ZGP - MULTICARD - ENSINO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0700",
+  "descricao_sippes": "ZGR - MULTICARD SEGURO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0701",
+  "descricao_sippes": "ZGS - MULTICARD - TURISMO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0702",
+  "descricao_sippes": "ZZ1 - CODIGO BLOQUEADO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0703",
+  "descricao_sippes": "ZZ3 - VOTORANTIM VEIC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0704",
+  "descricao_sippes": "ZZ6 - P SEGURO-SEG PES",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0705",
+  "descricao_sippes": "ZZ7 - PSEGURO-SEG BENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0706",
+  "descricao_sippes": "ZZ8 - PSEG-SEG GARANT",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0707",
+  "descricao_sippes": "ZYK - BCO ORIGINAL-EMP",
+  "siappes": "ZYK",
+  "descricao_siappes": "BCO ORIGINAL-EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0708",
+  "descricao_sippes": "ZZA - BCO DAYCOVAL-EMP",
+  "siappes": "ZZA",
+  "descricao_siappes": "BCO DAYCOVAL-EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0709",
+  "descricao_sippes": "ZZI - BDAYCOVAL-F VEIC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0710",
+  "descricao_sippes": "ZEG - PRODUTO EGGCF",
+  "siappes": "ZEG",
+  "descricao_siappes": "PRODUTO EGGCF",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0711",
+  "descricao_sippes": "ZZF - PREVISUL-SEG PES",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0712",
+  "descricao_sippes": "ZZG - B MERCANTIL - EMP",
+  "siappes": "ZZG",
+  "descricao_siappes": "B MERCANTIL-EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0713",
+  "descricao_sippes": "ZZH - BCO SEMEAR EMP",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0714",
+  "descricao_sippes": "ZZL - BCO MASTER - EMP",
+  "siappes": "ZZL",
+  "descricao_siappes": "BCO MASTER S/A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0715",
+  "descricao_sippes": "ZZ2 - ECCO SALVA - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0716",
+  "descricao_sippes": "ZZM - BOM TUR - ADESAO",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0717",
+  "descricao_sippes": "ZZN - BOM TUR - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0718",
+  "descricao_sippes": "ZZO - G W DALMOLIN - ADV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0719",
+  "descricao_sippes": "ZZP - HSBC SEG PES",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0720",
+  "descricao_sippes": "ZZQ - HSBC P PRIV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0721",
+  "descricao_sippes": "ZZR - IGHMB MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0722",
+  "descricao_sippes": "ZFA - ZELADORIA - HFA",
+  "siappes": "ZFA",
+  "descricao_siappes": "ZELADORIA - HFA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0723",
+  "descricao_sippes": "ZFB - ZELADORIA-HFA AT",
+  "siappes": "ZFB",
+  "descricao_siappes": "ZELADORIA-HFA AT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0724",
+  "descricao_sippes": "ZZS - BANCRED - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0725",
+  "descricao_sippes": "ZGA - ADV R.CANAL - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0726",
+  "descricao_sippes": "ZZV - CRSSC - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0727",
+  "descricao_sippes": "ZZX - CAPEMISA - PECULIO",
+  "siappes": "ZZX",
+  "descricao_siappes": "CAPEMISA-PECULIO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0728",
+  "descricao_sippes": "ZZY - CAPEMISA - SEGURO",
+  "siappes": "ZZY",
+  "descricao_siappes": "CAPEMISA SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0729",
+  "descricao_sippes": "ZZZ - CAPEMISA - EMPR",
+  "siappes": "ZZZ",
+  "descricao_siappes": "CAPEMISA-EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0730",
+  "descricao_sippes": "ZGB - CMIL TCORAC - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0731",
+  "descricao_sippes": "ZZT - FEDERAL VPREV-SG",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0732",
+  "descricao_sippes": "ZZU - CSSMARABA - MENS",
+  "siappes": "ZZU",
+  "descricao_siappes": "CSSMARABA-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0733",
+  "descricao_sippes": "ZGJ - SALUTAR PSAU-MEN",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0734",
+  "descricao_sippes": "ZGG - AHMTB - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0735",
+  "descricao_sippes": "ZGK - INVESTPREV SEG",
+  "siappes": "ZGK",
+  "descricao_siappes": "KOVR - SEG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0736",
+  "descricao_sippes": "ZGI - INVESTPREV - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0737",
+  "descricao_sippes": "ZGT - TERRACAP - F TERR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0738",
+  "descricao_sippes": "ZGW - B CACIQUE - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0739",
+  "descricao_sippes": "ZGX - BCO MORADA - EMP",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0740",
+  "descricao_sippes": "ZGY - BCO SAFRA EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0741",
+  "descricao_sippes": "ZWM - COND. NOVA DESC RN",
+  "siappes": "ZWM",
+  "descricao_siappes": "COND NOVADESC RN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0742",
+  "descricao_sippes": "ZHB - BCO FIBRA - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0743",
+  "descricao_sippes": "ZHC - MATONE PREV PRIV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0744",
+  "descricao_sippes": "ZHD - MATONE PREVEMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0745",
+  "descricao_sippes": "ZHE - LECCA CFI- EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0746",
+  "descricao_sippes": "ZHF - BARIGUI CFI - EMPR",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0747",
+  "descricao_sippes": "ZHG - ASPECIR P DEDUT",
+  "siappes": "ZHG",
+  "descricao_siappes": "ASPECIR P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0748",
+  "descricao_sippes": "ZHH - ASPECIR PREV - EMP",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0749",
+  "descricao_sippes": "ZHI - ALFA PREV PRIV",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0750",
+  "descricao_sippes": "ZHM - CSSANEGRAS - MENS",
+  "siappes": "ZHM",
+  "descricao_siappes": "CSSAGNEGRAS-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0751",
+  "descricao_sippes": "Z39 - AQ UNIF - 3 B SUP",
+  "siappes": "Z39",
+  "descricao_siappes": "AQ UNIF-3 B SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0752",
+  "descricao_sippes": "Z45 - AQ UNIF - 5 B SUP",
+  "siappes": "Z45",
+  "descricao_siappes": "AQ UNIF-5 B SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0753",
+  "descricao_sippes": "Z56 - AQ UNIF - 9 B SUP",
+  "siappes": "Z56",
+  "descricao_siappes": "AQ UNIF-9 B SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0755",
+  "descricao_sippes": "Z34 - AQ UNIF-1 D SUP",
+  "siappes": "Z34",
+  "descricao_siappes": "AQ UNIF-1 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0756",
+  "descricao_sippes": "Z37 - AQ UNIF - 21 D SUP",
+  "siappes": "Z37",
+  "descricao_siappes": "AQ UNIF-21 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0757",
+  "descricao_sippes": "ZDO - COL MIL ESLOG",
+  "siappes": "ZDO",
+  "descricao_siappes": "COL MIL ESLOG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0758",
+  "descricao_sippes": "Z52 - AQ UNIF - 7 D SUP",
+  "siappes": "Z52",
+  "descricao_siappes": "AQ UNIF-7 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0759",
+  "descricao_sippes": "Z55 - AQ UNIF-8 D SUP",
+  "siappes": "Z55",
+  "descricao_siappes": "AQ UNIF-8 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0760",
+  "descricao_sippes": "Z69 - AQ UNIF - 10 D SUP",
+  "siappes": "Z69",
+  "descricao_siappes": "AQ UNIF-10 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0761",
+  "descricao_sippes": "Z85 - AQ UNIF-11 D SUP",
+  "siappes": "Z85",
+  "descricao_siappes": "AQ UNIF-11 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0762",
+  "descricao_sippes": "Z44 - AQ UNIF - 4 D SUP",
+  "siappes": "Z44",
+  "descricao_siappes": "AQ UNIF-4 D SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0763",
+  "descricao_sippes": "ZC9 - AQ UNIF - 17 BA LOG",
+  "siappes": "ZC9",
+  "descricao_siappes": "AQ UNIF-17BA LOG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0764",
+  "descricao_sippes": "ZCT - COND-SHCE S 1101A",
+  "siappes": "ZCT",
+  "descricao_siappes": "CON-SHCE S 1101A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0765",
+  "descricao_sippes": "ZCU - COND-SHCE S 1101B",
+  "siappes": "ZCU",
+  "descricao_siappes": "CON-SHCE S 1101B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0766",
+  "descricao_sippes": "ZCV - COND - SHCE S 1105A",
+  "siappes": "ZCV",
+  "descricao_siappes": "CON-SHCE S 1105A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0767",
+  "descricao_sippes": "ZCW - COND-SHCE S 1105B",
+  "siappes": "ZCW",
+  "descricao_siappes": "CON-SHCE S 1105B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0768",
+  "descricao_sippes": "ZBQ - COND-SHCE S 303A",
+  "siappes": "ZBQ",
+  "descricao_siappes": "COND-SHCE S 303A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0769",
+  "descricao_sippes": "ZBR - COND-SHCE S 303B",
+  "siappes": "ZBR",
+  "descricao_siappes": "COND-SHCE S 303B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0770",
+  "descricao_sippes": "ZAA - COND-SHCE S 307A",
+  "siappes": "ZAA",
+  "descricao_siappes": "COND-SHCE S 307A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0771",
+  "descricao_sippes": "ZAB - COND-SHCE S 309F",
+  "siappes": "ZAB",
+  "descricao_siappes": "COND-SHCE S 309F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0772",
+  "descricao_sippes": "ZBS - COND-SHCE S 409A",
+  "siappes": "ZBS",
+  "descricao_siappes": "COND-SHCE S 409A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0773",
+  "descricao_sippes": "ZBT - COND-SHCE S 409B",
+  "siappes": "ZBT",
+  "descricao_siappes": "COND-SHCE S 409B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0774",
+  "descricao_sippes": "ZBU - COND-SHCE S 503A",
+  "siappes": "ZBU",
+  "descricao_siappes": "COND-SHCE S 503A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0775",
+  "descricao_sippes": "ZBV - COND-SHCE S 507A",
+  "siappes": "ZBV",
+  "descricao_siappes": "COND-SHCE S 507A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0776",
+  "descricao_sippes": "ZAC - COND - SHCE S 507B",
+  "siappes": "ZAC",
+  "descricao_siappes": "COND-SHCE S 507B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0777",
+  "descricao_sippes": "ZBW - COND-SHCE S 509C",
+  "siappes": "ZBW",
+  "descricao_siappes": "COND-SHCE S 509C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0778",
+  "descricao_sippes": "ZBX - COND-SHCE S 509F",
+  "siappes": "ZBX",
+  "descricao_siappes": "COND-SHCE S 509F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0779",
+  "descricao_sippes": "ZBY - COND-SHCE S 511A",
+  "siappes": "ZBY",
+  "descricao_siappes": "COND-SHCE S 511A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0780",
+  "descricao_sippes": "ZBZ - COND-SHCE S 511B",
+  "siappes": "ZBZ",
+  "descricao_siappes": "COND-SHCE S 511B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0781",
+  "descricao_sippes": "ZCA - COND-SHCE S 607A",
+  "siappes": "ZCA",
+  "descricao_siappes": "COND-SHCE S 607A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0782",
+  "descricao_sippes": "ZAD - COND-SHCE S 607B",
+  "siappes": "ZAD",
+  "descricao_siappes": "COND-SHCE S 607B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0783",
+  "descricao_sippes": "ZAE - COND - SHCE S 707C",
+  "siappes": "ZAE",
+  "descricao_siappes": "COND-SHCE S 707C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0784",
+  "descricao_sippes": "ZCB - COND-SHCE S 709A",
+  "siappes": "ZCB",
+  "descricao_siappes": "COND-SHCE S 709A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0785",
+  "descricao_sippes": "ZCC - COND-SHCE S 709B",
+  "siappes": "ZCC",
+  "descricao_siappes": "COND-SHCE S 709B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0786",
+  "descricao_sippes": "ZAF - COND-SHCE S 801C",
+  "siappes": "ZAF",
+  "descricao_siappes": "COND-SHCE S 801C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0787",
+  "descricao_sippes": "ZCD - COND-SHCE S 801D",
+  "siappes": "ZCD",
+  "descricao_siappes": "COND-SHCE S 801D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0788",
+  "descricao_sippes": "ZCE - COND-SHCE S 805C",
+  "siappes": "ZCE",
+  "descricao_siappes": "COND-SHCE S 805C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0789",
+  "descricao_sippes": "ZCF - COND-SHCE S 805D",
+  "siappes": "ZCF",
+  "descricao_siappes": "COND-SHCE S 805D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0790",
+  "descricao_sippes": "ZCG - COND-SHCE S 903A",
+  "siappes": "ZCG",
+  "descricao_siappes": "COND-SHCE S 903A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0791",
+  "descricao_sippes": "ZCH - COND-SHCE S 903B",
+  "siappes": "ZCH",
+  "descricao_siappes": "COND-SHCE S 903B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0792",
+  "descricao_sippes": "ZAG - COND - SHCE S 905A",
+  "siappes": "ZAG",
+  "descricao_siappes": "COND-SHCE S 905A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0793",
+  "descricao_sippes": "ZCI - COND-SHCE S 905B",
+  "siappes": "ZCI",
+  "descricao_siappes": "COND-SHCE S 905B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0794",
+  "descricao_sippes": "ZCJ - COND-SHCE S 905C",
+  "siappes": "ZCJ",
+  "descricao_siappes": "COND-SHCE S 905C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0795",
+  "descricao_sippes": "ZCK - COND-SHCE S 905D",
+  "siappes": "ZCK",
+  "descricao_siappes": "COND-SHCE S 905D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0796",
+  "descricao_sippes": "ZCL - COND-SHCE S 905E",
+  "siappes": "ZCL",
+  "descricao_siappes": "COND-SHCE S 905E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0797",
+  "descricao_sippes": "ZCM - COND-SHCE S 905F",
+  "siappes": "ZCM",
+  "descricao_siappes": "COND-SHCE S 905F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0798",
+  "descricao_sippes": "ZCN - COND-SHCE S 905G",
+  "siappes": "ZCN",
+  "descricao_siappes": "COND-SHCE S 905G",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0799",
+  "descricao_sippes": "ZCP - COND-SHCE S 905H",
+  "siappes": "ZCP",
+  "descricao_siappes": "COND-SHCE S 905H",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0800",
+  "descricao_sippes": "ZCQ - COND-SHCE S 905I",
+  "siappes": "ZCQ",
+  "descricao_siappes": "COND-SHCE S 905I",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0801",
+  "descricao_sippes": "ZAH - COND-SHCE S 905J",
+  "siappes": "ZAH",
+  "descricao_siappes": "COND-SHCE S 905J",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0802",
+  "descricao_sippes": "ZCR - COND - SHCE S 907A",
+  "siappes": "ZCR",
+  "descricao_siappes": "COND-SHCE S 907A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0803",
+  "descricao_sippes": "ZCS - COND-SHCE S 907B",
+  "siappes": "ZCS",
+  "descricao_siappes": "COND-SHCE S 907B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0804",
+  "descricao_sippes": "ZFM - COND - SMU ROS A",
+  "siappes": "ZFM",
+  "descricao_siappes": "SMU ROS A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0805",
+  "descricao_sippes": "ZND - COND-SMU ROS B",
+  "siappes": "ZND",
+  "descricao_siappes": "SMU ROS B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0806",
+  "descricao_sippes": "ZAI - COND-SQN 102 A",
+  "siappes": "ZAI",
+  "descricao_siappes": "COND-SQN 102 A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0807",
+  "descricao_sippes": "ZCX - COND-SQN 102 B",
+  "siappes": "ZCX",
+  "descricao_siappes": "COND-SQN 102 B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0808",
+  "descricao_sippes": "ZAJ - COND-SQN 102 C",
+  "siappes": "ZAJ",
+  "descricao_siappes": "COND-SQN 102 C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0809",
+  "descricao_sippes": "ZAK - COND-SQN 102 D",
+  "siappes": "ZAK",
+  "descricao_siappes": "COND-SQN 102 D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0810",
+  "descricao_sippes": "ZAL - COND - SQN 102 E",
+  "siappes": "ZAL",
+  "descricao_siappes": "COND-SQN 102 E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0811",
+  "descricao_sippes": "ZAM - COND-SQN 102 F",
+  "siappes": "ZAM",
+  "descricao_siappes": "COND-SQN 102 F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0812",
+  "descricao_sippes": "ZAN - COND-SQN 102 G/H",
+  "siappes": "ZAN",
+  "descricao_siappes": "COND-SQN 102 G/H",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0813",
+  "descricao_sippes": "ZCY - COND-SQN 103 A",
+  "siappes": "ZCY",
+  "descricao_siappes": "COND-SQN 103 A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0814",
+  "descricao_sippes": "ZAP - COND-SQN 103 B/C",
+  "siappes": "ZAP",
+  "descricao_siappes": "COND-SQN 103 B/C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0815",
+  "descricao_sippes": "ZAQ - COND-SQN 103 D",
+  "siappes": "ZAQ",
+  "descricao_siappes": "COND-SQN 103 D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0816",
+  "descricao_sippes": "ZAR - COND-SQN 103 E",
+  "siappes": "ZAR",
+  "descricao_siappes": "COND-SQN 103 E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0817",
+  "descricao_sippes": "ZAS - COND - SQN 103 F",
+  "siappes": "ZAS",
+  "descricao_siappes": "COND-SQN 103 F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0818",
+  "descricao_sippes": "ZCZ - COND-SQN 103 G",
+  "siappes": "ZCZ",
+  "descricao_siappes": "COND-SQN 103 G",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0819",
+  "descricao_sippes": "ZAT - COND-SQN 103 H",
+  "siappes": "ZAT",
+  "descricao_siappes": "COND-SQN 103 H",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0820",
+  "descricao_sippes": "ZAU - COND - SQN 103 I/J",
+  "siappes": "ZAU",
+  "descricao_siappes": "COND-SQN 103 I/J",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0821",
+  "descricao_sippes": "ZAV - COND-SQN 103 K",
+  "siappes": "ZAV",
+  "descricao_siappes": "COND-SQN 103 K",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0822",
+  "descricao_sippes": "ZAW - COND-SQN 111 B",
+  "siappes": "ZAW",
+  "descricao_siappes": "COND-SQN 111 B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0823",
+  "descricao_sippes": "ZAX - COND - SQN 113 A",
+  "siappes": "ZAX",
+  "descricao_siappes": "COND-SQN 113 A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0824",
+  "descricao_sippes": "ZAY - COND-SQN 113 B",
+  "siappes": "ZAY",
+  "descricao_siappes": "COND-SQN 113 B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0825",
+  "descricao_sippes": "ZAZ - COND-SQN 113 C",
+  "siappes": "ZAZ",
+  "descricao_siappes": "COND-SQN 113 C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0826",
+  "descricao_sippes": "ZDA - COND-SQN 113 D",
+  "siappes": "ZDA",
+  "descricao_siappes": "COND-SQN 113 D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0827",
+  "descricao_sippes": "ZBA - COND-SQN 113 E",
+  "siappes": "ZBA",
+  "descricao_siappes": "COND-SQN 113 E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0828",
+  "descricao_sippes": "ZBB - COND-SQN 113 F",
+  "siappes": "ZBB",
+  "descricao_siappes": "COND-SQN 113 F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0829",
+  "descricao_sippes": "ZDB - COND-SQN 113 G",
+  "siappes": "ZDB",
+  "descricao_siappes": "COND-SQN 113 G",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0830",
+  "descricao_sippes": "ZDC - COND-SQN 113 H",
+  "siappes": "ZDC",
+  "descricao_siappes": "COND-SQN 113 H",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0831",
+  "descricao_sippes": "ZDD - COND-SQN 113 J",
+  "siappes": "ZDD",
+  "descricao_siappes": "COND-SQN 113 J",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0832",
+  "descricao_sippes": "ZBC - COND-SQN 208 C",
+  "siappes": "ZBC",
+  "descricao_siappes": "COND-SQN 208 C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0833",
+  "descricao_sippes": "ZBD - COND-SQN 303 A",
+  "siappes": "ZBD",
+  "descricao_siappes": "COND-SQN 303 A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0834",
+  "descricao_sippes": "ZBE - COND - SQN 303 B/C",
+  "siappes": "ZBE",
+  "descricao_siappes": "COND-SQN 303 B/C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0835",
+  "descricao_sippes": "ZDE - COND-SQN 305 A/B",
+  "siappes": "ZDE",
+  "descricao_siappes": "COND-SQN 305 A/B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0836",
+  "descricao_sippes": "ZDF - COND-SQN 305 E",
+  "siappes": "ZDF",
+  "descricao_siappes": "COND-SQN 305 E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0837",
+  "descricao_sippes": "ZDG - COND - SQN 306 A/E",
+  "siappes": "ZDG",
+  "descricao_siappes": "COND-SQN 306 A/E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0838",
+  "descricao_sippes": "ZDH - COND-SQN 306 B",
+  "siappes": "ZDH",
+  "descricao_siappes": "COND-SQN 306 B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0839",
+  "descricao_sippes": "ZBF - COND-SQN 306 C",
+  "siappes": "ZBF",
+  "descricao_siappes": "COND-SQN 306 C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0840",
+  "descricao_sippes": "ZDI - COND-SQN 306 D",
+  "siappes": "ZDI",
+  "descricao_siappes": "COND-SQN 306 D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0841",
+  "descricao_sippes": "ZDJ - COND-SQN 306 F/G",
+  "siappes": "ZDJ",
+  "descricao_siappes": "COND-SQN 306 F/G",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0842",
+  "descricao_sippes": "ZDK - COND-SQN 306 H",
+  "siappes": "ZDK",
+  "descricao_siappes": "COND-SQN 306 H",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0843",
+  "descricao_sippes": "ZDL - COND - SQN 306 I",
+  "siappes": "ZDL",
+  "descricao_siappes": "COND-SQN 306 I",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0844",
+  "descricao_sippes": "ZDM - COND-SQN 306 J",
+  "siappes": "ZDM",
+  "descricao_siappes": "COND-SQN 306 J",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0845",
+  "descricao_sippes": "ZDN - COND-SQN 306 K",
+  "siappes": "ZDN",
+  "descricao_siappes": "COND-SQN 306 K",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0846",
+  "descricao_sippes": "ZDP - COND-SQS 115 A",
+  "siappes": "ZDP",
+  "descricao_siappes": "COND-SQS 115 A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0847",
+  "descricao_sippes": "ZBG - COND-SQS 115 E",
+  "siappes": "ZBG",
+  "descricao_siappes": "COND-SQS 115 E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0848",
+  "descricao_sippes": "ZDQ - COND-SQS 115 G",
+  "siappes": "ZDQ",
+  "descricao_siappes": "COND-SQS 115 G",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0849",
+  "descricao_sippes": "ZDR - COND-SQS 115 I",
+  "siappes": "ZDR",
+  "descricao_siappes": "COND-SQS 115 I",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0850",
+  "descricao_sippes": "ZBH - COND-SQS 209 A",
+  "siappes": "ZBH",
+  "descricao_siappes": "COND-SQS 209 A",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0851",
+  "descricao_sippes": "ZDS - COND-SQS 209 B",
+  "siappes": "ZDS",
+  "descricao_siappes": "COND-SQS 209 B",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0852",
+  "descricao_sippes": "ZDT - COND-SQS 209 C",
+  "siappes": "ZDT",
+  "descricao_siappes": "COND-SQS 209 C",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0853",
+  "descricao_sippes": "ZBI - COND-SQS 209 D",
+  "siappes": "ZBI",
+  "descricao_siappes": "COND-SQS 209 D",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0854",
+  "descricao_sippes": "ZBJ - COND-SQS 209 E",
+  "siappes": "ZBJ",
+  "descricao_siappes": "COND-SQS 209 E",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0855",
+  "descricao_sippes": "ZBK - COND-SQS 209 F",
+  "siappes": "ZBK",
+  "descricao_siappes": "COND-SQS 209 F",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0856",
+  "descricao_sippes": "ZBL - COND-SQS 209 G",
+  "siappes": "ZBL",
+  "descricao_siappes": "COND-SQS 209 G",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0857",
+  "descricao_sippes": "ZBM - COND-SQS 209 H",
+  "siappes": "ZBM",
+  "descricao_siappes": "COND-SQS 209 H",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0858",
+  "descricao_sippes": "ZBN - COND-SQS 209 I",
+  "siappes": "ZBN",
+  "descricao_siappes": "COND-SQS 209 I",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0859",
+  "descricao_sippes": "ZBP - COND - SQS 209 J",
+  "siappes": "ZBP",
+  "descricao_siappes": "COND-SQS 209 J",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0860",
+  "descricao_sippes": "ZDU - COND-SQS 209 K",
+  "siappes": "ZDU",
+  "descricao_siappes": "COND-SQS 209 K",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0861",
+  "descricao_sippes": "ENS - CPEX - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0862",
+  "descricao_sippes": "SEF - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0863",
+  "descricao_sippes": "ZY4 - GSEGS - EMPREST",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0864",
+  "descricao_sippes": "ZHU - BANRISUL - EMPR",
+  "siappes": "ZHU",
+  "descricao_siappes": "BANRISUL EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0865",
+  "descricao_sippes": "ZHY - A N VET FEB MENS",
+  "siappes": "ZHY",
+  "descricao_siappes": "A N VET FEB_MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0866",
+  "descricao_sippes": "ZH2 - ALSSVMILITAR-MEN",
+  "siappes": "ZH2",
+  "descricao_siappes": "ALSSVMILITAR-MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0867",
+  "descricao_sippes": "ZHM - CSSAGNEGRAS-MENS",
+  "siappes": "ZHM",
+  "descricao_siappes": "CSSAGNEGRAS-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0868",
+  "descricao_sippes": "ZHP - MONG P N DEDUT",
+  "siappes": "ZHP",
+  "descricao_siappes": "MONGERAL P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0869",
+  "descricao_sippes": "ZHT - MONG P DEDUT",
+  "siappes": "ZHT",
+  "descricao_siappes": "MONGERAL P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0870",
+  "descricao_sippes": "ZHS - MONGERAL SEGUROS",
+  "siappes": "ZHS",
+  "descricao_siappes": "MONGERAL SEGUROS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0871",
+  "descricao_sippes": "ZU9 - APM - CMR",
+  "siappes": "ZU9",
+  "descricao_siappes": "APM - CMR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0872",
+  "descricao_sippes": "Z82 - C M R (MENSALIDADE)",
+  "siappes": "Z82",
+  "descricao_siappes": "C M R (MENS)",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0873",
+  "descricao_sippes": "ZH5 - QUEIROZ A AD - MEN",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0874",
+  "descricao_sippes": "ZH6-C IR MIL MBA - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0875",
+  "descricao_sippes": "ZH9 - ASSEB - MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0876",
+  "descricao_sippes": "ZH4 - ALVM SOCVINC - ME",
+  "siappes": "ZH4",
+  "descricao_siappes": "ALVM SOCVINC-MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0877",
+  "descricao_sippes": "ZFS - ACRSGTWOLFF-MENS",
+  "siappes": "ZFS",
+  "descricao_siappes": "ACRSGTWOLFF-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0878",
+  "descricao_sippes": "ZIA - HOJE P DED",
+  "siappes": "ZIA",
+  "descricao_siappes": "PEC UNIAO P DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0879",
+  "descricao_sippes": "ZIB - BANCO INTER EMP",
+  "siappes": "ZIB",
+  "descricao_siappes": "BANCO INTER EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0880",
+  "descricao_sippes": "ZIC - FACTA FIN EMP",
+  "siappes": "ZIC",
+  "descricao_siappes": "FACTA FIN EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0881",
+  "descricao_sippes": "ZID - ASPECIR EMPR",
+  "siappes": "ZID",
+  "descricao_siappes": "ASPECIR EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0882",
+  "descricao_sippes": "ZIE - BANCO SAFRA EMP",
+  "siappes": "ZIE",
+  "descricao_siappes": "BANCO SAFRA EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0883",
+  "descricao_sippes": "ZIF - CCB FIN EMP",
+  "siappes": "ZIF",
+  "descricao_siappes": "CCB FIN EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0884",
+  "descricao_sippes": "ZIG - ASPECIR P N DED",
+  "siappes": "ZIG",
+  "descricao_siappes": "ASPECIR P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0885",
+  "descricao_sippes": "ZIH - OLE BONSUC EMP",
+  "siappes": "ZIH",
+  "descricao_siappes": "OLE BONSUC EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0886",
+  "descricao_sippes": "ZIJ - CAPEMISA P DEDUT",
+  "siappes": "ZIJ",
+  "descricao_siappes": "CAPEMISA P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0887",
+  "descricao_sippes": "ZIP - GBOEXP N DEDUT",
+  "siappes": "ZIP",
+  "descricao_siappes": "GBOEX P N DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0888",
+  "descricao_sippes": "ZIS - SABEMI P DEDUT",
+  "siappes": "ZIS",
+  "descricao_siappes": "SABEMI P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0889",
+  "descricao_sippes": "ZIT - COMPREV P N DED",
+  "siappes": "ZIT",
+  "descricao_siappes": "COMPREV P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0890",
+  "descricao_sippes": "ZIX - EQUAT P DEDUT",
+  "siappes": "ZIX",
+  "descricao_siappes": "EQUAT P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0891",
+  "descricao_sippes": "ZIZ - EQUATORIAL SEG",
+  "siappes": "ZIZ",
+  "descricao_siappes": "EQUATORIAL SEG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0892",
+  "descricao_sippes": "ZMN - PRIMA ODONTO MEN",
+  "siappes": "ZMN",
+  "descricao_siappes": "PRIMA ODONTO MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0893",
+  "descricao_sippes": "ZMX - FUTURO P N DEDUT",
+  "siappes": "ZMX",
+  "descricao_siappes": "FUTURO P N DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0894",
+  "descricao_sippes": "ZMY - UNIÃO SEG EMPR",
+  "siappes": "ZMY",
+  "descricao_siappes": "UNIAO SEG EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0895",
+  "descricao_sippes": "ZNA - PREVIMIL P DEDUT",
+  "siappes": "ZNA",
+  "descricao_siappes": "PREVIMIL P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0896",
+  "descricao_sippes": "ZNJ - FINANC ALFA EMP",
+  "siappes": "ZNJ",
+  "descricao_siappes": "FINANC ALFA EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0897",
+  "descricao_sippes": "ZNK - COMPREV SEGURO",
+  "siappes": "ZNK",
+  "descricao_siappes": "COMPREV SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0898",
+  "descricao_sippes": "ZNL - BMG FINANC",
+  "siappes": "ZNL",
+  "descricao_siappes": "BMG FINANC",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0899",
+  "descricao_sippes": "ZNM - INVESTP P DEDUT",
+  "siappes": "ZNM",
+  "descricao_siappes": "KOVR - P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0900",
+  "descricao_sippes": "ZNT - RECIP PN DED",
+  "siappes": "ZNT",
+  "descricao_siappes": "RECIP P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0901",
+  "descricao_sippes": "ZIK - GBOEX EMPR",
+  "siappes": "ZIK",
+  "descricao_siappes": "GBOEX EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0902",
+  "descricao_sippes": "ZIU - HOJE P N DED",
+  "siappes": "ZIU",
+  "descricao_siappes": "PEC UNIAO PN DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0903",
+  "descricao_sippes": "ZFV - HOJE PREV EMP",
+  "siappes": "ZFV",
+  "descricao_siappes": "PEC UNIAO EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0904",
+  "descricao_sippes": "ZIL - COMPREV SEGURO",
+  "siappes": "ZIL",
+  "descricao_siappes": "COMPREV SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0905",
+  "descricao_sippes": "ZFZ - COMPREV EMPR",
+  "siappes": "ZFZ",
+  "descricao_siappes": "COMPREV EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0906",
+  "descricao_sippes": "ZIV - CAPEMISA P N DED",
+  "siappes": "ZIV",
+  "descricao_siappes": "CAPEMISA P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0907",
+  "descricao_sippes": "ZNN - INVESTP P N DED",
+  "siappes": "ZNN",
+  "descricao_siappes": "KOVR - P N DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0908",
+  "descricao_sippes": "ZNH - ASPECIR EMPR",
+  "siappes": "ZNH",
+  "descricao_siappes": "ASPECIR EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0909",
+  "descricao_sippes": "ZNB - UNIÃO SEG P DEDUT",
+  "siappes": "ZNB",
+  "descricao_siappes": "UNIAO SEG P DEDU",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0910",
+  "descricao_sippes": "ZNI - UNIÃO SEG PN DED",
+  "siappes": "ZNI",
+  "descricao_siappes": "UNIAO SEG PN DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0911",
+  "descricao_sippes": "ZNC - UNIÃO SEG SEGURO",
+  "siappes": "ZNC",
+  "descricao_siappes": "UNIAO SEG SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0912",
+  "descricao_sippes": "ZNR - RECIP P DEDUT",
+  "siappes": "ZNR",
+  "descricao_siappes": "RECIP P DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0913",
+  "descricao_sippes": "ZNP - RECIP ASSIST EMP",
+  "siappes": "ZNP",
+  "descricao_siappes": "RECIP ASSIST EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0914",
+  "descricao_sippes": "ZIY - EQUAT P N DED",
+  "siappes": "ZIY",
+  "descricao_siappes": "EQUAT P N DED",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0915",
+  "descricao_sippes": "ZIW - EQUATORIAL EMPR",
+  "siappes": "ZIW",
+  "descricao_siappes": "EQUATORIAL EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0916",
+  "descricao_sippes": "ZFT - ACRASPMEGA-MEN",
+  "siappes": "ZFT",
+  "descricao_siappes": "ACRASPMEGA-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0917",
+  "descricao_sippes": "ZFY - CONDGUARA.PE M",
+  "siappes": "ZFY",
+  "descricao_siappes": "CONDGUARA.PE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0918",
+  "descricao_sippes": "ZNY - CSSFA MENS",
+  "siappes": "ZNY",
+  "descricao_siappes": "CSSFA MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0919",
+  "descricao_sippes": "ZNZ-SOCINAL EMPR",
+  "siappes": "ZNZ",
+  "descricao_siappes": "SOCINAL EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0920",
+  "descricao_sippes": "ZNX - AFM MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0921",
+  "descricao_sippes": "ZNW - AIDPP MENS",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0922",
+  "descricao_sippes": "ZNV - ABAFAM MENS",
+  "siappes": "ZNV",
+  "descricao_siappes": "ABAFAM MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0923",
+  "descricao_sippes": "ZNU - ARCESP MENS",
+  "siappes": "ZNU",
+  "descricao_siappes": "ARCESP MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0924",
+  "descricao_sippes": "ZNS - CLASP MENS",
+  "siappes": "ZNS",
+  "descricao_siappes": "CLASP MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0925",
+  "descricao_sippes": "ZPG - VIVER PREV DEDUT",
+  "siappes": "ZPG",
+  "descricao_siappes": "VIVER PREV DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0926",
+  "descricao_sippes": "ZPE - VIVER PREV SEG",
+  "siappes": "ZPE",
+  "descricao_siappes": "VIVER PREV SEG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0927",
+  "descricao_sippes": "ZPF - VIVER PREV EMPR",
+  "siappes": "ZPF",
+  "descricao_siappes": "VIVER PREV EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0928",
+  "descricao_sippes": "ZPJ - MBM PREV DEDUT",
+  "siappes": "ZPJ",
+  "descricao_siappes": "MBM PREV DEDUT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0929",
+  "descricao_sippes": "ZPI - MBM SEGURO",
+  "siappes": "ZPI",
+  "descricao_siappes": "MBM SEGURO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0930",
+  "descricao_sippes": "ZPH - MBM EMPR",
+  "siappes": "ZPH",
+  "descricao_siappes": "MBM EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0931",
+  "descricao_sippes": "ZNQ - INVESTPREV EMPR",
+  "siappes": "ZNQ",
+  "descricao_siappes": "KOVR - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0932",
+  "descricao_sippes": "ZQN - CONDGTIBU.CE M",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0933",
+  "descricao_sippes": "ABT TETO ART.37",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0934",
+  "descricao_sippes": "ABT TETO ART.37 ADIC NATAL 1PARC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0935",
+  "descricao_sippes": "ABT TETO ART.37 ADIC NATAL 2PARC",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0936",
+  "descricao_sippes": "ZPD - CONDRAGE.SE M",
+  "siappes": "ZPD",
+  "descricao_siappes": "CONDGRAGE.SE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0937",
+  "descricao_sippes": "ZPK - CONDV1GE.PB M",
+  "siappes": "ZPK",
+  "descricao_siappes": "CONDVM1GE.PB M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0938",
+  "descricao_sippes": "ZPL - BANCO ARBI EMPR",
+  "siappes": "ZPL",
+  "descricao_siappes": "BANCO ARBI EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0939",
+  "descricao_sippes": "Z87 - AQ UNIF-12 B SUP",
+  "siappes": "Z87",
+  "descricao_siappes": "AQ UNIF-12 B SUP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0941",
+  "descricao_sippes": "ZXC - BANCO ITAU - EMPR",
+  "siappes": "ZXC",
+  "descricao_siappes": "BCO ITAU - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0942",
+  "descricao_sippes": "ZPT - INBURSA-CETEL-BNP",
+  "siappes": "ZPT",
+  "descricao_siappes": "INBURSA-CETEL-BN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0943",
+  "descricao_sippes": "ZPS - ITAU CONSIG EMPR",
+  "siappes": "ZPS",
+  "descricao_siappes": "ITAU CONSIG EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0944",
+  "descricao_sippes": "ZPU - DGP-IDT-SERPRO",
+  "siappes": "ZPU",
+  "descricao_siappes": "IDENT MIL - SE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0945",
+  "descricao_sippes": "ZPV - DGP-IDT-C MOEDA",
+  "siappes": "ZPV",
+  "descricao_siappes": "IDENT MIL - CM",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0946",
+  "descricao_sippes": "ZPQ - COND3BCOF.PI M",
+  "siappes": "ZPQ",
+  "descricao_siappes": "COND3BCOF.PI M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0947",
+  "descricao_sippes": "ZPP - CONDVM1TA.SP M",
+  "siappes": "ZPP",
+  "descricao_siappes": "CONDVM1TA.SP M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0948",
+  "descricao_sippes": "ZPY - CIRC MIL PA - MENS",
+  "siappes": "ZPY",
+  "descricao_siappes": "CIRC MIL PA - ME",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0949",
+  "descricao_sippes": "ZQA - CIMAN - MENS",
+  "siappes": "ZQA",
+  "descricao_siappes": "CIMAN - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0950",
+  "descricao_sippes": "ZPZ - BENEVIX P SAUDE",
+  "siappes": "ZPZ",
+  "descricao_siappes": "BENEVIX P SAUDE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0951",
+  "descricao_sippes": "ZPW - CONDMMORA.PE M",
+  "siappes": "ZPW",
+  "descricao_siappes": "CONDMMORA.PE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0952",
+  "descricao_sippes": "BOC -BANC OLÉ CONSIG",
+  "siappes": null,
+  "descricao_siappes": null,
+  "regra": "sem_correspondencia",
+  "similaridade": 0
+ },
+ {
+  "sippes": "ND0953",
+  "descricao_sippes": "ZQW - SABEMI SEG PEC",
+  "siappes": "ZQW",
+  "descricao_siappes": "SABEMI SEG PEC",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0954",
+  "descricao_sippes": "ZWA - VM-TAUBATE III",
+  "siappes": "ZWA",
+  "descricao_siappes": "VM-TAUTABATE III",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0955",
+  "descricao_sippes": "ZQB - CREDITAS SANTANDER",
+  "siappes": "ZQB",
+  "descricao_siappes": "CREDITAS EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0956",
+  "descricao_sippes": "ZQC - ANA PAULA ADV - MENS",
+  "siappes": "ZQC",
+  "descricao_siappes": "ANA PAULA ADV-ME",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0957",
+  "descricao_sippes": "ZQD - SQN 114 F -MENS",
+  "siappes": "ZQD",
+  "descricao_siappes": "SQN 114 F - MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0958",
+  "descricao_sippes": "ZQF - CONDVCABR.CE M",
+  "siappes": "ZQF",
+  "descricao_siappes": "CONDVCABR.CE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0959",
+  "descricao_sippes": "ZQH - CONDCBRAC.CE M",
+  "siappes": "ZQH",
+  "descricao_siappes": "CONDCBRAC.CE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0960",
+  "descricao_sippes": "ZQG - CONDGMALE.CE M",
+  "siappes": "ZQG",
+  "descricao_siappes": "CONDGMALE.CE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0961",
+  "descricao_sippes": "ZQE - CONDSTMIL.CE M",
+  "siappes": "ZQE",
+  "descricao_siappes": "CONDSTMIL.CE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0962",
+  "descricao_sippes": "ZQI - CONDVM2TA.SP M",
+  "siappes": "ZQI",
+  "descricao_siappes": "CONDVM2TA.SP M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0963",
+  "descricao_sippes": "ZQK - INTEGRAL P SAUDE - MEN",
+  "siappes": "ZQK",
+  "descricao_siappes": "INTE P SAUDE MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0964",
+  "descricao_sippes": "ZQJ - AGIBANK _ EMPR",
+  "siappes": "ZQJ",
+  "descricao_siappes": "AGIBANK - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0965",
+  "descricao_sippes": "ZQS - V.M. Itaigara BA - MENS",
+  "siappes": "ZQS",
+  "descricao_siappes": "VM ITAIGARA BA-M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0966",
+  "descricao_sippes": "ZQO - QI SOCIED - EMPR",
+  "siappes": "ZQO",
+  "descricao_siappes": "QI SOCIED - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0967",
+  "descricao_sippes": "ZQU - CONDOFFSA.BA M",
+  "siappes": "ZQU",
+  "descricao_siappes": "CONDOFFSA.BA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0968",
+  "descricao_sippes": "ZQT - CONDSGFSA.BA M",
+  "siappes": "ZQT",
+  "descricao_siappes": "CONDSGFSA.BA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0969",
+  "descricao_sippes": "ZQX - CONDCSILV.PA M",
+  "siappes": "ZQX",
+  "descricao_siappes": "CONDCSILV.PA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0970",
+  "descricao_sippes": "ZQV - CONDHDIAS.PE M",
+  "siappes": "ZQV",
+  "descricao_siappes": "CONDHDIAS.PE M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0971",
+  "descricao_sippes": "ZRI - CONDGURJA.PA M",
+  "siappes": "ZRI",
+  "descricao_siappes": "CONDGURJA.PA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0972",
+  "descricao_sippes": "ZQZ - CAPITAL CONSIG EMPR",
+  "siappes": "ZQZ",
+  "descricao_siappes": "CAPITAL CONS EMP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0973",
+  "descricao_sippes": "ZRB - CREFISA EMPR",
+  "siappes": "ZRB",
+  "descricao_siappes": "CREFISA EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0974",
+  "descricao_sippes": "ZRL - APA F OSORIO-MENS",
+  "siappes": "ZRL",
+  "descricao_siappes": "APA F OSORIO MEN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0975",
+  "descricao_sippes": "ZRJ-CONDSGBRI.PA M",
+  "siappes": "ZRJ",
+  "descricao_siappes": "CONDSGBRI.PA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0976",
+  "descricao_sippes": "ZRM - CONDCALOG.PA M",
+  "siappes": "ZRM",
+  "descricao_siappes": "CONDCALOG.PA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0977",
+  "descricao_sippes": "ZRN-CONDCAXIA.PA M",
+  "siappes": "ZRN",
+  "descricao_siappes": "CONDCAXIA.PA M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0978",
+  "descricao_sippes": "ZPR - COND3BCSG.PI M",
+  "siappes": "ZPR",
+  "descricao_siappes": "COND3BCSG.PI M",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0979",
+  "descricao_sippes": "ZRP - COND.V.S.REIS-RN",
+  "siappes": "ZRP",
+  "descricao_siappes": "COND.V.S.REIS-RN",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0980",
+  "descricao_sippes": "ZRS - CSSEB-MENS",
+  "siappes": "ZRS",
+  "descricao_siappes": "CSSEB-MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0981",
+  "descricao_sippes": "ZRT - QVSAUDE - P SAUDE",
+  "siappes": "ZRT",
+  "descricao_siappes": "QVSAUDE - P SAUD",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0982",
+  "descricao_sippes": "ZSF - ACR VM JOSÉ TIROL",
+  "siappes": "ZSF",
+  "descricao_siappes": "ACR VM JOSE TIRO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0983",
+  "descricao_sippes": "ZSR - CETELEM-BNP",
+  "siappes": "ZSR",
+  "descricao_siappes": "CETELEM-BNP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0984",
+  "descricao_sippes": "ZRV - UNIAO SEG PECULIO",
+  "siappes": "ZRV",
+  "descricao_siappes": "UNIAO SEG PECULI",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0985",
+  "descricao_sippes": "ZRW - SUPERMED PL SAU",
+  "siappes": "ZRW",
+  "descricao_siappes": "SUPERMED PL SAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0986",
+  "descricao_sippes": "ZSP - KOVR PECULIO",
+  "siappes": "ZSP",
+  "descricao_siappes": "KOVR PECULIO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0987",
+  "descricao_sippes": "ZRX - APM CMBEL MENS",
+  "siappes": "ZRX",
+  "descricao_siappes": "APM CMBEL MENS",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0988",
+  "descricao_sippes": "ZWL - CON OF ST/SGT PR",
+  "siappes": "ZWL",
+  "descricao_siappes": "CON OF ST/SGT PR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0989",
+  "descricao_sippes": "ZWB - SANTO JOAO III",
+  "siappes": "ZWB",
+  "descricao_siappes": "SANTO JOAO III",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0990",
+  "descricao_sippes": "ZSG - ROZZETO ADVOGADO",
+  "siappes": "ZSG",
+  "descricao_siappes": "ROZZETO ADVOGADO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0991",
+  "descricao_sippes": "ZST - COND TIROL APT",
+  "siappes": "ZST",
+  "descricao_siappes": "COND TIROLAPT",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0992",
+  "descricao_sippes": "ZSU - COND TIROL CASA",
+  "siappes": "ZSU",
+  "descricao_siappes": "CONDO TIROL CASA",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0993",
+  "descricao_sippes": "ZRR - V.M.H.TAUB-SP",
+  "siappes": "ZRR",
+  "descricao_siappes": "V.M.H.TAUB-SP",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0994",
+  "descricao_sippes": "ZRC - SIMPALA EMPR",
+  "siappes": "ZRC",
+  "descricao_siappes": "SIMPALA EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0995",
+  "descricao_sippes": "ZSQ - PLANO DE SAL STM - MENS",
+  "siappes": "ZSQ",
+  "descricao_siappes": "PLANO SAU STM-ME",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0996",
+  "descricao_sippes": "ZWV - COND.18DOFORTE-SE",
+  "siappes": "ZWV",
+  "descricao_siappes": "COND 18FORTE SE",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0997",
+  "descricao_sippes": "ZWG - GEN-SEVERIANO",
+  "siappes": "ZWG",
+  "descricao_siappes": "GEN-SEVERIANO",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0998",
+  "descricao_sippes": "ZWR - COND. V. OF TERESINA",
+  "siappes": "ZWR",
+  "descricao_siappes": "COND V OF TERESI",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND0999",
+  "descricao_sippes": "ZQL - APPA MENS - MG",
+  "siappes": "ZQL",
+  "descricao_siappes": "APPA MENS-MG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1000",
+  "descricao_sippes": "ZSJ - COMPREV SOCIED - FINANC",
+  "siappes": "ZSJ",
+  "descricao_siappes": "COMPREV S-FINANC",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1001",
+  "descricao_sippes": "ZWX - BANESTES",
+  "siappes": "ZWX",
+  "descricao_siappes": "BANESTES",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1002",
+  "descricao_sippes": "ZWZ - COND SGT MAX WOLF - MG",
+  "siappes": "ZWZ",
+  "descricao_siappes": "CONDSGTMAXWOLFMG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1003",
+  "descricao_sippes": "ZBO - PICPAY EMPREST",
+  "siappes": "ZBO",
+  "descricao_siappes": "PIC PAY EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1004",
+  "descricao_sippes": "ZO4 - LARCA EMPREST",
+  "siappes": "ZO4",
+  "descricao_siappes": "LARCA EMPREST",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1005",
+  "descricao_sippes": "ZXL - VIA CAPITAL",
+  "siappes": "ZXL",
+  "descricao_siappes": "VIA CAPITAL",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1006",
+  "descricao_sippes": "ZSI - COMPREV SOCIED - EMPR",
+  "siappes": "ZSI",
+  "descricao_siappes": "COMPREV S - EMPR",
+  "regra": "explicita",
+  "similaridade": 1.0
+ },
+ {
+  "sippes": "ND1007",
+  "descricao_sippes": "ZWP - COND. VM. OF- JF- MG",
+  "siappes": "ZWP",
+  "descricao_siappes": "COND VM OF JF MG",
+  "regra": "explicita",
+  "similaridade": 1.0
+ }
+]

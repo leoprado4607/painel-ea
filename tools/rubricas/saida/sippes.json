@@ -1,0 +1,3222 @@
+[
+ {
+  "codigo": "NR0001",
+  "descricao": "SOLDO",
+  "finalidade": "FINALIDADE Soldo é a parcela básica mensal da remuneração e dos proventos, inerente ao posto ou à graduação do militar, e é irredu�vel. Vide Tabela dos soldos con�dos na Lei Nº 11.359, 19 Out 06. Para o caso de militares da a�va, o P/G a ser considerado�A1 Adicional de tempo de serviço é a parcela remuneratória mensal devida ao militar, inerente ao"
+ },
+ {
+  "codigo": "NR0002",
+  "descricao": "ADICIONAL TEMPO SERVICO",
+  "finalidade": "Para o caso de militares da a�va, o P/G a ser considerado�A1 Adicional de tempo de serviço é a parcela remuneratória mensal devida ao militar, inerente ao tempo de serviço a que fizer jus até 29/12/2000. Para os casos de pensionistas, o adicional de Tempo de Serviço deve ser proporcional à cota parte do pens�A Adicional de habilitação é a parcela remuneratória mensal devida ao militar, inerente aos cursos"
+ },
+ {
+  "codigo": "NR0003",
+  "descricao": "ADICIONAL DE HABILITACAO",
+  "finalidade": "Tempo de Serviço deve ser proporcional à cota parte do pens�A Adicional de habilitação é a parcela remuneratória mensal devida ao militar, inerente aos cursos realizados com aproveitamento, conforme regulamentação. Para os casos de pensionistas, o Adicional de Habilitação deve ser proporcional à cota parte �A O adicional de permanência é a parcela remuneratória devida ao militar, mensalmente, incidente"
+ },
+ {
+  "codigo": "NR0004",
+  "descricao": "ADICIONAL DE PERMANENCIA",
+  "finalidade": "Adicional de Habilitação deve ser proporcional à cota parte �A O adicional de permanência é a parcela remuneratória devida ao militar, mensalmente, incidente sobre o soldo do posto ou da graduação, referente ao período em que con�nuar ou tenha con�nuado em serviço, após ter completado o tempo mínimo de per�A1 Gra�ficação de localidade especial categoria ?A? é o direito do militar à gra�ficação de localidade"
+ },
+ {
+  "codigo": "NR0007",
+  "descricao": "GRAT LOC ESP A",
+  "finalidade": "con�nuado em serviço, após ter completado o tempo mínimo de per�A1 Gra�ficação de localidade especial categoria ?A? é o direito do militar à gra�ficação de localidade especial, quando transferido para uma OM categoria ?A?. Gra�ficação de localidade especial categoria ?B? é o direito do militar à gra�ficação de localidade"
+ },
+ {
+  "codigo": "NR0008",
+  "descricao": "GRAT LOC ESP B",
+  "finalidade": "especial, quando transferido para uma OM categoria ?A?. Gra�ficação de localidade especial categoria ?B? é o direito do militar à gra�ficação de localidade especial, quando transferido para uma OM categoria ?B. Adicional de compensação orgânica é a parcela remuneratória mensal devida ao militar para"
+ },
+ {
+  "codigo": "NR0009",
+  "descricao": "COMP ORGANICA RAIO-X",
+  "finalidade": "especial, quando transferido para uma OM categoria ?B. Adicional de compensação orgânica é a parcela remuneratória mensal devida ao militar para compensação de desgaste orgânico resultante do desempenho con�nuado de a�vidades especiais RAIO-X, conforme regulamentação. Adicional de compensação orgânica é a parcela remuneratória mensal devida ao militar para"
+ },
+ {
+  "codigo": "NR0010",
+  "descricao": "COMP ORGANICA PQDT",
+  "finalidade": "RAIO-X, conforme regulamentação. Adicional de compensação orgânica é a parcela remuneratória mensal devida ao militar para compensação de desgaste orgânico resultante do desempenho con�nuado de a�vidades especiais como pára-quedista, conforme regulamentação. Adicional de compensação orgânica é a parcela remuneratória mensal devida ao militar para"
+ },
+ {
+  "codigo": "NR0011",
+  "descricao": "COMP ORGANICA TO-OMA- FO",
+  "finalidade": "como pára-quedista, conforme regulamentação. Adicional de compensação orgânica é a parcela remuneratória mensal devida ao militar para compensação de desgaste orgânico resultante do desempenho con�nuado de a�vidades especiais. É a parcela remuneratória mensal devida ao militar para compensação de desgaste orgânico"
+ },
+ {
+  "codigo": "NR0012",
+  "descricao": "COMP ORGANICA IM-MG- CTA",
+  "finalidade": "especiais. É a parcela remuneratória mensal devida ao militar para compensação de desgaste orgânico resultante do desempenho con�nuado de a�vidades especiais como Imersão no exercício de funções, regulamentares a bordo de submarinos, conforme regulamenta�� O militar que, até 1º de março de 1976, �nha direito a compensação orgânica pela metade do"
+ },
+ {
+  "codigo": "NR0013",
+  "descricao": "COMP ORGANICA HVOO",
+  "finalidade": "funções, regulamentares a bordo de submarinos, conforme regulamenta�� O militar que, até 1º de março de 1976, �nha direito a compensação orgânica pela metade do valor, quando em deslocamento em aeronave militar, a serviço de natureza militar. Adicional militar é a parcela remuneratória mensal devida ao militar, inerente a cada círculo"
+ },
+ {
+  "codigo": "NR0014",
+  "descricao": "ADICIONAL MILITAR",
+  "finalidade": "valor, quando em deslocamento em aeronave militar, a serviço de natureza militar. Adicional militar é a parcela remuneratória mensal devida ao militar, inerente a cada círculo hierárquico da carreira militar. Para os casos de pensionistas, o adicional militar deve ser sempre proporcional à cota parte da pensionista."
+ },
+ {
+  "codigo": "NR0015",
+  "descricao": "GRAT REP DE FUNC DE GABINETE MILITAR-RMM",
+  "finalidade": "proporcional à cota parte da pensionista. Gra�ficação concedida ao militar por representação de gabinete. Gra�ficação de representação é a parcela remuneratória mensal devida aos Oficiais Generais e"
+ },
+ {
+  "codigo": "NR0016",
+  "descricao": "GRAT REPRESENTACAO CMDO",
+  "finalidade": "Gra�ficação concedida ao militar por representação de gabinete. Gra�ficação de representação é a parcela remuneratória mensal devida aos Oficiais Generais e aos demais oficiais em cargo de comando, direção e chefia de organização militar. Valor da cota por filho ou equiparado de qualquer condição, até quatorze anos idade, ou inválido"
+ },
+ {
+  "codigo": "NR0018",
+  "descricao": "SALARIO FAMILIA",
+  "finalidade": "aos demais oficiais em cargo de comando, direção e chefia de organização militar. Valor da cota por filho ou equiparado de qualquer condição, até quatorze anos idade, ou inválido de qualquer idade pago ao militar. Referente ao auxilio alimentação de militares com graduação inferior a 3º Sgt e que estejam"
+ },
+ {
+  "codigo": "NR0019",
+  "descricao": "AUXILIO ALIMENTACAO D",
+  "finalidade": "de qualquer idade pago ao militar. Referente ao auxilio alimentação de militares com graduação inferior a 3º Sgt e que estejam vinculados a localidade especial A Rubrica des�nada a indenizar os militares da a�va (Opção A ou Opção B) ao passar para a"
+ },
+ {
+  "codigo": "NR0020",
+  "descricao": "INDENIZACAO LICENCA ESPECIAL",
+  "finalidade": "vinculados a localidade especial A Rubrica des�nada a indenizar os militares da a�va (Opção A ou Opção B) ao passar para a ina�vidade, ina�vos (Opção A ou Opção B), sujeitos a prescrição, e pensionistas (falecimento do conjugue opção A). Rubrica des�nada a pagamento de auxilio natalidade para militares licenciados, onde o"
+ },
+ {
+  "codigo": "NR0021",
+  "descricao": "AUX NATALIDADE LICENCIADO",
+  "finalidade": "conjugue opção A). Rubrica des�nada a pagamento de auxilio natalidade para militares licenciados, onde o dependente não esta cadastrado no SICAPEX Complemento de salário mínimo é a complementação para que a remuneração do favorecido não"
+ },
+ {
+  "codigo": "NR0026",
+  "descricao": "COMPLEMENTO SALARIO MINIMO",
+  "finalidade": "dependente não esta cadastrado no SICAPEX Complemento de salário mínimo é a complementação para que a remuneração do favorecido não seja inferior ao valor do salário mínimo. Auxílio funeral é o direito pecuniário devido ao militar por morte do cônjuge, do companheiro ou"
+ },
+ {
+  "codigo": "NR0040",
+  "descricao": "AUX FUNERAL - RESSARCIMENTO",
+  "finalidade": "seja inferior ao valor do salário mínimo. Auxílio funeral é o direito pecuniário devido ao militar por morte do cônjuge, do companheiro ou companheira ou do dependente, ou ainda ao beneficiário no caso de falecimento do militar. Auxílio funeral é o direito pecuniário devido ao militar por morte do cônjuge, do companheiro ou"
+ },
+ {
+  "codigo": "NR0042",
+  "descricao": "AUXILIO FUNERAL DIFERENCA",
+  "finalidade": "companheira ou do dependente, ou ainda ao beneficiário no caso de falecimento do militar. Auxílio funeral é o direito pecuniário devido ao militar por morte do cônjuge, do companheiro ou companheira ou do dependente, ou ainda ao beneficiário no caso de falecimento do militar. Rubrica criada exclusivamente para pagamento de Auxilio natalidade para na�morto, uma vez,"
+ },
+ {
+  "codigo": "NR0043",
+  "descricao": "AUXILIO NATALIDADE- NATIMORTO",
+  "finalidade": "companheira ou do dependente, ou ainda ao beneficiário no caso de falecimento do militar. Rubrica criada exclusivamente para pagamento de Auxilio natalidade para na�morto, uma vez, que não é possível cadastrar um na EBCORP."
+ },
+ {
+  "codigo": "NR0046",
+  "descricao": "AJUDA CUSTO INATIVIDADE RESERVA",
+  "finalidade": "FINALIDADE Ajuda de custo é o direito pecuniário pago ao militar, com ou sem dependente, por ocasião de transferência para a ina�vidade remunerada. Devolução de Despesa Médica para Exercício Anterior"
+ },
+ {
+  "codigo": "NR0049",
+  "descricao": "DEV DESP MED-DAP - EA",
+  "finalidade": "Ajuda de custo é o direito pecuniário pago ao militar, com ou sem dependente, por ocasião de transferência para a ina�vidade remunerada. Devolução de Despesa Médica para Exercício Anterior Referente ao auxilio alimentação A - etapa de 5x para militares que trabalham acima de 8 horas (limite de 10 cotas por mês)"
+ },
+ {
+  "codigo": "NR0052",
+  "descricao": "AUXILIO ALIMENTACAO A - 5X",
+  "finalidade": "Devolução de Despesa Médica para Exercício Anterior Referente ao auxilio alimentação A - etapa de 5x para militares que trabalham acima de 8 horas (limite de 10 cotas por mês) Referente ao auxilio alimentação A - etapa de 10x para militares que trabalham acima de 24 horas"
+ },
+ {
+  "codigo": "NR0053",
+  "descricao": "AUXILIO ALIMENTACAO A - 10X",
+  "finalidade": "(limite de 10 cotas por mês) Referente ao auxilio alimentação A - etapa de 10x para militares que trabalham acima de 24 horas (limite de 10 cotas) Auxílio alimentação é o direito pecuniário devido ao militar da a�va para custear gastos com"
+ },
+ {
+  "codigo": "NR0054",
+  "descricao": "AUXILIO ALIMENTACAO C",
+  "finalidade": "(limite de 10 cotas) Auxílio alimentação é o direito pecuniário devido ao militar da a�va para custear gastos com alimentação. De acordo com a tabela III da MP 2215 o auxílio alimentação é dividido em quatro etapas. Esta documentação trata a etapa de auxílio al�A1:\"CA Auxílio alimentação é o direito pecuniário devido ao militar para custear gastos com alimentação,"
+ },
+ {
+  "codigo": "NR0055",
+  "descricao": "AUXILIO ALIMENTACAO MINISTERIO DA DEFESA",
+  "finalidade": "etapas. Esta documentação trata a etapa de auxílio al�A1:\"CA Auxílio alimentação é o direito pecuniário devido ao militar para custear gastos com alimentação, neste caso será devido a todos os militares vinculados ao Ministério da Defesa. Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com uniforme."
+ },
+ {
+  "codigo": "NR0056",
+  "descricao": "AUXILIO FARDAMENTO 1 SOLDO",
+  "finalidade": "neste caso será devido a todos os militares vinculados ao Ministério da Defesa. Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com uniforme. Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com uniforme."
+ },
+ {
+  "codigo": "NR0057",
+  "descricao": "AUXILIO FARDAMENTO 1,5 SOLDO",
+  "finalidade": "Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com uniforme. Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com uniforme. Referente ao auxilio alimentação B, pagamento de etapa normal (limite de 30 cotas)"
+ },
+ {
+  "codigo": "NR0058",
+  "descricao": "AUXILIO ALIMENTACAO B",
+  "finalidade": "Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com uniforme. Referente ao auxilio alimentação B, pagamento de etapa normal (limite de 30 cotas) Devolução de Pensão Militar Exercícios Anteriores"
+ },
+ {
+  "codigo": "NR0059",
+  "descricao": "DEVOLUCAO DE PENSAO MILITAR(EA)",
+  "finalidade": "Referente ao auxilio alimentação B, pagamento de etapa normal (limite de 30 cotas) Devolução de Pensão Militar Exercícios Anteriores Devolução de Fusex Exercícios Anteriores"
+ },
+ {
+  "codigo": "NR0060",
+  "descricao": "DEVOLUCAO DE FUSEX (EA)",
+  "finalidade": "Devolução de Pensão Militar Exercícios Anteriores Devolução de Fusex Exercícios Anteriores Gra�ficação de representação eventual é parcela remuneratória eventual devida ao militar pela par�cipação em viagem de representação, instrução, emprego operacional ou por estar às ordens"
+ },
+ {
+  "codigo": "NR0061",
+  "descricao": "GRAT REPRESENT EVENTUAL",
+  "finalidade": "Devolução de Fusex Exercícios Anteriores Gra�ficação de representação eventual é parcela remuneratória eventual devida ao militar pela par�cipação em viagem de representação, instrução, emprego operacional ou por estar às ordens de autoridade estrangeira no País. A Diferença de gra�ficação de localidade especial é devida ao militar que sirva em uma OM"
+ },
+ {
+  "codigo": "NR0063",
+  "descricao": "DIF G LOC ESP",
+  "finalidade": "de autoridade estrangeira no País. A Diferença de gra�ficação de localidade especial é devida ao militar que sirva em uma OM comum e passe à disposição de uma Organização Militar especial (Categoria A ou B) Decisão Judicial de Gra�ficação 2% Não Tributável"
+ },
+ {
+  "codigo": "NR0064",
+  "descricao": "DEC JD A62 N TRI",
+  "finalidade": "A Diferença de gra�ficação de localidade especial é devida ao militar que sirva em uma OM comum e passe à disposição de uma Organização Militar especial (Categoria A ou B) Decisão Judicial de Gra�ficação 2% Não Tributável Compensação pecuniária é a remuneração devida aos militares da a�va oficiais ou militares do círculo de praças, subcategoria de temporários ou sargentos de carreira não estabilizados."
+ },
+ {
+  "codigo": "NR0066",
+  "descricao": "COMPENSACAO PECUNIARIA",
+  "finalidade": "Decisão Judicial de Gra�ficação 2% Não Tributável Compensação pecuniária é a remuneração devida aos militares da a�va oficiais ou militares do círculo de praças, subcategoria de temporários ou sargentos de carreira não estabilizados. Gra�ficação de representação do emprego operacional nas ações militares da vigilância de"
+ },
+ {
+  "codigo": "NR0068",
+  "descricao": "GRAT REPRESENT PEF/DEF",
+  "finalidade": "círculo de praças, subcategoria de temporários ou sargentos de carreira não estabilizados. Gra�ficação de representação do emprego operacional nas ações militares da vigilância de fronteira, de caráter temporário, do efe�vo dos pelotões especiais de fronteira (PEF) ou destacamentos especiais de fronteira (DEF)."
+ },
+ {
+  "codigo": "NR0070",
+  "descricao": "ADICIONAL NATALINO - AJUSTE CONTAS",
+  "finalidade": "destacamentos especiais de fronteira (DEF). Rubrica des�nada ao pagamento de adicional natalino no ajuste de contas. Assistência pré-escolar é bene�cio pago aos militares para dependentes que façam jus ao"
+ },
+ {
+  "codigo": "NR0077",
+  "descricao": "ASSISTENCIA PRE-ESCOLAR",
+  "finalidade": "Rubrica des�nada ao pagamento de adicional natalino no ajuste de contas. Assistência pré-escolar é bene�cio pago aos militares para dependentes que façam jus ao bene�cio. Solucionar o problema de que não está sendo possível realizar saque pelas rubricas atrasadas de"
+ },
+ {
+  "codigo": "NR0078",
+  "descricao": "AUXILIO PRE-ESCOLAR ATRASADO",
+  "finalidade": "bene�cio. Solucionar o problema de que não está sendo possível realizar saque pelas rubricas atrasadas de Pré-escolar (AR0077,FR0077) Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com fardamento."
+ },
+ {
+  "codigo": "NR0080",
+  "descricao": "AUXILIO FARDA SINISTRO",
+  "finalidade": "Solucionar o problema de que não está sendo possível realizar saque pelas rubricas atrasadas de Pré-escolar (AR0077,FR0077) Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com fardamento. Auxílio natalidade é o direito pecuniário devido ao militar por mo�vo de nascimento de filho após incorporação no Exército."
+ },
+ {
+  "codigo": "NR0081",
+  "descricao": "AUXILIO NATALIDADE",
+  "finalidade": "Auxílio fardamento é o direito pecuniário devido ao militar para custear gastos com fardamento. Auxílio natalidade é o direito pecuniário devido ao militar por mo�vo de nascimento de filho após incorporação no Exército. Está rubrica será lançada quando o favorecido solicitar o adiantamento, da 1ª parcela do Adicional"
+ },
+ {
+  "codigo": "NR0083",
+  "descricao": "ADIANTAMENTO DA 1A PRCL DO ADC NATALINO",
+  "finalidade": "incorporação no Exército. Está rubrica será lançada quando o favorecido solicitar o adiantamento, da 1ª parcela do Adicional Natalino, por ocasião de férias A primeira parcela do adicional natalino deverá ser paga em junho, correspondente à metade da"
+ },
+ {
+  "codigo": "NR0084",
+  "descricao": "ADICIONAL NATAL 1PARC",
+  "finalidade": "Natalino, por ocasião de férias A primeira parcela do adicional natalino deverá ser paga em junho, correspondente à metade da remuneração, proventos ou pensão percebidos no mês de junho e não incidirá sobre o IR. O adicional natalino corresponde a um doze avos da remuneração a que o favorecido fizer jus no"
+ },
+ {
+  "codigo": "NR0085",
+  "descricao": "ADICIONAL NATAL 2PARC",
+  "finalidade": "remuneração, proventos ou pensão percebidos no mês de junho e não incidirá sobre o IR. O adicional natalino corresponde a um doze avos da remuneração a que o favorecido fizer jus no mês de dezembro, por mês de serviço, no respec�vo ano Pagamento de adicional de férias não gozadas na transferência para a ina�vidade remunerada."
+ },
+ {
+  "codigo": "NR0088",
+  "descricao": "ADC FERIAS INATIV",
+  "finalidade": "O adicional natalino corresponde a um doze avos da remuneração a que o favorecido fizer jus no mês de dezembro, por mês de serviço, no respec�vo ano Pagamento de adicional de férias não gozadas na transferência para a ina�vidade remunerada. Pagamento da indenização de férias na transferência para a ina�vidade remunerada. Ressarcimento de despesas médicas realizado pela DAP por uso de procedimentos médicos que"
+ },
+ {
+  "codigo": "NR0089",
+  "descricao": "INDZ FERIAS INATIV",
+  "finalidade": "mês de dezembro, por mês de serviço, no respec�vo ano Pagamento de adicional de férias não gozadas na transferência para a ina�vidade remunerada. Pagamento da indenização de férias na transferência para a ina�vidade remunerada. Ressarcimento de despesas médicas realizado pela DAP por uso de procedimentos médicos que não foram feitos em Hospitais da Força, por mo�vo de urgência, emergência ou falta de médico"
+ },
+ {
+  "codigo": "NR0090",
+  "descricao": "RESSARCIMENTO DPS MED",
+  "finalidade": "Pagamento da indenização de férias na transferência para a ina�vidade remunerada. Ressarcimento de despesas médicas realizado pela DAP por uso de procedimentos médicos que não foram feitos em Hospitais da Força, por mo�vo de urgência, emergência ou falta de médico especialista. O militar que opera direta e permanentemente com raios X ou substâncias radioa�vas e tem"
+ },
+ {
+  "codigo": "NR0091",
+  "descricao": "ADICIONAL DE FERIAS RAIO- X",
+  "finalidade": "especialista. O militar que opera direta e permanentemente com raios X ou substâncias radioa�vas e tem direito a férias de vinte dias consecu�vos, por semestre de a�vidade, faz jus ao adicional de férias proporcionalmente ao período de afastamento."
+ },
+ {
+  "codigo": "NR0092",
+  "descricao": "ADICIONAL DE FERIAS",
+  "finalidade": "FINALIDADE Adicional de férias será pago, antecipadamente, no valor correspondente a um terço da remuneração do mês de início das férias. O pagamento do adiantamento de remuneração das férias do militar será efetuado até dois dias antes do respec�vo pe�A Adiantamento é o direito que o militar tem de solicitar até 70% da remuneração líquida do mês"
+ },
+ {
+  "codigo": "NR0093",
+  "descricao": "ADIANTAMENTO DE FERIAS",
+  "finalidade": "férias do militar será efetuado até dois dias antes do respec�vo pe�A Adiantamento é o direito que o militar tem de solicitar até 70% da remuneração líquida do mês seguinte ao das férias junto à remuneração de férias. Indenização por férias não gozadas pelo militar e que são pagas a ele quando do seu"
+ },
+ {
+  "codigo": "NR0094",
+  "descricao": "INDENIZACAO DE FERIAS",
+  "finalidade": "seguinte ao das férias junto à remuneração de férias. Indenização por férias não gozadas pelo militar e que são pagas a ele quando do seu licenciamento no valor correspondente a 01 remuneração por período aquisi�vo (12 meses) ou proporcional, conforme o caso. Auxílio transporte é o direito remuneratório devido ao militar da a�va por deslocamento deste até"
+ },
+ {
+  "codigo": "NR0095",
+  "descricao": "AUXILIO TRANSPORTE",
+  "finalidade": "proporcional, conforme o caso. Auxílio transporte é o direito remuneratório devido ao militar da a�va por deslocamento deste até o local de trabalho. Pagamento da indenização do 1/3 do adicional de férias"
+ },
+ {
+  "codigo": "NR0096",
+  "descricao": "ADC FERIAS AJ C",
+  "finalidade": "Auxílio transporte é o direito remuneratório devido ao militar da a�va por deslocamento deste até o local de trabalho. Pagamento da indenização do 1/3 do adicional de férias Pagamento de compensação orgânica resultante de decisão judicial não transitada em julgado."
+ },
+ {
+  "codigo": "NR0097",
+  "descricao": "DECISAO JUDICIAL COMPENSACAO ORGANICA",
+  "finalidade": "Pagamento da indenização do 1/3 do adicional de férias Pagamento de compensação orgânica resultante de decisão judicial não transitada em julgado. Pagamento de compensação orgânica resultante de decisão judicial transitada em julgado."
+ },
+ {
+  "codigo": "NR0098",
+  "descricao": "COMP ORGANICA TJ",
+  "finalidade": "Pagamento de compensação orgânica resultante de decisão judicial não transitada em julgado. Pagamento de compensação orgânica resultante de decisão judicial transitada em julgado. Realizar o pagamento do abono PIS/PASEP, através do arquivo FPSF910 importado pelo caso de uso Importar arquivo PIS/PASEP (EB-SIPPES-EUC Importar arquivo PIS PASEP.UCS)."
+ },
+ {
+  "codigo": "NR0099",
+  "descricao": "ABONO PIS/PASEP",
+  "finalidade": "Pagamento de compensação orgânica resultante de decisão judicial transitada em julgado. Realizar o pagamento do abono PIS/PASEP, através do arquivo FPSF910 importado pelo caso de uso Importar arquivo PIS/PASEP (EB-SIPPES-EUC Importar arquivo PIS PASEP.UCS). Pagamento da diferença de 28,86% para os militares que �veram aumento em um percentual"
+ },
+ {
+  "codigo": "NR0100",
+  "descricao": "DEC JD 28,86%",
+  "finalidade": "uso Importar arquivo PIS/PASEP (EB-SIPPES-EUC Importar arquivo PIS PASEP.UCS). Pagamento da diferença de 28,86% para os militares que �veram aumento em um percentual inferior a este, mas conseguiram através de decisão judicial transitada em julgado. Pagamento da diferença de 28,86% para os militares que �veram aumento em um percentual"
+ },
+ {
+  "codigo": "NR0101",
+  "descricao": "DIFERENCA DE 28,86%",
+  "finalidade": "inferior a este, mas conseguiram através de decisão judicial transitada em julgado. Pagamento da diferença de 28,86% para os militares que �veram aumento em um percentual inferior a este, mas conseguiram o aumento através de decisão judicial não transitada em julgado. Receita em favor do favorecido do ajuste de contas no caso de saldo nega�vo no ajuste de contas."
+ },
+ {
+  "codigo": "NR0150",
+  "descricao": "ACERTO CONTABIL",
+  "finalidade": "inferior a este, mas conseguiram o aumento através de decisão judicial não transitada em julgado. Receita em favor do favorecido do ajuste de contas no caso de saldo nega�vo no ajuste de contas. Esta receita serve para �zerar� a dívida do favorecido para que dê possibilidade de gerar um úl�mo contracheque com valores não nega�vos. Adicional de Tempo de Serviço oriundo de erro administra�vo. Corresponde ao AJT do SIAPPES."
+ },
+ {
+  "codigo": "NR0160",
+  "descricao": "ADC TMP SV ADM",
+  "finalidade": "Esta receita serve para �zerar� a dívida do favorecido para que dê possibilidade de gerar um úl�mo contracheque com valores não nega�vos. Adicional de Tempo de Serviço oriundo de erro administra�vo. Corresponde ao AJT do SIAPPES. Decisão Judicial Similiar ao AJL"
+ },
+ {
+  "codigo": "NR0161",
+  "descricao": "OUTRAS DECISOES JUDICIAIS",
+  "finalidade": "Adicional de Tempo de Serviço oriundo de erro administra�vo. Corresponde ao AJT do SIAPPES. Decisão Judicial Similiar ao AJL"
+ },
+ {
+  "codigo": "NR0162",
+  "descricao": "COMPL SOLDO DJ",
+  "finalidade": "Decisão Judicial Similiar ao AJL"
+ },
+ {
+  "codigo": "NR0163",
+  "descricao": "DEC JD AD INAT",
+  "finalidade": ""
+ },
+ {
+  "codigo": "NR0164",
+  "descricao": "DEC JD AU INV",
+  "finalidade": ""
+ },
+ {
+  "codigo": "NR0165",
+  "descricao": "DJ AD INAT T J",
+  "finalidade": ""
+ },
+ {
+  "codigo": "NR0166",
+  "descricao": "DJ AU INV TJ",
+  "finalidade": ""
+ },
+ {
+  "codigo": "NR0167",
+  "descricao": "DEC JD C-ORG",
+  "finalidade": ""
+ },
+ {
+  "codigo": "NR0168",
+  "descricao": "OUTRAS DJ T J",
+  "finalidade": "Ajuda de custo de militares reformados"
+ },
+ {
+  "codigo": "NR0169",
+  "descricao": "AJUDA DE CUSTO INATIVIDADE REFORMA",
+  "finalidade": "Ajuda de custo de militares reformados Adicional de Disponibilidade Militar aprovada no PL 1645/19"
+ },
+ {
+  "codigo": "NR0170",
+  "descricao": "AD C DISP MIL",
+  "finalidade": "Ajuda de custo de militares reformados Adicional de Disponibilidade Militar aprovada no PL 1645/19 Gra�ficação de Representação 2% para Missão Covid-19 de militares da A�va Gra�ficação de Representação 2% para Missão Verde Brasil de militares da A�va"
+ },
+ {
+  "codigo": "NR0171",
+  "descricao": "G REP COVID",
+  "finalidade": "Adicional de Disponibilidade Militar aprovada no PL 1645/19 Gra�ficação de Representação 2% para Missão Covid-19 de militares da A�va Gra�ficação de Representação 2% para Missão Verde Brasil de militares da A�va Gra�ficação de Representação 2% para Missão Acolhida de Militares da A�va"
+ },
+ {
+  "codigo": "NR0172",
+  "descricao": "G REP VERDE-BR",
+  "finalidade": "Adicional de Disponibilidade Militar aprovada no PL 1645/19 Gra�ficação de Representação 2% para Missão Covid-19 de militares da A�va Gra�ficação de Representação 2% para Missão Verde Brasil de militares da A�va Gra�ficação de Representação 2% para Missão Acolhida de Militares da A�va Gra�ficação de Representação 2% para Operação PIPA de Militares da A�va"
+ },
+ {
+  "codigo": "NR0173",
+  "descricao": "G REP ACOLHIDA",
+  "finalidade": "Gra�ficação de Representação 2% para Missão Covid-19 de militares da A�va Gra�ficação de Representação 2% para Missão Verde Brasil de militares da A�va Gra�ficação de Representação 2% para Missão Acolhida de Militares da A�va Gra�ficação de Representação 2% para Operação PIPA de Militares da A�va Está rubrica deverá ser lançada no ajuste quando o favorecido passou da data de desimplantação"
+ },
+ {
+  "codigo": "NR0174",
+  "descricao": "G REP PIPA",
+  "finalidade": "Gra�ficação de Representação 2% para Missão Verde Brasil de militares da A�va Gra�ficação de Representação 2% para Missão Acolhida de Militares da A�va Gra�ficação de Representação 2% para Operação PIPA de Militares da A�va Está rubrica deverá ser lançada no ajuste quando o favorecido passou da data de desimplantação e foi solicitado ao CPEx o Bloqueio e Reversão. valor a ser lançado deverá ser exatamente o valor"
+ },
+ {
+  "codigo": "NR9999",
+  "descricao": "ACERTO DE AJUSTE (BLOQUEIO E REVERSAO)",
+  "finalidade": "Gra�ficação de Representação 2% para Operação PIPA de Militares da A�va Está rubrica deverá ser lançada no ajuste quando o favorecido passou da data de desimplantação e foi solicitado ao CPEx o Bloqueio e Reversão. valor a ser lançado deverá ser exatamente o valor bloqueado Contribuição obrigatória para o Fundo de Saúde do Exército. O desconto dos 3% de Fusex só"
+ },
+ {
+  "codigo": "ND0001",
+  "descricao": "FUSEX 3%",
+  "finalidade": "bloqueado Contribuição obrigatória para o Fundo de Saúde do Exército. O desconto dos 3% de Fusex só deverá ser feito para favorecidos que contribuam com o Fusex de acordo com cadastro dos mesmos. Para que uma rubrica seja considerada para o cálculo dos 3% d�A"
+ },
+ {
+  "codigo": "ND0002",
+  "descricao": "PENSAO MILITAR -MILITAR CARREIRA",
+  "finalidade": "mesmos. Para que uma rubrica seja considerada para o cálculo dos 3% d�A Desconto obrigatório para a pensão militar. Desconto do favorecido em favor da Organização Militar administradora do PNR para o"
+ },
+ {
+  "codigo": "ND0003",
+  "descricao": "OCUPACAO PNR",
+  "finalidade": "Desconto obrigatório para a pensão militar. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à ocupação de PNR � Próprio Nacional Residencial. Desconto do favorecido em favor da Organização Militar administradora do PNR para o"
+ },
+ {
+  "codigo": "ND0004",
+  "descricao": "TX EXTRA PNR",
+  "finalidade": "pagamento referente à ocupação de PNR � Próprio Nacional Residencial. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à ocupação autorizada do PNR (Próprio Nacional Residencial) após a cessação do direito, com prazo definido."
+ },
+ {
+  "codigo": "ND0005",
+  "descricao": "PENSAO MILITAR 1,5%",
+  "finalidade": "FINALIDADE Desconto para garan�r pensão militar vitalícia para filhas do militar. Toda aquisição de medicamento é feita pelo FAEX � Sistema de Farmácias Ambulatoriais do Exército - pelos Operadores que têm acesso a este sistema. O sistema CADBEN FUSEX vai ler estas"
+ },
+ {
+  "codigo": "ND0006",
+  "descricao": "AQUISICAO MEDICAMENTOS",
+  "finalidade": "Desconto para garan�r pensão militar vitalícia para filhas do militar. Toda aquisição de medicamento é feita pelo FAEX � Sistema de Farmácias Ambulatoriais do Exército - pelos Operadores que têm acesso a este sistema. O sistema CADBEN FUSEX vai ler estas informações do FAEX e enviará, via arquivo, para o SIPPES. Permite que sejam lançados descontos do FuSEx para a pensionista nos caso em que o ins�tuidor"
+ },
+ {
+  "codigo": "ND0007",
+  "descricao": "DIFERENCA 24 CONT PENSAO MILITAR",
+  "finalidade": "informações do FAEX e enviará, via arquivo, para o SIPPES. Permite que sejam lançados descontos do FuSEx para a pensionista nos caso em que o ins�tuidor da pensão faleceu antes de contribuir com o limite mínimo do FuSEx de 24 contribuições e a pensionista desejar usufruir do FuSEx. Desconto do favorecido em favor do Fundo do Exército para o pagamento referente à ocupação"
+ },
+ {
+  "codigo": "ND0008",
+  "descricao": "OCUPA PNR FUNDO EX MNT",
+  "finalidade": "pensionista desejar usufruir do FuSEx. Desconto do favorecido em favor do Fundo do Exército para o pagamento referente à ocupação de PNR � Próprio Nacional Residencial. Este desconto refere-se a 10% do valor total do desconto da ocupação do PNR, para manutenção do FEx. Desconto de Imposto de Renda para Ina�vos e Pensionistas que residem no exterior."
+ },
+ {
+  "codigo": "ND0009",
+  "descricao": "IR RESIDENTE NO EXTERIOR",
+  "finalidade": "de PNR � Próprio Nacional Residencial. Este desconto refere-se a 10% do valor total do desconto da ocupação do PNR, para manutenção do FEx. Desconto de Imposto de Renda para Ina�vos e Pensionistas que residem no exterior. Desconto de imposto de renda sobre a remuneração do favorecido. Desconto do favorecido realizado pelos Operadores das OM?s ou pela DAP referente ao número"
+ },
+ {
+  "codigo": "ND0010",
+  "descricao": "IMPOSTO DE RENDA",
+  "finalidade": "da ocupação do PNR, para manutenção do FEx. Desconto de Imposto de Renda para Ina�vos e Pensionistas que residem no exterior. Desconto de imposto de renda sobre a remuneração do favorecido. Desconto do favorecido realizado pelos Operadores das OM?s ou pela DAP referente ao número de dependentes diretos ou indiretos que o favorecido tem."
+ },
+ {
+  "codigo": "ND0011",
+  "descricao": "DESCONTO DEPENDENTE - FUSEX",
+  "finalidade": "Desconto de imposto de renda sobre a remuneração do favorecido. Desconto do favorecido realizado pelos Operadores das OM?s ou pela DAP referente ao número de dependentes diretos ou indiretos que o favorecido tem. Realizar o desconto do dependente FUSEX automa�camente no pagamento de ajuste de contas"
+ },
+ {
+  "codigo": "ND0012",
+  "descricao": "DESCONTO DEPENDENTE FUSEX - AUT AJUSTE",
+  "finalidade": "de dependentes diretos ou indiretos que o favorecido tem. Realizar o desconto do dependente FUSEX automa�camente no pagamento de ajuste de contas do militar. Desconto do favorecido realizado pela DAP referente às despesas médicas do favorecido. É um"
+ },
+ {
+  "codigo": "ND0013",
+  "descricao": "DESPESA MEDICA - FUSEX",
+  "finalidade": "do militar. Desconto do favorecido realizado pela DAP referente às despesas médicas do favorecido. É um desconto obrigatório. Deve-se obedecer à capacidade de pagamento do favorecido que é 10% sobre o seu soldo. Desconto para o pagamento de pensão alimen�cia."
+ },
+ {
+  "codigo": "ND0014",
+  "descricao": "PENSAO ALIMENTICIA",
+  "finalidade": "desconto obrigatório. Deve-se obedecer à capacidade de pagamento do favorecido que é 10% sobre o seu soldo. Desconto para o pagamento de pensão alimen�cia. Desconto de Imposto de Renda sobre o valor pago ao militar como adicional de férias. Descontos para o FEx."
+ },
+ {
+  "codigo": "ND0015",
+  "descricao": "IR ADICIONAL FERIAS",
+  "finalidade": "sobre o seu soldo. Desconto para o pagamento de pensão alimen�cia. Desconto de Imposto de Renda sobre o valor pago ao militar como adicional de férias. Descontos para o FEx. Desconto para o militar para o custeio de aquisição de uniforme."
+ },
+ {
+  "codigo": "ND0016",
+  "descricao": "DESCONTOS PARA O FEX",
+  "finalidade": "Desconto para o pagamento de pensão alimen�cia. Desconto de Imposto de Renda sobre o valor pago ao militar como adicional de férias. Descontos para o FEx. Desconto para o militar para o custeio de aquisição de uniforme. Desconto do favorecido em favor da Organização Militar administradora do PNR para o"
+ },
+ {
+  "codigo": "ND0017",
+  "descricao": "AQUISICAO DE UNIFORME",
+  "finalidade": "Desconto de Imposto de Renda sobre o valor pago ao militar como adicional de férias. Descontos para o FEx. Desconto para o militar para o custeio de aquisição de uniforme. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à despesa com água de PNR ? Próprio Nacional Residencial."
+ },
+ {
+  "codigo": "ND0018",
+  "descricao": "TAXA DE AGUA",
+  "finalidade": "Desconto para o militar para o custeio de aquisição de uniforme. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à despesa com água de PNR ? Próprio Nacional Residencial. Sendo CODOMX o número do CODOM da OM administradora do PNR."
+ },
+ {
+  "codigo": "ND0019",
+  "descricao": "TAXA DE LUZ",
+  "finalidade": "Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à despesa com água de PNR ? Próprio Nacional Residencial. Sendo CODOMX o número do CODOM da OM administradora do PNR. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à danos causados ao material do PNR � Próprio Nacional Residencial."
+ },
+ {
+  "codigo": "ND0020",
+  "descricao": "INDENIZACAO MATERIAL",
+  "finalidade": "Sendo CODOMX o número do CODOM da OM administradora do PNR. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à danos causados ao material do PNR � Próprio Nacional Residencial. Desconto do favorecido em favor do Fundo do Exército para o pagamento referente a ocupação"
+ },
+ {
+  "codigo": "ND0021",
+  "descricao": "OCUPA PNR FUNDO EX CNS",
+  "finalidade": "pagamento referente à danos causados ao material do PNR � Próprio Nacional Residencial. Desconto do favorecido em favor do Fundo do Exército para o pagamento referente a ocupação de PNR � Próprio Nacional Residencial. Este desconto refere-se a 20% do valor total do desconto da ocupação do PNR. Desconto do favorecido em favor da Organização Militar administradora do PNR para o"
+ },
+ {
+  "codigo": "ND0022",
+  "descricao": "TAXA DE LIXO - CODOMX",
+  "finalidade": "da ocupação do PNR. Desconto do favorecido em favor da Organização Militar administradora do PNR para o pagamento referente à despesa com lixo de PNR � Próprio Nacional Residencial. Desconto do favorecido em favor da Organização Militar para o pagamento referente a multa por"
+ },
+ {
+  "codigo": "ND0023",
+  "descricao": "MULTA OCP IRREG",
+  "finalidade": "pagamento referente à despesa com lixo de PNR � Próprio Nacional Residencial. Desconto do favorecido em favor da Organização Militar para o pagamento referente a multa por ocupação irregular de PNR. Desconto do favorecido referente à emissão do cartão de bene�cios FUSEx."
+ },
+ {
+  "codigo": "ND0024",
+  "descricao": "EMISSAO CARTAO FUSEX",
+  "finalidade": "Desconto do favorecido em favor da Organização Militar para o pagamento referente a multa por ocupação irregular de PNR. Desconto do favorecido referente à emissão do cartão de bene�cios FUSEx. Desconto do militar para o Fundo do Exército referente a indenização de material de carga RAE."
+ },
+ {
+  "codigo": "ND0025",
+  "descricao": "INDENIZACAO DE CARGA RAE",
+  "finalidade": "Desconto do favorecido referente à emissão do cartão de bene�cios FUSEx. Desconto do militar para o Fundo do Exército referente a indenização de material de carga RAE. Desconto para o pagamento de indenização de viatura de terceiros nos casos em que ocorrer"
+ },
+ {
+  "codigo": "ND0026",
+  "descricao": "INDENIZACAO VIATURA",
+  "finalidade": "Desconto do militar para o Fundo do Exército referente a indenização de material de carga RAE. Desconto para o pagamento de indenização de viatura de terceiros nos casos em que ocorrer acidente envolvendo militar e terceiros. Desconto de Imposto de Renda sobre o valor integral do adicional natalino. O IR será descontado"
+ },
+ {
+  "codigo": "ND0028",
+  "descricao": "IR ADICIONAL NATALINO",
+  "finalidade": "acidente envolvendo militar e terceiros. Desconto de Imposto de Renda sobre o valor integral do adicional natalino. O IR será descontado automá�camente vinculado ao pagamento da 2ª parcela do adicional natalino. Desconto para o pagamento de remessa extra de contra-cheque ou para remessa de contra-"
+ },
+ {
+  "codigo": "ND0029",
+  "descricao": "REMESSA DE CONTRACHEQUE",
+  "finalidade": "automá�camente vinculado ao pagamento da 2ª parcela do adicional natalino. Desconto para o pagamento de remessa extra de contra-cheque ou para remessa de contra- cheque para endereço diferente da OM do militar. Desconto devido a res�tuição de valores recebidos do Auxilio emergencial durante a pandemia do"
+ },
+ {
+  "codigo": "ND0030",
+  "descricao": "DEV AUX EMERGENCIAL",
+  "finalidade": "cheque para endereço diferente da OM do militar. Desconto devido a res�tuição de valores recebidos do Auxilio emergencial durante a pandemia do coronavirus. Desconto do favorecido para o pagamento referente a honorários advoca�cios em favor da"
+ },
+ {
+  "codigo": "ND0031",
+  "descricao": "HONORARIOS AGU",
+  "finalidade": "coronavirus. Desconto do favorecido para o pagamento referente a honorários advoca�cios em favor da Advocacia Geral da União. Desconto do favorecido em favor da AGU para verba de sucumbência por causa perdida."
+ },
+ {
+  "codigo": "ND0032",
+  "descricao": "VERBA DE SUCUMBENCIA",
+  "finalidade": "Desconto do favorecido para o pagamento referente a honorários advoca�cios em favor da Advocacia Geral da União. Desconto do favorecido em favor da AGU para verba de sucumbência por causa perdida. Esta rubrica tem por obje�vo informar que o favorecido alimentante pagou pensão alimen�cia por fora do sistema e possui o direito a deduzir do valor pago o Imposto de Renda."
+ },
+ {
+  "codigo": "ND0033",
+  "descricao": "PA IN 025/96 SRF",
+  "finalidade": "Desconto do favorecido em favor da AGU para verba de sucumbência por causa perdida. Esta rubrica tem por obje�vo informar que o favorecido alimentante pagou pensão alimen�cia por fora do sistema e possui o direito a deduzir do valor pago o Imposto de Renda. Desconto feito para os militares da a�va, ina�vo e pensionistas referentes a Despesa Anular do"
+ },
+ {
+  "codigo": "ND0034",
+  "descricao": "AJUSTE DE CONTAS",
+  "finalidade": "por fora do sistema e possui o direito a deduzir do valor pago o Imposto de Renda. Desconto feito para os militares da a�va, ina�vo e pensionistas referentes a Despesa Anular do Ajuste de Contas do SIAPPES Desconto Pensão Alimen�cia Extra Judicial"
+ },
+ {
+  "codigo": "ND0035",
+  "descricao": "PENS ALI EXT JUD",
+  "finalidade": "Desconto feito para os militares da a�va, ina�vo e pensionistas referentes a Despesa Anular do Ajuste de Contas do SIAPPES Desconto Pensão Alimen�cia Extra Judicial"
+ },
+ {
+  "codigo": "ND0036",
+  "descricao": "PENSAO ALIMENTICIA FERIAS",
+  "finalidade": "FINALIDADE Desconto para o pagamento de pensão alimen�cia sobre o adicional férias. Desconto para o pagamento de pensão alimen�cia sobre a compensação pecuniária."
+ },
+ {
+  "codigo": "ND0037",
+  "descricao": "PENSAO ALIMENTICIA COMP PECUNIARIA",
+  "finalidade": "Desconto para o pagamento de pensão alimen�cia sobre o adicional férias. Desconto para o pagamento de pensão alimen�cia sobre a compensação pecuniária. Desconto para o pagamento da assistência pré-escolar para o detentor da guarda legal."
+ },
+ {
+  "codigo": "ND0038",
+  "descricao": "ASSISTENCIA PRE-ESCOLAR (DETENTOR LEGAL)",
+  "finalidade": "Desconto para o pagamento de pensão alimen�cia sobre a compensação pecuniária. Desconto para o pagamento da assistência pré-escolar para o detentor da guarda legal."
+ },
+ {
+  "codigo": "ND0039",
+  "descricao": "PENSAO MILITAR - MILITAR TEMPORARIO",
+  "finalidade": "Desconto para o pagamento da assistência pré-escolar para o detentor da guarda legal. pensão militar incidente sobre os atrasados do militar temporário"
+ },
+ {
+  "codigo": "ND0040",
+  "descricao": "PENSAO MILITAR - AT- AUTOMATICA",
+  "finalidade": "pensão militar incidente sobre os atrasados do militar temporário Pensão militar incidente sobre os atrasados do militar de carreira."
+ },
+ {
+  "codigo": "ND0041",
+  "descricao": "PENSAO MILITAR - MILITAR CARREIRA - AT",
+  "finalidade": "pensão militar incidente sobre os atrasados do militar temporário Pensão militar incidente sobre os atrasados do militar de carreira. Rubrica para desconto automá�co de FUSEx sobre os atrasados lançados na funcionalidade"
+ },
+ {
+  "codigo": "ND0042",
+  "descricao": "FUSEX 3% AT AUTOMATICO",
+  "finalidade": "Pensão militar incidente sobre os atrasados do militar de carreira. Rubrica para desconto automá�co de FUSEx sobre os atrasados lançados na funcionalidade lançamento de pagamento individual"
+ },
+ {
+  "codigo": "ND0043",
+  "descricao": "IMPOSTO ADC NATALINO AJUSTE CONTAS",
+  "finalidade": "lançamento de pagamento individual RATEIO DPS COMUNS QRG - Desconto do favorecido em favor da Prefeitura Militar de Brasília para"
+ },
+ {
+  "codigo": "ND0068",
+  "descricao": "DESP BR PMB",
+  "finalidade": "RATEIO DPS COMUNS QRG - Desconto do favorecido em favor da Prefeitura Militar de Brasília para o pagamento referente a despesas comuns da Quadra Residencial de Generais. Esta rubrica é de arquivo de integração com a DAP."
+ },
+ {
+  "codigo": "ND0072",
+  "descricao": "DAS(AUX FIN IND)",
+  "finalidade": "RATEIO DPS COMUNS QRG - Desconto do favorecido em favor da Prefeitura Militar de Brasília para o pagamento referente a despesas comuns da Quadra Residencial de Generais. Esta rubrica é de arquivo de integração com a DAP. Realizar descontos diversos em favor da organização militar."
+ },
+ {
+  "codigo": "ND0073",
+  "descricao": "DESCONTO EM FAVOR DA OM",
+  "finalidade": "Esta rubrica é de arquivo de integração com a DAP. Realizar descontos diversos em favor da organização militar. Desconto realizado para o FUSEx devido à uma ordem judicial"
+ },
+ {
+  "codigo": "ND0074",
+  "descricao": "FUSEX ORIUNDO DA JUSTICA",
+  "finalidade": "Realizar descontos diversos em favor da organização militar. Desconto realizado para o FUSEx devido à uma ordem judicial Contribuição de Pensão militar oriunda de ordem judicial."
+ },
+ {
+  "codigo": "ND0075",
+  "descricao": "PENSAO MILITAR ORIUNDO DA JUSTICA",
+  "finalidade": "Desconto realizado para o FUSEx devido à uma ordem judicial Contribuição de Pensão militar oriunda de ordem judicial. Realizar descontos referente a HFA"
+ },
+ {
+  "codigo": "ND0076",
+  "descricao": "HFA",
+  "finalidade": "Contribuição de Pensão militar oriunda de ordem judicial. Realizar descontos referente a HFA Realizar descontos em favor do HFA, multa PNR Realizar descontos diversos em favor do Ministério da Defesa"
+ },
+ {
+  "codigo": "ND0077",
+  "descricao": "Z25 MULTA PNR HFA",
+  "finalidade": "Realizar descontos referente a HFA Realizar descontos em favor do HFA, multa PNR Realizar descontos diversos em favor do Ministério da Defesa Realizar descontos em favor do Ministério da Defesa"
+ },
+ {
+  "codigo": "ND0078",
+  "descricao": "MIN DEF 198",
+  "finalidade": "Realizar descontos referente a HFA Realizar descontos em favor do HFA, multa PNR Realizar descontos diversos em favor do Ministério da Defesa Realizar descontos em favor do Ministério da Defesa Desconto taxa ocupação PNR PMB"
+ },
+ {
+  "codigo": "ND0079",
+  "descricao": "MIN DEF 493",
+  "finalidade": "Realizar descontos em favor do HFA, multa PNR Realizar descontos diversos em favor do Ministério da Defesa Realizar descontos em favor do Ministério da Defesa Desconto taxa ocupação PNR PMB Corresponde a Z21 - TX OCUP IMOV MIN"
+ },
+ {
+  "codigo": "ND0080",
+  "descricao": "ZF3 TAXA PNR PMB",
+  "finalidade": "Realizar descontos diversos em favor do Ministério da Defesa Realizar descontos em favor do Ministério da Defesa Desconto taxa ocupação PNR PMB Corresponde a Z21 - TX OCUP IMOV MIN Ressarcimento de despesas médicas realizado pela DAP por uso de procedimentos médicos que"
+ },
+ {
+  "codigo": "ND0081",
+  "descricao": "TX OCUP IMOV MIN",
+  "finalidade": "Realizar descontos em favor do Ministério da Defesa Desconto taxa ocupação PNR PMB Corresponde a Z21 - TX OCUP IMOV MIN Ressarcimento de despesas médicas realizado pela DAP por uso de procedimentos médicos que não foram feitos em Hospitais da Força, por mo�vo de urgência, emergência ou falta de médico"
+ },
+ {
+  "codigo": "ND0090",
+  "descricao": "RESSARCIMENTO DPS MED",
+  "finalidade": "Corresponde a Z21 - TX OCUP IMOV MIN Ressarcimento de despesas médicas realizado pela DAP por uso de procedimentos médicos que não foram feitos em Hospitais da Força, por mo�vo de urgência, emergência ou falta de médico especialista. O Adiantamento de Férias corresponde à 70% da remuneração líquida solicitada pelo favorecido"
+ },
+ {
+  "codigo": "ND0093",
+  "descricao": "DESCONTO ADIANT FERIAS",
+  "finalidade": "especialista. O Adiantamento de Férias corresponde à 70% da remuneração líquida solicitada pelo favorecido no mês de pagamento de Férias. Esta rubrica corresponde ao valor desse adiantamento e será lançada, automa�camente, no mês seguinte."
+ },
+ {
+  "codigo": "ND0096",
+  "descricao": "PENSAO JUDICIAL SOB 1ª PARC 13 SALARIO",
+  "finalidade": "lançada, automa�camente, no mês seguinte. Descontar valor de pensão judicial sobre a 1ª parcela do 13º salário Valor de pensão judicial sobre 2ª parcela de 13º salário"
+ },
+ {
+  "codigo": "ND0097",
+  "descricao": "PENSAO JUDICIAL SOB 2ª PARC 13 SALARIO",
+  "finalidade": "Descontar valor de pensão judicial sobre a 1ª parcela do 13º salário Valor de pensão judicial sobre 2ª parcela de 13º salário O obje�vo desta rubrica é realizar o desconto de PNR (Próprio Nacional Residencial) de militares"
+ },
+ {
+  "codigo": "ND0154",
+  "descricao": "PNR MILITAR FORA DA FORCA",
+  "finalidade": "O obje�vo desta rubrica é realizar o desconto de PNR (Próprio Nacional Residencial) de militares que encontram-se fora da força, ou seja, que estão vinculados à OM?s que não sejam PMB ou MD. O obje�vo desta rubrica é realizar o desconto de PNR (Próprio Nacional Residencial) de militares"
+ },
+ {
+  "codigo": "ND0155",
+  "descricao": "PNR MILITAR FORA DA FORCA MD",
+  "finalidade": "MD. O obje�vo desta rubrica é realizar o desconto de PNR (Próprio Nacional Residencial) de militares que encontram-se fora da força e vinculados a OM Ministério da Defesa (063016 ? Min Def). Similar a rubrica IEA"
+ },
+ {
+  "codigo": "ND0178",
+  "descricao": "DA EX ANT DED",
+  "finalidade": "O obje�vo desta rubrica é realizar o desconto de PNR (Próprio Nacional Residencial) de militares que encontram-se fora da força e vinculados a OM Ministério da Defesa (063016 ? Min Def). Similar a rubrica IEA Similar a rubrica IEB A Rubrica é de Poupança"
+ },
+ {
+  "codigo": "ND0179",
+  "descricao": "DA EA AJ CON N D",
+  "finalidade": "que encontram-se fora da força e vinculados a OM Ministério da Defesa (063016 ? Min Def). Similar a rubrica IEA Similar a rubrica IEB A Rubrica é de Poupança Valor de parcela a ser depositado em poupança vinculada POUPEX"
+ },
+ {
+  "codigo": "ND0500",
+  "descricao": "ZR1 - POUPEX POUPANCA",
+  "finalidade": "Similar a rubrica IEA Similar a rubrica IEB A Rubrica é de Poupança Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX"
+ },
+ {
+  "codigo": "ND0501",
+  "descricao": "ZR2 - POUPEX POUPANCA",
+  "finalidade": "Similar a rubrica IEB A Rubrica é de Poupança Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX"
+ },
+ {
+  "codigo": "ND0502",
+  "descricao": "ZR3 - POUPEX POUPANCA",
+  "finalidade": "A Rubrica é de Poupança Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX"
+ },
+ {
+  "codigo": "ND0503",
+  "descricao": "ZR4 - POUPEX POUPANCA",
+  "finalidade": "Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX"
+ },
+ {
+  "codigo": "ND0504",
+  "descricao": "ZR5 - POUPEX POUPANCA",
+  "finalidade": "Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX Valor de parcela a ser depositado em poupança vinculada POUPEX"
+ },
+ {
+  "codigo": "ND0505",
+  "descricao": "ZR7 - POUPEX FIN IMOB",
+  "finalidade": "FINALIDADE A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0506",
+  "descricao": "ZS4 - POUPEX-FIN MAT",
+  "finalidade": "FINALIDADE A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Decessos"
+ },
+ {
+  "codigo": "ND0507",
+  "descricao": "ZS6 - POUPEX-FIN TER",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Decessos A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0508",
+  "descricao": "Z35 - FHE DECESSOS",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Decessos A Rubrica é de Seguro A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0509",
+  "descricao": "ZR0 - FHE-FAM",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Decessos A Rubrica é de Seguro A Rubrica é de Financiamento A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0510",
+  "descricao": "ZR6 - FHE FIN IMOB",
+  "finalidade": "A Rubrica é de Decessos A Rubrica é de Seguro A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0511",
+  "descricao": "ZR8 - FHE-FIN MAT",
+  "finalidade": "A Rubrica é de Seguro A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0512",
+  "descricao": "ZR9 - FHE-FIN IMOB",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0513",
+  "descricao": "ZRA - FHE EMP ESP/EXCP",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Financiamento A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0514",
+  "descricao": "ZS2 - FHE - SEGUROS",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0515",
+  "descricao": "ZS3 - FHE-EMP SIMPLES",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0516",
+  "descricao": "ZS5 - FHE-TX OCUP",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Financiamento A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0517",
+  "descricao": "ZS7 - FHE MICRO FACIL",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Financiamento A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0518",
+  "descricao": "ZGH - FHE DENTAL",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Financiamento A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0519",
+  "descricao": "ZGF - FHE EMPRES FARDA",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica corresponde a um seguro gratuito que a FHE concede para todos os recrutas."
+ },
+ {
+  "codigo": "ND0520",
+  "descricao": "ZGL - FHE FINANC VEIC",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica corresponde a um seguro gratuito que a FHE concede para todos os recrutas. A Rubrica é de Pecúlio"
+ },
+ {
+  "codigo": "ND0521",
+  "descricao": "ZGV - FHE SEG GRAT",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica corresponde a um seguro gratuito que a FHE concede para todos os recrutas. A Rubrica é de Pecúlio A rubrica é de emprés�mo."
+ },
+ {
+  "codigo": "ND0522",
+  "descricao": "ZA3 - CAPEMI - PEC",
+  "finalidade": "A Rubrica é de Financiamento A rubrica corresponde a um seguro gratuito que a FHE concede para todos os recrutas. A Rubrica é de Pecúlio A rubrica é de emprés�mo. A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0523",
+  "descricao": "ZXL - CAPEMI EMPREST",
+  "finalidade": "A rubrica corresponde a um seguro gratuito que a FHE concede para todos os recrutas. A Rubrica é de Pecúlio A rubrica é de emprés�mo. A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0524",
+  "descricao": "ZA8 - CASA SGT BR MENS",
+  "finalidade": "A Rubrica é de Pecúlio A rubrica é de emprés�mo. A rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0525",
+  "descricao": "ZUD - CMC (MENS)",
+  "finalidade": "A rubrica é de emprés�mo. A rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade A rubrica é de plano de saúde"
+ },
+ {
+  "codigo": "ND0526",
+  "descricao": "ZB4 - C MIL S/EF-MENS",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade A rubrica é de plano de saúde A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0527",
+  "descricao": "ZB5 - C MIL - AUX SAU",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A rubrica é de plano de saúde A rubrica é de emprés�mo A rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0528",
+  "descricao": "ZB7 - C MIL - EMPRESTIMO",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de plano de saúde A rubrica é de emprés�mo A rubrica é de seguro A rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0529",
+  "descricao": "ZC1 - PREVIMIL (SEGS)",
+  "finalidade": "A rubrica é de plano de saúde A rubrica é de emprés�mo A rubrica é de seguro A rubrica é de previdência privada A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0530",
+  "descricao": "ZN3 - PREVIMIL-P DEDUT",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de seguro A rubrica é de previdência privada A rubrica é de emprés�mo A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0531",
+  "descricao": "ZXM - PREVIMIL - EMP",
+  "finalidade": "A rubrica é de seguro A rubrica é de previdência privada A rubrica é de emprés�mo A rubrica é de emprés�mo a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0532",
+  "descricao": "ZXN - HSBC - EMPREST",
+  "finalidade": "A rubrica é de previdência privada A rubrica é de emprés�mo A rubrica é de emprés�mo a rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0533",
+  "descricao": "ZB3 - CSSE - SOCIO ESP",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de emprés�mo a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0534",
+  "descricao": "ZC7 - CSSE (MENS)",
+  "finalidade": "A rubrica é de emprés�mo a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de previdência privada A rubrica é de pecúlio"
+ },
+ {
+  "codigo": "ND0535",
+  "descricao": "ZD0 - GBOEX P DEDUT",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de previdência privada A rubrica é de pecúlio A rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0536",
+  "descricao": "ZD2 - GBOEX SEGURO",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de previdência privada A rubrica é de pecúlio A rubrica é de seguro A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0537",
+  "descricao": "ZD4 - GBOEX - SEG CONF",
+  "finalidade": "A rubrica é de previdência privada A rubrica é de pecúlio A rubrica é de seguro A rubrica é de emprés�mo A rubrica é de seguro."
+ },
+ {
+  "codigo": "ND0538",
+  "descricao": "ZXH - SALARYFITS",
+  "finalidade": "A rubrica é de pecúlio A rubrica é de seguro A rubrica é de emprés�mo A rubrica é de seguro. A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0539",
+  "descricao": "ZD6 - UPOFA (SEGS)",
+  "finalidade": "A rubrica é de seguro A rubrica é de emprés�mo A rubrica é de seguro. A rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0540",
+  "descricao": "ZXK - UPOFA - EMPREST",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de seguro. A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0541",
+  "descricao": "ZE1 - GSEGS (MENS)",
+  "finalidade": "A rubrica é de seguro. A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de seguro A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0542",
+  "descricao": "ZHN - GSEGS AUX SAUDE",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de seguro A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0543",
+  "descricao": "Z94 - C SGT WOLF MENS",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de seguro A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0544",
+  "descricao": "ZE6 - UBSSFA (MENS)",
+  "finalidade": "A rubrica é de seguro A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0545",
+  "descricao": "ZF2 - CASOMI (MENS)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade."
+ },
+ {
+  "codigo": "ND0546",
+  "descricao": "ZY3 - CASOMI EMPREST",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade. A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0547",
+  "descricao": "ZF4 - R PANDIA CALOGER",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade. A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0548",
+  "descricao": "ZF5 - CSSE - RJ",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade. A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0549",
+  "descricao": "ZF8 - CSSVM - MENS",
+  "finalidade": "A rubrica é de mensalidade. A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de plano de saude"
+ },
+ {
+  "codigo": "ND0550",
+  "descricao": "ZJ2 - CSSVM SOC VINC",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de plano de saude A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0551",
+  "descricao": "ZD8 - CSS 2 EX S SAUDE",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de plano de saude A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0552",
+  "descricao": "ZF6 - CSS 2 EX MENS",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de plano de saude A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0553",
+  "descricao": "ZF7 - A S S EX (JF)",
+  "finalidade": "FINALIDADE A Rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0554",
+  "descricao": "ZF9 - C S S CURITIBA",
+  "finalidade": "FINALIDADE A Rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0555",
+  "descricao": "ZL3 - ASS M QUITERIA",
+  "finalidade": "A Rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de de Mensalidade."
+ },
+ {
+  "codigo": "ND0556",
+  "descricao": "Z49 - CLUBE EX (MENS)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de de Mensalidade. A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0557",
+  "descricao": "ZE4 - CLUBE EX (MES)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de de Mensalidade. A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0558",
+  "descricao": "Z40 - FUNDACAO OSORIO",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de de Mensalidade. A rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0559",
+  "descricao": "Z41 - BIBLIEX - REB",
+  "finalidade": "A rubrica é de de Mensalidade. A rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0560",
+  "descricao": "Z42 - BIBLIEX - ADN",
+  "finalidade": "A rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0561",
+  "descricao": "Z43 - BIBLIEX - RMCT",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de suprimento A ribrica é de suprimento"
+ },
+ {
+  "codigo": "ND0562",
+  "descricao": "Z71 - BIBLIEX - EDIT",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de suprimento A ribrica é de suprimento A rurbrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0563",
+  "descricao": "ZC6 - BIBLIEX - V.AVULSA",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de suprimento A ribrica é de suprimento A rurbrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0564",
+  "descricao": "Z93 - CMBH - MENS",
+  "finalidade": "A rubrica é de suprimento A ribrica é de suprimento A rurbrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0565",
+  "descricao": "ZJ3 - AMBRA MENS",
+  "finalidade": "A ribrica é de suprimento A rurbrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0566",
+  "descricao": "ZK3 - AMBRA - ASS SAUDE",
+  "finalidade": "A rurbrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo Rubrica des�nada ao Clube de Subtenentes e Sargentos das Forças Armadas"
+ },
+ {
+  "codigo": "ND0567",
+  "descricao": "ZY5 - CODIGO BLOQUEADO",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo Rubrica des�nada ao Clube de Subtenentes e Sargentos das Forças Armadas"
+ },
+ {
+  "codigo": "ND0568",
+  "descricao": "ZNY - CBSSFA (MENS)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de emprés�mo Rubrica des�nada ao Clube de Subtenentes e Sargentos das Forças Armadas"
+ },
+ {
+  "codigo": "ND0569",
+  "descricao": "ZRY - HOJE PREV SEGURO",
+  "finalidade": "A rubrica é de emprés�mo Rubrica des�nada ao Clube de Subtenentes e Sargentos das Forças Armadas"
+ },
+ {
+  "codigo": "ND0570",
+  "descricao": "ZSL - FUTURO P SEGURO",
+  "finalidade": "Rubrica des�nada ao Clube de Subtenentes e Sargentos das Forças Armadas a rubrica é de condomínio"
+ },
+ {
+  "codigo": "ND0571",
+  "descricao": "ZSN - FUTURO P PECULIO",
+  "finalidade": "a rubrica é de condomínio A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0572",
+  "descricao": "CONDOMINIOS",
+  "finalidade": "a rubrica é de condomínio A rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0573",
+  "descricao": "ZJ5 - RSPP (PEC)",
+  "finalidade": "a rubrica é de condomínio A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0574",
+  "descricao": "ZXP - RS PREV - EMP",
+  "finalidade": "a rubrica é de condomínio A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0575",
+  "descricao": "Z88 - ASMIR-AM (MENS)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Pecúlio"
+ },
+ {
+  "codigo": "ND0576",
+  "descricao": "ZL1 - ASSEX JP (MENS)",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Pecúlio A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0577",
+  "descricao": "Z47 - VIVER PREV - PEC",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Pecúlio A Rubrica é de Emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0578",
+  "descricao": "ZXQ - AMAL-EMPREST",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Pecúlio A Rubrica é de Emprés�mo A Rubrica é de Mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0579",
+  "descricao": "ZA1 - ASS EX-CMB MENS",
+  "finalidade": "A Rubrica é de Pecúlio A Rubrica é de Emprés�mo A Rubrica é de Mensalidade a rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0580",
+  "descricao": "Z50 - SAREX",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Mensalidade a rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0581",
+  "descricao": "ZN1 - CIRC MIL RECIFE",
+  "finalidade": "A Rubrica é de Mensalidade a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0582",
+  "descricao": "ZRZ - EQUAT P PECULIO",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0583",
+  "descricao": "ZL6 - ASSEN-RN (MENS)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0584",
+  "descricao": "ZQ5 - CRUZADA MIL ESP",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0585",
+  "descricao": "ZQ6 - ASSIST JURID / JC",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0586",
+  "descricao": "ZQ3 - ASS JURID/JC AT",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0587",
+  "descricao": "ZQ7 - GRESSE - MENS",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0588",
+  "descricao": "ZXR - BB EMPREST",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0589",
+  "descricao": "ZXS - B REAL EMPREST",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0590",
+  "descricao": "Z64 - CMPA (MENS)",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0591",
+  "descricao": "Z91 - CSSA (MENS)",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0592",
+  "descricao": "ZQ9 - ASS EXCMB CAMPOS",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0593",
+  "descricao": "ZJ9 - FPHMMLO MENS",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0594",
+  "descricao": "Z65 - CMM (PRESENCIAL)",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0595",
+  "descricao": "Z89 - CMM (MENS EAD)",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0596",
+  "descricao": "Z66 - CMJF (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0597",
+  "descricao": "Z67 - CMCG (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0598",
+  "descricao": "Z80 - CMF (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0599",
+  "descricao": "ZWF - CSSE-BH",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0600",
+  "descricao": "ZXT - CEF EMPREST",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0601",
+  "descricao": "ZXU - B LUSOBRAS - EMPR",
+  "finalidade": "FINALIDADE A rubrica é de emprés�mo. A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0602",
+  "descricao": "ZSA - CSSPV MENS",
+  "finalidade": "FINALIDADE A rubrica é de emprés�mo. A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0603",
+  "descricao": "ZSB - FAMIL - MT - MENS",
+  "finalidade": "A rubrica é de emprés�mo. A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0604",
+  "descricao": "ZC2 - ASMIR / PE (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade."
+ },
+ {
+  "codigo": "ND0605",
+  "descricao": "ZXV - B SCHAHIN EMPR",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade. A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0606",
+  "descricao": "ZC8 - FUNCEB - MENS",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade. A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0607",
+  "descricao": "ZGU - FUNCEB-D CULTURA",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Mensalidade. A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0608",
+  "descricao": "ZXX - BRAD.FI.DIGIO",
+  "finalidade": "A Rubrica é de Mensalidade. A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0609",
+  "descricao": "ZB6 - CTG JCB - MENS",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Seguro A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0610",
+  "descricao": "ZNF - SABEMI - SEG",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Seguro A Rubrica é de Emprés�mo A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0611",
+  "descricao": "ZXY - SABEMI SEG EMPR",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Seguro A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0612",
+  "descricao": "ZZ5 - SABEMI-SEG-VEIC",
+  "finalidade": "A Rubrica é de Seguro A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0613",
+  "descricao": "ZN5 - MONGERAL SEGURO",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0614",
+  "descricao": "ZXD - SICOOB EMPR",
+  "finalidade": "A Rubrica é de Financiamento A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de previdência privada a rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0615",
+  "descricao": "ZN8 - SABEMI P N DEDUT",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de previdência privada a rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0616",
+  "descricao": "ZXZ - SABEMI PREV EMP",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de previdência privada a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0617",
+  "descricao": "ZN9 - CIRC MIL FORTAL",
+  "finalidade": "A rubrica é de previdência privada a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Seguro Mens"
+ },
+ {
+  "codigo": "ND0618",
+  "descricao": "Z95 - AMIR / JF (MENS)",
+  "finalidade": "a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Seguro Mens A rubrica é de mensalidades"
+ },
+ {
+  "codigo": "ND0619",
+  "descricao": "ZC0 - AMIR JF - SEGURO",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Seguro Mens A rubrica é de mensalidades a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0620",
+  "descricao": "Z76 - CEP - MATC CURSO C",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Seguro Mens A rubrica é de mensalidades a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0621",
+  "descricao": "Z77 - CEP - PROVA",
+  "finalidade": "A Rubrica é de Seguro Mens A rubrica é de mensalidades a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0622",
+  "descricao": "Z78 - CEP - MAT DIDAT AV",
+  "finalidade": "A rubrica é de mensalidades a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0623",
+  "descricao": "Z79 - INDZ MAT DIDAT",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0624",
+  "descricao": "ZTM - CEP - MATC DISCP",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade Rubrica de consignação"
+ },
+ {
+  "codigo": "ND0625",
+  "descricao": "ZTR - CEP - REMATC",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade Rubrica de consignação A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0626",
+  "descricao": "ZSH - ECO PARK - MENS",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de mensalidade Rubrica de consignação A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0627",
+  "descricao": "Z83 - CMB (MENS)",
+  "finalidade": "A rubrica é de mensalidade Rubrica de consignação A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0628",
+  "descricao": "ZZK - B SANTANDER EMPR",
+  "finalidade": "Rubrica de consignação A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0629",
+  "descricao": "ZSM - CMSM MEN ESCOLAR",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0630",
+  "descricao": "ZY1 - BRADESCO EMPR",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A rubrica é de suprimento A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0631",
+  "descricao": "ZFN - AQ MEDI - LQFE",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A rubrica é de suprimento A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0632",
+  "descricao": "ZC5 - ABEM - MENSALID",
+  "finalidade": "A Rubrica é de Emprés�mo A rubrica é de suprimento A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0633",
+  "descricao": "ZXC - EMPREST ITAU",
+  "finalidade": "A rubrica é de suprimento A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0634",
+  "descricao": "ZA5 - FUTURO P DEDUT",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0635",
+  "descricao": "ZXB - FUTURO – EMPR",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0636",
+  "descricao": "ZFP - AQ MED - LAB DIV",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo A rubrica é de suprimento A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0637",
+  "descricao": "ZXF - NUBANK-EMPR",
+  "finalidade": "A Rubrica é de Emprés�mo A rubrica é de suprimento A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0638",
+  "descricao": "ZX2 - CIRC MIL CG-MENS",
+  "finalidade": "A rubrica é de suprimento A Rubrica é de Mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0639",
+  "descricao": "Z90 - IMBEL",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0640",
+  "descricao": "ZXF - ITAU UNIB - EMPR",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0641",
+  "descricao": "Z92 - ASA (MENS)",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0642",
+  "descricao": "ZXI - BMG EMPREST",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0643",
+  "descricao": "ZHJ - BMG MASTERCARD",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0644",
+  "descricao": "ZPA - PMB - PNR FEX CNST",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0645",
+  "descricao": "ZPB - PMB - PNR FEX UA",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0646",
+  "descricao": "PMB - PNR FEX MNT",
+  "finalidade": "A rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0647",
+  "descricao": "ZP0 - APM - CMRJ",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0648",
+  "descricao": "ZP1 - APM - CMB",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0649",
+  "descricao": "ZU2 - APM CMM",
+  "finalidade": "FINALIDADE A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0650",
+  "descricao": "ZU3 - APM CMBH",
+  "finalidade": "FINALIDADE A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0651",
+  "descricao": "ZU4 - APM - CMSM",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0652",
+  "descricao": "ZU5 - APM - CMJF",
+  "finalidade": "A Rubrica é de Mensalidade a rubrica é de mensalidade a rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0653",
+  "descricao": "ZU6 - APM CMPA",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0654",
+  "descricao": "ZU7 - APM CMCG",
+  "finalidade": "a rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0655",
+  "descricao": "ZU8 - APM - CMF",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0656",
+  "descricao": "ZSC - SICREDI EMPR",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0657",
+  "descricao": "ZUA - APM CMS",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0658",
+  "descricao": "ZUB - APM CMC",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0659",
+  "descricao": "ZD3 - ASMIR PB (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0660",
+  "descricao": "ZD5 - FAMIL - DF (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0661",
+  "descricao": "ZE9 - FAMIL RS (MENS)",
+  "finalidade": "A Rubrica é de Mensalidade a rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de seguro A rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0662",
+  "descricao": "ZX5 - METLIFE - SEGURO",
+  "finalidade": "a rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de seguro A rubrica é de previdência privada A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0663",
+  "descricao": "ZX6 - METLIFE - P PRIV",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de seguro A rubrica é de previdência privada A rubrica é de emprés�mo A rubrica é de financiamento"
+ },
+ {
+  "codigo": "ND0664",
+  "descricao": "ZX9 - BANCO ALFA EMPR",
+  "finalidade": "A rubrica é de seguro A rubrica é de previdência privada A rubrica é de emprés�mo A rubrica é de financiamento A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0665",
+  "descricao": "ZYH - B.ALFA - FIN VEIC",
+  "finalidade": "A rubrica é de previdência privada A rubrica é de emprés�mo A rubrica é de financiamento A rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0666",
+  "descricao": "ZXA - BCO CETELEM – EMPR",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de financiamento A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0667",
+  "descricao": "ZXE - ASMIR/PR - MENS",
+  "finalidade": "A rubrica é de financiamento A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0668",
+  "descricao": "ZXG - UY3 SOC. CRED.",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0669",
+  "descricao": "ZY2 - A EX-CMB-ES-MENS",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de emprés�mo a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0670",
+  "descricao": "ZY7 - BCO PARANA - EMP",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade A rubrica é de emprés�mo a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0671",
+  "descricao": "ZXO - TAYAH ADVOGADOS",
+  "finalidade": "A Rubrica é de Mensalidade A rubrica é de emprés�mo a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0672",
+  "descricao": "ZY8 - GREC TIRADEN - MEN",
+  "finalidade": "A rubrica é de emprés�mo a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0673",
+  "descricao": "ZY9 - CODIGO BLOQUEADO",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade a rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0674",
+  "descricao": "ZHK - B CRUZ SUL VISA",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de emprés�mo A rubrica é de mensalidade a rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0675",
+  "descricao": "ZYA - BCO PINE - EMPR",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de mensalidade a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0676",
+  "descricao": "ZYE - C MIL JFORA - MENS",
+  "finalidade": "A rubrica é de mensalidade a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Emprés�mo A rubrica é de financiamento"
+ },
+ {
+  "codigo": "ND0677",
+  "descricao": "ZYF - B.BONSUCESSO-EMP",
+  "finalidade": "a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Emprés�mo A rubrica é de financiamento A rubrica é de emprés�mo."
+ },
+ {
+  "codigo": "ND0678",
+  "descricao": "ZH3 - BCO PAN VISA",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Emprés�mo A rubrica é de financiamento A rubrica é de emprés�mo. A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0679",
+  "descricao": "ZYG - BCO PAN-EMP",
+  "finalidade": "A Rubrica é de Emprés�mo A rubrica é de financiamento A rubrica é de emprés�mo. A rubrica é de emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0680",
+  "descricao": "ZYI - CCB BRASIL - EMP",
+  "finalidade": "A rubrica é de financiamento A rubrica é de emprés�mo. A rubrica é de emprés�mo A Rubrica é de Mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0681",
+  "descricao": "ZYJ - ANFEB-CGMS MENS",
+  "finalidade": "A rubrica é de emprés�mo. A rubrica é de emprés�mo A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A rubrica é de financiamento."
+ },
+ {
+  "codigo": "ND0682",
+  "descricao": "ZYL - BCO IND BR-EMPR",
+  "finalidade": "A rubrica é de emprés�mo A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A rubrica é de financiamento. A rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0683",
+  "descricao": "ZYQ - B.IND BR - F VEIC",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Emprés�mo A rubrica é de financiamento. A rubrica é de previdência privada a rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0684",
+  "descricao": "ZYM - COMPREV P DEDUT",
+  "finalidade": "A Rubrica é de Emprés�mo A rubrica é de financiamento. A rubrica é de previdência privada a rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0685",
+  "descricao": "ZYN - COMPREV - EMPR",
+  "finalidade": "A rubrica é de financiamento. A rubrica é de previdência privada a rubrica é de emprés�mo A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0686",
+  "descricao": "ZYO - CIRC MIL MNS - MEN",
+  "finalidade": "A rubrica é de previdência privada a rubrica é de emprés�mo A rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de pecúlio"
+ },
+ {
+  "codigo": "ND0687",
+  "descricao": "ZYP - UNIV TAUBATE - MEN",
+  "finalidade": "a rubrica é de emprés�mo A rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de pecúlio A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0688",
+  "descricao": "ZYR - PREVICORP - PEC",
+  "finalidade": "A rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de pecúlio A rubrica é de mensalidade A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0689",
+  "descricao": "ZYS - CONTI ADVOGADOS",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de pecúlio A rubrica é de mensalidade A Rubrica é de Seguro A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0690",
+  "descricao": "ZYV - ROMA BENF PES",
+  "finalidade": "A rubrica é de pecúlio A rubrica é de mensalidade A Rubrica é de Seguro A Rubrica é de Seguro A Rubrica é de P Privada"
+ },
+ {
+  "codigo": "ND0691",
+  "descricao": "ZYW - ROMA SEGURO BENS",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Seguro A Rubrica é de Seguro A Rubrica é de P Privada A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0692",
+  "descricao": "ZYZ - MBM P PRIVADA",
+  "finalidade": "A Rubrica é de Seguro A Rubrica é de Seguro A Rubrica é de P Privada A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0693",
+  "descricao": "ZYX - BANCO BVA - EMPR",
+  "finalidade": "A Rubrica é de Seguro A Rubrica é de P Privada A rubrica é de emprés�mo A Rubrica é de Emprés�mo a rubrica é de saúde."
+ },
+ {
+  "codigo": "ND0694",
+  "descricao": "ZYT - BANCO ARBI -EMPR",
+  "finalidade": "A Rubrica é de P Privada A rubrica é de emprés�mo A Rubrica é de Emprés�mo a rubrica é de saúde. a rubrica é de saúde"
+ },
+ {
+  "codigo": "ND0695",
+  "descricao": "ZGM - MULTICARD - SAM",
+  "finalidade": "A rubrica é de emprés�mo A Rubrica é de Emprés�mo a rubrica é de saúde. a rubrica é de saúde"
+ },
+ {
+  "codigo": "ND0696",
+  "descricao": "ZGN - MULTICARD - SAM PL",
+  "finalidade": "A Rubrica é de Emprés�mo a rubrica é de saúde. a rubrica é de saúde"
+ },
+ {
+  "codigo": "ND0697",
+  "descricao": "ZGZ - MULTICARD - MEDIC",
+  "finalidade": "FINALIDADE a rubrica é de saude A rubrica é de mensalidade A rubrica é de ensino"
+ },
+ {
+  "codigo": "ND0698",
+  "descricao": "ZGO - MULTICARD - CEL MV",
+  "finalidade": "FINALIDADE a rubrica é de saude A rubrica é de mensalidade A rubrica é de ensino a rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0699",
+  "descricao": "ZGP - MULTICARD - ENSINO",
+  "finalidade": "a rubrica é de saude A rubrica é de mensalidade A rubrica é de ensino a rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0700",
+  "descricao": "ZGR - MULTICARD SEGURO",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de ensino a rubrica é de seguro a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0701",
+  "descricao": "ZGS - MULTICARD - TURISMO",
+  "finalidade": "a rubrica é de seguro a rubrica é de mensalidade A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0702",
+  "descricao": "ZZ1 - CODIGO BLOQUEADO",
+  "finalidade": "a rubrica é de mensalidade A Rubrica é de Emprés�mo A Rubrica é de Financiamento A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0703",
+  "descricao": "ZZ3 - VOTORANTIM VEIC",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Financiamento A Rubrica é de Seguro A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0704",
+  "descricao": "ZZ6 - P SEGURO-SEG PES",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Financiamento A Rubrica é de Seguro A Rubrica é de Seguro A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0705",
+  "descricao": "ZZ7 - PSEGURO-SEG BENS",
+  "finalidade": "A Rubrica é de Financiamento A Rubrica é de Seguro A Rubrica é de Seguro A Rubrica é de Seguro A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0706",
+  "descricao": "ZZ8 - PSEG-SEG GARANT",
+  "finalidade": "A Rubrica é de Seguro A Rubrica é de Seguro A Rubrica é de Seguro A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0707",
+  "descricao": "ZYK - BCO ORIGINAL-EMP",
+  "finalidade": "A Rubrica é de Seguro A Rubrica é de Seguro A rubrica é de emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Financiamento"
+ },
+ {
+  "codigo": "ND0708",
+  "descricao": "ZZA - BCO DAYCOVAL-EMP",
+  "finalidade": "A Rubrica é de Seguro A rubrica é de emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0709",
+  "descricao": "ZZI - BDAYCOVAL-F VEIC",
+  "finalidade": "A rubrica é de emprés�mo A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica é de suprimento A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0710",
+  "descricao": "ZEG - PRODUTO EGGCF",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Financiamento A rubrica é de suprimento A Rubrica é de Seguro A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0711",
+  "descricao": "ZZF - PREVISUL-SEG PES",
+  "finalidade": "A Rubrica é de Financiamento A rubrica é de suprimento A Rubrica é de Seguro A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0712",
+  "descricao": "ZZG - B MERCANTIL - EMP",
+  "finalidade": "A rubrica é de suprimento A Rubrica é de Seguro A rubrica é de emprés�mo A Rubrica é de Emprés�mo a rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0713",
+  "descricao": "ZZH - BCO SEMEAR EMP",
+  "finalidade": "A Rubrica é de Seguro A rubrica é de emprés�mo A Rubrica é de Emprés�mo a rubrica é de emprés�mo A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0714",
+  "descricao": "ZZL - BCO MASTER - EMP",
+  "finalidade": "A rubrica é de emprés�mo A Rubrica é de Emprés�mo a rubrica é de emprés�mo A Rubrica é de Mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0715",
+  "descricao": "ZZ2 - ECCO SALVA - MENS",
+  "finalidade": "A Rubrica é de Emprés�mo a rubrica é de emprés�mo A Rubrica é de Mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0716",
+  "descricao": "ZZM - BOM TUR - ADESAO",
+  "finalidade": "a rubrica é de emprés�mo A Rubrica é de Mensalidade a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0717",
+  "descricao": "ZZN - BOM TUR - MENS",
+  "finalidade": "A Rubrica é de Mensalidade a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0718",
+  "descricao": "ZZO - G W DALMOLIN - ADV",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de seguro a rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0719",
+  "descricao": "ZZP - HSBC SEG PES",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de mensalidade a rubrica é de seguro a rubrica é de previdência privada A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0720",
+  "descricao": "ZZQ - HSBC P PRIV",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de seguro a rubrica é de previdência privada A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0721",
+  "descricao": "ZZR - IGHMB MENS",
+  "finalidade": "a rubrica é de seguro a rubrica é de previdência privada A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0722",
+  "descricao": "ZFA - ZELADORIA - HFA",
+  "finalidade": "a rubrica é de previdência privada A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0723",
+  "descricao": "ZFB - ZELADORIA-HFA AT",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de emprés�mo A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0724",
+  "descricao": "ZZS - BANCRED - EMPR",
+  "finalidade": "A Rubrica é de Mensalidade A Rubrica é de Mensalidade a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Mensalidade"
+ },
+ {
+  "codigo": "ND0725",
+  "descricao": "ZGA - ADV R.CANAL - MENS",
+  "finalidade": "A Rubrica é de Mensalidade a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Mensalidade a rubrica é de pecúlio"
+ },
+ {
+  "codigo": "ND0726",
+  "descricao": "ZZV - CRSSC - MENS",
+  "finalidade": "a rubrica é de emprés�mo A rubrica é de mensalidade A Rubrica é de Mensalidade a rubrica é de pecúlio a rubrica é de seguro"
+ },
+ {
+  "codigo": "ND0727",
+  "descricao": "ZZX - CAPEMISA - PECULIO",
+  "finalidade": "A rubrica é de mensalidade A Rubrica é de Mensalidade a rubrica é de pecúlio a rubrica é de seguro A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0728",
+  "descricao": "ZZY - CAPEMISA - SEGURO",
+  "finalidade": "A Rubrica é de Mensalidade a rubrica é de pecúlio a rubrica é de seguro A rubrica é de emprés�mo a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0729",
+  "descricao": "ZZZ - CAPEMISA - EMPR",
+  "finalidade": "a rubrica é de pecúlio a rubrica é de seguro A rubrica é de emprés�mo a rubrica é de mensalidade A Rubrica é de Seguro"
+ },
+ {
+  "codigo": "ND0730",
+  "descricao": "ZGB - CMIL TCORAC - MENS",
+  "finalidade": "a rubrica é de seguro A rubrica é de emprés�mo a rubrica é de mensalidade A Rubrica é de Seguro a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0731",
+  "descricao": "ZZT - FEDERAL VPREV-SG",
+  "finalidade": "A rubrica é de emprés�mo a rubrica é de mensalidade A Rubrica é de Seguro a rubrica é de mensalidade A Rubrica é de Saúde"
+ },
+ {
+  "codigo": "ND0732",
+  "descricao": "ZZU - CSSMARABA - MENS",
+  "finalidade": "a rubrica é de mensalidade A Rubrica é de Seguro a rubrica é de mensalidade A Rubrica é de Saúde A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0733",
+  "descricao": "ZGJ - SALUTAR PSAU-MEN",
+  "finalidade": "A Rubrica é de Seguro a rubrica é de mensalidade A Rubrica é de Saúde A rubrica é de mensalidade A rubrica é de pecúlio."
+ },
+ {
+  "codigo": "ND0734",
+  "descricao": "ZGG - AHMTB - MENS",
+  "finalidade": "a rubrica é de mensalidade A Rubrica é de Saúde A rubrica é de mensalidade A rubrica é de pecúlio. A rubrica é de emprés�mo."
+ },
+ {
+  "codigo": "ND0735",
+  "descricao": "ZGK - INVESTPREV SEG",
+  "finalidade": "A Rubrica é de Saúde A rubrica é de mensalidade A rubrica é de pecúlio. A rubrica é de emprés�mo. a rubrica é de financiamento"
+ },
+ {
+  "codigo": "ND0736",
+  "descricao": "ZGI - INVESTPREV - EMPR",
+  "finalidade": "A rubrica é de mensalidade A rubrica é de pecúlio. A rubrica é de emprés�mo. a rubrica é de financiamento A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0737",
+  "descricao": "ZGT - TERRACAP - F TERR",
+  "finalidade": "A rubrica é de pecúlio. A rubrica é de emprés�mo. a rubrica é de financiamento A rubrica é de emprés�mo A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0738",
+  "descricao": "ZGW - B CACIQUE - EMPR",
+  "finalidade": "A rubrica é de emprés�mo. a rubrica é de financiamento A rubrica é de emprés�mo A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0739",
+  "descricao": "ZGX - BCO MORADA - EMP",
+  "finalidade": "a rubrica é de financiamento A rubrica é de emprés�mo A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0740",
+  "descricao": "ZGY - BCO SAFRA EMPR",
+  "finalidade": "A rubrica é de emprés�mo A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0741",
+  "descricao": "ZWM - COND. NOVA DESC RN",
+  "finalidade": "A Rubrica é de Emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0742",
+  "descricao": "ZHB - BCO FIBRA - EMPR",
+  "finalidade": "A Rubrica é de Emprés�mo a rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0743",
+  "descricao": "ZHC - MATONE PREV PRIV",
+  "finalidade": "A Rubrica é de Emprés�mo a rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0744",
+  "descricao": "ZHD - MATONE PREVEMPR",
+  "finalidade": "FINALIDADE a rubrica é de emprés�mo A Rubrica é de Emprés�mo A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0745",
+  "descricao": "ZHE - LECCA CFI- EMPR",
+  "finalidade": "FINALIDADE a rubrica é de emprés�mo A Rubrica é de Emprés�mo A rubrica é de emprés�mo a rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0746",
+  "descricao": "ZHF - BARIGUI CFI - EMPR",
+  "finalidade": "a rubrica é de emprés�mo A Rubrica é de Emprés�mo A rubrica é de emprés�mo a rubrica é de previdência privada A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0747",
+  "descricao": "ZHG - ASPECIR P DEDUT",
+  "finalidade": "A Rubrica é de Emprés�mo A rubrica é de emprés�mo a rubrica é de previdência privada A rubrica é de emprés�mo a rubrica é de previdência privada"
+ },
+ {
+  "codigo": "ND0748",
+  "descricao": "ZHH - ASPECIR PREV - EMP",
+  "finalidade": "A rubrica é de emprés�mo a rubrica é de previdência privada A rubrica é de emprés�mo a rubrica é de previdência privada a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0749",
+  "descricao": "ZHI - ALFA PREV PRIV",
+  "finalidade": "a rubrica é de previdência privada A rubrica é de emprés�mo a rubrica é de previdência privada a rubrica é de mensalidade a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0750",
+  "descricao": "ZHM - CSSANEGRAS - MENS",
+  "finalidade": "A rubrica é de emprés�mo a rubrica é de previdência privada a rubrica é de mensalidade a rubrica é de suprimento a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0751",
+  "descricao": "Z39 - AQ UNIF - 3 B SUP",
+  "finalidade": "a rubrica é de previdência privada a rubrica é de mensalidade a rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0752",
+  "descricao": "Z45 - AQ UNIF - 5 B SUP",
+  "finalidade": "a rubrica é de mensalidade a rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0753",
+  "descricao": "Z56 - AQ UNIF - 9 B SUP",
+  "finalidade": "a rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento A rubrica é de suprimento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0755",
+  "descricao": "Z34 - AQ UNIF-1 D SUP",
+  "finalidade": "a rubrica é de suprimento A rubrica é de suprimento A rubrica é de suprimento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0756",
+  "descricao": "Z37 - AQ UNIF - 21 D SUP",
+  "finalidade": "A rubrica é de suprimento A rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0757",
+  "descricao": "ZDO - COL MIL ESLOG",
+  "finalidade": "A rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0758",
+  "descricao": "Z52 - AQ UNIF - 7 D SUP",
+  "finalidade": "A rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0759",
+  "descricao": "Z55 - AQ UNIF-8 D SUP",
+  "finalidade": "a rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0760",
+  "descricao": "Z69 - AQ UNIF - 10 D SUP",
+  "finalidade": "a rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0761",
+  "descricao": "Z85 - AQ UNIF-11 D SUP",
+  "finalidade": "A rubrica é de suprimento a rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0762",
+  "descricao": "Z44 - AQ UNIF - 4 D SUP",
+  "finalidade": "a rubrica é de suprimento a rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0763",
+  "descricao": "ZC9 - AQ UNIF - 17 BA LOG",
+  "finalidade": "a rubrica é de suprimento A rubrica é de suprimento a rubrica é de suprimento A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0764",
+  "descricao": "ZCT - COND-SHCE S 1101A",
+  "finalidade": "A rubrica é de suprimento a rubrica é de suprimento A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0765",
+  "descricao": "ZCU - COND-SHCE S 1101B",
+  "finalidade": "a rubrica é de suprimento A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0766",
+  "descricao": "ZCV - COND - SHCE S 1105A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0767",
+  "descricao": "ZCW - COND-SHCE S 1105B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0768",
+  "descricao": "ZBQ - COND-SHCE S 303A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0769",
+  "descricao": "ZBR - COND-SHCE S 303B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0770",
+  "descricao": "ZAA - COND-SHCE S 307A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0771",
+  "descricao": "ZAB - COND-SHCE S 309F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0772",
+  "descricao": "ZBS - COND-SHCE S 409A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0773",
+  "descricao": "ZBT - COND-SHCE S 409B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0774",
+  "descricao": "ZBU - COND-SHCE S 503A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0775",
+  "descricao": "ZBV - COND-SHCE S 507A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0776",
+  "descricao": "ZAC - COND - SHCE S 507B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0777",
+  "descricao": "ZBW - COND-SHCE S 509C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0778",
+  "descricao": "ZBX - COND-SHCE S 509F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0779",
+  "descricao": "ZBY - COND-SHCE S 511A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0780",
+  "descricao": "ZBZ - COND-SHCE S 511B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0781",
+  "descricao": "ZCA - COND-SHCE S 607A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0782",
+  "descricao": "ZAD - COND-SHCE S 607B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0783",
+  "descricao": "ZAE - COND - SHCE S 707C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0784",
+  "descricao": "ZCB - COND-SHCE S 709A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0785",
+  "descricao": "ZCC - COND-SHCE S 709B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0786",
+  "descricao": "ZAF - COND-SHCE S 801C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0787",
+  "descricao": "ZCD - COND-SHCE S 801D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0788",
+  "descricao": "ZCE - COND-SHCE S 805C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0789",
+  "descricao": "ZCF - COND-SHCE S 805D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0790",
+  "descricao": "ZCG - COND-SHCE S 903A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0791",
+  "descricao": "ZCH - COND-SHCE S 903B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0792",
+  "descricao": "ZAG - COND - SHCE S 905A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0793",
+  "descricao": "ZCI - COND-SHCE S 905B",
+  "finalidade": "FINALIDADE A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0794",
+  "descricao": "ZCJ - COND-SHCE S 905C",
+  "finalidade": "FINALIDADE A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0795",
+  "descricao": "ZCK - COND-SHCE S 905D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0796",
+  "descricao": "ZCL - COND-SHCE S 905E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0797",
+  "descricao": "ZCM - COND-SHCE S 905F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0798",
+  "descricao": "ZCN - COND-SHCE S 905G",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0799",
+  "descricao": "ZCP - COND-SHCE S 905H",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0800",
+  "descricao": "ZCQ - COND-SHCE S 905I",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0801",
+  "descricao": "ZAH - COND-SHCE S 905J",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0802",
+  "descricao": "ZCR - COND - SHCE S 907A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0803",
+  "descricao": "ZCS - COND-SHCE S 907B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0804",
+  "descricao": "ZFM - COND - SMU ROS A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0805",
+  "descricao": "ZND - COND-SMU ROS B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0806",
+  "descricao": "ZAI - COND-SQN 102 A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0807",
+  "descricao": "ZCX - COND-SQN 102 B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0808",
+  "descricao": "ZAJ - COND-SQN 102 C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0809",
+  "descricao": "ZAK - COND-SQN 102 D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0810",
+  "descricao": "ZAL - COND - SQN 102 E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0811",
+  "descricao": "ZAM - COND-SQN 102 F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0812",
+  "descricao": "ZAN - COND-SQN 102 G/H",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0813",
+  "descricao": "ZCY - COND-SQN 103 A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0814",
+  "descricao": "ZAP - COND-SQN 103 B/C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0815",
+  "descricao": "ZAQ - COND-SQN 103 D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0816",
+  "descricao": "ZAR - COND-SQN 103 E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0817",
+  "descricao": "ZAS - COND - SQN 103 F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0818",
+  "descricao": "ZCZ - COND-SQN 103 G",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0819",
+  "descricao": "ZAT - COND-SQN 103 H",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0820",
+  "descricao": "ZAU - COND - SQN 103 I/J",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0821",
+  "descricao": "ZAV - COND-SQN 103 K",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0822",
+  "descricao": "ZAW - COND-SQN 111 B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0823",
+  "descricao": "ZAX - COND - SQN 113 A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0824",
+  "descricao": "ZAY - COND-SQN 113 B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0825",
+  "descricao": "ZAZ - COND-SQN 113 C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0826",
+  "descricao": "ZDA - COND-SQN 113 D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0827",
+  "descricao": "ZBA - COND-SQN 113 E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0828",
+  "descricao": "ZBB - COND-SQN 113 F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0829",
+  "descricao": "ZDB - COND-SQN 113 G",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0830",
+  "descricao": "ZDC - COND-SQN 113 H",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0831",
+  "descricao": "ZDD - COND-SQN 113 J",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0832",
+  "descricao": "ZBC - COND-SQN 208 C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0833",
+  "descricao": "ZBD - COND-SQN 303 A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0834",
+  "descricao": "ZBE - COND - SQN 303 B/C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0835",
+  "descricao": "ZDE - COND-SQN 305 A/B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0836",
+  "descricao": "ZDF - COND-SQN 305 E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0837",
+  "descricao": "ZDG - COND - SQN 306 A/E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0838",
+  "descricao": "ZDH - COND-SQN 306 B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0839",
+  "descricao": "ZBF - COND-SQN 306 C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0840",
+  "descricao": "ZDI - COND-SQN 306 D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0841",
+  "descricao": "ZDJ - COND-SQN 306 F/G",
+  "finalidade": "FINALIDADE A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0842",
+  "descricao": "ZDK - COND-SQN 306 H",
+  "finalidade": "FINALIDADE A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0843",
+  "descricao": "ZDL - COND - SQN 306 I",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0844",
+  "descricao": "ZDM - COND-SQN 306 J",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0845",
+  "descricao": "ZDN - COND-SQN 306 K",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0846",
+  "descricao": "ZDP - COND-SQS 115 A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0847",
+  "descricao": "ZBG - COND-SQS 115 E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0848",
+  "descricao": "ZDQ - COND-SQS 115 G",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0849",
+  "descricao": "ZDR - COND-SQS 115 I",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0850",
+  "descricao": "ZBH - COND-SQS 209 A",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0851",
+  "descricao": "ZDS - COND-SQS 209 B",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0852",
+  "descricao": "ZDT - COND-SQS 209 C",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0853",
+  "descricao": "ZBI - COND-SQS 209 D",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0854",
+  "descricao": "ZBJ - COND-SQS 209 E",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0855",
+  "descricao": "ZBK - COND-SQS 209 F",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0856",
+  "descricao": "ZBL - COND-SQS 209 G",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0857",
+  "descricao": "ZBM - COND-SQS 209 H",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0858",
+  "descricao": "ZBN - COND-SQS 209 I",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio"
+ },
+ {
+  "codigo": "ND0859",
+  "descricao": "ZBP - COND - SQS 209 J",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0860",
+  "descricao": "ZDU - COND-SQS 209 K",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A Rubrica é de Condomínio A rubrica é de mensalidade a rubrica é de mensalidade"
+ },
+ {
+  "codigo": "ND0861",
+  "descricao": "ENS - CPEX - MENS",
+  "finalidade": "A Rubrica é de Condomínio A Rubrica é de Condomínio A rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de emprés�mo"
+ },
+ {
+  "codigo": "ND0862",
+  "descricao": "SEF - MENS",
+  "finalidade": "A Rubrica é de Condomínio A rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de emprés�mo A Rubrica é de Emprés�mo"
+ },
+ {
+  "codigo": "ND0863",
+  "descricao": "ZY4 - GSEGS - EMPREST",
+  "finalidade": "A rubrica é de mensalidade a rubrica é de mensalidade A rubrica é de emprés�mo A Rubrica é de Emprés�mo Arrecadação de contribuições à en�dade / rubrica de mensalidade"
+ },
+ {
+  "codigo": "ND0864",
+  "descricao": "ZHU - BANRISUL - EMPR",
+  "finalidade": "a rubrica é de mensalidade A rubrica é de emprés�mo A Rubrica é de Emprés�mo Arrecadação de contribuições à en�dade / rubrica de mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0865",
+  "descricao": "ZHY - A N VET FEB MENS",
+  "finalidade": "A rubrica é de emprés�mo A Rubrica é de Emprés�mo Arrecadação de contribuições à en�dade / rubrica de mensalidade Rubrica de Mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0866",
+  "descricao": "ZH2 - ALSSVMILITAR-MEN",
+  "finalidade": "A Rubrica é de Emprés�mo Arrecadação de contribuições à en�dade / rubrica de mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Previdência"
+ },
+ {
+  "codigo": "ND0867",
+  "descricao": "ZHM - CSSAGNEGRAS-MENS",
+  "finalidade": "Arrecadação de contribuições à en�dade / rubrica de mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Previdência Rubrica de Previdência"
+ },
+ {
+  "codigo": "ND0868",
+  "descricao": "ZHP - MONG P N DEDUT",
+  "finalidade": "Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Previdência Rubrica de Previdência Rubrica do Seguro"
+ },
+ {
+  "codigo": "ND0869",
+  "descricao": "ZHT - MONG P DEDUT",
+  "finalidade": "Rubrica de Mensalidade Rubrica de Previdência Rubrica de Previdência Rubrica do Seguro Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0870",
+  "descricao": "ZHS - MONGERAL SEGUROS",
+  "finalidade": "Rubrica de Previdência Rubrica de Previdência Rubrica do Seguro Rubrica de Mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0871",
+  "descricao": "ZU9 - APM - CMR",
+  "finalidade": "Rubrica de Previdência Rubrica do Seguro Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0872",
+  "descricao": "Z82 - C M R (MENSALIDADE)",
+  "finalidade": "Rubrica do Seguro Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0873",
+  "descricao": "ZH5 - QUEIROZ A AD - MEN",
+  "finalidade": "Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0874",
+  "descricao": "ZH6-C IR MIL MBA - MENS",
+  "finalidade": "Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade"
+ },
+ {
+  "codigo": "ND0875",
+  "descricao": "ZH9 - ASSEB - MENS",
+  "finalidade": "Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade A Rubrica é do Condomínio Associação de Compossuidores do Residencial Sargento Max Wolff"
+ },
+ {
+  "codigo": "ND0876",
+  "descricao": "ZH4 - ALVM SOCVINC - ME",
+  "finalidade": "Rubrica de Mensalidade Rubrica de Mensalidade Rubrica de Mensalidade A Rubrica é do Condomínio Associação de Compossuidores do Residencial Sargento Max Wolff Filho"
+ },
+ {
+  "codigo": "ND0877",
+  "descricao": "ZFS - ACRSGTWOLFF-MENS",
+  "finalidade": "Rubrica de Mensalidade A Rubrica é do Condomínio Associação de Compossuidores do Residencial Sargento Max Wolff Filho PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0878",
+  "descricao": "ZIA - HOJE P DED",
+  "finalidade": "A Rubrica é do Condomínio Associação de Compossuidores do Residencial Sargento Max Wolff Filho PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA BANCO INTER FACTA FOMAMCEIRA /S/A"
+ },
+ {
+  "codigo": "ND0879",
+  "descricao": "ZIB - BANCO INTER EMP",
+  "finalidade": "Filho PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA BANCO INTER FACTA FOMAMCEIRA /S/A ASPECIR EMPRÉSTIMOS"
+ },
+ {
+  "codigo": "ND0880",
+  "descricao": "ZIC - FACTA FIN EMP",
+  "finalidade": "PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA BANCO INTER FACTA FOMAMCEIRA /S/A ASPECIR EMPRÉSTIMOS BANCO SAFRA /S/A"
+ },
+ {
+  "codigo": "ND0881",
+  "descricao": "ZID - ASPECIR EMPR",
+  "finalidade": "BANCO INTER FACTA FOMAMCEIRA /S/A ASPECIR EMPRÉSTIMOS BANCO SAFRA /S/A CCB BRASIL FINANCEIRA S/A"
+ },
+ {
+  "codigo": "ND0882",
+  "descricao": "ZIE - BANCO SAFRA EMP",
+  "finalidade": "FACTA FOMAMCEIRA /S/A ASPECIR EMPRÉSTIMOS BANCO SAFRA /S/A CCB BRASIL FINANCEIRA S/A ASPECIR PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0883",
+  "descricao": "ZIF - CCB FIN EMP",
+  "finalidade": "ASPECIR EMPRÉSTIMOS BANCO SAFRA /S/A CCB BRASIL FINANCEIRA S/A ASPECIR PREVIDÊNCIA PRIVADA BANCO OLÉ BONSUCESSO CONSIGNADO S/A"
+ },
+ {
+  "codigo": "ND0884",
+  "descricao": "ZIG - ASPECIR P N DED",
+  "finalidade": "BANCO SAFRA /S/A CCB BRASIL FINANCEIRA S/A ASPECIR PREVIDÊNCIA PRIVADA BANCO OLÉ BONSUCESSO CONSIGNADO S/A CAPEMISA PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0885",
+  "descricao": "ZIH - OLE BONSUC EMP",
+  "finalidade": "CCB BRASIL FINANCEIRA S/A ASPECIR PREVIDÊNCIA PRIVADA BANCO OLÉ BONSUCESSO CONSIGNADO S/A CAPEMISA PREVIDÊNCIA PRIVADA GBOEX"
+ },
+ {
+  "codigo": "ND0886",
+  "descricao": "ZIJ - CAPEMISA P DEDUT",
+  "finalidade": "ASPECIR PREVIDÊNCIA PRIVADA BANCO OLÉ BONSUCESSO CONSIGNADO S/A CAPEMISA PREVIDÊNCIA PRIVADA GBOEX"
+ },
+ {
+  "codigo": "ND0887",
+  "descricao": "ZIP - GBOEXP N DEDUT",
+  "finalidade": "BANCO OLÉ BONSUCESSO CONSIGNADO S/A CAPEMISA PREVIDÊNCIA PRIVADA GBOEX"
+ },
+ {
+  "codigo": "ND0888",
+  "descricao": "ZIS - SABEMI P DEDUT",
+  "finalidade": "FINALIDADE SABEMI PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR"
+ },
+ {
+  "codigo": "ND0889",
+  "descricao": "ZIT - COMPREV P N DED",
+  "finalidade": "FINALIDADE SABEMI PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIA SEGURADORA S/A"
+ },
+ {
+  "codigo": "ND0890",
+  "descricao": "ZIX - EQUAT P DEDUT",
+  "finalidade": "SABEMI PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIA SEGURADORA S/A PRIMA VIDA ODONTOLOGIA DE GRUPO LTDA"
+ },
+ {
+  "codigo": "ND0891",
+  "descricao": "ZIZ - EQUATORIAL SEG",
+  "finalidade": "COMPREV PREVIDÊNCIA PRIVADA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIA SEGURADORA S/A PRIMA VIDA ODONTOLOGIA DE GRUPO LTDA FUTURO PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0892",
+  "descricao": "ZMN - PRIMA ODONTO MEN",
+  "finalidade": "EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIA SEGURADORA S/A PRIMA VIDA ODONTOLOGIA DE GRUPO LTDA FUTURO PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA"
+ },
+ {
+  "codigo": "ND0893",
+  "descricao": "ZMX - FUTURO P N DEDUT",
+  "finalidade": "EQUATORIA SEGURADORA S/A PRIMA VIDA ODONTOLOGIA DE GRUPO LTDA FUTURO PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA PREV SEGURO E PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0894",
+  "descricao": "ZMY - UNIÃO SEG EMPR",
+  "finalidade": "PRIMA VIDA ODONTOLOGIA DE GRUPO LTDA FUTURO PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA PREV SEGURO E PREVIDÊNCIA FINANCEIRA ALFA S/A"
+ },
+ {
+  "codigo": "ND0895",
+  "descricao": "ZNA - PREVIMIL P DEDUT",
+  "finalidade": "FUTURO PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA PREV SEGURO E PREVIDÊNCIA FINANCEIRA ALFA S/A COMPREV SEGURADORA S/A"
+ },
+ {
+  "codigo": "ND0896",
+  "descricao": "ZNJ - FINANC ALFA EMP",
+  "finalidade": "UNIÃO SEGURADORA PREV SEGURO E PREVIDÊNCIA FINANCEIRA ALFA S/A COMPREV SEGURADORA S/A BMG S/A"
+ },
+ {
+  "codigo": "ND0897",
+  "descricao": "ZNK - COMPREV SEGURO",
+  "finalidade": "PREV SEGURO E PREVIDÊNCIA FINANCEIRA ALFA S/A COMPREV SEGURADORA S/A BMG S/A INVESTPREV SEGURO E PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0898",
+  "descricao": "ZNL - BMG FINANC",
+  "finalidade": "FINANCEIRA ALFA S/A COMPREV SEGURADORA S/A BMG S/A INVESTPREV SEGURO E PREVIDÊNCIA RECÍPROCA ASSISTÊNCIA"
+ },
+ {
+  "codigo": "ND0899",
+  "descricao": "ZNM - INVESTP P DEDUT",
+  "finalidade": "COMPREV SEGURADORA S/A BMG S/A INVESTPREV SEGURO E PREVIDÊNCIA RECÍPROCA ASSISTÊNCIA GBOEX"
+ },
+ {
+  "codigo": "ND0900",
+  "descricao": "ZNT - RECIP PN DED",
+  "finalidade": "BMG S/A INVESTPREV SEGURO E PREVIDÊNCIA RECÍPROCA ASSISTÊNCIA GBOEX PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0901",
+  "descricao": "ZIK - GBOEX EMPR",
+  "finalidade": "INVESTPREV SEGURO E PREVIDÊNCIA RECÍPROCA ASSISTÊNCIA GBOEX PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0902",
+  "descricao": "ZIU - HOJE P N DED",
+  "finalidade": "RECÍPROCA ASSISTÊNCIA GBOEX PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0903",
+  "descricao": "ZFV - HOJE PREV EMP",
+  "finalidade": "GBOEX PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0904",
+  "descricao": "ZIL - COMPREV SEGURO",
+  "finalidade": "PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA CAPEMISA PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0905",
+  "descricao": "ZFZ - COMPREV EMPR",
+  "finalidade": "PÉCULIO UNIÃO PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA CAPEMISA PREVIDÊNCIA PRIVADA INVESTPREV SEGURO E PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0906",
+  "descricao": "ZIV - CAPEMISA P N DED",
+  "finalidade": "COMPREV PREVIDÊNCIA PRIVADA COMPREV PREVIDÊNCIA PRIVADA CAPEMISA PREVIDÊNCIA PRIVADA INVESTPREV SEGURO E PREVIDÊNCIA ASPECIR PREVIDÊNCIA PRIVADA"
+ },
+ {
+  "codigo": "ND0907",
+  "descricao": "ZNN - INVESTP P N DED",
+  "finalidade": "COMPREV PREVIDÊNCIA PRIVADA CAPEMISA PREVIDÊNCIA PRIVADA INVESTPREV SEGURO E PREVIDÊNCIA ASPECIR PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA"
+ },
+ {
+  "codigo": "ND0908",
+  "descricao": "ZNH - ASPECIR EMPR",
+  "finalidade": "CAPEMISA PREVIDÊNCIA PRIVADA INVESTPREV SEGURO E PREVIDÊNCIA ASPECIR PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA UNIÃO SEGURADORA"
+ },
+ {
+  "codigo": "ND0909",
+  "descricao": "ZNB - UNIÃO SEG P DEDUT",
+  "finalidade": "INVESTPREV SEGURO E PREVIDÊNCIA ASPECIR PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA UNIÃO SEGURADORA UNIÃO SEGURADORA"
+ },
+ {
+  "codigo": "ND0910",
+  "descricao": "ZNI - UNIÃO SEG PN DED",
+  "finalidade": "ASPECIR PREVIDÊNCIA PRIVADA UNIÃO SEGURADORA UNIÃO SEGURADORA UNIÃO SEGURADORA RECÍPROCA ASSISTÊNCIA"
+ },
+ {
+  "codigo": "ND0911",
+  "descricao": "ZNC - UNIÃO SEG SEGURO",
+  "finalidade": "UNIÃO SEGURADORA UNIÃO SEGURADORA UNIÃO SEGURADORA RECÍPROCA ASSISTÊNCIA RECÍPROCA ASSISTÊNCIA"
+ },
+ {
+  "codigo": "ND0912",
+  "descricao": "ZNR - RECIP P DEDUT",
+  "finalidade": "UNIÃO SEGURADORA UNIÃO SEGURADORA RECÍPROCA ASSISTÊNCIA RECÍPROCA ASSISTÊNCIA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR"
+ },
+ {
+  "codigo": "ND0913",
+  "descricao": "ZNP - RECIP ASSIST EMP",
+  "finalidade": "UNIÃO SEGURADORA RECÍPROCA ASSISTÊNCIA RECÍPROCA ASSISTÊNCIA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIAL PREVIDÊNCIA COMPLEMENTAR"
+ },
+ {
+  "codigo": "ND0914",
+  "descricao": "ZIY - EQUAT P N DED",
+  "finalidade": "RECÍPROCA ASSISTÊNCIA RECÍPROCA ASSISTÊNCIA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIAL PREVIDÊNCIA COMPLEMENTAR ASSOCIAÇÃO DOS COMPOSSUIDORES DO CONDOMINIO RESIDENCIAL ASPIRANTE MEGA"
+ },
+ {
+  "codigo": "ND0915",
+  "descricao": "ZIW - EQUATORIAL EMPR",
+  "finalidade": "RECÍPROCA ASSISTÊNCIA EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIAL PREVIDÊNCIA COMPLEMENTAR ASSOCIAÇÃO DOS COMPOSSUIDORES DO CONDOMINIO RESIDENCIAL ASPIRANTE MEGA ASSOCIAÇÃO DOS COMPOSSUIDORES DO RESIDENCIAL GUARARAPES"
+ },
+ {
+  "codigo": "ND0916",
+  "descricao": "ZFT - ACRASPMEGA-MEN",
+  "finalidade": "EQUATORIAL PREVIDÊNCIA COMPLEMENTAR EQUATORIAL PREVIDÊNCIA COMPLEMENTAR ASSOCIAÇÃO DOS COMPOSSUIDORES DO CONDOMINIO RESIDENCIAL ASPIRANTE MEGA ASSOCIAÇÃO DOS COMPOSSUIDORES DO RESIDENCIAL GUARARAPES CLUBE DOS SUBTENENTES E SAGENTOS DAS FORÇAS ARMADAS"
+ },
+ {
+  "codigo": "ND0917",
+  "descricao": "ZFY - CONDGUARA.PE M",
+  "finalidade": "EQUATORIAL PREVIDÊNCIA COMPLEMENTAR ASSOCIAÇÃO DOS COMPOSSUIDORES DO CONDOMINIO RESIDENCIAL ASPIRANTE MEGA ASSOCIAÇÃO DOS COMPOSSUIDORES DO RESIDENCIAL GUARARAPES CLUBE DOS SUBTENENTES E SAGENTOS DAS FORÇAS ARMADAS SOCINAL S/A CRÉDITO FINANCIAMENTO E INVESTIMENTO"
+ },
+ {
+  "codigo": "ND0918",
+  "descricao": "ZNY - CSSFA MENS",
+  "finalidade": "ASSOCIAÇÃO DOS COMPOSSUIDORES DO CONDOMINIO RESIDENCIAL ASPIRANTE MEGA ASSOCIAÇÃO DOS COMPOSSUIDORES DO RESIDENCIAL GUARARAPES CLUBE DOS SUBTENENTES E SAGENTOS DAS FORÇAS ARMADAS SOCINAL S/A CRÉDITO FINANCIAMENTO E INVESTIMENTO ASSOCIAÇÃO ASSISTENCIAL - AFM"
+ },
+ {
+  "codigo": "ND0919",
+  "descricao": "ZNZ-SOCINAL EMPR",
+  "finalidade": "ASSOCIAÇÃO DOS COMPOSSUIDORES DO RESIDENCIAL GUARARAPES CLUBE DOS SUBTENENTES E SAGENTOS DAS FORÇAS ARMADAS SOCINAL S/A CRÉDITO FINANCIAMENTO E INVESTIMENTO ASSOCIAÇÃO ASSISTENCIAL - AFM ASSOCIAÇÃO DE INCENTIVO AO DESENVOLVIMENTO PESSOAL E PROFISSIONAL DOS MILITARES DO"
+ },
+ {
+  "codigo": "ND0920",
+  "descricao": "ZNX - AFM MENS",
+  "finalidade": "CLUBE DOS SUBTENENTES E SAGENTOS DAS FORÇAS ARMADAS SOCINAL S/A CRÉDITO FINANCIAMENTO E INVESTIMENTO ASSOCIAÇÃO ASSISTENCIAL - AFM ASSOCIAÇÃO DE INCENTIVO AO DESENVOLVIMENTO PESSOAL E PROFISSIONAL DOS MILITARES DO BRASIL"
+ },
+ {
+  "codigo": "ND0921",
+  "descricao": "ZNW - AIDPP MENS",
+  "finalidade": "ASSOCIAÇÃO ASSISTENCIAL - AFM ASSOCIAÇÃO DE INCENTIVO AO DESENVOLVIMENTO PESSOAL E PROFISSIONAL DOS MILITARES DO BRASIL ASSOCIAÇÃO BRASILEIRA DE ASSISTÊNCIA A FAMÍLIA MILITAR - ABAFAM"
+ },
+ {
+  "codigo": "ND0922",
+  "descricao": "ZNV - ABAFAM MENS",
+  "finalidade": "ASSOCIAÇÃO DE INCENTIVO AO DESENVOLVIMENTO PESSOAL E PROFISSIONAL DOS MILITARES DO BRASIL ASSOCIAÇÃO BRASILEIRA DE ASSISTÊNCIA A FAMÍLIA MILITAR - ABAFAM ARCESP ASSOCIAÇÃO ASSISTÊNCIAL CLUBE DE ASSISTÊNCIA DOS SERVIDORES PÚBLICOS FEDERAIS - CLASP"
+ },
+ {
+  "codigo": "ND0923",
+  "descricao": "ZNU - ARCESP MENS",
+  "finalidade": "BRASIL ASSOCIAÇÃO BRASILEIRA DE ASSISTÊNCIA A FAMÍLIA MILITAR - ABAFAM ARCESP ASSOCIAÇÃO ASSISTÊNCIAL CLUBE DE ASSISTÊNCIA DOS SERVIDORES PÚBLICOS FEDERAIS - CLASP VIVER PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0924",
+  "descricao": "ZNS - CLASP MENS",
+  "finalidade": "ASSOCIAÇÃO BRASILEIRA DE ASSISTÊNCIA A FAMÍLIA MILITAR - ABAFAM ARCESP ASSOCIAÇÃO ASSISTÊNCIAL CLUBE DE ASSISTÊNCIA DOS SERVIDORES PÚBLICOS FEDERAIS - CLASP VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0925",
+  "descricao": "ZPG - VIVER PREV DEDUT",
+  "finalidade": "ARCESP ASSOCIAÇÃO ASSISTÊNCIAL CLUBE DE ASSISTÊNCIA DOS SERVIDORES PÚBLICOS FEDERAIS - CLASP VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0926",
+  "descricao": "ZPE - VIVER PREV SEG",
+  "finalidade": "CLUBE DE ASSISTÊNCIA DOS SERVIDORES PÚBLICOS FEDERAIS - CLASP VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA MBM PREVIDÊNCIA D"
+ },
+ {
+  "codigo": "ND0927",
+  "descricao": "ZPF - VIVER PREV EMPR",
+  "finalidade": "VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA MBM PREVIDÊNCIA D MBM PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0928",
+  "descricao": "ZPJ - MBM PREV DEDUT",
+  "finalidade": "VIVER PREVIDÊNCIA VIVER PREVIDÊNCIA MBM PREVIDÊNCIA D MBM PREVIDÊNCIA MBM PREVIDÊNCIA"
+ },
+ {
+  "codigo": "ND0929",
+  "descricao": "ZPI - MBM SEGURO",
+  "finalidade": "VIVER PREVIDÊNCIA MBM PREVIDÊNCIA D MBM PREVIDÊNCIA MBM PREVIDÊNCIA INVESTPREV SEGURADORA"
+ },
+ {
+  "codigo": "ND0930",
+  "descricao": "ZPH - MBM EMPR",
+  "finalidade": "MBM PREVIDÊNCIA D MBM PREVIDÊNCIA MBM PREVIDÊNCIA INVESTPREV SEGURADORA INVESTPREV SEGURADORA"
+ },
+ {
+  "codigo": "ND0931",
+  "descricao": "ZNQ - INVESTPREV EMPR",
+  "finalidade": "MBM PREVIDÊNCIA MBM PREVIDÊNCIA INVESTPREV SEGURADORA INVESTPREV SEGURADORA Aba�mento do teto remuneratório de acordo com o Art. 37"
+ },
+ {
+  "codigo": "ND0932",
+  "descricao": "ZQN - CONDGTIBU.CE M",
+  "finalidade": "MBM PREVIDÊNCIA INVESTPREV SEGURADORA INVESTPREV SEGURADORA Aba�mento do teto remuneratório de acordo com o Art. 37"
+ },
+ {
+  "codigo": "ND0933",
+  "descricao": "ABT TETO ART.37",
+  "finalidade": "INVESTPREV SEGURADORA INVESTPREV SEGURADORA Aba�mento do teto remuneratório de acordo com o Art. 37 Aba�mento do teto remuneratório de acordo com o Art. 37 da 1ª parcela do adicional natalino"
+ },
+ {
+  "codigo": "ND0934",
+  "descricao": "ABT TETO ART.37 ADIC NATAL 1PARC",
+  "finalidade": "Aba�mento do teto remuneratório de acordo com o Art. 37 Aba�mento do teto remuneratório de acordo com o Art. 37 da 1ª parcela do adicional natalino"
+ },
+ {
+  "codigo": "ND0935",
+  "descricao": "ABT TETO ART.37 ADIC NATAL 2PARC",
+  "finalidade": "FINALIDADE Aba�mento do teto remuneratório de acordo com o Art. 37 da 2ª parcela do adicional natalino ASSOCIACAO DOS COMPOSUIDORES DO CONJUNTO HABITACIONAL GREGERU"
+ },
+ {
+  "codigo": "ND0936",
+  "descricao": "ZPD - CONDRAGE.SE M",
+  "finalidade": "Aba�mento do teto remuneratório de acordo com o Art. 37 da 2ª parcela do adicional natalino ASSOCIACAO DOS COMPOSUIDORES DO CONJUNTO HABITACIONAL GREGERU ASSOCIAÇÃO DE COMPOSSUIDORES DE ST SGT DA VILA MILITAR DO 2º GEC BANCO ARBI S/A"
+ },
+ {
+  "codigo": "ND0937",
+  "descricao": "ZPK - CONDV1GE.PB M",
+  "finalidade": "ASSOCIACAO DOS COMPOSUIDORES DO CONJUNTO HABITACIONAL GREGERU ASSOCIAÇÃO DE COMPOSSUIDORES DE ST SGT DA VILA MILITAR DO 2º GEC BANCO ARBI S/A a rubrica é de suprimento"
+ },
+ {
+  "codigo": "ND0938",
+  "descricao": "ZPL - BANCO ARBI EMPR",
+  "finalidade": "ASSOCIACAO DOS COMPOSUIDORES DO CONJUNTO HABITACIONAL GREGERU ASSOCIAÇÃO DE COMPOSSUIDORES DE ST SGT DA VILA MILITAR DO 2º GEC BANCO ARBI S/A a rubrica é de suprimento BANCO ITAU UNIBANCO S/A"
+ },
+ {
+  "codigo": "ND0939",
+  "descricao": "Z87 - AQ UNIF-12 B SUP",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DE ST SGT DA VILA MILITAR DO 2º GEC BANCO ARBI S/A a rubrica é de suprimento BANCO ITAU UNIBANCO S/A BANCO INBURSA S/A"
+ },
+ {
+  "codigo": "ND0941",
+  "descricao": "ZXC - BANCO ITAU - EMPR",
+  "finalidade": "BANCO ARBI S/A a rubrica é de suprimento BANCO ITAU UNIBANCO S/A BANCO INBURSA S/A ITAÚ CONIGNADO S/A"
+ },
+ {
+  "codigo": "ND0942",
+  "descricao": "ZPT - INBURSA-CETEL-BNP",
+  "finalidade": "a rubrica é de suprimento BANCO ITAU UNIBANCO S/A BANCO INBURSA S/A ITAÚ CONIGNADO S/A SERPRO"
+ },
+ {
+  "codigo": "ND0943",
+  "descricao": "ZPS - ITAU CONSIG EMPR",
+  "finalidade": "BANCO ITAU UNIBANCO S/A BANCO INBURSA S/A ITAÚ CONIGNADO S/A SERPRO DGP-IDT-C MOEDA"
+ },
+ {
+  "codigo": "ND0944",
+  "descricao": "ZPU - DGP-IDT-SERPRO",
+  "finalidade": "BANCO INBURSA S/A ITAÚ CONIGNADO S/A SERPRO DGP-IDT-C MOEDA A Rubrica é de Condomínio - Associacao de Compossuidores Villagran Cabrita - Acvc"
+ },
+ {
+  "codigo": "ND0945",
+  "descricao": "ZPV - DGP-IDT-C MOEDA",
+  "finalidade": "ITAÚ CONIGNADO S/A SERPRO DGP-IDT-C MOEDA A Rubrica é de Condomínio - Associacao de Compossuidores Villagran Cabrita - Acvc"
+ },
+ {
+  "codigo": "ND0946",
+  "descricao": "ZPQ - COND3BCOF.PI M",
+  "finalidade": "SERPRO DGP-IDT-C MOEDA A Rubrica é de Condomínio - Associacao de Compossuidores Villagran Cabrita - Acvc CIRCULO MILITAR DE PORTO ALEGRE ENTIDADE CONSIGNATÁRIA"
+ },
+ {
+  "codigo": "ND0947",
+  "descricao": "ZPP - CONDVM1TA.SP M",
+  "finalidade": "DGP-IDT-C MOEDA A Rubrica é de Condomínio - Associacao de Compossuidores Villagran Cabrita - Acvc CIRCULO MILITAR DE PORTO ALEGRE ENTIDADE CONSIGNATÁRIA En�dade consignatária"
+ },
+ {
+  "codigo": "ND0948",
+  "descricao": "ZPY - CIRC MIL PA - MENS",
+  "finalidade": "A Rubrica é de Condomínio - Associacao de Compossuidores Villagran Cabrita - Acvc CIRCULO MILITAR DE PORTO ALEGRE ENTIDADE CONSIGNATÁRIA En�dade consignatária ENTIDADE CONSIGNATÁRIA"
+ },
+ {
+  "codigo": "ND0949",
+  "descricao": "ZQA - CIMAN - MENS",
+  "finalidade": "CIRCULO MILITAR DE PORTO ALEGRE ENTIDADE CONSIGNATÁRIA En�dade consignatária ENTIDADE CONSIGNATÁRIA CONDOMÍNIO MASCARENHA"
+ },
+ {
+  "codigo": "ND0950",
+  "descricao": "ZPZ - BENEVIX P SAUDE",
+  "finalidade": "CIRCULO MILITAR DE PORTO ALEGRE ENTIDADE CONSIGNATÁRIA En�dade consignatária ENTIDADE CONSIGNATÁRIA CONDOMÍNIO MASCARENHA BANCO OLÉ CONSIGNADO"
+ },
+ {
+  "codigo": "ND0951",
+  "descricao": "ZPW - CONDMMORA.PE M",
+  "finalidade": "En�dade consignatária ENTIDADE CONSIGNATÁRIA CONDOMÍNIO MASCARENHA BANCO OLÉ CONSIGNADO"
+ },
+ {
+  "codigo": "ND0952",
+  "descricao": "BOC -BANC OLÉ CONSIG",
+  "finalidade": "ENTIDADE CONSIGNATÁRIA CONDOMÍNIO MASCARENHA BANCO OLÉ CONSIGNADO ASSOCIAÇÃO DE COMPOSSUIDORES DA VILA MILITAR III DA GUARNIÇÃO DE TAUBATÉ-SP"
+ },
+ {
+  "codigo": "ND0953",
+  "descricao": "ZQW - SABEMI SEG PEC",
+  "finalidade": "CONDOMÍNIO MASCARENHA BANCO OLÉ CONSIGNADO ASSOCIAÇÃO DE COMPOSSUIDORES DA VILA MILITAR III DA GUARNIÇÃO DE TAUBATÉ-SP"
+ },
+ {
+  "codigo": "ND0954",
+  "descricao": "ZWA - VM-TAUBATE III",
+  "finalidade": "BANCO OLÉ CONSIGNADO ASSOCIAÇÃO DE COMPOSSUIDORES DA VILA MILITAR III DA GUARNIÇÃO DE TAUBATÉ-SP"
+ },
+ {
+  "codigo": "ND0955",
+  "descricao": "ZQB - CREDITAS SANTANDER",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VILA MILITAR III DA GUARNIÇÃO DE TAUBATÉ-SP"
+ },
+ {
+  "codigo": "ND0956",
+  "descricao": "ZQC - ANA PAULA ADV - MENS",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0957",
+  "descricao": "ZQD - SQN 114 F -MENS",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0958",
+  "descricao": "ZQF - CONDVCABR.CE M",
+  "finalidade": "ZQG - C MAL MALLET CE - MENS"
+ },
+ {
+  "codigo": "ND0959",
+  "descricao": "ZQH - CONDCBRAC.CE M",
+  "finalidade": "ZQG - C MAL MALLET CE - MENS ZQE - C ST MVP FORTE CE - MENS"
+ },
+ {
+  "codigo": "ND0960",
+  "descricao": "ZQG - CONDGMALE.CE M",
+  "finalidade": "ZQG - C MAL MALLET CE - MENS ZQE - C ST MVP FORTE CE - MENS ZQI - V MIL II TAU - MENS"
+ },
+ {
+  "codigo": "ND0961",
+  "descricao": "ZQE - CONDSTMIL.CE M",
+  "finalidade": "ZQG - C MAL MALLET CE - MENS ZQE - C ST MVP FORTE CE - MENS ZQI - V MIL II TAU - MENS"
+ },
+ {
+  "codigo": "ND0962",
+  "descricao": "ZQI - CONDVM2TA.SP M",
+  "finalidade": "ZQG - C MAL MALLET CE - MENS ZQE - C ST MVP FORTE CE - MENS ZQI - V MIL II TAU - MENS"
+ },
+ {
+  "codigo": "ND0963",
+  "descricao": "ZQK - INTEGRAL P SAUDE - MEN",
+  "finalidade": "ZQI - V MIL II TAU - MENS"
+ },
+ {
+  "codigo": "ND0964",
+  "descricao": "ZQJ - AGIBANK _ EMPR",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0965",
+  "descricao": "ZQS - V.M. Itaigara BA - MENS",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0966",
+  "descricao": "ZQO - QI SOCIED - EMPR",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0967",
+  "descricao": "ZQU - CONDOFFSA.BA M",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0968",
+  "descricao": "ZQT - CONDSGFSA.BA M",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0969",
+  "descricao": "ZQX - CONDCSILV.PA M",
+  "finalidade": "Associacao de Compossuidores dos Proprios Nacionais Residenciais da Vila Militar General Gurjao"
+ },
+ {
+  "codigo": "ND0970",
+  "descricao": "ZQV - CONDHDIAS.PE M",
+  "finalidade": "Associacao de Compossuidores dos Proprios Nacionais Residenciais da Vila Militar General Gurjao"
+ },
+ {
+  "codigo": "ND0971",
+  "descricao": "ZRI - CONDGURJA.PA M",
+  "finalidade": "Associacao de Compossuidores dos Proprios Nacionais Residenciais da Vila Militar General Gurjao"
+ },
+ {
+  "codigo": "ND0972",
+  "descricao": "ZQZ - CAPITAL CONSIG EMPR",
+  "finalidade": "Associacao de Compossuidores dos Proprios Nacionais Residenciais da Vila Militar General Gurjao"
+ },
+ {
+  "codigo": "ND0973",
+  "descricao": "ZRB - CREFISA EMPR",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0974",
+  "descricao": "ZRL - APA F OSORIO-MENS",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR PANDIÁ CALÓGERAS-BELÉM-PA"
+ },
+ {
+  "codigo": "ND0975",
+  "descricao": "ZRJ-CONDSGBRI.PA M",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR PANDIÁ CALÓGERAS-BELÉM-PA ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR DUQUE DE CAXIAS-BELÉM-PA"
+ },
+ {
+  "codigo": "ND0976",
+  "descricao": "ZRM - CONDCALOG.PA M",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR PANDIÁ CALÓGERAS-BELÉM-PA ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR DUQUE DE CAXIAS-BELÉM-PA ASSOC COMP V C -V ST/SGT 3BEC"
+ },
+ {
+  "codigo": "ND0977",
+  "descricao": "ZRN-CONDCAXIA.PA M",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR PANDIÁ CALÓGERAS-BELÉM-PA ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR DUQUE DE CAXIAS-BELÉM-PA ASSOC COMP V C -V ST/SGT 3BEC"
+ },
+ {
+  "codigo": "ND0978",
+  "descricao": "ZPR - COND3BCSG.PI M",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR PANDIÁ CALÓGERAS-BELÉM-PA ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR DUQUE DE CAXIAS-BELÉM-PA ASSOC COMP V C -V ST/SGT 3BEC"
+ },
+ {
+  "codigo": "ND0979",
+  "descricao": "ZRP - COND.V.S.REIS-RN",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DA VL MILITAR DUQUE DE CAXIAS-BELÉM-PA ASSOC COMP V C -V ST/SGT 3BEC"
+ },
+ {
+  "codigo": "ND0980",
+  "descricao": "ZRS - CSSEB-MENS",
+  "finalidade": "FINALIDADE Mensalidade do Clube dos Subtenentes e Sargentos do Exército em Brasília ZSF - ACR VM JOSÉ TIROL"
+ },
+ {
+  "codigo": "ND0981",
+  "descricao": "ZRT - QVSAUDE - P SAUDE",
+  "finalidade": "FINALIDADE Mensalidade do Clube dos Subtenentes e Sargentos do Exército em Brasília ZSF - ACR VM JOSÉ TIROL ZSR - CETELEM-BNP"
+ },
+ {
+  "codigo": "ND0982",
+  "descricao": "ZSF - ACR VM JOSÉ TIROL",
+  "finalidade": "Mensalidade do Clube dos Subtenentes e Sargentos do Exército em Brasília ZSF - ACR VM JOSÉ TIROL ZSR - CETELEM-BNP"
+ },
+ {
+  "codigo": "ND0983",
+  "descricao": "ZSR - CETELEM-BNP",
+  "finalidade": "ZSF - ACR VM JOSÉ TIROL ZSR - CETELEM-BNP ZRW - SUPERMED PL SAU"
+ },
+ {
+  "codigo": "ND0984",
+  "descricao": "ZRV - UNIAO SEG PECULIO",
+  "finalidade": "ZSF - ACR VM JOSÉ TIROL ZSR - CETELEM-BNP ZRW - SUPERMED PL SAU ZSP - KOVR PECULIO"
+ },
+ {
+  "codigo": "ND0985",
+  "descricao": "ZRW - SUPERMED PL SAU",
+  "finalidade": "ZSR - CETELEM-BNP ZRW - SUPERMED PL SAU ZSP - KOVR PECULIO ZRX - APM CMBEL MENS"
+ },
+ {
+  "codigo": "ND0986",
+  "descricao": "ZSP - KOVR PECULIO",
+  "finalidade": "ZRW - SUPERMED PL SAU ZSP - KOVR PECULIO ZRX - APM CMBEL MENS ADM COMP V MIL ST/SGT GU TERES"
+ },
+ {
+  "codigo": "ND0987",
+  "descricao": "ZRX - APM CMBEL MENS",
+  "finalidade": "ZRW - SUPERMED PL SAU ZSP - KOVR PECULIO ZRX - APM CMBEL MENS ADM COMP V MIL ST/SGT GU TERES ASSOC ADM COMP ED ANTONIO JOAO"
+ },
+ {
+  "codigo": "ND0988",
+  "descricao": "ZWL - CON OF ST/SGT PR",
+  "finalidade": "ZSP - KOVR PECULIO ZRX - APM CMBEL MENS ADM COMP V MIL ST/SGT GU TERES ASSOC ADM COMP ED ANTONIO JOAO ROZZETO E SILVA SOC DE ADVOGAD"
+ },
+ {
+  "codigo": "ND0989",
+  "descricao": "ZWB - SANTO JOAO III",
+  "finalidade": "ZRX - APM CMBEL MENS ADM COMP V MIL ST/SGT GU TERES ASSOC ADM COMP ED ANTONIO JOAO ROZZETO E SILVA SOC DE ADVOGAD ASSOC COMP PRACAS V MIL TIROL"
+ },
+ {
+  "codigo": "ND0990",
+  "descricao": "ZSG - ROZZETO ADVOGADO",
+  "finalidade": "ADM COMP V MIL ST/SGT GU TERES ASSOC ADM COMP ED ANTONIO JOAO ROZZETO E SILVA SOC DE ADVOGAD ASSOC COMP PRACAS V MIL TIROL ASSOC COMP OF VILA MIL TIROL"
+ },
+ {
+  "codigo": "ND0991",
+  "descricao": "ZST - COND TIROL APT",
+  "finalidade": "ASSOC ADM COMP ED ANTONIO JOAO ROZZETO E SILVA SOC DE ADVOGAD ASSOC COMP PRACAS V MIL TIROL ASSOC COMP OF VILA MIL TIROL ASSOC DE C VILA MIL I H G TAUB"
+ },
+ {
+  "codigo": "ND0992",
+  "descricao": "ZSU - COND TIROL CASA",
+  "finalidade": "ROZZETO E SILVA SOC DE ADVOGAD ASSOC COMP PRACAS V MIL TIROL ASSOC COMP OF VILA MIL TIROL ASSOC DE C VILA MIL I H G TAUB ZRC - SIMPALA EMPR"
+ },
+ {
+  "codigo": "ND0993",
+  "descricao": "ZRR - V.M.H.TAUB-SP",
+  "finalidade": "ASSOC COMP PRACAS V MIL TIROL ASSOC COMP OF VILA MIL TIROL ASSOC DE C VILA MIL I H G TAUB ZRC - SIMPALA EMPR"
+ },
+ {
+  "codigo": "ND0994",
+  "descricao": "ZRC - SIMPALA EMPR",
+  "finalidade": "ASSOC COMP OF VILA MIL TIROL ASSOC DE C VILA MIL I H G TAUB ZRC - SIMPALA EMPR ZSQ - PLANO DE SAL STM - MENS"
+ },
+ {
+  "codigo": "ND0995",
+  "descricao": "ZSQ - PLANO DE SAL STM - MENS",
+  "finalidade": "ZRC - SIMPALA EMPR ZSQ - PLANO DE SAL STM - MENS ASSOCIAÇÃO DE COMPOSSUIDORES DO CONJUNTO HABITACIONAL DO 18 DO FORTE"
+ },
+ {
+  "codigo": "ND0996",
+  "descricao": "ZWV - COND.18DOFORTE-SE",
+  "finalidade": "ZSQ - PLANO DE SAL STM - MENS ASSOCIAÇÃO DE COMPOSSUIDORES DO CONJUNTO HABITACIONAL DO 18 DO FORTE"
+ },
+ {
+  "codigo": "ND0997",
+  "descricao": "ZWG - GEN-SEVERIANO",
+  "finalidade": "ASSOCIAÇÃO DE COMPOSSUIDORES DO CONJUNTO HABITACIONAL DO 18 DO FORTE"
+ },
+ {
+  "codigo": "ND0998",
+  "descricao": "ZWR - COND. V. OF TERESINA",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND0999",
+  "descricao": "ZQL - APPA MENS - MG",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND1000",
+  "descricao": "ZSJ - COMPREV SOCIED - FINANC",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND1001",
+  "descricao": "ZWX - BANESTES",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND1002",
+  "descricao": "ZWZ - COND SGT MAX WOLF - MG",
+  "finalidade": ""
+ },
+ {
+  "codigo": "ND1003",
+  "descricao": "ZBO - PICPAY EMPREST",
+  "finalidade": "LARCA CAPITAL SOCIEDADE DE CREDITO DIRETO S/A VIA CAPITAL SOCIEDADE DE CRÉDITO DIRETO S/A"
+ },
+ {
+  "codigo": "ND1004",
+  "descricao": "ZO4 - LARCA EMPREST",
+  "finalidade": "LARCA CAPITAL SOCIEDADE DE CREDITO DIRETO S/A VIA CAPITAL SOCIEDADE DE CRÉDITO DIRETO S/A"
+ },
+ {
+  "codigo": "ND1005",
+  "descricao": "ZXL - VIA CAPITAL",
+  "finalidade": "LARCA CAPITAL SOCIEDADE DE CREDITO DIRETO S/A VIA CAPITAL SOCIEDADE DE CRÉDITO DIRETO S/A Comprev Sociedade de crédito Direto S.A"
+ },
+ {
+  "codigo": "ND1006",
+  "descricao": "ZSI - COMPREV SOCIED - EMPR",
+  "finalidade": "VIA CAPITAL SOCIEDADE DE CRÉDITO DIRETO S/A Comprev Sociedade de crédito Direto S.A Rubrica de Consignação"
+ },
+ {
+  "codigo": "ND1007",
+  "descricao": "ZWP - COND. VM. OF- JF- MG",
+  "finalidade": "Comprev Sociedade de crédito Direto S.A Rubrica de Consignação"
+ }
+]

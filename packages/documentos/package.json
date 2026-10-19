@@ -1,0 +1,20 @@
+{
+  "name": "@painel-ea/documentos",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.tsx",
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@painel-ea/engine": "*",
+    "@react-pdf/renderer": "4.3.0",
+    "react": "19.1.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.1.12",
+    "@painel-ea/leitor-ficha": "*"
+  }
+}
