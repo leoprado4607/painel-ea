@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { omParaNovoProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
+import { SITUACOES } from "@/lib/tipos";
 
 export interface EstadoForm { erro?: string; campos?: Record<string, string> }
 
@@ -23,6 +24,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (prec && !precCpValido(prec)) campos.prec_cp = "Prec-CP com dígito verificador inválido.";
   const cpf = txt(f, "cpf");
   if (cpf && !cpfValido(cpf)) campos.cpf = "CPF inválido.";
+  const situacao = txt(f, "situacao");
+  if (situacao && !SITUACOES.includes(situacao)) campos.situacao = "Escolha a situação do militar na lista.";
   const ini = mes(txt(f, "periodo_inicio")), fim = mes(txt(f, "periodo_fim"));
   if (!ini || !fim) campos.periodo = "Informe o início e o fim da dívida.";
   else if (fim < ini) campos.periodo = "O fim da dívida é anterior ao início.";

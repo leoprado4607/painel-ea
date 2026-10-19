@@ -5,7 +5,8 @@ import { Aviso } from "@/components/Aviso";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
 import { BANCOS, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
 
-type Valores = Partial<Militar & Processo>;
+/** "situacao" do formulário é a do militar (Ativa, Reformado…); a do processo (rascunho/emitido) fica de fora. */
+export type Valores = Partial<Omit<Processo, "situacao"> & Militar>;
 
 function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, validar, ...resto }: {
   nome: string; rotulo: string; valor?: string | number | null; tipo?: string; ajuda?: string; erro?: string;
@@ -25,14 +26,15 @@ function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, v
   );
 }
 
-function Lista({ nome, rotulo, valor, opcoes }: { nome: string; rotulo: string; valor?: string | null; opcoes: string[] }) {
+function Lista({ nome, rotulo, valor, opcoes, aceitaOutro }: { nome: string; rotulo: string; valor?: string | null; opcoes: string[]; aceitaOutro?: boolean }) {
+  const atual = valor && (aceitaOutro || opcoes.includes(valor)) ? valor : "";
   return (
     <div>
       <label htmlFor={nome} className="rotulo">{rotulo}</label>
-      <select id={nome} name={nome} defaultValue={valor ?? ""} className="entrada">
+      <select id={nome} name={nome} defaultValue={atual} className="entrada">
         <option value="">Selecione…</option>
         {/* valor lido de um documento e fora da lista (ex.: banco "077") continua aparecendo */}
-        {valor && !opcoes.includes(valor) && <option>{valor}</option>}
+        {atual && !opcoes.includes(atual) && <option>{atual}</option>}
         {opcoes.map((o) => <option key={o}>{o}</option>)}
       </select>
     </div>
@@ -80,7 +82,7 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
               validar={(v) => (cpfValido(v) ? null : "CPF inválido.")} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-4">
-            <Lista nome="banco" rotulo="Banco" valor={valores.banco} opcoes={BANCOS} />
+            <Lista nome="banco" rotulo="Banco" valor={valores.banco} opcoes={BANCOS} aceitaOutro />
             <Campo nome="agencia" rotulo="Agência" valor={valores.agencia} />
             <Campo nome="conta" rotulo="Conta" valor={valores.conta} />
             <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} />

@@ -13,7 +13,7 @@ export default async function Dados({ params, searchParams }: { params: Promise<
           Confira abaixo e na aba Contracheque - F Financeira.
         </Aviso>
       )}
-      <DadosFavorecido processoId={id} valores={{ ...militar, ...processo }} bloqueado={bloqueado}
+      <DadosFavorecido processoId={id} valores={{ ...processo, ...militar }} /* militar por cima: "situacao" aqui é a do militar, não a do processo (rascunho) */ bloqueado={bloqueado}
         rubricas={rubricas.map(({ posicao, codigo }) => ({ posicao, codigo }))} />
     </div>
   );
