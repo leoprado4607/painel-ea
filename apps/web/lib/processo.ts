@@ -1,27 +1,32 @@
 import { notFound } from "next/navigation";
+import { cache } from "react";
 import { sessao } from "./sessao";
 import type { Lancamento, Militar, Om, Perfil, Processo, RubricaProcesso } from "./tipos";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 
-/** Carrega o processo (com militar, OM do processo, rubricas e lançamentos). Admin e operadores acessam todos. */
-export async function carregarProcesso(id: string) {
+/**
+ * Carrega o processo (com militar, OM do processo, rubricas e lançamentos). Admin e operadores acessam todos.
+ * Uma vez por requisição (cache): o layout do processo e a página da aba usam o mesmo resultado.
+ * Processo, militar e OM vêm numa consulta só; rubricas e lançamentos em paralelo.
+ */
+export const carregarProcesso = cache(async (id: string) => {
   const { supabase, perfil } = await sessao();
-  const { data: processo } = await supabase.from("processo").select("*").eq("id", id).maybeSingle<Processo>();
-  if (!processo) notFound();
-  const [{ data: militar }, { data: om }, { data: rubricas }, { data: lancamentos }] = await Promise.all([
-    supabase.from("militar").select("*").eq("id", processo.militar_id).single<Militar>(),
-    supabase.from("om").select("*").eq("id", processo.om_id).maybeSingle<Om>(),
+  const [{ data: linha }, { data: rubricas }, { data: lancamentos }] = await Promise.all([
+    supabase.from("processo").select("*, militar:militar_id(*), om:om_id(*)").eq("id", id)
+      .maybeSingle<Processo & { militar: Militar; om: Om | null }>(),
     supabase.from("processo_rubrica").select("*").eq("processo_id", id).order("posicao").returns<RubricaProcesso[]>(),
     supabase.from("lancamento").select("processo_id, tipo, ano, mes, posicao, valor").eq("processo_id", id).returns<Lancamento[]>(),
   ]);
+  if (!linha) notFound();
+  const { militar, om, ...processo } = linha;
   return {
-    supabase, perfil, om, processo, militar: militar!,
+    supabase, perfil, om, processo: processo as Processo, militar,
     rubricas: rubricas ?? [],
     lancamentos: (lancamentos ?? []).map((l) => ({ ...l, valor: Number(l.valor) })),
     bloqueado: processo.situacao !== "rascunho",
   };
-}
+});
 
 /** OMs que o Admin pode escolher ao criar um processo (só quando há mais de uma; o operador usa a própria). */
 export async function omsParaEscolha(supabase: Supabase, perfil: Perfil | null) {

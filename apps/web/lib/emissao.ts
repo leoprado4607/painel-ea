@@ -1,5 +1,5 @@
 import { calcular } from "@painel-ea/engine";
-import { gerarPdf, type DadosDocumentos, type TipoDocumento } from "@painel-ea/documentos";
+import type { DadosDocumentos, TipoDocumento } from "@painel-ea/documentos";
 import { createHash } from "node:crypto";
 import { montarEntrada } from "./calculo";
 import { dataPorExtenso, descreverRegra } from "./indice";
@@ -51,6 +51,8 @@ export async function montarDocumentos(
       ? `RASCUNHO — não vale como documento · gerado em ${quando}`
       : `Processo ${processo.numero || "s/nº"} · emitido em ${quando} · versão ${opcoes.versao ?? 1} · índice até ${MESES[ate.mes - 1]}/${ate.ano}`,
   };
+  // gerador de PDF carregado só aqui: não pesa na partida das demais páginas
+  const { gerarPdf } = await import("@painel-ea/documentos");
   const pdf = await gerarPdf(dados, opcoes.tipo ?? "pacote_completo", opcoes.ano);
   return { pdf, supabase, om, processo, entrada, ate };
 }

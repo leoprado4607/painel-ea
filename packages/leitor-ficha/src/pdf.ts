@@ -1,6 +1,5 @@
 /// <reference path="./pdfjs-worker.d.ts" />
 /** Extrai as palavras (com posição) de um PDF usando o pdf.js da Mozilla. Funciona no Node e no navegador. */
-import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 import type { TextItem } from "pdfjs-dist/types/src/display/api";
 import type { Palavra } from "./leitor";
 
@@ -10,6 +9,8 @@ export async function palavrasDoPdf(dados: Uint8Array): Promise<Palavra[]> {
   // No Node, o pdf.js roda o "worker" no próprio processo.
   trabalhadorPronto ??= typeof window === "undefined" ? import("pdfjs-dist/legacy/build/pdf.worker.mjs") : Promise.resolve();
   await trabalhadorPronto;
+  // carregado só quando um PDF é lido: não pesa na partida das páginas que só usam a correspondência
+  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
   const doc = await getDocument({ data: dados.slice(), isEvalSupported: false, useSystemFonts: false }).promise;
   const palavras: Palavra[] = [];
   for (let n = 1; n <= doc.numPages; n++) {

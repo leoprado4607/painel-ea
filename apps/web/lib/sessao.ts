@@ -1,15 +1,19 @@
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import { supabaseServidor } from "./supabase/server";
 import type { Om, Perfil } from "./tipos";
 
-/** Usuário logado, com perfil e OM. Redireciona para o login se não houver sessão. */
-export async function sessao() {
+/**
+ * Usuário logado, com perfil e OM. Redireciona para o login se não houver sessão.
+ * Uma vez por requisição (cache): layouts e página reaproveitam o mesmo resultado.
+ * getClaims valida o token localmente (chaves de assinatura do Supabase); sem elas, faz o mesmo que getUser.
+ */
+export const sessao = cache(async () => {
   const supabase = await supabaseServidor();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
-  const { data: perfil } = await supabase.from("perfil").select("*").eq("usuario_id", user.id).maybeSingle<Perfil>();
-  const { data: om } = perfil?.om_id
-    ? await supabase.from("om").select("*").eq("id", perfil.om_id).maybeSingle<Om>()
-    : { data: null };
-  return { supabase, user, perfil, om };
-}
+  const { data } = await supabase.auth.getClaims();
+  const id = data?.claims?.sub;
+  if (!id) redirect("/login");
+  const { data: linha } = await supabase.from("perfil").select("*, om:om_id(*)").eq("usuario_id", id).maybeSingle<Perfil & { om: Om | null }>();
+  const { om = null, ...perfil } = linha ?? {};
+  return { supabase, user: { id }, perfil: linha ? (perfil as Perfil) : null, om };
+});

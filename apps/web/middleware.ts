@@ -19,7 +19,11 @@ export async function middleware(req: NextRequest) {
       },
     },
   });
-  const { data: { user } } = await supabase.auth.getUser();
+  // getClaims valida o token localmente (chaves de assinatura do Supabase) e renova a sessão se preciso;
+  // sem as chaves novas, faz o mesmo que getUser. O nível do 2FA (aal) vem no próprio token.
+  const { data } = await supabase.auth.getClaims();
+  const claims = data?.claims;
+  const user = claims?.sub ? { id: claims.sub } : null;
   const caminho = req.nextUrl.pathname;
   const redirecionar = (para: string) => {
     const url = req.nextUrl.clone();
@@ -31,8 +35,7 @@ export async function middleware(req: NextRequest) {
   };
 
   if (!user) return PUBLICAS.includes(caminho) ? res : redirecionar("/login");
-  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
-  const precisa2fa = aal?.currentLevel !== "aal2";
+  const precisa2fa = claims?.aal !== "aal2";
   if (precisa2fa && caminho !== "/mfa") return redirecionar("/mfa");
   if (precisa2fa) return res;
   // Depois do 2FA: senha provisória precisa ser trocada antes de qualquer outra tela.
