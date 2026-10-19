@@ -205,3 +205,33 @@ describe("regras do processo", () => {
     expect(r.rows.map((x) => [x.serie, x.ultimo_mes.toISOString().slice(0, 7)])).toEqual([["IPCA", "2026-09"], ["IPCA-E", "2026-09"]]);
   });
 });
+
+describe("exclusão de processos", () => {
+  const M = "20000000-0000-0000-0000-0000000000e1";
+  const P1 = "30000000-0000-0000-0000-0000000000e1", P2 = "30000000-0000-0000-0000-0000000000e2";
+  beforeAll(async () => {
+    await como(U.operadorA, `insert into militar (id, om_id, nome) values ('${M}', '${OM.a}', 'Militar Exclusão')`);
+    await como(U.operadorA, `insert into processo (id, om_id, militar_id) values ('${P1}', '${OM.a}', '${M}'), ('${P2}', '${OM.a}', '${M}')`);
+    await como(U.operadorA, `insert into lancamento (processo_id, tipo, ano, mes, posicao, valor) values ('${P1}', 'devido', 2020, 1, 1, 10), ('${P2}', 'recebido', 2020, 2, 1, 20)`);
+    await como(U.operadorA, `update processo set situacao = 'emitido' where id = '${P2}'`);
+  });
+
+  it("operador não exclui processo nem militar", async () => {
+    expect(await como(U.operadorA, `delete from processo where id = '${P1}' returning id`)).toEqual([]);
+    expect(await como(U.operadorB, `delete from militar where id = '${M}' returning id`)).toEqual([]);
+    expect((await db.query(`select count(*)::int n from processo where id in ('${P1}', '${P2}')`)).rows).toEqual([{ n: 2 }]);
+  });
+
+  it("a trava continua: lançamento de processo emitido não muda", async () => {
+    await expect(como(U.operadorA, `update lancamento set valor = 1 where processo_id = '${P2}'`)).rejects.toThrow(/não está em rascunho/);
+  });
+
+  it("admin exclui processo em rascunho e emitido, com lançamentos (cascata), e o militar sem processos", async () => {
+    expect(await como(U.admin, `delete from processo where id = '${P1}' returning id`)).toEqual([{ id: P1 }]);
+    expect(await como(U.admin, `delete from processo where id = '${P2}' returning id`)).toEqual([{ id: P2 }]);
+    expect((await db.query(`select count(*)::int n from lancamento where processo_id in ('${P1}', '${P2}')`)).rows).toEqual([{ n: 0 }]);
+    expect(await como(U.admin, `delete from militar where id = '${M}' returning id`)).toEqual([{ id: M }]);
+    const aud = await como<{ acao: string }>(U.admin, `select acao from auditoria where tabela = 'processo' and registro = '${P1}' order by em desc limit 1`);
+    expect(aud).toEqual([{ acao: "DELETE" }]); // exclusão fica registrada na auditoria
+  });
+});

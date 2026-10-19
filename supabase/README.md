@@ -10,6 +10,7 @@
 | `migrations/…0400_agendamento.sql` | pg_cron chama a Edge Function `coletar-ipca` todo dia às 09:00 (Brasília); view `situacao_indices` indica coleta atrasada. |
 | `migrations/…19000100_acesso_cpf.sql` | Reajustes de 19/10/2026: só Admin e Operador, CPF no perfil, todos os usuários ativos acessam todos os processos e `vincular_cpf_ao_login(email, cpf)` (roda só pelo SQL Editor) para converter logins antigos. |
 | `migrations/…19000200_complementos.sql` | Coluna `processo.complementos` (jsonb): textos editáveis dos documentos (anexos, amparo, explicação, parecer, pensão judicial, operador CPEX). |
+| `migrations/…19000400_exclusao_processo.sql` | Só o Admin exclui processos e militares (políticas separadas por operação); a trava de processo emitido deixa passar a exclusão em cascata. |
 | `functions/gerenciar-usuarios` | O Admin cadastra (por CPF), desativa, reativa, redefine o acesso e exclui operadores. Verify JWT **ligado**. |
 | `functions/coletar-ipca` | Busca os meses novos (IBGE e Banco Central, com fonte reserva), grava e registra cada execução em `coleta_indice`. |
 | `tests/banco.test.ts` | Roda as migrações num PostgreSQL local (PGlite) e testa isolamento entre OMs, travas e a série composta. |

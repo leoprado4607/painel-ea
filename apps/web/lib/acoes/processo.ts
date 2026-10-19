@@ -68,3 +68,25 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (e3) return { erro: e3.message };
   redirect(`/processos/${p.id}/rubricas`);
 }
+
+/**
+ * Exclui um processo (só o Admin; o banco também só permite ao Admin). Saem junto, em cascata, lançamentos,
+ * rubricas e registros dos documentos; os PDFs emitidos são removidos do Storage; o militar é apagado se não
+ * tiver outro processo. A exclusão fica registrada na auditoria.
+ */
+export async function excluirProcesso(processoId: string): Promise<{ erro?: string }> {
+  const { supabase, perfil } = await sessao();
+  if (perfil?.papel !== "admin") return { erro: "Somente o Admin pode excluir processos." };
+  const { data: processo } = await supabase.from("processo").select("id, militar_id").eq("id", processoId).maybeSingle();
+  if (!processo) return { erro: "Processo não encontrado." };
+  const { data: docs } = await supabase.from("documento").select("caminho_storage").eq("processo_id", processoId);
+  const { data: apagados, error } = await supabase.from("processo").delete().eq("id", processoId).select("id");
+  if (error) return { erro: error.message };
+  if (!apagados?.length) return { erro: "Não foi possível excluir o processo." };
+  const caminhos = (docs ?? []).map((d) => d.caminho_storage).filter(Boolean);
+  if (caminhos.length) await supabase.storage.from("documentos").remove(caminhos);
+  const { count } = await supabase.from("processo").select("id", { count: "exact", head: true }).eq("militar_id", processo.militar_id);
+  if (!count) await supabase.from("militar").delete().eq("id", processo.militar_id);
+  revalidatePath("/processos");
+  return {};
+}
