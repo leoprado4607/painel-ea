@@ -5,14 +5,14 @@ import { ABAS, abaAtiva } from "@/lib/abas";
 
 /**
  * Abas do sistema no rodapé, no estilo das guias do Excel (Passo a passo, IPCA-E, Dados da OM, Operadores).
- * As abas do processo ficam no topo da página do processo (AbasProcesso).
+ * As abas do processo ficam na barra lateral do processo (AbasProcesso).
  */
 export function AbasRodape({ admin }: { admin: boolean }) {
   const ativa = abaAtiva(usePathname());
   const abas = ABAS.filter((a) => !a.doProcesso && (!a.soAdmin || admin));
   return (
     <nav aria-label="Abas do sistema" className="fixed inset-x-0 bottom-0 z-30 h-[var(--altura-abas)] border-t border-borda bg-[#e6e9e4] print:hidden">
-      <div className="mx-auto flex h-full max-w-6xl items-start overflow-x-auto px-2 [scrollbar-width:thin]">
+      <div className="mx-auto flex h-full max-w-7xl items-start overflow-x-auto px-2 [scrollbar-width:thin]">
         {abas.map((aba) => {
           const eAtiva = ativa === aba;
           return (

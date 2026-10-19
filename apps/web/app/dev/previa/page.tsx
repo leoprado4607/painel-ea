@@ -17,11 +17,12 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
     { posicao: 14, codigo: "Z02 - P MIL 7,5/9,5/10,5%", tipo: "Despesa" as const },
   ];
   return (
-    <main className="mx-auto max-w-6xl px-4 py-6">
+    <main className="mx-auto max-w-7xl px-4 py-6">
       {tela === "abas" ? (
-        <div className="space-y-5 pb-16">
+        <div className="space-y-4 pb-16 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-6 lg:space-y-0">
           <AbasProcesso id="00000000-0000-0000-0000-000000000000" situacao="rascunho"
             titulo="1º Sgt FULANO DE TAL DA SILVA" subtitulo="Processo 012/2026 · Diferença de adicional de habilitação" />
+          <div className="min-w-0">
           <AbaDocumento processoId="00000000-0000-0000-0000-000000000000" doc="cpex" bloqueado={false} grupos={[
             { titulo: "Pensão judicial (ZED)", campos: [
               { nome: "possui_pensao_judicial", rotulo: "Possui pensão judicial no período da dívida", tipo: "checkbox", valor: true },
@@ -29,6 +30,7 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
               { nome: "c.pensao.cpf", rotulo: "CPF", placeholder: "000.000.000-00" },
             ] },
           ]} />
+          </div>
           <AbasRodape admin />
         </div>
       ) : tela === "valores" ? (

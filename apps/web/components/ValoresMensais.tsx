@@ -164,7 +164,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
 
       {!bloqueado && (
         <div className="fixed inset-x-0 bottom-[var(--altura-abas)] z-20 border-t border-borda bg-white/95 backdrop-blur">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
+          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
             <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length} alteração(ões) não salvas` : "Tudo salvo"}</span>
             <div className="flex gap-2">
               <button className="botao-sec" disabled={!alterado || salvando} onClick={() => salvar(false)}>Salvar</button>

@@ -53,7 +53,7 @@ export function AbaDocumento({ processoId, doc, ano, grupos = [], bloqueado, obs
   const temCampos = grupos.some((g) => g.campos.length);
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(20rem,26rem)_1fr]">
+    <div className="grid gap-5 xl:grid-cols-[minmax(19rem,24rem)_1fr]">
       <div className="space-y-4">
         {observacao}
         {temCampos && (

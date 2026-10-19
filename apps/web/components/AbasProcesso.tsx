@@ -1,8 +1,8 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { ABAS, abaAtiva } from "@/lib/abas";
+import { useEffect, useRef } from "react";
+import { ABAS, abaAtiva, type Aba } from "@/lib/abas";
 
 const LANCAMENTOS = ABAS.filter((a) => a.grupo === "lancamento");
 const DOCUMENTOS = ABAS.filter((a) => a.grupo === "documento");
@@ -12,43 +12,53 @@ const SITUACAO = {
   arquivado: { rotulo: "Arquivado", classe: "bg-white/20 text-white" },
 } as const;
 
+interface Props { id: string; titulo: string; subtitulo: string; situacao: keyof typeof SITUACAO }
+
+/** Número da etapa (lançamentos são uma sequência). */
+function Numero({ n, ativa }: { n: number; ativa: boolean }) {
+  return (
+    <span className={`relative z-10 grid h-6 w-6 shrink-0 place-items-center rounded-full text-[11px] font-bold tabular-nums ring-4 ring-[#2e431d]
+      ${ativa ? "bg-[#a8c48a] text-[#1d2a12]" : "bg-[#3d5528] text-[#a8c48a] group-hover:bg-[#4a6631]"}`}>{n}</span>
+  );
+}
+const Ponto = () => <span aria-hidden className="grid h-6 w-6 shrink-0 place-items-center"><span className="h-1.5 w-1.5 rounded-full bg-[#c9a24a]" /></span>;
+
 /**
- * "Capa" do processo, fixa no topo: quem é o favorecido, a situação e as abas do processo.
- * Lançamentos são uma sequência (numerados 1–4); documentos não têm ordem (marcados com um ponto latão).
+ * Abas do processo. Computador: barra lateral fixa à esquerda, com o favorecido no alto, os lançamentos como
+ * etapas ligadas por uma linha e os documentos abaixo. Celular: nome do processo e uma tira de abas com rolagem.
  */
-export function AbasProcesso({ id, titulo, subtitulo, situacao }: {
-  id: string; titulo: string; subtitulo: string; situacao: keyof typeof SITUACAO;
-}) {
+export function AbasProcesso({ id, titulo, subtitulo, situacao }: Props) {
   const ativa = abaAtiva(usePathname());
-  const ativaRef = useRef<HTMLAnchorElement>(null);
+  const ativaTiraRef = useRef<HTMLAnchorElement>(null);
   useEffect(() => {
     const reduzir = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    ativaRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: reduzir ? "auto" : "smooth" });
+    ativaTiraRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: reduzir ? "auto" : "smooth" });
   }, [ativa]);
+  const href = (a: Aba) => `/processos/${id}/${a.caminho}`;
+  const foco = "outline-none focus-visible:ring-2 focus-visible:ring-white/80";
+  const chip = <span className={`w-fit shrink-0 rounded-full px-2.5 py-0.5 text-xs font-semibold ${SITUACAO[situacao].classe}`}>{SITUACAO[situacao].rotulo}</span>;
 
-  // Ao rolar, recolhe a linha do favorecido e ficam só as abas. Limites diferentes para encolher (140 px) e voltar (24 px):
-  // recolher a faixa faz o conteúdo subir, e sem essa folga ela ficaria abrindo e fechando.
-  const [compacta, setCompacta] = useState(false);
-  useEffect(() => {
-    let quadro = 0;
-    const aoRolar = () => {
-      cancelAnimationFrame(quadro);
-      quadro = requestAnimationFrame(() => setCompacta((c) => (c ? window.scrollY > 24 : window.scrollY > 140)));
-    };
-    aoRolar();
-    window.addEventListener("scroll", aoRolar, { passive: true });
-    return () => { window.removeEventListener("scroll", aoRolar); cancelAnimationFrame(quadro); };
-  }, []);
-
-  const aba = (a: (typeof ABAS)[number], marcador: React.ReactNode) => {
+  const itemLateral = (a: Aba, marcador: React.ReactNode) => {
     const eAtiva = a === ativa;
     return (
-      <li key={a.caminho} className="shrink-0 snap-start">
-        <Link ref={eAtiva ? ativaRef : undefined} href={`/processos/${id}/${a.caminho}`} prefetch={false}
-          aria-current={eAtiva ? "page" : undefined}
-          className={`group flex h-9 items-center gap-2 whitespace-nowrap rounded-full px-3.5 text-[13px] font-medium outline-none transition-colors
-            focus-visible:ring-2 focus-visible:ring-white/80 motion-reduce:transition-none
-            ${eAtiva ? "bg-white text-tinta shadow-[0_1px_0_rgba(0,0,0,.25),0_6px_16px_-6px_rgba(0,0,0,.45)]" : "text-[#dfe7d6] hover:bg-white/10 hover:text-white"}`}>
+      <li key={a.caminho}>
+        <Link href={href(a)} prefetch={false} aria-current={eAtiva ? "page" : undefined}
+          className={`group flex items-center gap-2.5 rounded-lg py-1.5 pl-1.5 pr-2 text-[13px] font-medium transition-colors motion-reduce:transition-none ${foco}
+            ${eAtiva ? "bg-white text-tinta shadow-[0_6px_16px_-8px_rgba(0,0,0,.6)]" : "text-[#dfe7d6] hover:bg-white/10 hover:text-white"}`}>
+          {marcador}
+          <span className="leading-tight">{a.rotulo}</span>
+        </Link>
+      </li>
+    );
+  };
+
+  const itemTira = (a: Aba, marcador: React.ReactNode) => {
+    const eAtiva = a === ativa;
+    return (
+      <li key={a.caminho} className="shrink-0">
+        <Link ref={eAtiva ? ativaTiraRef : undefined} href={href(a)} prefetch={false} aria-current={eAtiva ? "page" : undefined}
+          className={`group flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full pl-1 pr-3 text-[13px] font-medium ${foco}
+            ${eAtiva ? "bg-white text-tinta" : "text-[#dfe7d6] hover:bg-white/10"}`}>
           {marcador}
           {a.rotulo}
         </Link>
@@ -57,42 +67,49 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: {
   };
 
   return (
-    <div className="sticky top-2 z-20 rounded-2xl bg-[#2e431d] text-[#dfe7d6] shadow-[0_10px_30px_-12px_rgba(29,36,32,.6)] ring-1 ring-black/10 print:hidden">
-      {/* linha do favorecido: recolhe ao rolar (grid 1fr → 0fr anima a altura sem medir) */}
-      <div className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none ${compacta ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100"}`}
-        aria-hidden={compacta || undefined} inert={compacta || undefined}>
-      <div className="min-h-0 overflow-hidden">
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 pb-2 pt-3 sm:px-5">
-        <Link href="/processos" className="rounded text-xs font-medium text-[#a8c48a] outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-white/80">
-          ← Processos
-        </Link>
-        <h1 className="min-w-0 flex-1 truncate text-lg font-bold tracking-tight text-white">{titulo}</h1>
-        <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${SITUACAO[situacao].classe}`}>{SITUACAO[situacao].rotulo}</span>
-        <p className="w-full truncate text-xs text-[#a8c48a]">{subtitulo}</p>
-      </div>
-      </div>
+    <>
+      {/* computador: barra lateral */}
+      <aside className="sticky top-4 hidden self-start max-h-[calc(100vh-2rem-var(--altura-abas))] overflow-y-auto rounded-2xl bg-[#2e431d] p-3 text-[#dfe7d6] shadow-[0_10px_30px_-14px_rgba(29,36,32,.7)] [scrollbar-width:thin] lg:block print:hidden">
+        <div className="flex flex-col gap-1.5 px-1.5 pb-3 pt-1">
+          <Link href="/processos" className={`w-fit rounded text-xs font-medium text-[#a8c48a] hover:text-white ${foco}`}>← Processos</Link>
+          <h1 className="text-[15px] font-bold leading-snug text-white">{titulo}</h1>
+          <p className="text-xs leading-snug text-[#a8c48a]">{subtitulo}</p>
+          {chip}
+        </div>
+        <nav aria-label="Abas do processo" className="space-y-3 border-t border-white/10 pt-3">
+          <div>
+            <p id="lat-lancamentos" className="px-1.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[.14em] text-[#a8c48a]">Lançamentos</p>
+            {/* linha vertical ligando as etapas, atrás dos números */}
+            <ol aria-labelledby="lat-lancamentos" className="relative space-y-0.5 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-[#a8c48a]/25">
+              {LANCAMENTOS.map((a, i) => itemLateral(a, <Numero n={i + 1} ativa={a === ativa} />))}
+            </ol>
+          </div>
+          <div>
+            <p id="lat-documentos" className="px-1.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[.14em] text-[#c9a24a]">Documentos</p>
+            <ul aria-labelledby="lat-documentos" className="space-y-0.5">
+              {DOCUMENTOS.map((a) => itemLateral(a, <Ponto />))}
+            </ul>
+          </div>
+        </nav>
+      </aside>
+
+      {/* celular e tablet: nome do processo e, como irmã (para "sticky" valer na página toda), a tira de abas */}
+      <div className="flex items-center gap-3 lg:hidden print:hidden">
+          <Link href="/processos" aria-label="Voltar para Processos" className="text-sm text-marca-700 hover:underline">←</Link>
+          <div className="min-w-0 flex-1">
+            <h1 className="truncate text-base font-bold">{titulo}</h1>
+            <p className="truncate text-xs text-suave">{subtitulo}</p>
+          </div>
+          {chip}
       </div>
       <nav aria-label="Abas do processo"
-        className={`overflow-x-auto px-2 pb-2.5 transition-[padding] duration-200 motion-reduce:transition-none ${compacta ? "pt-2.5" : "pt-0"} [mask-image:linear-gradient(90deg,transparent,#000_12px,#000_calc(100%-12px),transparent)] [scrollbar-width:none] sm:px-3 lg:overflow-visible lg:[mask-image:none]`}>
-        <div className="flex w-max items-center gap-3 px-1 lg:w-auto lg:flex-col lg:items-stretch lg:gap-1.5">
-          <div className="flex items-center gap-2">
-          <span id="grupo-lancamentos" className="pl-1 text-[10px] font-semibold uppercase tracking-[.14em] text-[#a8c48a] lg:w-24">Lançamentos</span>
-          <ol className="flex snap-x items-center gap-1" aria-labelledby="grupo-lancamentos">
-            {LANCAMENTOS.map((a, i) => aba(a,
-              <span className={`grid h-5 w-5 place-items-center rounded-full text-[11px] font-bold tabular-nums ${a === ativa ? "bg-[#3b5625] text-white" : "bg-[#a8c48a]/20 text-[#a8c48a] group-hover:bg-[#a8c48a]/30"}`}>
-                {i + 1}
-              </span>))}
-          </ol>
-          </div>
-          <span aria-hidden className="h-6 w-px bg-white/15 lg:hidden" />
-          <div className="flex items-center gap-2 lg:border-t lg:border-white/10 lg:pt-1.5">
-          <span id="grupo-documentos" className="pl-1 text-[10px] font-semibold uppercase tracking-[.14em] text-[#c9a24a] lg:w-24">Documentos</span>
-          <ul className="flex snap-x items-center gap-1" aria-labelledby="grupo-documentos">
-            {DOCUMENTOS.map((a) => aba(a, <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-[#c9a24a]" />))}
+          className="sticky top-2 z-20 lg:hidden print:hidden overflow-x-auto rounded-full bg-[#2e431d] p-1 shadow-[0_8px_20px_-10px_rgba(29,36,32,.7)] [mask-image:linear-gradient(90deg,transparent,#000_10px,#000_calc(100%-10px),transparent)] [scrollbar-width:none]">
+          <ul className="flex w-max items-center gap-1">
+            {LANCAMENTOS.map((a, i) => itemTira(a, <Numero n={i + 1} ativa={a === ativa} />))}
+            <li aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/15" />
+            {DOCUMENTOS.map((a) => itemTira(a, <Ponto />))}
           </ul>
-          </div>
-        </div>
       </nav>
-    </div>
+    </>
   );
 }
