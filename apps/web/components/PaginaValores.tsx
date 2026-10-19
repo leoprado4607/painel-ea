@@ -1,8 +1,7 @@
 import Link from "next/link";
 import { Aviso } from "@/components/Aviso";
-import { EnvioFichas } from "@/components/EnvioFichas";
+import { EnvioDocumentos } from "@/components/EnvioDocumentos";
 import { ValoresMensais } from "@/components/ValoresMensais";
-import { previaDosGuardados } from "@/lib/acoes/fichas";
 import { mesDeData } from "@/lib/lancamentos";
 import { carregarProcesso } from "@/lib/processo";
 
@@ -14,15 +13,12 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
     return <Aviso tipo="atencao">Informe o período da dívida na etapa <Link href={`/processos/${id}/dados`} className="underline">Dados</Link>.</Aviso>;
   }
   const rub = rubricas.map(({ posicao, codigo, tipo }) => ({ posicao, codigo, tipo }));
-  const previa = tipo === "recebido" && importado ? await previaDosGuardados(id) : undefined;
   return (
     <div className="space-y-5">
       {importado && (
-        <Aviso tipo="ok">
-          Processo criado a partir das fichas: dados do militar, período e valores recebidos foram preenchidos. Confira abaixo e na etapa Dados.
-        </Aviso>
+        <Aviso tipo="ok">Valores recebidos preenchidos pelos documentos enviados. Confira mês a mês abaixo.</Aviso>
       )}
-      {tipo === "recebido" && <EnvioFichas processoId={id} rubricas={rub} previaInicial={previa} bloqueado={bloqueado} />}
+      {tipo === "recebido" && <EnvioDocumentos processoId={id} rubricas={rub} bloqueado={bloqueado} />}
       <ValoresMensais
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}

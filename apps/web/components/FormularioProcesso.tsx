@@ -31,6 +31,8 @@ function Lista({ nome, rotulo, valor, opcoes }: { nome: string; rotulo: string; 
       <label htmlFor={nome} className="rotulo">{rotulo}</label>
       <select id={nome} name={nome} defaultValue={valor ?? ""} className="entrada">
         <option value="">Selecione…</option>
+        {/* valor lido de um documento e fora da lista (ex.: banco "077") continua aparecendo */}
+        {valor && !opcoes.includes(valor) && <option>{valor}</option>}
         {opcoes.map((o) => <option key={o}>{o}</option>)}
       </select>
     </div>
@@ -82,6 +84,9 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
             <Campo nome="agencia" rotulo="Agência" valor={valores.agencia} />
             <Campo nome="conta" rotulo="Conta" valor={valores.conta} />
             <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} />
+          </div>
+          <div className="mt-4">
+            <Campo nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={valores.om_vinculacao} placeholder="Ex.: B ADM GU NATAL" />
           </div>
         </section>
 

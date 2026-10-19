@@ -10,6 +10,7 @@ export interface Perfil { usuario_id: string; om_id: string | null; papel: "oper
 export interface Militar {
   id: string; om_id: string; posto_graduacao: string | null; nome: string; prec_cp: string | null; identidade: string | null;
   cpf: string | null; banco: string | null; agencia: string | null; conta: string | null; situacao: string | null;
+  om_vinculacao: string | null;
 }
 export interface Processo {
   id: string; om_id: string; militar_id: string; numero: string | null; ano: number | null; data_requerimento: string | null;

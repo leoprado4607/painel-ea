@@ -18,13 +18,15 @@ export async function palavrasDoPdf(dados: Uint8Array): Promise<Palavra[]> {
     const conteudo = await pagina.getTextContent();
     for (const item of conteudo.items as TextItem[]) {
       if (!item.str?.trim()) continue;
-      const [, , , , x0, yBase] = item.transform as number[];
+      const [a, b, c, , x0, yBase] = item.transform as number[];
+      const tamanho = Math.hypot(a!, b!);
+      const inclinada = Math.abs(b!) > 0.01 || Math.abs(c!) > 0.01;
       const y = altura - yBase!;
       // um item pode ter várias palavras: divide e estima a posição de cada uma pela proporção de caracteres
       const larguraChar = item.str.length ? item.width / item.str.length : 0;
       let i = 0;
       for (const parte of item.str.split(/(\s+)/)) {
-        if (parte.trim()) palavras.push({ texto: parte, x: x0! + i * larguraChar, y, largura: parte.length * larguraChar, pagina: n });
+        if (parte.trim()) palavras.push({ texto: parte, x: x0! + i * larguraChar, y, largura: parte.length * larguraChar, pagina: n, tamanho, inclinada });
         i += parte.length;
       }
     }

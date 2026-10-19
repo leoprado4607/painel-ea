@@ -10,6 +10,10 @@ export interface Palavra {
   y: number;
   largura: number;
   pagina: number;
+  /** tamanho da fonte em pontos (marcas d'água costumam ser bem maiores que o texto) */
+  tamanho?: number;
+  /** texto girado ou inclinado (marca d'água) */
+  inclinada?: boolean;
 }
 
 export interface LinhaFicha {

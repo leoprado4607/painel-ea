@@ -31,6 +31,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   const militar = {
     nome, posto_graduacao: txt(f, "posto_graduacao"), prec_cp: prec, identidade: txt(f, "identidade"),
     cpf, banco: txt(f, "banco"), agencia: txt(f, "agencia"), conta: txt(f, "conta"), situacao: txt(f, "situacao"),
+    om_vinculacao: txt(f, "om_vinculacao"),
   };
   const processo = {
     numero: txt(f, "numero"), ano: txt(f, "ano") ? Number(txt(f, "ano")) : null,
