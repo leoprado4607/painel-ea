@@ -35,7 +35,7 @@ export default async function PassoAPasso() {
         <h1 className="text-2xl font-bold">Passo a passo</h1>
         <p className="text-sm text-suave">
           Correção pela série {descreverRegra(regras ?? [])}, atualizada até <strong className="text-tinta">{ate}</strong>.
-          Siga as abas do rodapé da esquerda para a direita.
+          Dentro do processo, siga as abas do topo da esquerda para a direita.
         </p>
       </header>
       <ol className="cartao divide-y divide-borda p-0">
@@ -48,7 +48,7 @@ export default async function PassoAPasso() {
         ))}
       </ol>
       <p className="text-xs text-suave">
-        As abas do processo (verdes e douradas) ficam disponíveis depois de abrir um processo em{" "}
+        As abas do processo aparecem no topo da página ao abrir um processo em{" "}
         <Link href="/processos" className="underline">Processos</Link>.
       </p>
     </div>
