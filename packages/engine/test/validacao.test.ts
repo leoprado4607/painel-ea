@@ -15,6 +15,11 @@ describe("validações iguais às da planilha (resultado OK/Erro calculado pelo 
   it.each(golden.cpf.map((c) => [c.valor, c.resultado]))("CPF %s → %s", (valor, resultado) => {
     expect(cpfValido(valor as string) ? "OK" : "Erro").toBe(resultado);
   });
+  it("recusa CPF com todos os dígitos iguais (passa no módulo 11, mas não existe)", () => {
+    expect(cpfValido("111.111.111-11")).toBe(false);
+    expect(cpfValido("00000000000")).toBe(false);
+    expect(cpfValido("529.982.247-25")).toBe(true);
+  });
   it("a amostra tem casos OK e Erro", () => {
     expect(golden.cpf.some((c) => c.resultado === "OK")).toBe(true);
     expect(golden.cpf.some((c) => c.resultado === "Erro")).toBe(true);

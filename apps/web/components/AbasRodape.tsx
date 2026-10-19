@@ -41,8 +41,8 @@ export function AbasRodape({ admin }: { admin: boolean }) {
   const abas = ABAS.filter((a) => !a.soAdmin || admin);
 
   return (
-    <nav aria-label="Abas" className="fixed inset-x-0 bottom-0 z-30 border-t border-borda bg-[#e6e9e4] print:hidden">
-      <div className="mx-auto flex max-w-6xl items-end overflow-x-auto px-2 [scrollbar-width:thin]">
+    <nav aria-label="Abas" className="fixed inset-x-0 bottom-0 z-30 h-[var(--altura-abas)] border-t border-borda bg-[#e6e9e4] print:hidden">
+      <div className="mx-auto flex h-full max-w-6xl items-start overflow-x-auto px-2 [scrollbar-width:thin]">
         {abas.map((aba, i) => {
           const href = enderecoAba(aba, processoId);
           const eAtiva = ativa === aba;
@@ -62,8 +62,9 @@ export function AbasRodape({ admin }: { admin: boolean }) {
                   {processoId ? <>Processo<span className="hidden max-w-40 truncate normal-case tracking-normal sm:inline">{nomeProcesso ? `· ${nomeProcesso}` : ""}</span></> : "Processo"}
                 </span>
               )}
+              {/* sem pré-carregamento: cada aba processa a página inteira no servidor (sessão e banco) */}
               {href ? (
-                <Link ref={eAtiva ? ativaRef : undefined} href={href} aria-current={eAtiva ? "page" : undefined}
+                <Link ref={eAtiva ? ativaRef : undefined} href={href} prefetch={false} aria-current={eAtiva ? "page" : undefined}
                   className={`${base} ${eAtiva ? "-mt-px bg-white font-semibold text-tinta shadow-[0_-1px_0_var(--color-borda)]" : "text-suave hover:bg-white/60 hover:text-tinta"}`}>
                   {conteudo}
                 </Link>

@@ -73,11 +73,11 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
   const temValor = (m: MesAno) => Object.keys(valoresDoMes(grade, m)).length > 0;
 
   return (
-    <div className="space-y-4 pb-20">
+    <div className="space-y-4 pb-16">
       {tipo === "recebido" && (
         <Aviso tipo="info">
-          Estes valores serão lidos automaticamente das fichas financeiras em PDF. Enquanto a leitura não estiver ativa, digite-os
-          exatamente como constam na ficha.
+          Valores recebidos, exatamente como constam na ficha financeira. Ao enviar as fichas em PDF (acima), eles são preenchidos
+          sozinhos; confira e corrija aqui se precisar.
         </Aviso>
       )}
       {msg && <Aviso tipo={msg.tipo}>{msg.texto}</Aviso>}
@@ -163,7 +163,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
       </section>
 
       {!bloqueado && (
-        <div className="fixed inset-x-0 bottom-0 border-t border-borda bg-white/95 backdrop-blur">
+        <div className="fixed inset-x-0 bottom-[var(--altura-abas)] z-20 border-t border-borda bg-white/95 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3">
             <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length} alteração(ões) não salvas` : "Tudo salvo"}</span>
             <div className="flex gap-2">

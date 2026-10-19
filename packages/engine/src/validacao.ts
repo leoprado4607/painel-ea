@@ -24,7 +24,7 @@ export function precCpValido(precCp: number | string): boolean {
 /** CPF no formato 000.000.000-00 (Informações!B24, conferido em L23). Regra padrão de módulo 11. */
 export function cpfValido(cpf: string): boolean {
   const dig = soDigitos(cpf);
-  if (dig.length !== 11) return false;
+  if (dig.length !== 11 || /^(\d)\1{10}$/.test(dig)) return false; // 111.111.111-11 passa no módulo 11, mas não existe
   const d = [...dig].map(Number);
   const dv = (n: number) => {
     const soma = d.slice(0, n).reduce((acc, x, i) => acc + x * (n + 1 - i), 0);
