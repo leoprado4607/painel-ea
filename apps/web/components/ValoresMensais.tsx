@@ -73,7 +73,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
   const temValor = (m: MesAno) => Object.keys(valoresDoMes(grade, m)).length > 0;
 
   return (
-    <div className="space-y-4 pb-16">
+    <div className="space-y-4">
       {tipo === "recebido" && (
         <Aviso tipo="info">
           Valores recebidos, exatamente como constam na ficha financeira. Ao enviar as fichas em PDF (acima), eles são preenchidos
@@ -163,8 +163,8 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
       </section>
 
       {!bloqueado && (
-        <div className="fixed inset-x-0 bottom-[var(--altura-abas)] z-20 border-t border-borda bg-white/95 backdrop-blur">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3">
+        <div className="sticky bottom-[calc(var(--altura-abas)+0.5rem)] z-20 rounded-xl border border-borda bg-white/95 shadow-[0_8px_24px_-12px_rgba(29,36,32,.45)] backdrop-blur">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
             <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length} alteração(ões) não salvas` : "Tudo salvo"}</span>
             <div className="flex gap-2">
               <button className="botao-sec" disabled={!alterado || salvando} onClick={() => salvar(false)}>Salvar</button>
