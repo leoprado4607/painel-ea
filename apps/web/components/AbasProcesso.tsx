@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ABAS, abaAtiva } from "@/lib/abas";
 
 const LANCAMENTOS = ABAS.filter((a) => a.grupo === "lancamento");
@@ -26,6 +26,20 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: {
     ativaRef.current?.scrollIntoView({ inline: "center", block: "nearest", behavior: reduzir ? "auto" : "smooth" });
   }, [ativa]);
 
+  // Ao rolar, recolhe a linha do favorecido e ficam só as abas. Limites diferentes para encolher (140 px) e voltar (24 px):
+  // recolher a faixa faz o conteúdo subir, e sem essa folga ela ficaria abrindo e fechando.
+  const [compacta, setCompacta] = useState(false);
+  useEffect(() => {
+    let quadro = 0;
+    const aoRolar = () => {
+      cancelAnimationFrame(quadro);
+      quadro = requestAnimationFrame(() => setCompacta((c) => (c ? window.scrollY > 24 : window.scrollY > 140)));
+    };
+    aoRolar();
+    window.addEventListener("scroll", aoRolar, { passive: true });
+    return () => { window.removeEventListener("scroll", aoRolar); cancelAnimationFrame(quadro); };
+  }, []);
+
   const aba = (a: (typeof ABAS)[number], marcador: React.ReactNode) => {
     const eAtiva = a === ativa;
     return (
@@ -44,6 +58,10 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: {
 
   return (
     <div className="sticky top-2 z-20 rounded-2xl bg-[#2e431d] text-[#dfe7d6] shadow-[0_10px_30px_-12px_rgba(29,36,32,.6)] ring-1 ring-black/10 print:hidden">
+      {/* linha do favorecido: recolhe ao rolar (grid 1fr → 0fr anima a altura sem medir) */}
+      <div className={`grid transition-[grid-template-rows,opacity] duration-200 ease-out motion-reduce:transition-none ${compacta ? "grid-rows-[0fr] opacity-0" : "grid-rows-[1fr] opacity-100"}`}
+        aria-hidden={compacta || undefined} inert={compacta || undefined}>
+      <div className="min-h-0 overflow-hidden">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 pb-2 pt-3 sm:px-5">
         <Link href="/processos" className="rounded text-xs font-medium text-[#a8c48a] outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-white/80">
           ← Processos
@@ -52,8 +70,10 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: {
         <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${SITUACAO[situacao].classe}`}>{SITUACAO[situacao].rotulo}</span>
         <p className="w-full truncate text-xs text-[#a8c48a]">{subtitulo}</p>
       </div>
+      </div>
+      </div>
       <nav aria-label="Abas do processo"
-        className="overflow-x-auto px-2 pb-2.5 [mask-image:linear-gradient(90deg,transparent,#000_12px,#000_calc(100%-12px),transparent)] [scrollbar-width:none] sm:px-3 lg:overflow-visible lg:[mask-image:none]">
+        className={`overflow-x-auto px-2 pb-2.5 transition-[padding] duration-200 motion-reduce:transition-none ${compacta ? "pt-2.5" : "pt-0"} [mask-image:linear-gradient(90deg,transparent,#000_12px,#000_calc(100%-12px),transparent)] [scrollbar-width:none] sm:px-3 lg:overflow-visible lg:[mask-image:none]`}>
         <div className="flex w-max items-center gap-3 px-1 lg:w-auto lg:flex-col lg:items-stretch lg:gap-1.5">
           <div className="flex items-center gap-2">
           <span id="grupo-lancamentos" className="pl-1 text-[10px] font-semibold uppercase tracking-[.14em] text-[#a8c48a] lg:w-24">Lançamentos</span>
