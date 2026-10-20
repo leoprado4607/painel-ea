@@ -19,9 +19,9 @@ export interface Palavra {
 export interface LinhaFicha {
   /** Ex.: NR0001 */
   codigo: string;
-  /** NR/AR = receita; ND/AD = desconto. */
+  /** 2ª letra: R = receita, D = desconto; com 1ª letra D (devolução) se inverte: DD = devolução de desconto (receita). */
   natureza: "receita" | "desconto";
-  /** AR/AD: acertos (valores de outros períodos lançados no mês). */
+  /** 1ª letra diferente de N (AR/AD, FR, DD…): acertos e lançamentos fora do mês normal. */
   acerto: boolean;
   descricao: string;
   /** 12 valores, jan…dez */
@@ -48,7 +48,19 @@ export interface FichaFinanceira {
   avisos: string[];
 }
 
-const CODIGO = /^(NR|ND|AR|AD)\d{4}$/;
+// Código do SIPPES: 1ª letra = tipo (N normal, A acerto, F, D devolução…), 2ª = natureza (R receita, D desconto), 4 dígitos.
+// A ficha de 2026 trouxe FR0077 e DD0013, que antes viravam "descrição" e tinham os valores perdidos.
+export const CODIGO_SIPPES = /^[A-Z][RD]\d{4}$/;
+
+/**
+ * Natureza pelo código. Devolução (1ª letra D) inverte: DD0013 (devolução de despesa médica) é crédito.
+ * Conferido na ficha de 2026: só com FR0077 e DD0013 como receita os totais líquidos de jan e jun fecham.
+ */
+export function naturezaDoCodigo(codigo: string): "receita" | "desconto" {
+  const receita = codigo[1] === "R";
+  return (codigo[0] === "D" ? !receita : receita) ? "receita" : "desconto";
+}
+const CODIGO = CODIGO_SIPPES;
 const VALOR = /^-?\d{1,3}(\.\d{3})*,\d{2}$/;
 const TOLERANCIA_LINHA = 2.5;
 
@@ -161,8 +173,8 @@ export function lerFicha(palavras: Palavra[]): FichaFinanceira {
       const nums = valores.map((p) => lerValor(p.texto));
       resultado.push({
         codigo, descricao,
-        natureza: codigo.startsWith("NR") || codigo.startsWith("AR") ? "receita" : "desconto",
-        acerto: codigo.startsWith("A"),
+        natureza: naturezaDoCodigo(codigo),
+        acerto: codigo[0] !== "N",
         meses: nums.slice(0, 12),
         total: nums[12]!,
       });

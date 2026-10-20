@@ -3,7 +3,7 @@
  * Usa os mesmos códigos do SIPPES da Ficha Financeira (NR/ND/AR/AD), então a correspondência com as rubricas
  * do processo é a mesma: ver contrachequeComoFicha.
  */
-import { agruparLinhas, lerValor, type FichaFinanceira, type LinhaFicha, type Palavra } from "./leitor";
+import { agruparLinhas, CODIGO_SIPPES, lerValor, naturezaDoCodigo, type FichaFinanceira, type LinhaFicha, type Palavra } from "./leitor";
 
 export interface LinhaContracheque {
   /** Ex.: NR0001 */
@@ -31,7 +31,7 @@ export interface Contracheque {
 }
 
 const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-const CODIGO = /^(NR|ND|AR|AD)\d{4}$/;
+const CODIGO = CODIGO_SIPPES;
 const VALOR = /^-?\d{1,3}(\.\d{3})*,\d{2}$/;
 const centavos = (v: number) => Math.round(v * 100);
 /** Marca d'água ("Acessado por … Em: …"): fonte grande e inclinada, sobreposta às linhas. */
@@ -124,13 +124,13 @@ export function lerContracheque(todas: Palavra[]): Contracheque {
       const valorP = [...resto].reverse().find((p) => VALOR.test(p.texto) && p.x >= xReceitas - 30);
       if (!valorP) { avisos.push(`${primeira.texto}: valor não encontrado.`); continue; }
       const codigo = primeira.texto;
-      const natureza = codigo[1] === "R" ? "receita" : "desconto";
+      const natureza = naturezaDoCodigo(codigo);
       // confere com a coluna: receita termina antes de "Despesas"
       const naColunaDeReceita = valorP.x + valorP.largura < xDespesas;
       if ((natureza === "receita") !== naColunaDeReceita) avisos.push(`${codigo}: valor em coluna diferente do esperado para ${natureza}.`);
       const meio = resto.filter((p) => p !== valorP);
       itens.push({
-        codigo, natureza, acerto: codigo[0] === "A",
+        codigo, natureza, acerto: codigo[0] !== "N",
         descricao: meio.filter((p) => p.x < xInfo).map((p) => p.texto).join(" "),
         info: meio.filter((p) => p.x >= xInfo).map((p) => p.texto).join(" "),
         valor: lerValor(valorP.texto),

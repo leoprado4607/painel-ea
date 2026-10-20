@@ -72,6 +72,6 @@ export function periodoDosDocumentos(docs: DocumentoExtraido[]): { inicio: strin
 export function fichaValida(f: unknown): f is FichaFinanceira {
   const x = f as FichaFinanceira;
   return !!x && Number.isInteger(x.ano) && x.ano! >= 2000 && x.ano! <= 2100 && Array.isArray(x.linhas)
-    && x.linhas.every((l) => typeof l.codigo === "string" && /^(NR|ND|AR|AD)\d{4}$/.test(l.codigo)
+    && x.linhas.every((l) => typeof l.codigo === "string" && /^[A-Z][RD]\d{4}$/.test(l.codigo)
       && Array.isArray(l.meses) && l.meses.length === 12 && l.meses.every((v) => typeof v === "number" && Number.isFinite(v) && Math.abs(v) < 1e7));
 }

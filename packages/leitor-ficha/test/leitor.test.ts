@@ -60,3 +60,13 @@ describe("leitor da ficha (sintética)", () => {
     expect(lerValor("-0,32")).toBe(-0.32);
   });
 });
+
+describe("códigos do SIPPES", () => {
+  it("natureza pela 2ª letra, invertida na devolução (1ª letra D)", async () => {
+    const { naturezaDoCodigo, CODIGO_SIPPES } = await import("../src/leitor");
+    expect(["NR0001", "AR0084", "FR0077", "DD0013"].map(naturezaDoCodigo)).toEqual(["receita", "receita", "receita", "receita"]);
+    expect(["ND0001", "AD0003", "DR0001"].map(naturezaDoCodigo)).toEqual(["desconto", "desconto", "desconto"]);
+    expect(["FR0077", "DD0013", "NR0001"].every((c) => CODIGO_SIPPES.test(c))).toBe(true);
+    expect(["XX0001", "NR001", "TOTAIS"].some((c) => CODIGO_SIPPES.test(c))).toBe(false);
+  });
+});
