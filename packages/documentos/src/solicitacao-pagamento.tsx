@@ -89,7 +89,8 @@ export function SolicitacaoPagamento({ d }: { d: DadosDocumentos }) {
 
 export function SolicitacaoPagamentoVerso({ d }: { d: DadosDocumentos }) {
   const c = d.complementos ?? {};
-  const bi = d.processo.biNumero ? `BI/Adt ${d.processo.biNumero}${d.processo.biData ? ` de ${dataBr(d.processo.biData)}` : ""}` : "";
+  const bi = d.processo.boletimAverbou
+    ?? (d.processo.biNumero ? `BI/Adt ${d.processo.biNumero}${d.processo.biData ? ` de ${dataBr(d.processo.biData)}` : ""}` : "");
   const cols = [
     { w: "10%", t: "Nº de Ordem", v: numeroOrdem(d) },
     { w: "11%", t: "Data do Requerimento", v: dataBr(d.processo.dataRequerimento) },

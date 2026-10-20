@@ -3,6 +3,7 @@ import type { DadosDocumentos, TipoDocumento } from "@painel-ea/documentos";
 import { createHash } from "node:crypto";
 import { montarEntrada } from "./calculo";
 import { dataPorExtenso, descreverRegra } from "./indice";
+import { textoBoletim } from "./averbacao";
 import { carregarProcesso } from "./processo";
 import { FUNCAO_RESPONSAVEL, MESES } from "./tipos";
 
@@ -41,6 +42,7 @@ export async function montarDocumentos(
       dataExtenso: processo.data_solicitacao_extenso || dataPorExtenso(agora),
       possuiPensaoJudicial: processo.possui_pensao_judicial,
       ano: processo.ano, dataRequerimento: processo.data_requerimento, biNumero: processo.bi_numero, biData: processo.bi_data,
+      boletimAverbou: textoBoletim(processo) || null,
     },
     complementos: processo.complementos ?? {},
     rubricas: rubricas.map(({ posicao, codigo, tipo }) => ({ posicao, codigo, tipo })),

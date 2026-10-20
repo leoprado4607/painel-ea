@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { omParaNovoProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import { SITUACOES } from "@/lib/tipos";
+import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 
 export interface EstadoForm { erro?: string; campos?: Record<string, string> }
 
@@ -26,6 +27,15 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (cpf && !cpfValido(cpf)) campos.cpf = "CPF inválido.";
   const situacao = txt(f, "situacao");
   if (situacao && !SITUACOES.includes(situacao)) campos.situacao = "Escolha a situação do militar na lista.";
+  // averbação: documento e OM só da lista; Nr BI/BAR com 3 dígitos; Nr Adt só quando o documento é "Adt"
+  const documentoAverbacao = txt(f, "documento_averbacao");
+  if (documentoAverbacao && !(DOCUMENTOS_AVERBACAO as readonly string[]).includes(documentoAverbacao)) campos.documento_averbacao = "Escolha BI, Adt ou BAR.";
+  const omAverbacao = txt(f, "om_averbacao");
+  if (omAverbacao && !(OMS_AVERBACAO as readonly string[]).includes(omAverbacao)) campos.om_averbacao = "Escolha a OM na lista.";
+  const nrBoletim = txt(f, "bi_numero");
+  if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use exatamente 3 dígitos (ex.: 045).";
+  const nrAdt = documentoAverbacao === "Adt" ? txt(f, "adt_numero") : null;
+  if (nrAdt && !/^\d{1,6}$/.test(nrAdt)) campos.adt_numero = "Use só números.";
   const ini = mes(txt(f, "periodo_inicio")), fim = mes(txt(f, "periodo_fim"));
   if (!ini || !fim) campos.periodo = "Informe o início e o fim da dívida.";
   else if (fim < ini) campos.periodo = "O fim da dívida é anterior ao início.";
@@ -38,7 +48,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   };
   const processo = {
     numero: txt(f, "numero"), ano: txt(f, "ano") ? Number(txt(f, "ano")) : null,
-    data_requerimento: txt(f, "data_requerimento"), bi_numero: txt(f, "bi_numero"), bi_data: txt(f, "bi_data"),
+    data_requerimento: txt(f, "data_requerimento"), bi_numero: nrBoletim, bi_data: txt(f, "bi_data"),
+    documento_averbacao: documentoAverbacao, adt_numero: nrAdt, om_averbacao: omAverbacao,
     especie_divida: txt(f, "especie_divida"), periodo_inicio: ini, periodo_fim: fim,
     data_solicitacao_extenso: txt(f, "data_solicitacao_extenso"), possui_pensao_judicial: f.get("possui_pensao_judicial") === "on",
   };

@@ -14,7 +14,8 @@ export interface Militar {
 }
 export interface Processo {
   id: string; om_id: string; militar_id: string; numero: string | null; ano: number | null; data_requerimento: string | null;
-  bi_numero: string | null; bi_data: string | null; especie_divida: string | null; periodo_inicio: string | null;
+  bi_numero: string | null; bi_data: string | null;
+  documento_averbacao: string | null; adt_numero: string | null; om_averbacao: string | null; especie_divida: string | null; periodo_inicio: string | null;
   periodo_fim: string | null; data_solicitacao_extenso: string | null; possui_pensao_judicial: boolean;
   situacao: "rascunho" | "emitido" | "arquivado"; indice_ate: string | null; criado_em: string; atualizado_em: string;
   complementos: Complementos | null;

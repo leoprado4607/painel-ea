@@ -3,6 +3,7 @@ import { cpfValido, identidadeValida, precCpValido } from "@painel-ea/engine";
 import { useActionState, useState } from "react";
 import { Aviso } from "@/components/Aviso";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
+import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 import { BANCOS, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
 
 /** "situacao" do formulário é a do militar (Ativa, Reformado…); a do processo (rascunho/emitido) fica de fora. */
@@ -38,6 +39,33 @@ function Lista({ nome, rotulo, valor, opcoes, aceitaOutro }: { nome: string; rot
         {opcoes.map((o) => <option key={o}>{o}</option>)}
       </select>
     </div>
+  );
+}
+
+/** Averbação do direito: documento (BI, Adt, BAR), Nr Adt (só quando Adt), Nr BI/BAR, OM e data. */
+function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<string, string> }) {
+  const [documento, setDocumento] = useState(valores.documento_averbacao ?? "");
+  return (
+    <fieldset className="mt-4">
+      <legend className="mb-2 text-sm font-semibold text-tinta">Averbação</legend>
+      <div className={`grid gap-4 ${documento === "Adt" ? "sm:grid-cols-5" : "sm:grid-cols-4"}`}>
+        <div>
+          <label htmlFor="documento_averbacao" className="rotulo">Documento de averbação</label>
+          <select id="documento_averbacao" name="documento_averbacao" value={documento} onChange={(e) => setDocumento(e.target.value)} className="entrada">
+            <option value="">Selecione…</option>
+            {DOCUMENTOS_AVERBACAO.map((d) => <option key={d}>{d}</option>)}
+          </select>
+        </div>
+        {documento === "Adt" && (
+          <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} inputMode="numeric" maxLength={6} erro={erros.adt_numero} />
+        )}
+        <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} inputMode="numeric" maxLength={3} pattern="\d{3}"
+          placeholder="000" ajuda="3 dígitos" erro={erros.bi_numero}
+          validar={(v) => (numeroBoletimValido(v.trim()) ? null : "Use exatamente 3 dígitos (ex.: 045).")} />
+        <Lista nome="om_averbacao" rotulo="OM averbação" valor={valores.om_averbacao} opcoes={[...OMS_AVERBACAO]} />
+        <Campo nome="bi_data" rotulo="Data averbação" tipo="date" valor={valores.bi_data} />
+      </div>
+    </fieldset>
   );
 }
 
@@ -107,10 +135,9 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
             <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} />
             <Campo nome="data_solicitacao_extenso" rotulo="Data por extenso" valor={valores.data_solicitacao_extenso} placeholder="17 de outubro de 2026" />
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-4">
-            <Campo nome="bi_numero" rotulo="Nº BI/Adt averbação" valor={valores.bi_numero} />
-            <Campo nome="bi_data" rotulo="Data do BI" tipo="date" valor={valores.bi_data} />
-            <label className="flex items-center gap-2 self-end pb-2 text-sm sm:col-span-2">
+          <CamposAverbacao valores={valores} erros={c} />
+          <div className="mt-4">
+            <label className="flex items-center gap-2 text-sm">
               <input type="checkbox" name="possui_pensao_judicial" defaultChecked={valores.possui_pensao_judicial} className="h-4 w-4 accent-marca-700" />
               Possui pensão judicial no período da dívida
             </label>

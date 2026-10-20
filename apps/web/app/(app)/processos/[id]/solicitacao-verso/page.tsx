@@ -1,5 +1,7 @@
 import { PARECER_PADRAO } from "@painel-ea/documentos";
 import { AbaDocumento } from "@/components/AbaDocumento";
+import Link from "next/link";
+import { textoBoletim } from "@/lib/averbacao";
 import { carregarProcesso } from "@/lib/processo";
 
 /** Aba "Solicitação verso": requerimento, documento que materializou o direito, boletim, explicação e parecer. */
@@ -8,11 +10,15 @@ export default async function SolicitacaoVerso({ params }: { params: Promise<{ i
   const { processo, bloqueado } = await carregarProcesso(id);
   const c = processo.complementos ?? {};
   return (
-    <AbaDocumento processoId={id} doc="solicitacao" bloqueado={bloqueado} grupos={[
-      { titulo: "Requerimento e boletim", campos: [
+    <AbaDocumento processoId={id} doc="solicitacao" bloqueado={bloqueado} observacao={
+      <section className="cartao space-y-1 text-sm">
+        <h2 className="font-semibold">Boletim que averbou</h2>
+        <p>{textoBoletim(processo) || <span className="text-suave">Não informado.</span>}</p>
+        <p className="ajuda">Altere em <Link href={`/processos/${id}/dados`} className="underline">Dados do favorecido</Link> (Averbação).</p>
+      </section>
+    } grupos={[
+      { titulo: "Requerimento", campos: [
         { nome: "data_requerimento", rotulo: "Data do requerimento", tipo: "date", valor: processo.data_requerimento, largo: true },
-        { nome: "bi_numero", rotulo: "Nº BI/Adt que averbou", valor: processo.bi_numero },
-        { nome: "bi_data", rotulo: "Data do BI", tipo: "date", valor: processo.bi_data },
       ] },
       { titulo: "Textos do verso", campos: [
         { nome: "c.amparo", rotulo: "Nº/Data do documento que materializou o direito", tipo: "textarea", valor: c.amparo,

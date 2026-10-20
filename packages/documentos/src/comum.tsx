@@ -40,6 +40,8 @@ export interface DadosDocumentos {
     numero: string | null; especieDivida: string | null; periodoInicio: string; periodoFim: string;
     dataExtenso: string; possuiPensaoJudicial: boolean;
     ano?: number | null; dataRequerimento?: string | null; biNumero?: string | null; biData?: string | null;
+    /** "Boletim que Averbou" já montado (ex.: "Adt 12 ao BI 045 - 17º GAC, de 20/09/2026"). */
+    boletimAverbou?: string | null;
   };
   complementos?: Complementos;
   rubricas: { posicao: number; codigo: string; tipo: TipoRubrica }[];

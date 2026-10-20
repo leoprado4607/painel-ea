@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { Aviso } from "@/components/Aviso";
 import { sessao } from "@/lib/sessao";
-import { FUNCAO_RESPONSAVEL, type Om } from "@/lib/tipos";
+import type { Om } from "@/lib/tipos";
 
 const ROTULOS = {
   nome: "Nome da OM", regiao_militar: "Região Militar (ex.: 10ª)", codom: "CODOM", unidade_gestora: "Unidade Gestora (UG)",
@@ -47,10 +47,6 @@ export default async function DadosOm({ searchParams }: { searchParams: Promise<
           ))}
         </nav>
       )}
-      <Aviso tipo="info">
-        Os documentos são assinados por quem os gera, como {FUNCAO_RESPONSAVEL}
-        {perfil ? <>: <strong>{[perfil.posto, perfil.nome].filter(Boolean).join(" ")}</strong>, no seu caso</> : null}.
-      </Aviso>
       <form action={salvar} key={om.id} className="cartao grid gap-4 sm:grid-cols-2">
         <input type="hidden" name="id" value={om.id} />
         <fieldset className="contents">
