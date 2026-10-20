@@ -197,7 +197,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const { error: e3 } = await supabase.from("processo_rubrica").insert((padrao ?? []).map((r) => ({ ...r, processo_id: p.id })));
     if (e3) return { erro: e3.message };
     await gravarRecebidosDe(supabase, p.id, docs, {});
-    destino = `/processos/${p.id}/dados?importado=1`;
+    destino = `/processos/${p.id}/dados`;
   } catch (e) {
     return { erro: (e as Error).message };
   }

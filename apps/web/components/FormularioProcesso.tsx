@@ -116,14 +116,19 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
             <Campo nome="cpf" rotulo="CPF" valor={valores.cpf} placeholder="000.000.000-00" erro={c.cpf}
               validar={(v) => (cpfValido(v) ? null : "CPF inválido.")} />
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div className="mt-4 grid gap-4 sm:grid-cols-[14rem_1fr]">
+            <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} />
+            <Campo nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={valores.om_vinculacao} placeholder="Ex.: B ADM GU NATAL" />
+          </div>
+        </section>
+
+        {/* dados bancários num quadro próprio (pedido do usuário) */}
+        <section className="cartao">
+          <h2 className="mb-4 font-semibold">Dados bancários</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
             <Lista nome="banco" rotulo="Banco" valor={valores.banco} opcoes={BANCOS} aceitaOutro />
             <Campo nome="agencia" rotulo="Agência" valor={valores.agencia} />
-            <Campo nome="conta" rotulo="Conta" valor={valores.conta} />
-            <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} />
-          </div>
-          <div className="mt-4">
-            <Campo nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={valores.om_vinculacao} placeholder="Ex.: B ADM GU NATAL" />
+            <Campo nome="conta" rotulo="Conta corrente" valor={valores.conta} />
           </div>
         </section>
 
