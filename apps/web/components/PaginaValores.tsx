@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Aviso } from "@/components/Aviso";
-import { EnvioDocumentos } from "@/components/EnvioDocumentos";
 import { ValoresMensais } from "@/components/ValoresMensais";
 import { mesDeData } from "@/lib/lancamentos";
 import { carregarProcesso } from "@/lib/processo";
@@ -18,7 +17,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
       {importado && (
         <Aviso tipo="ok">Valores recebidos preenchidos pelos documentos enviados. Confira mês a mês abaixo.</Aviso>
       )}
-      {tipo === "recebido" && <EnvioDocumentos processoId={id} rubricas={rub} bloqueado={bloqueado} />}
+      {/* o envio de contracheque e fichas fica só em "Dados do favorecido" (pedido do usuário) */}
       <ValoresMensais
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}

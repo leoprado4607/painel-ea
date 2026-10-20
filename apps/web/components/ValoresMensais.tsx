@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import type { TipoRubrica } from "@painel-ea/engine";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
@@ -76,8 +77,9 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
     <div className="space-y-4">
       {tipo === "recebido" && (
         <Aviso tipo="info">
-          Valores recebidos, exatamente como constam na ficha financeira. Ao enviar as fichas em PDF (acima), eles são preenchidos
-          sozinhos; confira e corrija aqui se precisar.
+          Valores recebidos, exatamente como constam na ficha financeira. Para preenchê-los pelos PDFs, envie o contracheque ou as
+          fichas em <Link href={`/processos/${processoId}/dados`} className="font-medium underline">Dados do favorecido</Link>;
+          confira e corrija aqui se precisar.
         </Aviso>
       )}
       {msg && <Aviso tipo={msg.tipo}>{msg.texto}</Aviso>}
