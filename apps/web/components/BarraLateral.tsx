@@ -78,7 +78,7 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
         <img src="/brasao-badm.png" alt="Brasão da B Adm Gu Natal" className="h-12 w-auto shrink-0 object-contain" />
         <span className="min-w-0">
           <span className="block font-marca text-[15px] italic leading-tight text-white">Exercícios Anteriores</span>
-          <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Div Pg Pes · B Adm Gu Natal</span>
+          <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Div Pg Pes · B Adm Gu Natal</span>
         </span>
       </Link>
 
@@ -86,7 +86,7 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
         <ul className="space-y-0.5">{PRINCIPAIS.map(link)}</ul>
         {admin && (
           <div>
-            <p id="lat-admin" className="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Administração</p>
+            <p id="lat-admin" className="px-2.5 pb-1.5 text-[11px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Administração</p>
             <ul aria-labelledby="lat-admin" className="space-y-0.5">{ADMINISTRACAO.map(link)}</ul>
           </div>
         )}
@@ -98,12 +98,12 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
                 <SeloSituacao situacao={aberto.situacao} />
               </div>
               <div className="space-y-2 border-t border-white/10 pt-2" aria-label="Abas do processo" role="group">
-                <p id="lat-lancamentos" className="px-1 text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Lançamentos</p>
+                <p id="lat-lancamentos" className="px-1 text-[11px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Lançamentos</p>
                 {/* linha vertical ligando as etapas, atrás dos números */}
                 <ol aria-labelledby="lat-lancamentos" className="relative space-y-0.5 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-ouro-claro/30">
                   {LANCAMENTOS.map((a, i) => abaDoProcesso(a, <Numero n={i + 1} ativa={a === ativa} />))}
                 </ol>
-                <p id="lat-documentos" className="px-1 pt-1 text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Documentos</p>
+                <p id="lat-documentos" className="px-1 pt-1 text-[11px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Documentos</p>
                 <ul aria-labelledby="lat-documentos" className="space-y-0.5">
                   {DOCUMENTOS.map((a) => abaDoProcesso(a, <Ponto />))}
                 </ul>

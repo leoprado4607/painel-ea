@@ -20,7 +20,14 @@ export default async function Processos() {
         <Link href="/processos/novo" className="botao">Novo processo</Link>
       </div>
       {processos.length === 0 ? (
-        <div className="cartao text-center text-sm text-suave">Nenhum processo ainda. Comece por “Novo processo”.</div>
+        <div className="cartao space-y-4 py-10 text-center">
+          <p className="rotulo-secao mx-auto max-w-md">Nenhum processo</p>
+          <h2 className="text-2xl font-semibold text-carvao">Comece pelo contracheque ou pelas fichas</h2>
+          <p className="mx-auto max-w-lg text-sm text-suave">
+            Envie os PDFs e o site cria o processo com os dados do favorecido, o período e os valores recebidos. Também é possível digitar tudo.
+          </p>
+          <Link href="/processos/novo" className="botao">Criar o primeiro processo</Link>
+        </div>
       ) : (
         <ul className="space-y-2">
           {processos.map((p) => {

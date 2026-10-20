@@ -3,14 +3,14 @@ import { descreverRegra } from "@/lib/indice";
 import { sessao } from "@/lib/sessao";
 import { MESES } from "@/lib/tipos";
 
-/** Etapas do sistema, na ordem das abas do rodapé (como a aba "Passo a Passo" da planilha). */
-const ETAPAS: { aba: string; texto: string; href?: string }[] = [
+/** Etapas do sistema, na ordem do menu e das abas do processo (como a aba "Passo a Passo" da planilha). */
+const ETAPAS: { aba: string; texto: string; href?: string; soAdmin?: boolean }[] = [
   { aba: "Atualização do IPCA-E", href: "/ipca",
     texto: "Os índices são buscados todo dia no IBGE e no Banco Central. Confira até que mês a série está atualizada; se precisar, clique em “Buscar índices agora”." },
-  { aba: "Dados da OM", href: "/om",
-    texto: "Nome, RM, UG, CODOM, cidade e Ordenador de Despesas aparecem no cabeçalho e nas assinaturas. Só o Admin altera." },
+  { aba: "Dados da OM", href: "/om", soAdmin: true,
+    texto: "Nome, RM, UG, CODOM, cidade e Ordenador de Despesas aparecem no cabeçalho e nas assinaturas dos documentos." },
   { aba: "Dados do favorecido",
-    texto: "Abra ou crie um processo (menu “Novo processo”). Envie as fichas financeiras em PDF ou digite os dados do militar, o período e a espécie da dívida." },
+    texto: "Abra ou crie um processo (menu “Novo processo”). Envie o contracheque e/ou as fichas financeiras em PDF, ou digite os dados do militar, o período e a espécie da dívida." },
   { aba: "Códigos lançamento", texto: "Confira as rubricas do processo. É possível alterar ou incluir códigos e marcar cada um como Receita ou Despesa." },
   { aba: "Contracheque - F Financeira", texto: "Valores recebidos, exatamente como na ficha financeira. Quando as fichas são enviadas, já vêm preenchidos para conferência." },
   { aba: "Lançar valor devido", texto: "Valores que o militar deveria ter recebido, mês a mês e rubrica a rubrica." },
@@ -21,7 +21,9 @@ const ETAPAS: { aba: string; texto: string; href?: string }[] = [
 ];
 
 export default async function PassoAPasso() {
-  const { supabase } = await sessao();
+  const { supabase, perfil } = await sessao();
+  // cada perfil vê só as etapas que pode usar (Dados da OM é do Admin)
+  const etapas = ETAPAS.filter((e) => !e.soAdmin || perfil?.papel === "admin");
   const [{ data: situacao }, { data: regras }] = await Promise.all([
     supabase.from("situacao_indices").select("serie, ultimo_mes"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
@@ -35,21 +37,21 @@ export default async function PassoAPasso() {
         <h1 className="titulo-pagina">Passo a passo</h1>
         <p className="text-sm text-suave">
           Correção pela série {descreverRegra(regras ?? [])}, atualizada até <strong className="text-tinta">{ate}</strong>.
-          Dentro do processo, siga as abas da barra lateral, de cima para baixo.
+          Dentro do processo, siga as abas na ordem: primeiro os lançamentos (1 a 4), depois os documentos.
         </p>
       </header>
       <ol className="cartao divide-y divide-borda p-0">
-        {ETAPAS.map((e, i) => (
+        {etapas.map((e, i) => (
           <li key={e.aba} className="grid gap-1 px-5 py-4 sm:grid-cols-[2.5rem_16rem_1fr] sm:gap-4">
-            <span className="font-titulo text-2xl font-bold leading-none tabular-nums text-ouro-escuro">{i + 1}</span>
+            <span className="font-titulo text-2xl font-bold leading-none lining-nums tabular-nums text-ouro-escuro">{i + 1}</span>
             <span className="font-titulo text-lg font-semibold leading-snug text-carvao">{e.href ? <Link href={e.href} className="underline-offset-2 hover:text-exercito hover:underline">{e.aba}</Link> : e.aba}</span>
             <span className="text-sm text-suave">{e.texto}</span>
           </li>
         ))}
       </ol>
       <p className="text-xs text-suave">
-        As abas do processo aparecem na barra lateral ao abrir um processo em{" "}
-        <Link href="/processos" className="underline">Processos</Link>.
+        As abas do processo aparecem ao abrir um processo em{" "}
+        <Link href="/processos" className="underline">Processos</Link>: no computador, na barra lateral; no celular, numa faixa no alto da página.
       </p>
     </div>
   );

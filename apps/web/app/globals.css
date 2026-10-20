@@ -36,8 +36,14 @@ body {
 }
 
 @layer base {
-  h1, h2, h3 { font-family: var(--font-titulo); }
+  /* Cormorant usa algarismos de estilo antigo por padrão ("1" parece "I"): força algarismos alinhados */
+  h1, h2, h3 { font-family: var(--font-titulo); font-variant-numeric: lining-nums; }
   h1 { letter-spacing: -0.01em; }
+}
+
+@utility font-titulo {
+  font-family: var(--font-titulo);
+  font-variant-numeric: lining-nums;
 }
 
 @layer components {

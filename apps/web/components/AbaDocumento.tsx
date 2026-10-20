@@ -50,6 +50,9 @@ export function AbaDocumento({ processoId, doc, ano, grupos = [], bloqueado, obs
   const [versao, setVersao] = useState(0);
   useEffect(() => { if (estado?.ok) setVersao((v) => v + 1); }, [estado]);
   const src = `/processos/${processoId}/previa?doc=${doc}${ano ? `&ano=${ano}` : ""}&v=${versao}`;
+  // a prévia leva alguns segundos para ser gerada: mostra um aviso até o PDF chegar
+  const [carregando, setCarregando] = useState(true);
+  useEffect(() => setCarregando(true), [src]);
   const temCampos = grupos.some((g) => g.campos.length);
 
   return (
@@ -77,7 +80,18 @@ export function AbaDocumento({ processoId, doc, ano, grupos = [], bloqueado, obs
           <span className="text-suave">Prévia (rascunho, não vale como documento)</span>
           <a href={src} target="_blank" rel="noopener" className="text-marca-700 underline">Abrir em nova aba</a>
         </div>
-        <iframe key={versao} src={src} title="Prévia do documento em PDF" className="w-full flex-1 border border-borda bg-fundo" />
+        <div className="relative flex flex-1">
+          <iframe key={versao} src={src} title="Prévia do documento em PDF" onLoad={() => setCarregando(false)}
+            className="w-full flex-1 border border-borda bg-fundo" />
+          {carregando && (
+            <div role="status" className="absolute inset-0 grid place-items-center border border-borda bg-creme/90">
+              <div className="space-y-2 text-center">
+                <p className="font-titulo text-xl font-semibold text-carvao motion-safe:animate-pulse">Gerando a prévia…</p>
+                <p className="text-xs text-suave">O PDF é montado com os valores atuais e leva alguns segundos.</p>
+              </div>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   );

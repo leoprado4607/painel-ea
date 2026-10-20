@@ -71,9 +71,9 @@ export function GestaoOperadores({ usuarios, oms, euId }: { usuarios: Operador[]
       )}
 
       <section className="cartao overflow-x-auto p-0">
-        <table className="w-full min-w-[48rem] text-sm">
+        <table className="w-full min-w-[60rem] text-sm">
           <thead className="text-left text-suave">
-            <tr><th className="px-4 py-2">Nome</th><th>CPF</th><th>OM</th><th>Situação</th><th></th></tr>
+            <tr><th className="px-4 py-2">Nome</th><th className="px-3">CPF</th><th className="px-3">OM</th><th className="px-3">Situação</th><th></th></tr>
           </thead>
           <tbody>
             {usuarios.map((u) => {
@@ -81,14 +81,14 @@ export function GestaoOperadores({ usuarios, oms, euId }: { usuarios: Operador[]
               const operador = u.papel === "operador";
               return (
                 <tr key={u.usuario_id} className="border-t border-borda">
-                  <td className="px-4 py-2">
+                  <td className="min-w-64 px-4 py-2">
                     {[u.posto, u.nome].filter(Boolean).join(" ")}
                     {u.papel === "admin" && <span className="ml-2 bg-marca-100 px-2 py-0.5 text-[11px] uppercase tracking-[.05em] font-semibold text-marca-800">Admin</span>}
                     {eu && <span className="ml-1 text-xs text-suave">(você)</span>}
                   </td>
-                  <td className="font-mono text-suave">{u.cpf ? formatarCpf(u.cpf) : <span className="font-sans text-amber-800">sem CPF</span>}</td>
-                  <td className="text-suave">{u.om ?? "—"}</td>
-                  <td>
+                  <td className="whitespace-nowrap px-3 font-mono text-suave">{u.cpf ? formatarCpf(u.cpf) : <span className="font-sans text-amber-800">sem CPF</span>}</td>
+                  <td className="max-w-56 truncate px-3 text-suave" title={u.om ?? undefined}>{u.om ?? "—"}</td>
+                  <td className="whitespace-nowrap px-3">
                     {u.ativo
                       ? <span className="text-green-800">{u.trocar_senha ? "Aguardando 1º acesso" : "Ativo"}</span>
                       : <span className="text-red-800">Desativado</span>}
