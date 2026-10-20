@@ -1,36 +1,24 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
-import { sair } from "@/app/login/actions";
-import { AbasRodape } from "@/components/AbasRodape";
 import { Aviso } from "@/components/Aviso";
+import { BarraLateral, ProvedorProcesso } from "@/components/BarraLateral";
 import { sessao } from "@/lib/sessao";
 
+/** Telas internas: barra lateral à esquerda (menu, abas do processo aberto e usuário) e o conteúdo ao lado. */
 export default async function LayoutApp({ children }: { children: React.ReactNode }) {
-  const { perfil, om } = await sessao();
+  const { perfil } = await sessao();
   // senha provisória: trocar antes de usar o sistema (conferido aqui, onde o perfil já foi lido)
   if (perfil?.trocar_senha) redirect("/trocar-senha");
   const admin = perfil?.papel === "admin";
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-borda bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3">
-          <nav className="flex items-center gap-4">
-            <Link href="/processos" className="font-bold text-marca-800">Painel EA</Link>
-            <Link href="/processos" className="text-sm text-suave hover:text-tinta">Processos</Link>
-            <Link href="/processos/novo" className="text-sm text-suave hover:text-tinta">Novo processo</Link>
-          </nav>
-          <div className="flex items-center gap-4 text-sm">
-            <span className="hidden text-suave sm:inline">
-              {[perfil?.posto, perfil?.nome].filter(Boolean).join(" ")}{admin ? " · Admin" : om ? ` · ${om.nome}` : ""}
-            </span>
-            <form action={sair}><button className="botao-sec py-1.5">Sair</button></form>
+    <ProvedorProcesso>
+      <div className="min-h-screen lg:flex">
+        <BarraLateral admin={admin} usuario={[perfil?.posto, perfil?.nome].filter(Boolean).join(" ")} />
+        <main className="min-w-0 flex-1 px-4 pb-10 pt-5 lg:px-8 lg:pt-8">
+          <div className="mx-auto max-w-6xl">
+            {perfil ? children : <Aviso tipo="atencao">Seu usuário ainda não foi cadastrado como operador. Peça ao Admin para liberar o acesso.</Aviso>}
           </div>
-        </div>
-      </header>
-      <main className="mx-auto max-w-7xl px-4 pb-20 pt-6">
-        {perfil ? children : <Aviso tipo="atencao">Seu usuário ainda não foi cadastrado como operador. Peça ao Admin para liberar o acesso.</Aviso>}
-      </main>
-      {perfil && <AbasRodape admin={admin} />}
-    </div>
+        </main>
+      </div>
+    </ProvedorProcesso>
   );
 }

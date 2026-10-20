@@ -35,7 +35,7 @@ export async function middleware(req: NextRequest) {
   };
 
   if (!logado) return PUBLICAS.includes(caminho) ? res : redirecionar("/login");
-  if (caminho === "/login" || caminho === "/mfa") return redirecionar("/processos");
+  if (caminho === "/login" || caminho === "/mfa") return redirecionar("/passo-a-passo");
   return res;
 }
 

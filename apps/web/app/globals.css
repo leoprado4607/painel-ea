@@ -10,8 +10,6 @@
   --color-suave: #5b6560;
   --color-borda: #d7ddd6;
   --color-fundo: #f6f7f5;
-  /* altura da barra de abas do rodapé (abas + barra de rolagem fina) */
-  --altura-abas: 2.875rem;
   --font-sans: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
 }
 

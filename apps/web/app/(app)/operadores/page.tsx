@@ -1,11 +1,11 @@
-import { Aviso } from "@/components/Aviso";
+import { redirect } from "next/navigation";
 import { GestaoOperadores, type Operador } from "@/components/GestaoOperadores";
 import { sessao } from "@/lib/sessao";
 
 /** Operadores: painel exclusivo do Admin para cadastrar, desativar, redefinir o acesso e excluir. */
 export default async function Operadores() {
   const { supabase, perfil, user } = await sessao();
-  if (perfil?.papel !== "admin") return <Aviso tipo="info">Somente o Admin cadastra e exclui operadores.</Aviso>;
+  if (perfil?.papel !== "admin") redirect("/passo-a-passo"); // menu "Administração", só do Admin
   const [{ data: usuarios }, { data: oms }] = await Promise.all([
     supabase.from("perfil")
       .select("usuario_id, nome, posto, cpf, papel, ativo, trocar_senha, om:om_id(nome)")

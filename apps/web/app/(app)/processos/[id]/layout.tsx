@@ -1,20 +1,24 @@
 import { AbasProcesso } from "@/components/AbasProcesso";
 import { Aviso } from "@/components/Aviso";
+import { RegistrarProcesso } from "@/components/BarraLateral";
 import { carregarProcesso } from "@/lib/processo";
 
-/** Processo: barra lateral com as abas à esquerda (computador) e o conteúdo da aba à direita. */
+/**
+ * Processo: as abas aparecem na barra lateral do sistema (computador), registradas aqui; no celular, numa tira
+ * de abas acima do conteúdo.
+ */
 export default async function LayoutProcesso({ children, params }: { children: React.ReactNode; params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { processo, militar, bloqueado } = await carregarProcesso(id);
+  const titulo = [militar.posto_graduacao, militar.nome].filter(Boolean).join(" ");
+  const subtitulo = `Processo ${processo.numero || "s/nº"}${processo.especie_divida ? ` · ${processo.especie_divida}` : ""}`;
   return (
-    <div className="space-y-4 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-6 lg:space-y-0">
-      <AbasProcesso id={id} situacao={processo.situacao}
-        titulo={[militar.posto_graduacao, militar.nome].filter(Boolean).join(" ")}
-        subtitulo={`Processo ${processo.numero || "s/nº"}${processo.especie_divida ? ` · ${processo.especie_divida}` : ""}`} />
-      <div className="min-w-0 space-y-5">
-        {bloqueado && <Aviso tipo="info">Este processo já foi emitido e está somente para consulta.</Aviso>}
-        {children}
-      </div>
+    <div className="space-y-4 lg:space-y-5">
+      <RegistrarProcesso id={id} titulo={titulo} subtitulo={subtitulo} situacao={processo.situacao} />
+      <AbasProcesso id={id} titulo={titulo} subtitulo={subtitulo} situacao={processo.situacao} />
+      {/* no computador, o nome do processo fica na barra lateral; aqui só o aviso de processo emitido */}
+      {bloqueado && <Aviso tipo="info">Este processo já foi emitido e está somente para consulta.</Aviso>}
+      {children}
     </div>
   );
 }

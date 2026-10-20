@@ -9,7 +9,7 @@ export async function entrar(_: { erro?: string } | undefined, form: FormData) {
   const supabase = await supabaseServidor();
   const { error } = await supabase.auth.signInWithPassword({ email, password: String(form.get("senha") ?? "") });
   if (error) return { erro: "CPF ou senha incorretos." };
-  redirect("/processos"); // autenticador (2FA) desligado por enquanto
+  redirect("/passo-a-passo"); // 1ª tela após o login; autenticador (2FA) desligado por enquanto
 }
 
 export async function sair() {

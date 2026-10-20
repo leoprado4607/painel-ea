@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { AbaDocumento } from "@/components/AbaDocumento";
 import { AbasProcesso } from "@/components/AbasProcesso";
-import { AbasRodape } from "@/components/AbasRodape";
+import { BarraLateral, ProvedorProcesso, RegistrarProcesso } from "@/components/BarraLateral";
 import { FormularioProcesso } from "@/components/FormularioProcesso";
 import { ValoresMensais } from "@/components/ValoresMensais";
 
@@ -19,10 +19,14 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
   return (
     <main className="mx-auto max-w-7xl px-4 py-6">
       {tela === "abas" ? (
-        <div className="space-y-4 pb-16 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-6 lg:space-y-0">
+        <ProvedorProcesso>
+        <div className="-mx-4 -my-6 min-h-screen lg:flex">
+          <BarraLateral admin usuario="Maj FULANO DE TAL" />
+          <RegistrarProcesso id="00000000-0000-0000-0000-000000000000" situacao="rascunho"
+            titulo="1º Sgt FULANO DE TAL DA SILVA" subtitulo="Processo 012/2026 · Diferença de adicional de habilitação" />
+          <div className="min-w-0 flex-1 space-y-4 px-4 pb-10 pt-5 lg:px-8 lg:pt-8">
           <AbasProcesso id="00000000-0000-0000-0000-000000000000" situacao="rascunho"
             titulo="1º Sgt FULANO DE TAL DA SILVA" subtitulo="Processo 012/2026 · Diferença de adicional de habilitação" />
-          <div className="min-w-0">
           <AbaDocumento processoId="00000000-0000-0000-0000-000000000000" doc="cpex" bloqueado={false} grupos={[
             { titulo: "Pensão judicial (ZED)", campos: [
               { nome: "possui_pensao_judicial", rotulo: "Possui pensão judicial no período da dívida", tipo: "checkbox", valor: true },
@@ -31,8 +35,8 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
             ] },
           ]} />
           </div>
-          <AbasRodape admin />
         </div>
+        </ProvedorProcesso>
       ) : tela === "valores" ? (
         <ValoresMensais processoId="previa" tipo="devido" proximaEtapa="conferencia" bloqueado={false} rubricas={rubricas}
           inicio={{ ano: 2020, mes: 11 }} fim={{ ano: 2021, mes: 6 }}

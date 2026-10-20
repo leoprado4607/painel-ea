@@ -24,7 +24,7 @@ export default function TrocarSenha() {
     const { error: e2 } = await supabase.rpc("concluir_troca_senha");
     setOcupado(false);
     if (e2) return setErro(e2.message);
-    router.replace("/processos");
+    router.replace("/passo-a-passo");
     router.refresh();
   }
 

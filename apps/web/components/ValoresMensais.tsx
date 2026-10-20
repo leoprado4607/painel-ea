@@ -163,7 +163,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
       </section>
 
       {!bloqueado && (
-        <div className="sticky bottom-[calc(var(--altura-abas)+0.5rem)] z-20 rounded-xl border border-borda bg-white/95 shadow-[0_8px_24px_-12px_rgba(29,36,32,.45)] backdrop-blur">
+        <div className="sticky bottom-2 z-20 rounded-xl border border-borda bg-white/95 shadow-[0_8px_24px_-12px_rgba(29,36,32,.45)] backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
             <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length} alteração(ões) não salvas` : "Tudo salvo"}</span>
             <div className="flex gap-2">

@@ -35,7 +35,7 @@ export default function Mfa() {
     const { error } = await supabase.auth.mfa.challengeAndVerify({ factorId: fator.id, code: codigo.trim() });
     setOcupado(false);
     if (error) return setErro("Código inválido ou vencido. Confira o relógio do celular e tente de novo.");
-    router.replace("/processos");
+    router.replace("/passo-a-passo");
     router.refresh();
   }
 

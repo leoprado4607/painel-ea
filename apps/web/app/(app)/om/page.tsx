@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 import { Aviso } from "@/components/Aviso";
 import { sessao } from "@/lib/sessao";
 import { FUNCAO_RESPONSAVEL, type Om } from "@/lib/tipos";
@@ -23,21 +24,20 @@ async function salvar(form: FormData) {
   revalidatePath("/om");
 }
 
-/** Dados da OM usados nos cabeçalhos e nas assinaturas dos documentos. Só o Admin altera; o operador vê a da sua OM. */
+/** Dados da OM usados nos cabeçalhos e nas assinaturas dos documentos. Só o Admin vê e altera. */
 export default async function DadosOm({ searchParams }: { searchParams: Promise<{ om?: string }> }) {
-  const { supabase, perfil, om: minhaOm } = await sessao();
-  const admin = perfil?.papel === "admin";
-  const { data: oms } = admin
-    ? await supabase.from("om").select("*").order("nome").returns<Om[]>()
-    : { data: minhaOm ? [minhaOm] : [] };
+  const { supabase, perfil } = await sessao();
+  // só o Admin vê e altera os dados da OM (menu "Administração")
+  if (perfil?.papel !== "admin") redirect("/passo-a-passo");
+  const { data: oms } = await supabase.from("om").select("*").order("nome").returns<Om[]>();
   const { om: pedida } = await searchParams;
-  const om = oms?.find((o) => o.id === pedida) ?? (admin ? oms?.[0] : minhaOm);
+  const om = oms?.find((o) => o.id === pedida) ?? oms?.[0];
   if (!om) return <Aviso tipo="atencao">Nenhuma OM cadastrada.</Aviso>;
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-bold">Dados da OM</h1>
       <p className="text-sm text-suave">Aparecem no cabeçalho e nas assinaturas dos documentos emitidos.</p>
-      {admin && (oms?.length ?? 0) > 1 && (
+      {(oms?.length ?? 0) > 1 && (
         <nav aria-label="OMs" className="flex flex-wrap gap-2">
           {oms!.map((o) => (
             <Link key={o.id} href={`/om?om=${o.id}`} aria-current={o.id === om.id ? "page" : undefined}
@@ -47,21 +47,20 @@ export default async function DadosOm({ searchParams }: { searchParams: Promise<
           ))}
         </nav>
       )}
-      {!admin && <Aviso tipo="info">Somente o Admin pode alterar estes dados.</Aviso>}
       <Aviso tipo="info">
         Os documentos são assinados por quem os gera, como {FUNCAO_RESPONSAVEL}
         {perfil ? <>: <strong>{[perfil.posto, perfil.nome].filter(Boolean).join(" ")}</strong>, no seu caso</> : null}.
       </Aviso>
       <form action={salvar} key={om.id} className="cartao grid gap-4 sm:grid-cols-2">
         <input type="hidden" name="id" value={om.id} />
-        <fieldset disabled={!admin} className="contents">
+        <fieldset className="contents">
           {CAMPOS.map(([k, rotulo]) => (
             <div key={k} className={k === "nome" ? "sm:col-span-2" : ""}>
               <label htmlFor={k} className="rotulo">{rotulo}</label>
               <input id={k} name={k} defaultValue={om[k] ?? ""} className="entrada" required={k === "nome"} />
             </div>
           ))}
-          {admin && <div className="sm:col-span-2 flex justify-end"><button className="botao">Salvar</button></div>}
+          <div className="sm:col-span-2 flex justify-end"><button className="botao">Salvar</button></div>
         </fieldset>
       </form>
     </div>
