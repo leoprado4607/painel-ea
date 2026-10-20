@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { descreverRegra } from "@/lib/indice";
 import { sessao } from "@/lib/sessao";
-import { MESES } from "@/lib/tipos";
 
 /** Etapas do sistema, na ordem do menu e das abas do processo (como a aba "Passo a Passo" da planilha). */
 const ETAPAS: { aba: string; texto: string; href?: string; soAdmin?: boolean }[] = [
@@ -21,25 +19,13 @@ const ETAPAS: { aba: string; texto: string; href?: string; soAdmin?: boolean }[]
 ];
 
 export default async function PassoAPasso() {
-  const { supabase, perfil } = await sessao();
+  const { perfil } = await sessao();
   // cada perfil vê só as etapas que pode usar (Dados da OM é do Admin)
   const etapas = ETAPAS.filter((e) => !e.soAdmin || perfil?.papel === "admin");
-  const [{ data: situacao }, { data: regras }] = await Promise.all([
-    supabase.from("situacao_indices").select("serie, ultimo_mes"),
-    supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
-  ]);
-  const ultimo = (situacao ?? []).map((s) => s.ultimo_mes as string).sort().pop();
-  const ate = ultimo ? `${MESES[Number(ultimo.slice(5, 7)) - 1]}/${ultimo.slice(0, 4)}` : "—";
   return (
     <div className="space-y-5">
-      <header className="space-y-1">
-        <p className="text-[11px] font-semibold uppercase tracking-[.22em] text-ouro-escuro">Exercício anterior · SEF · CPEx · SIAPPES</p>
-        <h1 className="titulo-pagina">Passo a passo</h1>
-        <p className="text-sm text-suave">
-          Correção pela série {descreverRegra(regras ?? [])}, atualizada até <strong className="text-tinta">{ate}</strong>.
-          Dentro do processo, siga as abas na ordem: primeiro os lançamentos (1 a 4), depois os documentos.
-        </p>
-      </header>
+      {/* sem cabeçalho visível (pedido do usuário); o título fica para leitores de tela */}
+      <h1 className="sr-only">Passo a passo</h1>
       <ol className="cartao divide-y divide-borda p-0">
         {etapas.map((e, i) => (
           <li key={e.aba} className="grid gap-1 px-5 py-4 sm:grid-cols-[2.5rem_16rem_1fr] sm:gap-4">
