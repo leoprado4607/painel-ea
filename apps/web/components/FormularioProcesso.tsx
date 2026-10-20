@@ -56,8 +56,10 @@ export function EscolhaOm({ oms, id = "om_id", erro }: { oms: { id: string; nome
   );
 }
 
-export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = [] }: {
+export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = [], aoLimpar }: {
   processoId: string | null; valores?: Valores; bloqueado?: boolean; oms?: { id: string; nome: string }[];
+  /** "Dados do favorecido": esvazia os campos preenchidos pelos PDFs (só no formulário, até salvar). */
+  aoLimpar?: () => void;
 }) {
   const [estado, acao, enviando] = useActionState<EstadoForm | undefined, FormData>(salvarProcesso.bind(null, processoId), undefined);
   const c = estado?.campos ?? {};
@@ -117,6 +119,12 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
       </fieldset>
       {!bloqueado && (
         <div className="flex justify-end">
+          {aoLimpar && (
+            <button type="button" className="botao-sec" disabled={enviando}
+              onClick={() => { if (confirm("Limpar os dados carregados pelos PDFs? Nome, P/G, Prec-CP, CPF, identidade, OM de vinculação, banco, agência e conta ficam em branco no formulário. Nada é apagado até você salvar.")) aoLimpar(); }}>
+              Limpar
+            </button>
+          )}
           <button className="botao" disabled={enviando}>{enviando ? "Salvando…" : "Salvar e continuar"}</button>
         </div>
       )}

@@ -73,3 +73,21 @@ describe.skipIf(reais.length === 0).each(reais)("contracheque real %s no fluxo d
     expect(new Set(r.lancamentos.map((l) => `${l.ano}-${l.mes}`)).size).toBe(1); // um mês só
   });
 });
+
+const FICHA_2026 = join(__dirname, "..", "..", "..", "exemplos", "fichas", "Ficha Financeira - 2026 (out-2026).pdf");
+describe.skipIf(reais.length === 0 || !existsSync(FICHA_2026))("ficha + contracheque reais juntos", () => {
+  it("a identidade vem da Ficha Financeira; banco, agência, conta e OM de vinculação do contracheque", async () => {
+    const extrair = async (caminho: string, arquivo: string): Promise<DocumentoExtraido> => {
+      const d = await lerDocumentoPdf(new Uint8Array(readFileSync(caminho)));
+      return { arquivo, tipo: d.tipo, ficha: d.ficha, contracheque: d.tipo === "contracheque" ? d.contracheque : undefined };
+    };
+    const ficha = await extrair(FICHA_2026, "ficha.pdf");
+    const cc = await extrair(join(PASTA, reais[0]!), "contracheque.pdf");
+    const dados = dadosDoFavorecido([cc, ficha]); // a ordem de envio não importa
+    expect(dados.identidade).toBe(ficha.ficha.cabecalho.identidade);
+    expect(dados.identidade).toMatch(/^\d{10}$/);
+    expect(dados.banco).toBe(bancoDaLista(cc.contracheque!.cabecalho.banco));
+    expect(dados.om_vinculacao).toBe(cc.contracheque!.cabecalho.omVinculacao);
+    expect(dadosDoFavorecido([cc]).identidade).toBeUndefined(); // o contracheque sozinho não traz identidade
+  });
+});

@@ -1,8 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useActionState, useState, useTransition } from "react";
+import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
-import { analisarDocumentos, gravarRecebidos, type Previa } from "@/lib/acoes/fichas";
+import { analisarDocumentos, gravarRecebidos, reanalisarDocumentos, type Previa } from "@/lib/acoes/fichas";
 import { formatarReais } from "@/lib/dinheiro";
 import type { DadosLidos } from "@/lib/favorecido";
 import { formatarCpf } from "@/lib/login";
@@ -24,9 +24,32 @@ const ROTULOS: [keyof DadosLidos, string][] = [
  * Envio de contracheques e fichas financeiras em PDF (um ou vários, misturados). O arquivo é lido e descartado:
  * mostra o que foi encontrado, o que fica de fora do cálculo e, ao confirmar, grava os valores recebidos.
  */
+const tamanho = (b: number) => (b < 1024 * 1024 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1024 / 1024).toFixed(1)} MB`);
+
 export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }: Props) {
   const router = useRouter();
-  const [previa, enviar, lendo] = useActionState<Previa | undefined, FormData>(analisarDocumentos.bind(null, processoId), undefined);
+  // arquivos escolhidos (ainda não lidos): o usuário pode remover os que escolheu por engano antes de ler
+  const [selecionados, setSelecionados] = useState<File[]>([]);
+  const [previa, setPrevia] = useState<Previa | undefined>();
+  const [lendo, iniciarLeitura] = useTransition();
+  const escolher = (lista: FileList | null) => {
+    const novos = [...(lista ?? [])].filter((f) => f.name.toLowerCase().endsWith(".pdf"));
+    setSelecionados((atuais) => [...atuais, ...novos.filter((n) => !atuais.some((a) => a.name === n.name && a.size === n.size))]);
+  };
+  const ler = () => iniciarLeitura(async () => {
+    const form = new FormData();
+    selecionados.forEach((f) => form.append("documentos", f));
+    const r = await analisarDocumentos(processoId, undefined, form);
+    setPrevia(r);
+    setDadosUsados(false);
+    if (!r.erro) setSelecionados([]);
+  });
+  // remover um documento já lido: recalcula a prévia com os que sobraram (os PDFs já foram descartados)
+  const removerLido = (indice: number) => iniciarLeitura(async () => {
+    const restantes = (previa?.documentos ?? []).filter((_, i) => i !== indice);
+    setPrevia(restantes.length ? await reanalisarDocumentos(processoId, restantes) : undefined);
+    setDadosUsados(false);
+  });
   const [escolhas, setEscolhas] = useState<Record<string, number>>({});
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [gravando, iniciar] = useTransition();
@@ -60,12 +83,30 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
       </div>
 
       {!bloqueado && (
-        <form action={enviar} className="flex flex-wrap items-center gap-3">
-          <label htmlFor={`documentos-${processoId}`} className="sr-only">Arquivos PDF</label>
-          <input id={`documentos-${processoId}`} name="documentos" type="file" accept="application/pdf,.pdf" multiple required
-            className="text-sm file:mr-3 file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
-          <button className="botao-sec" disabled={lendo}>{lendo ? "Lendo…" : "Ler documentos"}</button>
-        </form>
+        <div className="space-y-3">
+          <div className="flex flex-wrap items-center gap-3">
+            {/* o campo nativo fica escondido: a lista abaixo mostra o que foi escolhido */}
+            <label className="botao-sec cursor-pointer focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ouro">
+              Escolher arquivos
+              <input type="file" accept="application/pdf,.pdf" multiple className="sr-only"
+                onChange={(e) => { escolher(e.target.files); e.target.value = ""; }} />
+            </label>
+            <button type="button" className="botao" disabled={lendo || !selecionados.length} onClick={ler}>
+              {lendo ? "Lendo…" : selecionados.length ? `Ler ${selecionados.length} documento(s)` : "Ler documentos"}
+            </button>
+          </div>
+          {selecionados.length > 0 && (
+            <ul aria-label="Arquivos escolhidos" className="divide-y divide-borda border border-borda">
+              {selecionados.map((f, i) => (
+                <li key={`${f.name}-${f.size}`} className="flex items-center justify-between gap-3 px-3 py-2 text-sm">
+                  <span className="min-w-0 truncate"><span className="font-medium">{f.name}</span> <span className="text-suave">· {tamanho(f.size)}</span></span>
+                  <button type="button" className="shrink-0 px-2 py-1 text-red-800 hover:bg-red-50" aria-label={`Remover ${f.name}`}
+                    onClick={() => setSelecionados((l) => l.filter((_, j) => j !== i))}>Remover</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
       )}
 
       {previa?.erro && <Aviso tipo="erro">{previa.erro}</Aviso>}
@@ -82,6 +123,10 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
                 <span className="font-medium">{f.tipo === "contracheque" ? "Contracheque" : "Ficha financeira"} {f.referencia}</span>
                 <span className="text-suave">{f.arquivo} · {f.linhas} linhas</span>
                 {f.avisos.length > 0 && <span className="text-xs text-amber-800">{f.avisos.join("; ")}</span>}
+                {!bloqueado && (
+                  <button type="button" disabled={lendo} className="ml-auto px-2 py-0.5 text-xs text-red-800 hover:bg-red-50" aria-label={`Remover ${f.arquivo} da leitura`}
+                    onClick={() => removerLido(i)}>Remover</button>
+                )}
               </li>
             ))}
           </ul>

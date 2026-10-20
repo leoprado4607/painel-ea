@@ -123,6 +123,21 @@ export async function analisarDocumentos(processoId: string, _: Previa | undefin
   }
 }
 
+/**
+ * Recalcula a prévia com os documentos que sobraram (quando o usuário remove um lido por engano).
+ * Os PDFs já foram descartados: usa os dados lidos que voltam da tela, conferindo a forma de cada ficha.
+ */
+export async function reanalisarDocumentos(processoId: string, docs: DocumentoExtraido[]): Promise<Previa> {
+  try {
+    if (!docs.length) return {};
+    if (!docs.every((d) => fichaValida(d.ficha))) return { erro: "Dados dos documentos inválidos. Envie os PDFs de novo." };
+    const { supabase } = await sessao();
+    return await montarPrevia(supabase, processoId, docs);
+  } catch (e) {
+    return { erro: (e as Error).message };
+  }
+}
+
 /** Grava os recebidos: substitui os meses cobertos pelos documentos (ano inteiro da ficha; o mês do contracheque). */
 async function gravarRecebidosDe(supabase: Supabase, processoId: string, docs: DocumentoExtraido[], escolhasExtras: Record<string, number>) {
   const fichas: FichaFinanceira[] = docs.map((d) => d.ficha);
