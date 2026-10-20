@@ -35,10 +35,6 @@ export default async function PassoAPasso() {
           </li>
         ))}
       </ol>
-      <p className="text-xs text-suave">
-        As abas do processo aparecem ao abrir um processo em{" "}
-        <Link href="/processos" className="underline">Processos</Link>: no computador, na barra lateral; no celular, numa faixa no alto da página.
-      </p>
     </div>
   );
 }
