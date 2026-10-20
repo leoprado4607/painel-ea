@@ -14,7 +14,8 @@ const txt = (f: FormData, k: string) => {
   return v === "" ? null : v;
 };
 /** "2016-01" (input type=month) → "2016-01-01" */
-const mes = (v: string | null) => (v ? `${v}-01` : null);
+/** Início e fim da dívida: data do calendário ("2025-06-15"); aceita também só o mês ("2025-06" → dia 1). Só ano e mês contam no cálculo. */
+const dataPeriodo = (v: string | null) => (!v ? null : /^\d{4}-\d{2}$/.test(v) ? `${v}-01` : /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
 
 export async function salvarProcesso(processoId: string | null, _: EstadoForm | undefined, f: FormData): Promise<EstadoForm> {
   const { supabase, perfil } = await sessao();
@@ -36,7 +37,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use exatamente 3 dígitos (ex.: 045).";
   const nrAdt = documentoAverbacao === "Adt" ? txt(f, "adt_numero") : null;
   if (nrAdt && !/^\d{1,6}$/.test(nrAdt)) campos.adt_numero = "Use só números.";
-  const ini = mes(txt(f, "periodo_inicio")), fim = mes(txt(f, "periodo_fim"));
+  const ini = dataPeriodo(txt(f, "periodo_inicio")), fim = dataPeriodo(txt(f, "periodo_fim"));
   if (!ini || !fim) campos.periodo = "Informe o início e o fim da dívida.";
   else if (fim < ini) campos.periodo = "O fim da dívida é anterior ao início.";
   if (Object.keys(campos).length) return { erro: "Corrija os campos destacados.", campos };

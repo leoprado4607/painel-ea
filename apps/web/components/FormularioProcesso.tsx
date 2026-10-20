@@ -91,7 +91,6 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
 }) {
   const [estado, acao, enviando] = useActionState<EstadoForm | undefined, FormData>(salvarProcesso.bind(null, processoId), undefined);
   const c = estado?.campos ?? {};
-  const mes = (d?: string | null) => (d ? d.slice(0, 7) : "");
   return (
     <form action={acao} className="space-y-6">
       {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}
@@ -125,8 +124,8 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         <section className="cartao">
           <h2 className="mb-4 font-semibold">Dívida e processo</h2>
           <div className="grid gap-4 sm:grid-cols-3">
-            <Campo nome="periodo_inicio" rotulo="Início da dívida" tipo="month" valor={mes(valores.periodo_inicio)} obrigatorio />
-            <Campo nome="periodo_fim" rotulo="Fim da dívida" tipo="month" valor={mes(valores.periodo_fim)} obrigatorio erro={c.periodo} />
+            <Campo nome="periodo_inicio" rotulo="Início da dívida" tipo="date" valor={valores.periodo_inicio} obrigatorio />
+            <Campo nome="periodo_fim" rotulo="Fim da dívida" tipo="date" valor={valores.periodo_fim} obrigatorio erro={c.periodo} />
             <Campo nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} placeholder="Ex.: diferença de adicional" />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-4">
