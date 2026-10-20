@@ -31,8 +31,8 @@ export default async function PassoAPasso() {
   return (
     <div className="space-y-5">
       <header className="space-y-1">
-        <p className="text-xs font-semibold uppercase tracking-widest text-marca-700">Exercício anterior · SEF · CPEx · SIAPPES</p>
-        <h1 className="text-2xl font-bold">Passo a passo</h1>
+        <p className="text-[11px] font-semibold uppercase tracking-[.22em] text-ouro-escuro">Exercício anterior · SEF · CPEx · SIAPPES</p>
+        <h1 className="titulo-pagina">Passo a passo</h1>
         <p className="text-sm text-suave">
           Correção pela série {descreverRegra(regras ?? [])}, atualizada até <strong className="text-tinta">{ate}</strong>.
           Dentro do processo, siga as abas da barra lateral, de cima para baixo.
@@ -41,8 +41,8 @@ export default async function PassoAPasso() {
       <ol className="cartao divide-y divide-borda p-0">
         {ETAPAS.map((e, i) => (
           <li key={e.aba} className="grid gap-1 px-5 py-4 sm:grid-cols-[2.5rem_16rem_1fr] sm:gap-4">
-            <span className="text-lg font-bold tabular-nums text-marca-700">{i + 1}</span>
-            <span className="font-semibold">{e.href ? <Link href={e.href} className="text-marca-800 underline-offset-2 hover:underline">{e.aba}</Link> : e.aba}</span>
+            <span className="font-titulo text-2xl font-bold leading-none tabular-nums text-ouro-escuro">{i + 1}</span>
+            <span className="font-titulo text-lg font-semibold leading-snug text-carvao">{e.href ? <Link href={e.href} className="underline-offset-2 hover:text-exercito hover:underline">{e.aba}</Link> : e.aba}</span>
             <span className="text-sm text-suave">{e.texto}</span>
           </li>
         ))}

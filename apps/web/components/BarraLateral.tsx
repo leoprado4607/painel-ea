@@ -40,8 +40,8 @@ const ADMINISTRACAO: Item[] = [
 ];
 
 const classeItem = (ativo: boolean) =>
-  `group flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-medium transition-colors motion-reduce:transition-none ${FOCO}
-   ${ativo ? "bg-white text-tinta shadow-[0_6px_16px_-8px_rgba(0,0,0,.6)]" : "text-[#dfe7d6] hover:bg-white/10 hover:text-white"}`;
+  `group flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-colors motion-reduce:transition-none ${FOCO}
+   ${ativo ? "bg-creme text-carvao shadow-[inset_3px_0_0_var(--color-ouro)]" : "text-creme/85 hover:bg-white/10 hover:text-white"}`;
 
 function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
   const caminho = usePathname();
@@ -61,8 +61,8 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
     return (
       <li key={a.caminho}>
         <Link href={`/processos/${aberto!.id}/${a.caminho}`} prefetch={false} aria-current={eAtiva ? "page" : undefined}
-          className={`group flex items-center gap-2.5 rounded-lg py-1.5 pl-1.5 pr-2 text-[13px] font-medium transition-colors motion-reduce:transition-none ${FOCO}
-            ${eAtiva ? "bg-white text-tinta shadow-[0_6px_16px_-8px_rgba(0,0,0,.6)]" : "text-[#dfe7d6] hover:bg-white/10 hover:text-white"}`}>
+          className={`group flex items-center gap-2.5 py-1.5 pl-1.5 pr-2 text-[13px] font-medium transition-colors motion-reduce:transition-none ${FOCO}
+            ${eAtiva ? "bg-creme text-carvao shadow-[inset_3px_0_0_var(--color-ouro)]" : "text-creme/85 hover:bg-white/10 hover:text-white"}`}>
           {marcador}
           <span className="leading-tight">{a.rotulo}</span>
         </Link>
@@ -72,33 +72,38 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
 
   return (
     <div className="flex h-full flex-col">
-      <Link href="/passo-a-passo" className={`mb-4 block rounded-lg px-2.5 pt-1 ${FOCO}`}>
-        <span className="block text-[10px] font-semibold uppercase tracking-[.16em] text-[#a8c48a]">Exército Brasileiro</span>
-        <span className="block text-lg font-bold tracking-tight text-white">Painel EA</span>
+      {/* marca no estilo do cabeçalho do portal: brasão, nome em itálico e a Divisão em dourado */}
+      <Link href="/passo-a-passo" className={`mb-5 flex items-center gap-3 border-b border-white/10 px-1.5 pb-4 pt-1 ${FOCO}`}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src="/brasao.png" alt="" className="h-11 w-11 shrink-0 rounded-full bg-white object-contain p-1 ring-2 ring-ouro" />
+        <span className="min-w-0">
+          <span className="block font-marca text-[15px] italic leading-tight text-white">Exercícios Anteriores</span>
+          <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Div Pg Pes · B Adm Gu Natal</span>
+        </span>
       </Link>
 
       <nav aria-label="Menu principal" className="flex-1 space-y-5 overflow-y-auto [scrollbar-width:thin]">
         <ul className="space-y-0.5">{PRINCIPAIS.map(link)}</ul>
         {admin && (
           <div>
-            <p id="lat-admin" className="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[.14em] text-[#a8c48a]">Administração</p>
+            <p id="lat-admin" className="px-2.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Administração</p>
             <ul aria-labelledby="lat-admin" className="space-y-0.5">{ADMINISTRACAO.map(link)}</ul>
           </div>
         )}
           {aberto && (
-            <section aria-label="Processo aberto" className="rounded-xl bg-black/15 p-2 ring-1 ring-white/10">
+            <section aria-label="Processo aberto" className="bg-black/15 p-2 ring-1 ring-white/10">
               <div className="flex flex-col gap-1 px-1 pb-2">
                 <p className="text-[13px] font-bold leading-snug text-white">{aberto.titulo}</p>
-                <p className="text-[11px] leading-snug text-[#a8c48a]">{aberto.subtitulo}</p>
+                <p className="text-[11px] leading-snug text-ouro-claro">{aberto.subtitulo}</p>
                 <SeloSituacao situacao={aberto.situacao} />
               </div>
               <div className="space-y-2 border-t border-white/10 pt-2" aria-label="Abas do processo" role="group">
-                <p id="lat-lancamentos" className="px-1 text-[10px] font-semibold uppercase tracking-[.14em] text-[#a8c48a]">Lançamentos</p>
+                <p id="lat-lancamentos" className="px-1 text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Lançamentos</p>
                 {/* linha vertical ligando as etapas, atrás dos números */}
-                <ol aria-labelledby="lat-lancamentos" className="relative space-y-0.5 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-[#a8c48a]/25">
+                <ol aria-labelledby="lat-lancamentos" className="relative space-y-0.5 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-ouro-claro/30">
                   {LANCAMENTOS.map((a, i) => abaDoProcesso(a, <Numero n={i + 1} ativa={a === ativa} />))}
                 </ol>
-                <p id="lat-documentos" className="px-1 pt-1 text-[10px] font-semibold uppercase tracking-[.14em] text-[#c9a24a]">Documentos</p>
+                <p id="lat-documentos" className="px-1 pt-1 text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Documentos</p>
                 <ul aria-labelledby="lat-documentos" className="space-y-0.5">
                   {DOCUMENTOS.map((a) => abaDoProcesso(a, <Ponto />))}
                 </ul>
@@ -109,9 +114,9 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
 
       <div className="mt-4 border-t border-white/10 pt-3">
         <p className="truncate px-2.5 text-xs font-medium text-white">{usuario}</p>
-        <p className="px-2.5 pb-2 text-[11px] text-[#a8c48a]">{admin ? "Admin" : "Operador"}</p>
+        <p className="px-2.5 pb-2 text-[11px] text-ouro-claro">{admin ? "Admin" : "Operador"}</p>
         <form action={sair}>
-          <button className={`w-full rounded-lg px-2.5 py-2 text-left text-sm text-[#dfe7d6] hover:bg-white/10 hover:text-white ${FOCO}`}>Sair</button>
+          <button className={`w-full px-2.5 py-2 text-left text-sm text-creme/85 hover:bg-white/10 hover:text-white ${FOCO}`}>Sair</button>
         </form>
       </div>
     </div>
@@ -135,20 +140,20 @@ export function BarraLateral({ admin, usuario }: { admin: boolean; usuario: stri
 
   return (
     <>
-      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 bg-[#2e431d] p-3 text-[#dfe7d6] lg:block print:hidden">
+      <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r-2 border-ouro bg-exercito p-3 text-creme/85 lg:block print:hidden">
         <Conteudo admin={admin} usuario={usuario} />
       </aside>
 
       {/* celular: barra no topo e menu em gaveta */}
-      <div className="sticky top-0 z-30 flex h-14 items-center justify-between bg-[#2e431d] px-4 text-white lg:hidden print:hidden">
-        <Link href="/passo-a-passo" className="font-bold">Painel EA</Link>
+      <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b-2 border-ouro bg-exercito px-4 text-white lg:hidden print:hidden">
+        <Link href="/passo-a-passo" className="font-marca text-[15px] italic">Exercícios Anteriores</Link>
         <button type="button" onClick={() => setAberta(true)} aria-expanded={aberta} aria-controls="menu-celular"
-          className={`rounded-lg px-3 py-1.5 text-sm ring-1 ring-white/25 hover:bg-white/10 ${FOCO}`}>Menu</button>
+          className={` px-3 py-1.5 text-sm ring-1 ring-white/25 hover:bg-white/10 ${FOCO}`}>Menu</button>
       </div>
       {aberta && (
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <button type="button" aria-label="Fechar menu" className="absolute inset-0 bg-black/40" onClick={() => setAberta(false)} />
-          <div id="menu-celular" className="absolute inset-y-0 left-0 w-72 max-w-[85vw] bg-[#2e431d] p-3 text-[#dfe7d6] shadow-xl">
+          <div id="menu-celular" className="absolute inset-y-0 left-0 w-72 max-w-[85vw] border-r-2 border-ouro bg-exercito p-3 text-creme/85 shadow-xl">
             <Conteudo admin={admin} usuario={usuario} />
           </div>
         </div>

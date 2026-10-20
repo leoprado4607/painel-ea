@@ -77,7 +77,7 @@ export function AbaDocumento({ processoId, doc, ano, grupos = [], bloqueado, obs
           <span className="text-suave">Prévia (rascunho, não vale como documento)</span>
           <a href={src} target="_blank" rel="noopener" className="text-marca-700 underline">Abrir em nova aba</a>
         </div>
-        <iframe key={versao} src={src} title="Prévia do documento em PDF" className="w-full flex-1 rounded border border-borda bg-fundo" />
+        <iframe key={versao} src={src} title="Prévia do documento em PDF" className="w-full flex-1 border border-borda bg-fundo" />
       </section>
     </div>
   );

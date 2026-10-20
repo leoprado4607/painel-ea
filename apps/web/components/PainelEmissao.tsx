@@ -42,7 +42,7 @@ export function PainelEmissao({ processoId, situacao, documentos }: { processoId
           : <button className="botao-sec" disabled={ocupado} onClick={reabrir}>Reabrir para correção</button>}
       </div>
       {documentos.length > 0 && (
-        <ul className="divide-y divide-borda rounded-md border border-borda text-sm">
+        <ul className="divide-y divide-borda border border-borda text-sm">
           {documentos.map((d) => (
             <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
               <span>

@@ -19,7 +19,7 @@ export default async function Ipca() {
   return (
     <div className="space-y-5">
       <header className="space-y-1">
-        <h1 className="text-xl font-bold">Atualização do IPCA-E</h1>
+        <h1 className="titulo-pagina">Atualização do IPCA-E</h1>
         <p className="text-sm text-suave">
           Os processos são corrigidos pela série {descreverRegra(regras ?? [])}. A busca roda sozinha todo dia às 09:00 (Brasília),
           no IBGE e no Banco Central. Um processo já emitido continua com o índice da emissão.

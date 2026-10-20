@@ -19,7 +19,7 @@ export function NovoPorFichas({ oms = [] }: { oms?: { id: string; nome: string }
         {oms.length > 0 && <div className="w-full sm:w-72"><EscolhaOm oms={oms} id="om_id-documentos" /></div>}
         <label htmlFor="documentos-novo" className="sr-only">Arquivos PDF</label>
         <input id="documentos-novo" name="documentos" type="file" accept="application/pdf,.pdf" multiple required
-          className="text-sm file:mr-3 file:rounded-md file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
+          className="text-sm file:mr-3 file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
         <button className="botao" disabled={enviando}>{enviando ? "Lendo e criando…" : "Criar processo pelos documentos"}</button>
       </form>
     </section>

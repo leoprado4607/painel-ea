@@ -83,7 +83,7 @@ export function GestaoOperadores({ usuarios, oms, euId }: { usuarios: Operador[]
                 <tr key={u.usuario_id} className="border-t border-borda">
                   <td className="px-4 py-2">
                     {[u.posto, u.nome].filter(Boolean).join(" ")}
-                    {u.papel === "admin" && <span className="ml-2 rounded-full bg-marca-100 px-2 py-0.5 text-xs font-semibold text-marca-800">Admin</span>}
+                    {u.papel === "admin" && <span className="ml-2 bg-marca-100 px-2 py-0.5 text-[11px] uppercase tracking-[.05em] font-semibold text-marca-800">Admin</span>}
                     {eu && <span className="ml-1 text-xs text-suave">(você)</span>}
                   </td>
                   <td className="font-mono text-suave">{u.cpf ? formatarCpf(u.cpf) : <span className="font-sans text-amber-800">sem CPF</span>}</td>

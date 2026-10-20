@@ -35,13 +35,13 @@ export default async function DadosOm({ searchParams }: { searchParams: Promise<
   if (!om) return <Aviso tipo="atencao">Nenhuma OM cadastrada.</Aviso>;
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Dados da OM</h1>
+      <h1 className="titulo-pagina">Dados da OM</h1>
       <p className="text-sm text-suave">Aparecem no cabeçalho e nas assinaturas dos documentos emitidos.</p>
       {(oms?.length ?? 0) > 1 && (
         <nav aria-label="OMs" className="flex flex-wrap gap-2">
           {oms!.map((o) => (
             <Link key={o.id} href={`/om?om=${o.id}`} aria-current={o.id === om.id ? "page" : undefined}
-              className={`rounded-full border px-3 py-1 text-sm ${o.id === om.id ? "border-marca-700 bg-marca-700 text-white" : "border-borda bg-white text-suave"}`}>
+              className={`border px-3 py-1 text-sm ${o.id === om.id ? "border-marca-700 bg-marca-700 text-white" : "border-borda bg-white text-suave"}`}>
               {o.nome}
             </Link>
           ))}

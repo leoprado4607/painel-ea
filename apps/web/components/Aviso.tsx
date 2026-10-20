@@ -5,5 +5,5 @@ export function Aviso({ tipo = "info", children }: { tipo?: "info" | "erro" | "o
     ok: "border-green-200 bg-green-50 text-green-900",
     atencao: "border-amber-200 bg-amber-50 text-amber-900",
   }[tipo];
-  return <div role={tipo === "erro" ? "alert" : "status"} className={`rounded-md border px-4 py-3 text-sm ${cores}`}>{children}</div>;
+  return <div role={tipo === "erro" ? "alert" : "status"} className={`border px-4 py-3 text-sm ${cores}`}>{children}</div>;
 }

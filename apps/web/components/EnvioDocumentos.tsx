@@ -63,7 +63,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
         <form action={enviar} className="flex flex-wrap items-center gap-3">
           <label htmlFor={`documentos-${processoId}`} className="sr-only">Arquivos PDF</label>
           <input id={`documentos-${processoId}`} name="documentos" type="file" accept="application/pdf,.pdf" multiple required
-            className="text-sm file:mr-3 file:rounded-md file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
+            className="text-sm file:mr-3 file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
           <button className="botao-sec" disabled={lendo}>{lendo ? "Lendo…" : "Ler documentos"}</button>
         </form>
       )}
@@ -76,7 +76,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
           <ul className="space-y-1 text-sm">
             {previa!.resumo!.map((f, i) => (
               <li key={`${f.arquivo}-${i}`} className="flex flex-wrap items-center gap-2">
-                <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${f.conferenciaOk ? "bg-green-100 text-green-900" : "bg-red-100 text-red-900"}`}>
+                <span className={`px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] ${f.conferenciaOk ? "bg-green-100 text-green-900" : "bg-red-100 text-red-900"}`}>
                   {f.conferenciaOk ? "conferido" : "não conferiu"}
                 </span>
                 <span className="font-medium">{f.tipo === "contracheque" ? "Contracheque" : "Ficha financeira"} {f.referencia}</span>
@@ -120,7 +120,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
             <details>
               <summary className="cursor-pointer text-sm font-semibold">Códigos que não entram no cálculo ({naoUsadasPorCodigo.length})</summary>
               <p className="ajuda my-2">Imposto, empréstimos, pensão alimentícia, acertos etc. ficam de fora. Se algum deve entrar, escolha a rubrica.</p>
-              <div className="divide-y divide-borda rounded-md border border-borda">
+              <div className="divide-y divide-borda border border-borda">
                 {naoUsadasPorCodigo.map((l) => (
                   <div key={l.codigo} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm">
                     <span>

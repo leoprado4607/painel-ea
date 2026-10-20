@@ -16,7 +16,7 @@ export default async function Processos() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h1 className="text-xl font-bold">Processos</h1>
+        <h1 className="titulo-pagina">Processos</h1>
         <Link href="/processos/novo" className="botao">Novo processo</Link>
       </div>
       {processos.length === 0 ? (
@@ -28,7 +28,7 @@ export default async function Processos() {
             return (
               <li key={p.id} className="cartao flex flex-wrap items-center gap-3 p-0 hover:border-marca-600">
                 <Link href={`/processos/${p.id}/dados`}
-                  className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 rounded-lg p-5 outline-none focus-visible:ring-2 focus-visible:ring-marca-600">
+                  className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-2 p-5 outline-none focus-visible:ring-2 focus-visible:ring-marca-600">
                   <div className="min-w-0">
                     <p className="font-semibold">{nome}</p>
                     <p className="text-sm text-suave">
@@ -37,7 +37,7 @@ export default async function Processos() {
                       {p.om ? ` · ${p.om.nome}` : ""}
                     </p>
                   </div>
-                  <span className={`rounded-full px-3 py-1 text-xs font-semibold ${p.situacao === "rascunho" ? "bg-amber-100 text-amber-900" : "bg-marca-100 text-marca-800"}`}>
+                  <span className={`px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] ${p.situacao === "rascunho" ? "bg-amber-100 text-amber-900" : "bg-marca-100 text-marca-800"}`}>
                     {SITUACAO[p.situacao]}
                   </span>
                 </Link>

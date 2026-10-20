@@ -15,7 +15,7 @@ export default async function Operadores() {
   ]);
   return (
     <div className="space-y-4">
-      <h1 className="text-xl font-bold">Operadores</h1>
+      <h1 className="titulo-pagina">Operadores</h1>
       <p className="text-sm text-suave">Operadores entram com o CPF e uma senha, veem e editam todos os processos do sistema.</p>
       <GestaoOperadores
         usuarios={(usuarios ?? []).map((u) => ({ ...u, om: u.om?.nome ?? null }))}

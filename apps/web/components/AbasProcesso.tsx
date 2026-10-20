@@ -22,8 +22,8 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: { id: string; 
     return (
       <li key={a.caminho} className="shrink-0">
         <Link ref={eAtiva ? ativaRef : undefined} href={`/processos/${id}/${a.caminho}`} prefetch={false} aria-current={eAtiva ? "page" : undefined}
-          className={`group flex h-8 items-center gap-1.5 whitespace-nowrap rounded-full pl-1 pr-3 text-[13px] font-medium ${FOCO}
-            ${eAtiva ? "bg-white text-tinta" : "text-[#dfe7d6] hover:bg-white/10"}`}>
+          className={`group flex h-8 items-center gap-1.5 whitespace-nowrap pl-1 pr-3 text-[13px] font-medium ${FOCO}
+            ${eAtiva ? "bg-creme text-carvao shadow-[inset_0_-2px_0_var(--color-ouro)]" : "text-creme/85 hover:bg-white/10"}`}>
           {marcador}
           {a.rotulo}
         </Link>
@@ -36,14 +36,14 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: { id: string; 
       <div className="flex items-center gap-3 lg:hidden print:hidden">
         <Link href="/processos" aria-label="Voltar para Processos" className="text-sm text-marca-700 hover:underline">←</Link>
         <div className="min-w-0 flex-1">
-          <h1 className="truncate text-base font-bold">{titulo}</h1>
+          <h1 className="truncate text-xl font-semibold leading-tight">{titulo}</h1>
           <p className="truncate text-xs text-suave">{subtitulo}</p>
         </div>
         <SeloSituacao situacao={situacao} />
       </div>
       {/* irmã do cabeçalho (não dentro dele) para o "sticky" valer na página toda */}
       <nav aria-label="Abas do processo"
-        className="sticky top-16 z-20 overflow-x-auto rounded-full bg-[#2e431d] p-1 shadow-[0_8px_20px_-10px_rgba(29,36,32,.7)] [mask-image:linear-gradient(90deg,transparent,#000_10px,#000_calc(100%-10px),transparent)] [scrollbar-width:none] lg:hidden print:hidden">
+        className="sticky top-16 z-20 overflow-x-auto border-b-2 border-ouro bg-exercito p-1 [mask-image:linear-gradient(90deg,transparent,#000_10px,#000_calc(100%-10px),transparent)] [scrollbar-width:none] lg:hidden print:hidden">
         <ul className="flex w-max items-center gap-1">
           {LANCAMENTOS.map((a, i) => item(a, <Numero n={i + 1} ativa={a === ativa} />))}
           <li aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/15" />

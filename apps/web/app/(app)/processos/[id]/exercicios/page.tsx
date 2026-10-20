@@ -19,7 +19,7 @@ export default async function Exercicios({ params, searchParams }: { params: Pro
         <nav aria-label="Anos" className="flex flex-wrap gap-2">
           {anos.map((a) => (
             <Link key={a} href={`/processos/${id}/exercicios?ano=${a}`} aria-current={a === ano ? "page" : undefined}
-              className={`rounded-md border px-3 py-1 tabular-nums ${a === ano ? "border-marca-700 bg-marca-700 text-white" : "border-borda bg-white hover:bg-fundo"}`}>
+              className={`border px-3 py-1 tabular-nums ${a === ano ? "border-marca-700 bg-marca-700 text-white" : "border-borda bg-white hover:bg-fundo"}`}>
               {a}
             </Link>
           ))}

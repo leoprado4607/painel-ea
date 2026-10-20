@@ -87,7 +87,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
           {anosDoPeriodo(inicio, fim).map((ano) => (
             <button key={ano} role="tab" aria-selected={ano === atual.ano}
               onClick={() => setAtual(meses.find((m) => m.ano === ano)!)}
-              className={`rounded-md px-3 py-1 text-sm font-semibold ${ano === atual.ano ? "bg-marca-700 text-white" : "bg-fundo text-tinta hover:bg-marca-50"}`}>
+              className={`px-3 py-1 text-sm font-semibold ${ano === atual.ano ? "bg-marca-700 text-white" : "bg-fundo text-tinta hover:bg-marca-50"}`}>
               {ano}
             </button>
           ))}
@@ -95,7 +95,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
         <div className="flex flex-wrap gap-1.5" role="tablist" aria-label="Mês">
           {meses.filter((m) => m.ano === atual.ano).map((m) => (
             <button key={m.mes} role="tab" aria-selected={igual(m, atual)} onClick={() => setAtual(m)}
-              className={`relative rounded-md border px-2.5 py-1 text-sm ${igual(m, atual) ? "border-marca-700 bg-marca-50 font-semibold" : "border-borda bg-white"}`}>
+              className={`relative border px-2.5 py-1 text-sm ${igual(m, atual) ? "border-marca-700 bg-marca-50 font-semibold" : "border-borda bg-white"}`}>
               {MESES_CURTOS[m.mes - 1]}
               {temValor(m) && <span className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-marca-600" aria-label="com valores" />}
             </button>
@@ -163,7 +163,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
       </section>
 
       {!bloqueado && (
-        <div className="sticky bottom-2 z-20 rounded-xl border border-borda bg-white/95 shadow-[0_8px_24px_-12px_rgba(29,36,32,.45)] backdrop-blur">
+        <div className="sticky bottom-2 z-20 border border-borda bg-white/95 shadow-[0_8px_24px_-12px_rgba(29,36,32,.45)] backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
             <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length} alteração(ões) não salvas` : "Tudo salvo"}</span>
             <div className="flex gap-2">
