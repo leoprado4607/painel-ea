@@ -180,8 +180,8 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const { supabase, perfil } = await sessao();
     const omId = await omParaNovoProcesso(supabase, perfil, String(form.get("om_id") ?? "") || null);
     const docs = await lerArquivos(form);
-    const periodo = periodoDosDocumentos(docs);
-    if (!periodo) return { erro: "Os documentos não têm valores." };
+    // o período da dívida fica em branco: o operador preenche (obrigatório) em Dados do favorecido
+    if (!periodoDosDocumentos(docs)) return { erro: "Os documentos não têm valores." };
     const dados = dadosDoFavorecido(docs);
     const { data: m, error: e1 } = await supabase.from("militar").insert({
       om_id: omId, nome: dados.nome ?? "(nome não lido)", posto_graduacao: dados.posto_graduacao ?? null, prec_cp: dados.prec_cp ?? null,
@@ -190,7 +190,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     }).select("id").single();
     if (e1) return { erro: e1.message };
     const { data: p, error: e2 } = await supabase.from("processo").insert({
-      om_id: omId, militar_id: m.id, periodo_inicio: periodo.inicio, periodo_fim: periodo.fim,
+      om_id: omId, militar_id: m.id, periodo_inicio: null, periodo_fim: null,
     }).select("id").single();
     if (e2) return { erro: e2.message };
     const { data: padrao } = await supabase.from("rubrica_padrao").select("posicao, codigo, tipo").order("posicao");
