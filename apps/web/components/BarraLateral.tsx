@@ -75,7 +75,7 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
       {/* marca no estilo do cabeçalho do portal: brasão, nome em itálico e a Divisão em dourado */}
       <Link href="/passo-a-passo" className={`mb-5 flex items-center gap-3 border-b border-white/10 px-1.5 pb-4 pt-1 ${FOCO}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brasao.png" alt="" className="h-11 w-11 shrink-0 rounded-full bg-white object-contain p-1 ring-2 ring-ouro" />
+        <img src="/brasao-badm.png" alt="Brasão da B Adm Gu Natal" className="h-12 w-auto shrink-0 object-contain" />
         <span className="min-w-0">
           <span className="block font-marca text-[15px] italic leading-tight text-white">Exercícios Anteriores</span>
           <span className="mt-0.5 block text-[10px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Div Pg Pes · B Adm Gu Natal</span>

@@ -11,7 +11,7 @@ export default function Login() {
       <header className="border-b-2 border-ouro bg-exercito">
         <div className="mx-auto flex max-w-5xl items-center gap-4 px-5 py-4">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/brasao.png" alt="" className="h-12 w-12 rounded-full bg-white object-contain p-1 ring-2 ring-ouro" />
+          <img src="/brasao-badm.png" alt="Brasão da B Adm Gu Natal" className="h-14 w-auto object-contain" />
           <div>
             <p className="font-marca text-[15px] italic leading-tight text-white">Divisão de Pagamento de Pessoal</p>
             <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[.16em] text-ouro-claro">B Adm Gu Natal</p>
