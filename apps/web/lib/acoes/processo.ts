@@ -36,7 +36,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   const nrBoletim = txt(f, "bi_numero");
   if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use exatamente 3 dígitos (ex.: 045).";
   const nrAdt = documentoAverbacao === "Adt" ? txt(f, "adt_numero") : null;
-  if (nrAdt && !/^\d{1,6}$/.test(nrAdt)) campos.adt_numero = "Use só números.";
+  if (nrAdt && !/^\d{1,3}$/.test(nrAdt)) campos.adt_numero = "Até 3 dígitos.";
   const ini = dataPeriodo(txt(f, "periodo_inicio")), fim = dataPeriodo(txt(f, "periodo_fim"));
   if (!ini || !fim) campos.periodo = "Informe o início e o fim da dívida.";
   else if (fim < ini) campos.periodo = "O fim da dívida é anterior ao início.";

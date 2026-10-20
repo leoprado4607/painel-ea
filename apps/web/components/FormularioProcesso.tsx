@@ -9,9 +9,11 @@ import { BANCOS, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
 /** "situacao" do formulário é a do militar (Ativa, Reformado…); a do processo (rascunho/emitido) fica de fora. */
 export type Valores = Partial<Omit<Processo, "situacao"> & Militar>;
 
-function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, validar, ...resto }: {
+function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, validar, classeEntrada = "", ...resto }: {
   nome: string; rotulo: string; valor?: string | number | null; tipo?: string; ajuda?: string; erro?: string;
   obrigatorio?: boolean; validar?: (v: string) => string | null;
+  /** classes extras do campo (ex.: largura de 3 caracteres) */
+  classeEntrada?: string;
 } & React.InputHTMLAttributes<HTMLInputElement>) {
   const [aviso, setAviso] = useState<string | null>(null);
   const msg = erro ?? aviso;
@@ -20,7 +22,7 @@ function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, v
       <label htmlFor={nome} className="rotulo">{rotulo}{obrigatorio && <span className="text-red-700"> *</span>}</label>
       <input id={nome} name={nome} type={tipo} defaultValue={valor ?? ""} required={obrigatorio}
         aria-invalid={!!msg} aria-describedby={msg ? `${nome}-erro` : undefined}
-        className={`entrada ${msg ? "entrada-erro" : ""}`}
+        className={`entrada ${classeEntrada} ${msg ? "entrada-erro" : ""}`}
         onBlur={validar ? (e) => setAviso(e.target.value.trim() ? validar(e.target.value) : null) : undefined} {...resto} />
       {msg ? <p id={`${nome}-erro`} className="erro">{msg}</p> : ajuda && <p className="ajuda">{ajuda}</p>}
     </div>
@@ -48,7 +50,10 @@ function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<s
   return (
     <fieldset className="mt-4">
       <legend className="mb-2 text-sm font-semibold text-tinta">Averbação</legend>
-      <div className={`grid gap-4 ${documento === "Adt" ? "sm:grid-cols-5" : "sm:grid-cols-4"}`}>
+      {/* os números (3 dígitos) ocupam só a própria largura; listas e data dividem o resto */}
+      <div className={`grid gap-4 ${documento === "Adt"
+        ? "sm:grid-cols-[minmax(9rem,1fr)_auto_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"
+        : "sm:grid-cols-[minmax(9rem,1fr)_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"}`}>
         <div>
           <label htmlFor="documento_averbacao" className="rotulo">Documento de averbação</label>
           <select id="documento_averbacao" name="documento_averbacao" value={documento} onChange={(e) => setDocumento(e.target.value)} className="entrada">
@@ -57,10 +62,11 @@ function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<s
           </select>
         </div>
         {documento === "Adt" && (
-          <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} inputMode="numeric" maxLength={6} erro={erros.adt_numero} />
+          <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} inputMode="numeric" maxLength={3} classeEntrada="w-[4.5rem] text-center tabular-nums"
+            erro={erros.adt_numero} validar={(v) => (/^\d{1,3}$/.test(v.trim()) ? null : "Até 3 dígitos.")} />
         )}
         <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} inputMode="numeric" maxLength={3} pattern="\d{3}"
-          placeholder="000" ajuda="3 dígitos" erro={erros.bi_numero}
+          title="3 dígitos" classeEntrada="w-[4.5rem] text-center tabular-nums" erro={erros.bi_numero}
           validar={(v) => (numeroBoletimValido(v.trim()) ? null : "Use exatamente 3 dígitos (ex.: 045).")} />
         <Lista nome="om_averbacao" rotulo="OM averbação" valor={valores.om_averbacao} opcoes={[...OMS_AVERBACAO]} />
         <Campo nome="bi_data" rotulo="Data averbação" tipo="date" valor={valores.bi_data} />
