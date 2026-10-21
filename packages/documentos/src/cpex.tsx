@@ -52,8 +52,9 @@ export function Cpex({ d }: { d: DadosDocumentos }) {
           <Linha cols={cols} estilo={e.negrito} valores={["TOTAL", "", reais(c.totalSemCorrecao), "", reais(c.totalComCorrecao)]} />
           {/* texto da célula mesclada, centralizado na altura de todas as linhas (rubricas e TOTAL) */}
           <View style={{ position: "absolute", left: "60%", width: "20%", top: 0, bottom: 0, justifyContent: "center", padding: 4 }}>
-            <Text style={{ textAlign: "center", fontSize: 7.5 }}>
-              Valor corrigido pela série {d.descricaoIndice}, atualizada até {d.indiceAte}, referente a todos os anos do Período Total da Dívida: {periodo}
+            {/* frase única e sem hifenização: quebrava "Setembro/2026-" com a vírgula na linha seguinte */}
+            <Text style={{ textAlign: "center", fontSize: 7.5 }} hyphenationCallback={(palavra) => [palavra]}>
+              {`Valor corrigido pela série ${d.descricaoIndice}, atualizada até ${d.indiceAte}, referente a todos os anos do Período Total da Dívida: ${periodo}`}
             </Text>
           </View>
         </View>
