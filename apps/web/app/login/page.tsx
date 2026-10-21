@@ -24,9 +24,8 @@ export default function Login() {
           <div className="space-y-3 text-center">
             <p className="rotulo-secao">Acesso restrito</p>
             <h1 className="font-titulo text-[2.1rem] font-semibold leading-tight text-carvao">
-              Exercícios <em className="font-bold not-italic text-ouro-escuro">Anteriores</em>
+              Sistema de cálculo de <em className="font-bold not-italic text-ouro-escuro">DEA</em>
             </h1>
-            <p className="text-sm text-suave">Cálculo e documentos de exercício anterior corrigidos pelo IPCA/IPCA-E.</p>
           </div>
           <form action={acao} className="cartao space-y-4">
             {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}

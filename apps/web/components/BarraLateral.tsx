@@ -72,13 +72,12 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
 
   return (
     <div className="flex h-full flex-col">
-      {/* marca no estilo do cabeçalho do portal: brasão, nome em itálico e a Divisão em dourado */}
+      {/* marca no estilo do cabeçalho do portal: brasão e nome em itálico (a linha "Div Pg Pes · B Adm Gu Natal" saiu) */}
       <Link href="/passo-a-passo" className={`mb-5 flex items-center gap-3 border-b border-white/10 px-1.5 pb-4 pt-1 ${FOCO}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src="/brasao-badm.png" alt="Brasão da B Adm Gu Natal" className="h-12 w-auto shrink-0 object-contain" />
         <span className="min-w-0">
-          <span className="block font-marca text-[15px] italic leading-tight text-white">Exercícios Anteriores</span>
-          <span className="mt-0.5 block text-[11px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Div Pg Pes · B Adm Gu Natal</span>
+          <span className="block font-marca text-[15px] italic leading-tight text-white">Sistema de cálculo de DEA</span>
         </span>
       </Link>
 
@@ -146,7 +145,7 @@ export function BarraLateral({ admin, usuario }: { admin: boolean; usuario: stri
 
       {/* celular: barra no topo e menu em gaveta */}
       <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b-2 border-ouro bg-exercito px-4 text-white lg:hidden print:hidden">
-        <Link href="/passo-a-passo" className="font-marca text-[15px] italic">Exercícios Anteriores</Link>
+        <Link href="/passo-a-passo" className="font-marca text-[15px] italic">Sistema de cálculo de DEA</Link>
         <button type="button" onClick={() => setAberta(true)} aria-expanded={aberta} aria-controls="menu-celular"
           className={` px-3 py-1.5 text-sm ring-1 ring-white/25 hover:bg-white/10 ${FOCO}`}>Menu</button>
       </div>
