@@ -52,7 +52,7 @@ export default async function Processos() {
                       Processo {p.numero || "s/nº"} · Dívida de {mesAno(p.periodo_inicio)} a {mesAno(p.periodo_fim)}
                       {p.especie_divida ? ` · ${p.especie_divida}` : ""}
                       {" · "}<span className="font-medium text-carvao">
-                        {corrigidos.get(p.id) != null ? `Valor corrigido: R$ ${formatarReais(corrigidos.get(p.id))}` : "Valor corrigido: —"}
+                        {corrigidos.get(p.id) != null ? `R$ ${formatarReais(corrigidos.get(p.id))}` : "R$ —"}
                       </span>
                     </p>
                   </div>
