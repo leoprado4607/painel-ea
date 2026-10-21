@@ -72,13 +72,9 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
 
   return (
     <div className="flex h-full flex-col">
-      {/* marca no estilo do cabeçalho do portal: brasão e nome em itálico (a linha "Div Pg Pes · B Adm Gu Natal" saiu) */}
-      <Link href="/passo-a-passo" className={`mb-5 flex items-center gap-3 border-b border-white/10 px-1.5 pb-4 pt-1 ${FOCO}`}>
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/brasao-badm.png" alt="Brasão da B Adm Gu Natal" className="h-12 w-auto shrink-0 object-contain" />
-        <span className="min-w-0">
-          <span className="block font-marca text-[15px] italic leading-tight text-white">Sistema de cálculo de DEA</span>
-        </span>
+      {/* marca: só o nome em itálico, centralizado (sem brasão) */}
+      <Link href="/passo-a-passo" className={`mb-5 block border-b border-white/10 px-1.5 pb-4 pt-2 text-center ${FOCO}`}>
+        <span className="font-marca text-[17px] italic leading-tight text-white">Cálculo de DEA</span>
       </Link>
 
       <nav aria-label="Menu principal" className="flex-1 space-y-5 overflow-y-auto [scrollbar-width:thin]">
@@ -111,7 +107,7 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
         <p className="truncate px-2.5 text-xs font-medium text-white">{usuario}</p>
         <p className="px-2.5 pb-2 text-[11px] text-ouro-claro">{admin ? "Admin" : "Operador"}</p>
         <form action={sair}>
-          <button className={`w-full px-2.5 py-2 text-left text-sm text-creme/85 hover:bg-white/10 hover:text-white ${FOCO}`}>Sair</button>
+          <button className={`w-full border border-ouro-claro/60 bg-white/5 px-2.5 py-2 text-center text-sm font-semibold text-white transition-colors hover:border-ouro hover:bg-ouro hover:text-carvao motion-reduce:transition-none ${FOCO}`}>Sair</button>
         </form>
       </div>
     </div>
@@ -141,7 +137,7 @@ export function BarraLateral({ admin, usuario }: { admin: boolean; usuario: stri
 
       {/* celular: barra no topo e menu em gaveta */}
       <div className="sticky top-0 z-30 flex h-14 items-center justify-between border-b-2 border-ouro bg-exercito px-4 text-white lg:hidden print:hidden">
-        <Link href="/passo-a-passo" className="font-marca text-[15px] italic">Sistema de cálculo de DEA</Link>
+        <Link href="/passo-a-passo" className="font-marca text-[15px] italic">Cálculo de DEA</Link>
         <button type="button" onClick={() => setAberta(true)} aria-expanded={aberta} aria-controls="menu-celular"
           className={` px-3 py-1.5 text-sm ring-1 ring-white/25 hover:bg-white/10 ${FOCO}`}>Menu</button>
       </div>
