@@ -9,9 +9,9 @@ import { BRASAO_PNG } from "./brasao";
 export interface Complementos {
   /** Quantidades da lista de anexos da Solicitação de Pagamento (vazio = padrão calculado). */
   anexos?: { fichas?: number | null; folhasCalculo?: number | null; recapitulacao?: number | null; comprovacao?: number | null; bi?: number | null };
-  /** Verso: documento que materializou o direito. */
+  /** Verso: documento que materializou o direito (quadro de Informações, até 300 caracteres; marcação <b>/<i>/<u>). */
   amparo?: string;
-  /** Verso: explicação do não pagamento à época devida. */
+  /** Verso: explicação do não pagamento à época devida (quadro de Informações, até 500 caracteres; marcação <b>/<i>/<u>). */
   explicacao?: string;
   /** Verso: parecer (padrão: "Sou de parecer que o requerimento deve ser atendido."). */
   parecer?: string;
@@ -118,15 +118,17 @@ export function Cabecalho({ d, brasao = true }: { d: DadosDocumentos; brasao?: b
 export interface Coluna { largura: number | string; alinhar?: "left" | "center" | "right" }
 
 /** Linha de tabela com bordas, a partir das larguras das colunas. */
-export function Linha({ cols, valores, estilo, cores, altura, compacto }: {
+export function Linha({ cols, valores, estilo, cores, altura, compacto, celulas }: {
   cols: Coluna[]; valores: ReactNode[]; estilo?: Style; cores?: (string | undefined)[]; altura?: number;
   /** linhas baixas (tabelas longas, como a Comprovação) */
   compacto?: boolean;
+  /** estilo extra de cada célula (ex.: sem a borda de baixo, para mesclar com a linha seguinte) */
+  celulas?: (Style | undefined)[];
 }) {
   return (
     <View style={[e.linha, altura ? { minHeight: altura } : {}]} wrap={false}>
       {cols.map((c, i) => (
-        <View key={i} style={[e.celula, { width: c.largura, justifyContent: "center" }, compacto ? { paddingVertical: 0.5 } : {}]}>
+        <View key={i} style={[e.celula, { width: c.largura, justifyContent: "center" }, compacto ? { paddingVertical: 0.5 } : {}, celulas?.[i] ?? {}]}>
           <Text style={[{ textAlign: c.alinhar ?? "left" }, cores?.[i] ? { color: cores[i] } : {}, estilo ?? {}]}>{valores[i] as string}</Text>
         </View>
       ))}

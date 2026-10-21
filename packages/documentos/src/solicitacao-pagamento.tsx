@@ -1,11 +1,23 @@
 /** "Solicitação" e "Solicitação Verso" da planilha: folha de rosto do pedido de pagamento ao Ordenador de Despesas. */
+import { trechosFormatados } from "@painel-ea/engine";
 import { Page, Text, View } from "@react-pdf/renderer";
+import type { ReactNode } from "react";
 import {
   anexos, Assinaturas, Cabecalho, dataBr, e, mesAno, numeroOrdem, PARECER_PADRAO, reais, Rodape, type DadosDocumentos,
 } from "./comum";
 
 const borda = { borderWidth: 0.6, borderColor: "#000" } as const;
 const vazio = "______________________________";
+
+/** Texto dos quadros de Informações com negrito, itálico e sublinhado, na Helvetica dos demais documentos. */
+function Formatado({ marcacao }: { marcacao?: string }): ReactNode {
+  return trechosFormatados(marcacao).map((t, i) => (
+    <Text key={i} style={{
+      fontFamily: t.negrito ? (t.italico ? "Helvetica-BoldOblique" : "Helvetica-Bold") : t.italico ? "Helvetica-Oblique" : "Helvetica",
+      textDecoration: t.sublinhado ? "underline" : "none",
+    }}>{t.texto}</Text>
+  ));
+}
 
 /** Ordenador de Despesas: quem pede o pagamento (frente) e quem dá o parecer (verso). */
 function AssinaturaOd({ d }: { d: DadosDocumentos }) {
@@ -91,12 +103,13 @@ export function SolicitacaoPagamentoVerso({ d }: { d: DadosDocumentos }) {
   const c = d.complementos ?? {};
   const bi = d.processo.boletimAverbou
     ?? (d.processo.biNumero ? `BI/Adt ${d.processo.biNumero}${d.processo.biData ? ` de ${dataBr(d.processo.biData)}` : ""}` : "");
-  const cols = [
+  // amparo e explicação vêm dos quadros de Informações, com negrito/itálico/sublinhado
+  const cols: { w: string; t: string; v: ReactNode }[] = [
     { w: "10%", t: "Nº de Ordem", v: numeroOrdem(d) },
     { w: "11%", t: "Data do Requerimento", v: dataBr(d.processo.dataRequerimento) },
-    { w: "30%", t: "Nº/Data Doc/Materializou Direito", v: c.amparo ?? "" },
+    { w: "30%", t: "Nº/Data Doc/Materializou Direito", v: <Formatado marcacao={c.amparo} /> },
     { w: "12%", t: "Boletim que Averbou", v: bi },
-    { w: "37%", t: "Explicação do não pagamento à época devida", v: c.explicacao ?? "" },
+    { w: "37%", t: "Explicação do não pagamento à época devida", v: <Formatado marcacao={c.explicacao} /> },
   ];
   return (
     <Page size="A4" style={e.pagina}>

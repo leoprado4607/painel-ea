@@ -16,7 +16,8 @@ export function Cpex({ d }: { d: DadosDocumentos }) {
   const meses = quantidadeMeses({ ano: +ini.slice(0, 4), mes: +ini.slice(5, 7) }, { ano: +fim.slice(0, 4), mes: +fim.slice(5, 7) });
   const cols: Coluna[] = [{ largura: "30%" }, { largura: "10%", alinhar: "center" }, { largura: "20%", alinhar: "center" }, { largura: "20%", alinhar: "center" }, { largura: "20%", alinhar: "center" }];
   const periodo = `${mesAno(ini)} a ${mesAno(fim)}`;
-  const n = d.rubricas.length;
+  // coluna "Período da Dívida" mesclada da 1ª rubrica até o TOTAL: as células não têm a borda de baixo (só a última)
+  const mesclada = [undefined, undefined, undefined, { borderBottomWidth: 0 }, undefined];
   const pj = d.complementos?.pensao ?? {}, op = d.complementos?.operadorCpex ?? {};
   return (
     <Page size="A4" style={e.pagina}>
@@ -39,20 +40,22 @@ export function Cpex({ d }: { d: DadosDocumentos }) {
         <Campo rotulo="Espécie da Dívida:" valor={d.processo.especieDivida ?? ""} />
         <Text style={e.negrito}>Importância Básica Total Corrigida: R$ {reais(c.importanciaBasicaTotalCorrigida)}</Text>
       </View>
-      <View style={[e.tabela, { position: "relative" }]}>
+      <View style={e.tabela}>
         <Linha cols={cols} altura={30} estilo={{ textAlign: "center", fontSize: 7.5 }}
           valores={["ESPECIFICAÇÕES", "R/D", "Valores Devidos Menos Valores Recebidos - Sem Correção", "PERÍODO DA DÍVIDA", "Valores Devidos Menos Valores Recebidos - Com Correção"]} />
-        {d.rubricas.map((r, p) => {
-          const cor = r.codigo ? corDoTipo(r.tipo) : undefined;
-          return <Linha key={p} cols={cols} cores={[undefined, undefined, cor, undefined, cor]}
-            valores={[r.codigo, r.codigo ? r.tipo : "", reais(c.semCorrecao[p]!), "", reais(c.comCorrecao[p]!)]} />;
-        })}
-        <Linha cols={cols} estilo={e.negrito} valores={["TOTAL", "", reais(c.totalSemCorrecao), "", reais(c.totalComCorrecao)]} />
-        {/* texto da coluna "Período da Dívida", centralizado sobre as linhas das rubricas */}
-        <View style={{ position: "absolute", left: "60%", width: "20%", top: 34, height: n * 12, justifyContent: "center", padding: 4 }}>
-          <Text style={{ textAlign: "center", fontSize: 7.5 }}>
-            Valor corrigido pela série {d.descricaoIndice}, atualizada até {d.indiceAte}, referente a todos os anos do Período Total da Dívida: {periodo}
-          </Text>
+        <View style={{ position: "relative" }}>
+          {d.rubricas.map((r, p) => {
+            const cor = r.codigo ? corDoTipo(r.tipo) : undefined;
+            return <Linha key={p} cols={cols} cores={[undefined, undefined, cor, undefined, cor]} celulas={mesclada}
+              valores={[r.codigo, r.codigo ? r.tipo : "", reais(c.semCorrecao[p]!), "", reais(c.comCorrecao[p]!)]} />;
+          })}
+          <Linha cols={cols} estilo={e.negrito} valores={["TOTAL", "", reais(c.totalSemCorrecao), "", reais(c.totalComCorrecao)]} />
+          {/* texto da célula mesclada, centralizado na altura de todas as linhas (rubricas e TOTAL) */}
+          <View style={{ position: "absolute", left: "60%", width: "20%", top: 0, bottom: 0, justifyContent: "center", padding: 4 }}>
+            <Text style={{ textAlign: "center", fontSize: 7.5 }}>
+              Valor corrigido pela série {d.descricaoIndice}, atualizada até {d.indiceAte}, referente a todos os anos do Período Total da Dívida: {periodo}
+            </Text>
+          </View>
         </View>
       </View>
       <View style={{ marginTop: 10, gap: 6 }} wrap={false}>

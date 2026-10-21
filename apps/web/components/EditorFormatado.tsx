@@ -1,0 +1,101 @@
+"use client";
+import { marcacaoDosTrechos, normalizarFormatado, textoSemFormatacao, type TrechoFormatado } from "@painel-ea/engine";
+import { useEffect, useRef, useState } from "react";
+
+/** DOM do editor → trechos com estilo (b/strong, i/em, u; quebras de linha por <br> e blocos). */
+function trechosDoDom(raiz: HTMLElement): TrechoFormatado[] {
+  const trechos: TrechoFormatado[] = [];
+  const andar = (n: Node, estilo: Omit<TrechoFormatado, "texto">) => {
+    if (n.nodeType === Node.TEXT_NODE) { trechos.push({ texto: n.textContent ?? "", ...estilo }); return; }
+    if (!(n instanceof HTMLElement)) return;
+    const tag = n.tagName;
+    if (tag === "BR") { trechos.push({ texto: "\n", ...estilo }); return; }
+    const bloco = tag === "DIV" || tag === "P";
+    if (bloco && trechos.length && !trechos[trechos.length - 1]!.texto.endsWith("\n")) trechos.push({ texto: "\n", ...estilo });
+    const novo = {
+      negrito: estilo.negrito || tag === "B" || tag === "STRONG" || /bold|[6-9]00/.test(n.style.fontWeight),
+      italico: estilo.italico || tag === "I" || tag === "EM" || n.style.fontStyle === "italic",
+      sublinhado: estilo.sublinhado || tag === "U" || n.style.textDecoration.includes("underline"),
+    };
+    n.childNodes.forEach((f) => andar(f, novo));
+  };
+  raiz.childNodes.forEach((f) => andar(f, { negrito: false, italico: false, sublinhado: false }));
+  return trechos;
+}
+
+const paraHtml = (marcacao: string) => marcacao.replace(/\n/g, "<br>");
+
+/**
+ * Caixa de texto com negrito, itálico e sublinhado, na Helvetica dos documentos. O valor vai num campo oculto
+ * (nome do formulário) como marcação <b>/<i>/<u>; o limite conta só os caracteres do texto.
+ */
+export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro, placeholder, bloqueado }: {
+  nome: string; rotulo: string; valor?: string | null; limite: number; obrigatorio?: boolean; erro?: string;
+  placeholder?: string; bloqueado?: boolean;
+}) {
+  const editor = useRef<HTMLDivElement>(null);
+  const valido = useRef("");
+  const [marcacao, setMarcacao] = useState(() => normalizarFormatado(valor));
+  const total = textoSemFormatacao(marcacao).length;
+
+  useEffect(() => {
+    if (!editor.current) return;
+    editor.current.innerHTML = paraHtml(marcacao); // a marcação normalizada só tem b/i/u e texto escapado
+    valido.current = editor.current.innerHTML;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const atualizar = () => {
+    const el = editor.current!;
+    const m = marcacaoDosTrechos(trechosDoDom(el));
+    // passou do limite: volta ao último conteúdo válido
+    if (textoSemFormatacao(m).length > limite) { el.innerHTML = valido.current; return; }
+    valido.current = el.innerHTML;
+    setMarcacao(normalizarFormatado(m));
+  };
+  const formatar = (cmd: "bold" | "italic" | "underline") => {
+    editor.current?.focus();
+    document.execCommand("styleWithCSS", false, "false");
+    document.execCommand(cmd);
+    atualizar();
+  };
+  const botao = "h-7 w-8 border border-borda bg-white text-sm hover:bg-gray-50 disabled:opacity-50";
+
+  return (
+    <div>
+      <div className="mb-1 flex items-end justify-between gap-2">
+        <span id={`${nome}-rotulo`} className="rotulo mb-0">{rotulo}{obrigatorio && <span className="text-red-700"> *</span>}</span>
+        <div role="toolbar" aria-label={`Formatação de ${rotulo}`} className="flex gap-1">
+          {/* onMouseDown: não tira o foco (nem a seleção) do texto */}
+          <button type="button" className={`${botao} font-bold`} title="Negrito (Ctrl+B)" aria-label="Negrito" disabled={bloqueado}
+            onMouseDown={(e) => { e.preventDefault(); formatar("bold"); }}>N</button>
+          <button type="button" className={`${botao} italic`} title="Itálico (Ctrl+I)" aria-label="Itálico" disabled={bloqueado}
+            onMouseDown={(e) => { e.preventDefault(); formatar("italic"); }}>I</button>
+          <button type="button" className={`${botao} underline`} title="Sublinhado (Ctrl+U)" aria-label="Sublinhado" disabled={bloqueado}
+            onMouseDown={(e) => { e.preventDefault(); formatar("underline"); }}>S</button>
+        </div>
+      </div>
+      <div className="relative">
+        <div ref={editor} contentEditable={!bloqueado} suppressContentEditableWarning role="textbox" aria-multiline
+          aria-labelledby={`${nome}-rotulo`} aria-invalid={!!erro} aria-describedby={`${nome}-contador`} data-placeholder={placeholder}
+          className={`entrada min-h-24 whitespace-pre-wrap leading-snug [font-family:Helvetica,Arial,sans-serif] empty:before:text-suave empty:before:content-[attr(data-placeholder)] ${erro ? "entrada-erro" : ""}`}
+          onInput={atualizar}
+          // colar só o texto, sem a formatação de outro programa, e só o que couber no limite (descontado o que está selecionado)
+          onPaste={(e) => {
+            e.preventDefault();
+            const selecionado = getSelection()?.toString().length ?? 0;
+            const cabe = Math.max(0, limite - textoSemFormatacao(marcacaoDosTrechos(trechosDoDom(editor.current!))).length + selecionado);
+            document.execCommand("insertText", false, e.clipboardData.getData("text/plain").slice(0, cabe));
+          }} />
+        {/* o navegador exige o preenchimento por este campo; o valor gravado é a marcação */}
+        <input name={nome} value={total ? marcacao : ""} required={obrigatorio} onChange={() => {}} tabIndex={-1} aria-hidden
+          className="pointer-events-none absolute bottom-0 left-4 h-px w-px opacity-0"
+          onFocus={() => editor.current?.focus()} />
+      </div>
+      <div className="mt-1 flex justify-between gap-2">
+        {erro ? <p className="erro">{erro}</p> : <span />}
+        <p id={`${nome}-contador`} className={`ajuda tabular-nums ${total >= limite ? "text-red-700" : ""}`}>{total}/{limite} caracteres</p>
+      </div>
+    </div>
+  );
+}

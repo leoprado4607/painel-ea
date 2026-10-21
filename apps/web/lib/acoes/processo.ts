@@ -1,11 +1,17 @@
 "use server";
-import { cpfValido, precCpValido } from "@painel-ea/engine";
+import { cpfValido, normalizarFormatado, precCpValido, textoSemFormatacao } from "@painel-ea/engine";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { inserirRubricasIniciais, omParaNovoProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
+
+/** Quadros de texto formatado de Informações que vão para o verso da Solicitação de Pagamento, com o limite de caracteres. */
+const QUADROS_VERSO = [
+  { chave: "amparo", limite: 300 },
+  { chave: "explicacao", limite: 500 },
+] as const;
 
 export interface EstadoForm { erro?: string; campos?: Record<string, string> }
 
@@ -30,6 +36,15 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   // todos os campos são obrigatórios (decisão de 21/10/2026); o Nr Adt, só quando o documento é "Adt"
   for (const k of [...OBRIGATORIOS, ...(txt(f, "documento_averbacao") === "Adt" ? ["adt_numero"] : [])]) {
     if (!txt(f, k)) campos[k] = "Preencha este campo.";
+  }
+  // quadros do verso: marcação limpa (só b/i/u), obrigatórios e com limite de caracteres do texto
+  const quadros: Record<string, string> = {};
+  for (const { chave, limite } of QUADROS_VERSO) {
+    const m = normalizarFormatado(String(f.get(`c.${chave}`) ?? ""));
+    const n = textoSemFormatacao(m).trim().length;
+    if (!n) campos[`c.${chave}`] = "Preencha este campo.";
+    else if (n > limite) campos[`c.${chave}`] = `Use no máximo ${limite} caracteres (tem ${n}).`;
+    quadros[chave] = m;
   }
   const nome = txt(f, "nome");
   const prec = txt(f, "prec_cp");
@@ -70,10 +85,10 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   };
 
   if (processoId) {
-    const { data: atual } = await supabase.from("processo").select("militar_id").eq("id", processoId).single();
+    const { data: atual } = await supabase.from("processo").select("militar_id, complementos").eq("id", processoId).single();
     if (!atual) return { erro: "Processo não encontrado." };
     const r1 = await supabase.from("militar").update(militar).eq("id", atual.militar_id);
-    const r2 = await supabase.from("processo").update(processo).eq("id", processoId);
+    const r2 = await supabase.from("processo").update({ ...processo, complementos: { ...(atual.complementos ?? {}), ...quadros } }).eq("id", processoId);
     if (r1.error || r2.error) return { erro: (r1.error ?? r2.error)!.message };
     revalidatePath(`/processos/${processoId}`, "layout");
     redirect(`/processos/${processoId}/rubricas`);
@@ -87,7 +102,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   }
   const { data: m, error: e1 } = await supabase.from("militar").insert({ ...militar, om_id: omId }).select("id").single();
   if (e1) return { erro: e1.message };
-  const { data: p, error: e2 } = await supabase.from("processo").insert({ ...processo, om_id: omId, militar_id: m.id }).select("id").single();
+  const { data: p, error: e2 } = await supabase.from("processo").insert({ ...processo, complementos: quadros, om_id: omId, militar_id: m.id }).select("id").single();
   if (e2) return { erro: e2.message };
   const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
   if (e3) return { erro: e3.message };

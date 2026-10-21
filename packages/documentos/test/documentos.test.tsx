@@ -87,3 +87,15 @@ it("Solicitação de Pagamento: OD da OM do Ordenador; cabeçalho e CODOM da OM 
   expect(t).toContain("CODOM: 007807");
   expect(t).toContain("BI MTZ"); // cabeçalho com a OM de vinculação ("16 º BI MTZ" na leitura do PDF)
 }, 60_000);
+
+it("verso: amparo e explicação com negrito/itálico/sublinhado saem sem as marcações", async () => {
+  const d = dadosC01();
+  const pdf = await gerarPdf({ ...d, complementos: { ...d.complementos,
+    amparo: "DIEx nº <b>103</b>-ASSE1 de <i>20 Set 26</i>", explicacao: "O militar <u>não recebeu</u> &lt;à época&gt;." } }, "solicitacao");
+  const t = (await palavrasDoPdf(new Uint8Array(pdf))).map((p) => p.texto).join(" ");
+  expect(t).toContain("103");
+  expect(t).toContain("20 Set 26");
+  expect(t).toContain("não recebeu");
+  expect(t).toContain("<à época>");
+  expect(t).not.toContain("<b>");
+}, 60_000);
