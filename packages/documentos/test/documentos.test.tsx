@@ -110,6 +110,15 @@ it("verso: amparo e explicação com negrito/itálico/sublinhado saem sem as mar
   expect(t).not.toContain("<b>");
 }, 60_000);
 
+it("verso: vários documentos que materializam o direito, um por linha", async () => {
+  const d = dadosC01();
+  const pdf = await gerarPdf({ ...d, complementos: { ...d.complementos, amparo: "BI Nr 245-16º BI Mtz\nBI Nr 300-17º GAC" } }, "solicitacao");
+  const p = (await palavrasDoPdf(new Uint8Array(pdf))).filter((x) => x.pagina === 2);
+  const y = (txt: string) => p.find((x) => x.texto.includes(txt))!.y;
+  expect(p.map((x) => x.texto).join(" ")).toContain("300-17");
+  expect(y("245-16")).not.toBe(y("300-17"));
+}, 60_000);
+
 it("Nº de Ordem não repete o ano quando o número já o traz", async () => {
   const { numeroOrdem } = await import("../src/comum");
   const d = dadosC01();

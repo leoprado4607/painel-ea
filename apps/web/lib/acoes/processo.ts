@@ -6,12 +6,12 @@ import { inserirRubricasIniciais, omParaNovoProcesso, podeAlterarProcesso } from
 import { postoAbreviado } from "@/lib/postos";
 import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
+import { LIMITE_DOCUMENTO } from "@/lib/amparo";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 
 /** Quadros de texto formatado de Informações que vão para o verso da Solicitação de Pagamento, com o limite de caracteres. */
 const QUADROS_VERSO = [
-  { chave: "amparo", limite: 100 },
   { chave: "explicacao", limite: 800 },
 ] as const;
 
@@ -48,6 +48,15 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     else if (n > limite) campos[`c.${chave}`] = `Use no máximo ${limite} caracteres (tem ${n}).`;
     quadros[chave] = m;
   }
+  // documentos que materializam o direito: um por caixa (uma linha, até 100 caracteres cada); o 1º é obrigatório, os extras vazios saem
+  const documentos = f.getAll("c.amparo").map((v) => normalizarFormatado(String(v)).replace(/\n/g, " ").trim());
+  documentos.forEach((m, i) => {
+    const n = textoSemFormatacao(m).trim().length;
+    const chave = i ? `c.amparo.${i}` : "c.amparo";
+    if (!n && i === 0) campos[chave] = "Preencha este campo.";
+    else if (n > LIMITE_DOCUMENTO) campos[chave] = `Use no máximo ${LIMITE_DOCUMENTO} caracteres (tem ${n}).`;
+  });
+  quadros.amparo = documentos.filter((m) => textoSemFormatacao(m).trim()).join("\n");
   const nome = txt(f, "nome");
   const prec = txt(f, "prec_cp");
   if (prec && !precCpValido(prec)) campos.prec_cp = "Prec-CP com dígito verificador inválido.";

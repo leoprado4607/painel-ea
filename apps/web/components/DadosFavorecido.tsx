@@ -12,10 +12,12 @@ const CAMPOS_DOS_PDFS: (keyof DadosLidos)[] = ["posto_graduacao", "nome", "prec_
  * Aba "Informações": envie contracheques/fichas para preencher os dados (e os recebidos), ou digite no formulário.
  * Os dados lidos só vão para o formulário; o usuário confere e grava em "Salvar e continuar".
  */
-export function DadosFavorecido({ processoId, valores, rubricas, bloqueado, conferirBanco = false }: {
+export function DadosFavorecido({ processoId, valores, rubricas, bloqueado, conferirBanco = false, fichasCarregadas = false }: {
   processoId: string; valores: Valores; rubricas: { posicao: number; codigo: string }[]; bloqueado: boolean;
   /** processo recém-criado pelos documentos (?conferir=banco): abre o aviso dos dados bancários */
   conferirBanco?: boolean;
+  /** os PDFs já foram lidos neste processo: o texto de instruções do envio some */
+  fichasCarregadas?: boolean;
 }) {
   const [aviso, setAviso] = useState(conferirBanco);
   const fecharAviso = useCallback(() => setAviso(false), []);
@@ -32,7 +34,7 @@ export function DadosFavorecido({ processoId, valores, rubricas, bloqueado, conf
   };
   return (
     <div className="space-y-5">
-      <EnvioDocumentos key={`envio-${envio}`} processoId={processoId} rubricas={rubricas} bloqueado={bloqueado}
+      <EnvioDocumentos key={`envio-${envio}`} processoId={processoId} rubricas={rubricas} bloqueado={bloqueado} jaCarregados={fichasCarregadas}
         aoLerDados={(d) => {
           // OM de vinculação: prioridade sempre do contracheque; a da ficha só preenche se o campo estiver vazio
           setLidos((antes) => {

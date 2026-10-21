@@ -13,6 +13,8 @@ interface Props {
   bloqueado: boolean;
   /** Na aba "Informações": recebe os dados lidos para preencher o formulário. */
   aoLerDados?: (dados: DadosLidos) => void;
+  /** dados dos PDFs já carregados neste processo: sem o texto de instruções */
+  jaCarregados?: boolean;
 }
 
 const ROTULOS: [keyof DadosLidos, string][] = [
@@ -26,7 +28,7 @@ const ROTULOS: [keyof DadosLidos, string][] = [
  */
 const tamanho = (b: number) => (b < 1024 * 1024 ? `${Math.max(1, Math.round(b / 1024))} KB` : `${(b / 1024 / 1024).toFixed(1)} MB`);
 
-export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }: Props) {
+export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados, jaCarregados }: Props) {
   const router = useRouter();
   // arquivos escolhidos (ainda não lidos): o usuário pode remover os que escolheu por engano antes de ler
   const [selecionados, setSelecionados] = useState<File[]>([]);
@@ -74,11 +76,12 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
     <section className="cartao space-y-4">
       <div>
         <h2 className="font-semibold">Contracheque e fichas financeiras (PDF)</h2>
-        <p className="text-sm text-suave">
+        {/* instruções só até os dados dos PDFs serem copiados ou carregados */}
+        {!(jaCarregados || dadosUsados || msg?.tipo === "ok") && <p className="text-sm text-suave">
           Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque. Das fichas, só as receitas das rubricas escolhidas em Códigos
           lançamento, nos meses do período da dívida, preenchem os valores recebidos; despesas são digitadas pelo operador. O contracheque serve só
           para os dados bancários. Os PDFs são descartados: ficam guardados só os números das fichas, e valores digitados nunca são substituídos.
-        </p>
+        </p>}
       </div>
 
       {!bloqueado && (

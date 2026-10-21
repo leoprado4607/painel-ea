@@ -28,6 +28,8 @@ export const carregarProcesso = cache(async (id: string) => {
     rubricas: rubricas ?? [],
     lancamentos: (lancamentos ?? []).map((l) => ({ ...l, valor: Number(l.valor) })),
     somenteConsulta,
+    /** já houve fichas lidas dos PDFs (só o sim/não vai para a tela) */
+    fichasCarregadas: Array.isArray(_fichas) && _fichas.length > 0,
     bloqueado: somenteConsulta || processo.situacao !== "rascunho",
   };
 });

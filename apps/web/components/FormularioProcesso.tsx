@@ -1,6 +1,7 @@
 "use client";
 import { cpfValido, identidadeValida, precCpValido } from "@painel-ea/engine";
-import { useActionState, useState } from "react";
+import { useActionState, useRef, useState } from "react";
+import { documentosDoAmparo, LIMITE_DOCUMENTO } from "@/lib/amparo";
 import { PopupPendencias, pendenciasDoFormulario, type Pendencia } from "@/components/PopupPendencias";
 import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
@@ -99,6 +100,31 @@ export function EscolhaOm({ oms, id = "om_id", erro }: { oms: { id: string; nome
   );
 }
 
+/** Documentos que materializam o direito: uma linha cada; "+" acrescenta outro, "−" tira (o primeiro é obrigatório). */
+function DocumentosDireito({ valor, erros, bloqueado }: { valor?: string | null; erros: Record<string, string>; bloqueado?: boolean }) {
+  const proximo = useRef(0);
+  const [docs, setDocs] = useState(() => documentosDoAmparo(valor).map((texto) => ({ id: proximo.current++, texto })));
+  const botao = "grid h-[38px] w-[38px] shrink-0 place-items-center border border-borda bg-white text-lg leading-none hover:border-ouro/50 hover:bg-creme disabled:opacity-50";
+  return (
+    <div className="space-y-3">
+      {docs.map((d, i) => (
+        <EditorFormatado key={d.id} nome="c.amparo" idBase={`c.amparo-${d.id}`} rotulo={i ? `Nº/data do documento ${i + 1}` : "Nº/data do documento"}
+          rotuloOculto ferramentasAEsquerda umaLinha valor={d.texto} limite={LIMITE_DOCUMENTO} obrigatorio={i === 0}
+          erro={erros[i ? `c.amparo.${i}` : "c.amparo"]} bloqueado={bloqueado}
+          placeholder="Ex: BI Nr 245-16º BI Mtz, de 10 de outubro de 2026."
+          aoLado={!bloqueado && (
+            <>
+              {i > 0 && <button type="button" className={botao} aria-label={`Remover o documento ${i + 1}`} title="Remover este documento"
+                onClick={() => setDocs((l) => l.filter((x) => x.id !== d.id))}>−</button>}
+              {i === docs.length - 1 && <button type="button" className={botao} aria-label="Adicionar outro documento que materializa o direito"
+                title="Adicionar outro documento" onClick={() => setDocs((l) => [...l, { id: proximo.current++, texto: "" }])}>+</button>}
+            </>
+          )} />
+      ))}
+    </div>
+  );
+}
+
 export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = [], aoLimpar }: {
   processoId: string | null; valores?: Valores; bloqueado?: boolean; oms?: { id: string; nome: string }[];
   /** "Informações": esvazia os campos preenchidos pelos PDFs (só no formulário, até salvar). */
@@ -192,9 +218,7 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         {/* textos do verso da Solicitação de Pagamento (colunas "Nº/Data Doc/Materializou Direito" e "Explicação…") */}
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Documento que materializa o direito</h2>
-          <EditorFormatado nome="c.amparo" rotulo="Nº/data do documento" rotuloOculto valor={valores.complementos?.amparo} limite={100}
-            obrigatorio erro={c["c.amparo"]} bloqueado={bloqueado}
-            placeholder="Ex: BI Nr 245-16º BI Mtz, de 10 de outubro de 2026." />
+          <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} />
         </section>
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Explicação do não pagamento à época</h2>
