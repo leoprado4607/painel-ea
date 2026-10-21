@@ -4,6 +4,8 @@ import { AbasProcesso } from "@/components/AbasProcesso";
 import { BarraLateral, ProvedorProcesso, RegistrarProcesso } from "@/components/BarraLateral";
 import { FormularioProcesso } from "@/components/FormularioProcesso";
 import { FormularioRubricas } from "@/components/FormularioRubricas";
+import { ListaProcessos } from "@/components/ListaProcessos";
+import { normalizarBusca } from "@/lib/busca";
 import { ValoresMensais } from "@/components/ValoresMensais";
 
 /** Prévia das telas com dados fictícios, para conferir o visual sem banco. Só existe em desenvolvimento. */
@@ -42,6 +44,13 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         <ValoresMensais processoId="previa" tipo="devido" proximaEtapa="conferencia" bloqueado={false} rubricas={rubricas}
           inicio={{ ano: 2020, mes: 11 }} fim={{ ano: 2021, mes: 6 }}
           linhas={[{ ano: 2020, mes: 11, posicao: 1, valor: 5500 }, { ano: 2020, mes: 11, posicao: 13, valor: 165 }]} />
+      ) : tela === "processos" ? (
+        <ListaProcessos cards={[
+          { id: "a", nome: "1º Sgt SANDRO LUIS DE LIMA GONCALVES", om: "16º BI Mtz", periodo: "06/2021 a 06/2021", especie: "Auxílio fardamento",
+            valor: "R$ 6.389,41", situacao: "emitido", meu: true, descricao: "001 de 1º Sgt SANDRO", busca: normalizarBusca("1º Sgt SANDRO LUIS DE LIMA GONCALVES PRIMEIRO SARGENTO 16º BI Mtz Auxílio fardamento") },
+          { id: "b", nome: "Cb FULANO DE TAL", om: "B Adm Gu Natal", periodo: "01/2024 a 12/2024", especie: "Adicional Habilitação",
+            valor: "R$ 1.234,56", situacao: "rascunho", meu: false, descricao: "002 de Cb FULANO", busca: normalizarBusca("Cb FULANO DE TAL B Adm Gu Natal Adicional Habilitação") },
+        ]} />
       ) : tela === "rubricas" ? (
         <FormularioRubricas processoId="previa" bloqueado={false} rubricas={Array.from({ length: 17 }, (_, i) => ({
           posicao: i + 1, codigo: i >= 12 ? rubricas.find((r) => r.posicao === i + 1)?.codigo ?? "" : "", tipo: i < 12 ? "Receita" as const : "Despesa" as const,
