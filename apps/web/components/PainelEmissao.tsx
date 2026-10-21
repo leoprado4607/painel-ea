@@ -6,7 +6,11 @@ import { emitirDocumentos, reabrirProcesso } from "@/lib/acoes/emissao";
 
 interface Doc { id: string; versao: number; criado_em: string; indice_ate: string | null; tamanho_bytes: number | null }
 
-export function PainelEmissao({ processoId, situacao, documentos }: { processoId: string; situacao: string; documentos: Doc[] }) {
+export function PainelEmissao({ processoId, situacao, documentos, somenteConsulta }: {
+  processoId: string; situacao: string; documentos: Doc[];
+  /** processo de outro operador: vê a prévia e os PDFs, mas não emite nem reabre */
+  somenteConsulta?: boolean;
+}) {
   const router = useRouter();
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [ocupado, iniciar] = useTransition();
@@ -37,7 +41,7 @@ export function PainelEmissao({ processoId, situacao, documentos }: { processoId
       {msg && <Aviso tipo={msg.tipo}>{msg.texto}</Aviso>}
       <div className="flex flex-wrap gap-2">
         <a className="botao-sec" href={`/processos/${processoId}/previa`} target="_blank" rel="noopener">Ver prévia (PDF)</a>
-        {situacao === "rascunho"
+        {somenteConsulta ? null : situacao === "rascunho"
           ? <button className="botao" disabled={ocupado} onClick={emitir}>{ocupado ? "Emitindo…" : "Emitir documentos"}</button>
           : <button className="botao-sec" disabled={ocupado} onClick={reabrir}>Reabrir para correção</button>}
       </div>

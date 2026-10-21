@@ -18,6 +18,8 @@ export interface Processo {
   documento_averbacao: string | null; adt_numero: string | null; om_averbacao: string | null; especie_divida: string | null; periodo_inicio: string | null;
   periodo_fim: string | null; data_solicitacao_extenso: string | null; possui_pensao_judicial: boolean;
   situacao: "rascunho" | "emitido" | "arquivado"; indice_ate: string | null; criado_em: string; atualizado_em: string;
+  /** Quem criou: só ele (ou o Admin) altera, emite, reabre e exclui; os demais só consultam. */
+  criado_por: string | null;
   complementos: Complementos | null;
 }
 export interface RubricaProcesso { processo_id: string; posicao: number; codigo: string; tipo: TipoRubrica }

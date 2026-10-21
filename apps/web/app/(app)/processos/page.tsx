@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ExcluirProcesso } from "@/components/ExcluirProcesso";
+import { podeAlterarProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import type { Militar, Processo } from "@/lib/tipos";
 
@@ -8,7 +9,6 @@ const mesAno = (d: string | null) => (d ? `${d.slice(5, 7)}/${d.slice(0, 4)}` : 
 
 export default async function Processos() {
   const { supabase, perfil } = await sessao();
-  const admin = perfil?.papel === "admin";
   const { data } = await supabase.from("processo")
     .select("*, militar(nome, posto_graduacao), om(nome)").order("atualizado_em", { ascending: false })
     .returns<(Processo & { militar: Pick<Militar, "nome" | "posto_graduacao">; om: { nome: string } | null })[]>();
@@ -32,6 +32,8 @@ export default async function Processos() {
         <ul className="space-y-2">
           {processos.map((p) => {
             const nome = [p.militar?.posto_graduacao, p.militar?.nome].filter(Boolean).join(" ");
+            // excluir: só o criador e o Admin; processo de outro operador aparece como "só consulta"
+            const meu = podeAlterarProcesso(perfil, p);
             return (
               <li key={p.id} className="cartao flex flex-wrap items-center gap-3 p-0 hover:border-marca-600">
                 <Link href={`/processos/${p.id}/dados`}
@@ -44,11 +46,14 @@ export default async function Processos() {
                       {p.om ? ` · ${p.om.nome}` : ""}
                     </p>
                   </div>
+                  <span className="flex flex-wrap items-center gap-2">
+                  {!meu && <span className="border border-borda px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] text-suave">Só consulta</span>}
                   <span className={`px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] ${p.situacao === "rascunho" ? "bg-amber-100 text-amber-900" : "bg-marca-100 text-marca-800"}`}>
                     {SITUACAO[p.situacao]}
                   </span>
+                  </span>
                 </Link>
-                {admin && (
+                {meu && (
                   <div className="pb-4 pr-5 sm:pb-0">
                     <ExcluirProcesso id={p.id} emitido={p.situacao !== "rascunho"}
                       descricao={`${p.numero || "s/nº"} de ${nome}`} />

@@ -20,13 +20,21 @@ export const carregarProcesso = cache(async (id: string) => {
   ]);
   if (!linha) notFound();
   const { militar, om, ...processo } = linha;
+  // processo de outro operador: só consulta (o banco também barra a gravação)
+  const somenteConsulta = !podeAlterarProcesso(perfil, processo);
   return {
     supabase, perfil, om, processo: processo as Processo, militar,
     rubricas: rubricas ?? [],
     lancamentos: (lancamentos ?? []).map((l) => ({ ...l, valor: Number(l.valor) })),
-    bloqueado: processo.situacao !== "rascunho",
+    somenteConsulta,
+    bloqueado: somenteConsulta || processo.situacao !== "rascunho",
   };
 });
+
+/** Só o criador do processo e o Admin alteram, emitem, reabrem e excluem (decisão de 21/10/2026). */
+export function podeAlterarProcesso(perfil: Perfil | null, processo: Pick<Processo, "criado_por">) {
+  return perfil?.papel === "admin" || (!!perfil && processo.criado_por === perfil.usuario_id);
+}
 
 /** OMs que o Admin pode escolher ao criar um processo (só quando há mais de uma; o operador usa a própria). */
 export async function omsParaEscolha(supabase: Supabase, perfil: Perfil | null) {

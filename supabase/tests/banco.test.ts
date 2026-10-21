@@ -106,11 +106,17 @@ describe("acesso (RLS): Admin e Operador veem todos os processos", () => {
     }
   });
 
-  it("operador de outra OM e admin editam o processo", async () => {
-    expect(await como(U.operadorB, `update processo set numero = '002/2026' where id = '30000000-0000-0000-0000-00000000000a' returning numero`))
-      .toEqual([{ numero: "002/2026" }]);
-    expect(await como(U.admin, `update processo set numero = '001/2026' where id = '30000000-0000-0000-0000-00000000000a' returning numero`))
-      .toEqual([{ numero: "001/2026" }]);
+  it("só o criador e o admin editam o processo; outro operador só consulta", async () => {
+    const P = "30000000-0000-0000-0000-00000000000a";
+    expect(await como(U.operadorB, `update processo set numero = '002/2026' where id = '${P}' returning numero`)).toEqual([]);
+    expect(await como(U.operadorB, `update militar set nome = 'mudou' where id = '20000000-0000-0000-0000-00000000000a' returning id`)).toEqual([]);
+    await expect(como(U.operadorB, `insert into lancamento (processo_id, tipo, ano, mes, posicao, valor) values ('${P}', 'devido', 2019, 1, 1, 1)`))
+      .rejects.toThrow(/row-level security/);
+    expect(await como(U.operadorB, `update processo_rubrica set codigo = 'X' where processo_id = '${P}' returning posicao`)).toEqual([]);
+    expect(await como(U.operadorA, `update processo set numero = '002/2026' where id = '${P}' returning numero`)).toEqual([{ numero: "002/2026" }]);
+    expect(await como(U.admin, `update processo set numero = '001/2026' where id = '${P}' returning numero`)).toEqual([{ numero: "001/2026" }]);
+    // o criador não passa o processo para outro operador
+    await expect(como(U.operadorA, `update processo set criado_por = '${U.operadorB}' where id = '${P}'`)).rejects.toThrow(/row-level security/);
   });
 
   it("usuário sem perfil ou desativado não vê nada", async () => {
@@ -216,10 +222,18 @@ describe("exclusão de processos", () => {
     await como(U.operadorA, `update processo set situacao = 'emitido' where id = '${P2}'`);
   });
 
-  it("operador não exclui processo nem militar", async () => {
-    expect(await como(U.operadorA, `delete from processo where id = '${P1}' returning id`)).toEqual([]);
+  it("operador não exclui processo de outro operador nem militar com processo", async () => {
+    expect(await como(U.operadorB, `delete from processo where id = '${P1}' returning id`)).toEqual([]);
     expect(await como(U.operadorB, `delete from militar where id = '${M}' returning id`)).toEqual([]);
     expect((await db.query(`select count(*)::int n from processo where id in ('${P1}', '${P2}')`)).rows).toEqual([{ n: 2 }]);
+  });
+
+  it("o criador exclui o próprio processo (com os lançamentos)", async () => {
+    const P3 = "30000000-0000-0000-0000-0000000000e3";
+    await como(U.operadorA, `insert into processo (id, om_id, militar_id) values ('${P3}', '${OM.a}', '${M}')`);
+    await como(U.operadorA, `insert into lancamento (processo_id, tipo, ano, mes, posicao, valor) values ('${P3}', 'devido', 2020, 1, 1, 10)`);
+    expect(await como(U.operadorA, `delete from processo where id = '${P3}' returning id`)).toEqual([{ id: P3 }]);
+    expect((await db.query(`select count(*)::int n from lancamento where processo_id = '${P3}'`)).rows).toEqual([{ n: 0 }]);
   });
 
   it("a trava continua: lançamento de processo emitido não muda", async () => {

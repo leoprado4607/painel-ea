@@ -11,7 +11,7 @@ const R = (v: number) => `R$ ${formatarReais(v)}`;
 
 export default async function Conferencia({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { supabase, perfil, processo, rubricas, lancamentos } = await carregarProcesso(id);
+  const { supabase, perfil, processo, rubricas, lancamentos, somenteConsulta } = await carregarProcesso(id);
   const [{ data: indices }, { data: regras }, { data: documentos }] = await Promise.all([
     supabase.from("indice_composto").select("ano, mes, percentual"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
@@ -104,7 +104,7 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
           Os documentos são assinados por quem os gera, como {FUNCAO_RESPONSAVEL}: <strong>{[perfil.posto, perfil.nome].filter(Boolean).join(" ")}</strong>, no seu caso.
         </Aviso>
       )}
-      <PainelEmissao processoId={id} situacao={processo.situacao} documentos={documentos ?? []} />
+      <PainelEmissao processoId={id} situacao={processo.situacao} documentos={documentos ?? []} somenteConsulta={somenteConsulta} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { cpfValido, normalizarFormatado, precCpValido, textoSemFormatacao } from "@painel-ea/engine";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { inserirRubricasIniciais, omParaNovoProcesso } from "@/lib/processo";
+import { inserirRubricasIniciais, omParaNovoProcesso, podeAlterarProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
@@ -116,9 +116,9 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
  */
 export async function excluirProcesso(processoId: string): Promise<{ erro?: string }> {
   const { supabase, perfil } = await sessao();
-  if (perfil?.papel !== "admin") return { erro: "Somente o Admin pode excluir processos." };
-  const { data: processo } = await supabase.from("processo").select("id, militar_id").eq("id", processoId).maybeSingle();
+  const { data: processo } = await supabase.from("processo").select("id, militar_id, criado_por").eq("id", processoId).maybeSingle();
   if (!processo) return { erro: "Processo não encontrado." };
+  if (!podeAlterarProcesso(perfil, processo)) return { erro: "Só quem criou o processo (ou o Admin) pode excluí-lo." };
   const { data: docs } = await supabase.from("documento").select("caminho_storage").eq("processo_id", processoId);
   const { data: apagados, error } = await supabase.from("processo").delete().eq("id", processoId).select("id");
   if (error) return { erro: error.message };
