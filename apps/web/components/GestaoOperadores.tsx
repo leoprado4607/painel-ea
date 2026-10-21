@@ -4,6 +4,7 @@ import { useActionState, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { alterarSituacao, criarOperador, excluirOperador, redefinirAcesso, type Resultado } from "@/lib/acoes/usuarios";
 import { formatarCpf } from "@/lib/login";
+import { POSTOS } from "@/lib/postos";
 
 export interface Operador {
   usuario_id: string; nome: string; posto: string | null; cpf: string | null; om: string | null;
@@ -39,7 +40,12 @@ export function GestaoOperadores({ usuarios, oms, euId }: { usuarios: Operador[]
       <section className="cartao space-y-3">
         <h2 className="font-semibold">Novo operador</h2>
         <form action={criar} className="grid gap-3 sm:grid-cols-[8rem_1fr_10rem_1fr_auto] sm:items-start">
-          <div><label htmlFor="posto" className="rotulo">Posto/Grad</label><input id="posto" name="posto" className="entrada" placeholder="Cb" /></div>
+          <div><label htmlFor="posto" className="rotulo">Posto/Grad</label>
+            {/* abreviações padrão das assinaturas ("NOME - Cb") */}
+            <select id="posto" name="posto" className="entrada" defaultValue="">
+              <option value="">Selecione…</option>
+              {POSTOS.map((p) => <option key={p}>{p}</option>)}
+            </select></div>
           <div><label htmlFor="nome" className="rotulo">Nome completo</label><input id="nome" name="nome" required className="entrada" /></div>
           <div>
             <label htmlFor="cpf" className="rotulo">CPF</label>

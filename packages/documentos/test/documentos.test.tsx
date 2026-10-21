@@ -14,8 +14,8 @@ export function dadosC01(): DadosDocumentos {
   const resultado = calcular({ ...caso, indices: ler<IndiceMensal[]>("indices-planilha.json") });
   return {
     om: { nome: "1º Batalhão Fictício de Testes", regiaoMilitar: "11ª", cidadeUf: "Brasília-DF", unidadeGestora: "160001", codom: "012345",
-      ordenadorNome: "Ten Cel Ordenador Teste", ordenadorFuncao: "Ordenador de Despesas de Pagamento de Pessoal" },
-    responsavel: { nome: "Cb Fulano de Tal", funcao: "Auxiliar Div Pg Pes" },
+      ordenadorNome: "ORDENADOR TESTE - Ten Cel", ordenadorFuncao: "Ordenador de Despesas de Pagamento de Pessoal" },
+    responsavel: { nome: "FULANO DE TAL - Cb", funcao: "Auxiliar Div Pg Pes" },
     militar: { postoGraduacao: "1º Sgt", nome: "João Teste da Silva", precCp: null, identidade: null, cpf: null, banco: "001 - Brasil", agencia: "1234-5", conta: "98765-4" },
     processo: { numero: "TESTE", especieDivida: "Diferença de adicional (teste)", periodoInicio: "2020-01-01", periodoFim: "2020-12-01",
       dataExtenso: "17 de outubro de 2026", possuiPensaoJudicial: false, ano: 2026, dataRequerimento: "2026-09-02", biNumero: "180", biData: "2026-09-20" },
@@ -52,7 +52,7 @@ it("gera o pacote completo com os valores da planilha", async () => {
   expect(texto(1)).toContain("160001");              // UG
   expect(texto(1)).toContain("( 3 ) Ficha(s)");      // anexo editado
   expect(texto(1)).toContain("( 1 ) Folha(s) de Cálculo(s)"); // anexo padrão: 1 ano no período
-  expect(texto(1)).toContain("TEN CEL ORDENADOR TESTE");
+  expect(texto(1)).toContain("ORDENADOR TESTE - Ten Cel"); // assinatura: "NOME - Posto"
   expect(texto(2)).toContain("02/09/2026");          // data do requerimento
   expect(texto(2)).toContain("BI/Adt 180 de 20/09/2026");
   expect(texto(2)).toContain("Explicação de teste");

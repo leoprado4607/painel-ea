@@ -19,11 +19,33 @@ function Formatado({ marcacao }: { marcacao?: string }): ReactNode {
   ));
 }
 
+/** Célula da tabela da Solicitação: conteúdo centralizado na horizontal e na vertical. */
+const celula = (largura: string, i: number) =>
+  ({ width: largura, padding: 3, borderLeftWidth: i ? 0.6 : 0, justifyContent: "center", alignItems: "center" }) as const;
+
+/**
+ * O gerador de PDF só quebra linha em espaço: um número longo sem espaço ("640093.005344/2026-43/2026") invadia a
+ * coluna ao lado. Quebra em linhas depois de "." e "/", com até 12 caracteres por linha (largura da coluna):
+ * "640093." / "005344/" / "2026-43/2026".
+ */
+function quebravel(t: string, porLinha = 12): string {
+  const linhas: string[] = [];
+  for (const parte of t.split(/(?<=[./])/)) {
+    const u = linhas.length - 1;
+    if (u >= 0 && (linhas[u]! + parte).length <= porLinha) linhas[u] += parte;
+    else linhas.push(parte);
+  }
+  return linhas.join("\n");
+}
+
+/** Espaço para a assinatura à mão entre a data e o nome de quem assina (pedido de 21/10/2026). */
+const ESPACO_ASSINATURA = 40;
+
 /** Ordenador de Despesas: quem pede o pagamento (frente) e quem dá o parecer (verso). */
 function AssinaturaOd({ d }: { d: DadosDocumentos }) {
   return (
-    <View style={{ alignItems: "center", marginTop: 16 }} wrap={false}>
-      <Text style={e.negrito}>{d.om.ordenadorNome ? d.om.ordenadorNome.toUpperCase() : vazio}</Text>
+    <View style={{ alignItems: "center", marginTop: ESPACO_ASSINATURA }} wrap={false}>
+      <Text style={e.negrito}>{d.om.ordenadorNome || vazio}</Text>
       <Text>{d.om.ordenadorFuncao ?? "Ordenador de Despesas"}</Text>
     </View>
   );
@@ -68,32 +90,33 @@ export function SolicitacaoPagamento({ d }: { d: DadosDocumentos }) {
           <Text key={i} style={[e.negrito, e.centro, { width: c.w, padding: 3, fontSize: 7.5, borderLeftWidth: i ? 0.6 : 0 }]}>{c.t}</Text>
         ))}
       </View>
+      {/* conteúdo de todas as células centralizado (na horizontal e na vertical) */}
       <View style={[borda, { borderTopWidth: 0, flexDirection: "row", minHeight: 80 }]}>
-        <Text style={[e.centro, { width: "11%", padding: 3, fontSize: 7.5 }]}>{numeroOrdem(d)}</Text>
-        <View style={{ width: "31%", padding: 3, gap: 1.5, borderLeftWidth: 0.6 }}>
-          <Text>Pst/Grad: {m.postoGraduacao ?? ""}</Text>
-          <Text>Nome: {m.nome.toUpperCase()}</Text>
-          <Text>Identidade: {m.identidade ?? ""}</Text>
-          <Text>Prec-CP: {m.precCp ?? ""}</Text>
-          <Text>CPF: {m.cpf ?? ""}</Text>
-          <Text>Situação: {m.situacao ?? ""}</Text>
+        <View style={celula("11%", 0)}><Text style={{ textAlign: "center", fontSize: 7.5 }}>{quebravel(numeroOrdem(d))}</Text></View>
+        <View style={[celula("31%", 1), { gap: 1.5 }]}>
+          <Text style={e.centro}>Pst/Grad: {m.postoGraduacao ?? ""}</Text>
+          <Text style={e.centro}>Nome: {m.nome.toUpperCase()}</Text>
+          <Text style={e.centro}>Identidade: {m.identidade ?? ""}</Text>
+          <Text style={e.centro}>Prec-CP: {m.precCp ?? ""}</Text>
+          <Text style={e.centro}>CPF: {m.cpf ?? ""}</Text>
+          <Text style={e.centro}>Situação: {m.situacao ?? ""}</Text>
         </View>
-        <Text style={[e.centro, { width: "13%", padding: 3, borderLeftWidth: 0.6 }]}>
-          {mesAno(d.processo.periodoInicio)} a {mesAno(d.processo.periodoFim)}
-        </Text>
-        <Text style={{ width: "13%", padding: 3, textAlign: "right", borderLeftWidth: 0.6 }}>{reais(r.receitas)}</Text>
-        <View style={{ width: "19%", padding: 3, gap: 3, borderLeftWidth: 0.6 }}>
-          <Text style={{ fontSize: 7 }}>{d.resultado.despesasCompactadas}</Text>
-          <Text style={{ textAlign: "right" }}>{reais(r.despesas)}</Text>
-          <Text style={{ fontSize: 7 }}>ZED PJud EA: R$ {reais(pensao)}</Text>
+        <View style={celula("13%", 2)}>
+          <Text style={e.centro}>{mesAno(d.processo.periodoInicio)} a {mesAno(d.processo.periodoFim)}</Text>
         </View>
-        <Text style={[e.negrito, { width: "13%", padding: 3, textAlign: "right", borderLeftWidth: 0.6 }]}>{reais(r.receitas - r.despesas)}</Text>
+        <View style={celula("13%", 3)}><Text style={e.centro}>{reais(r.receitas)}</Text></View>
+        <View style={[celula("19%", 4), { gap: 3 }]}>
+          <Text style={[e.centro, { fontSize: 7 }]}>{d.resultado.despesasCompactadas}</Text>
+          <Text style={e.centro}>{reais(r.despesas)}</Text>
+          <Text style={[e.centro, { fontSize: 7 }]}>ZED PJud EA: R$ {reais(pensao)}</Text>
+        </View>
+        <View style={celula("13%", 5)}><Text style={[e.negrito, e.centro]}>{reais(r.receitas - r.despesas)}</Text></View>
       </View>
       <Text style={{ marginTop: 6, fontSize: 7.5 }}>
         Observação: cálculos já corrigidos pela série {d.descricaoIndice} (Port Normativa nº 40/MD, de 21 Jan 2004, do Ministério da Defesa,
         transcrita no DOU nº 15, de 22 de janeiro de 2004 - 1ª Seção - pág 28). Processo atualizado até: {d.indiceAte}.
       </Text>
-      <Assinaturas d={d} data={false} />
+      <Assinaturas d={d} data={false} espaco={ESPACO_ASSINATURA} />
       <Rodape d={d} nome="Solicitação de Pagamento" />
     </Page>
   );
@@ -105,7 +128,7 @@ export function SolicitacaoPagamentoVerso({ d }: { d: DadosDocumentos }) {
     ?? (d.processo.biNumero ? `BI/Adt ${d.processo.biNumero}${d.processo.biData ? ` de ${dataBr(d.processo.biData)}` : ""}` : "");
   // amparo e explicação vêm dos quadros de Informações, com negrito/itálico/sublinhado
   const cols: { w: string; t: string; v: ReactNode }[] = [
-    { w: "10%", t: "Nº de Ordem", v: numeroOrdem(d) },
+    { w: "10%", t: "Nº de Ordem", v: quebravel(numeroOrdem(d), 11) },
     { w: "11%", t: "Data do Requerimento", v: dataBr(d.processo.dataRequerimento) },
     { w: "30%", t: "Nº/Data Doc/Materializou Direito", v: <Formatado marcacao={c.amparo} /> },
     { w: "12%", t: "Boletim que Averbou", v: bi },

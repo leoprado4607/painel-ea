@@ -137,12 +137,16 @@ export function Linha({ cols, valores, estilo, cores, altura, compacto, celulas 
 }
 
 /** Assinaturas: cidade e data (opcional) e o Auxiliar Div Pg Pes que gerou o documento. */
-export function Assinaturas({ d, data = true }: { d: DadosDocumentos; data?: boolean }) {
+export function Assinaturas({ d, data = true, espaco = 18 }: {
+  d: DadosDocumentos; data?: boolean;
+  /** distância até o nome de quem assina (espaço para a assinatura à mão) */
+  espaco?: number;
+}) {
   return (
-    <View style={{ marginTop: 18 }} wrap={false}>
+    <View style={{ marginTop: espaco }} wrap={false}>
       {data && <Text style={[e.centro, e.negrito, { marginBottom: 18 }]}>{[d.om.cidadeUf, d.processo.dataExtenso].filter(Boolean).join(", ")}</Text>}
       <View style={{ alignItems: "center" }}>
-        <Text style={e.negrito}>{d.responsavel.nome ? d.responsavel.nome.toUpperCase() : "______________________________"}</Text>
+        <Text style={e.negrito}>{d.responsavel.nome ? d.responsavel.nome : "______________________________"}</Text>
         <Text>{d.responsavel.funcao}</Text>
       </View>
     </View>

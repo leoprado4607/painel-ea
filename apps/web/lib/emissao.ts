@@ -5,6 +5,7 @@ import { montarEntrada } from "./calculo";
 import { dataPorExtenso, descreverRegra } from "./indice";
 import { textoBoletim } from "./averbacao";
 import { carregarProcesso } from "./processo";
+import { nomeNaAssinatura } from "./postos";
 import { FUNCAO_RESPONSAVEL, MESES, omDeVinculacao, VALOR_UFIR } from "./tipos";
 
 /** Reúne tudo o que os documentos precisam e gera o PDF do pacote completo. */
@@ -31,10 +32,11 @@ export async function montarDocumentos(
   const dados: DadosDocumentos = {
     om: {
       nome: omVinculacao.nome, omOrdenador: om.nome, regiaoMilitar: om.regiao_militar, cidadeUf: om.cidade_uf, unidadeGestora: om.unidade_gestora, codom: omVinculacao.codom,
-      ordenadorNome: om.ordenador_nome, ordenadorFuncao: om.ordenador_funcao,
+      // assinaturas: "NOME COMPLETO - Posto" (ex.: "LEONARDO PRADO DO MONTE BORGES - Maj")
+      ordenadorNome: nomeNaAssinatura(om.ordenador_nome), ordenadorFuncao: om.ordenador_funcao,
     },
     // Quem gera o PDF assina como Auxiliar Div Pg Pes (decisão de 19/10/2026: sai Fiscal Adm e Chefe da Div Pessoal).
-    responsavel: { nome: [perfil?.posto, perfil?.nome].filter(Boolean).join(" ") || null, funcao: FUNCAO_RESPONSAVEL },
+    responsavel: { nome: nomeNaAssinatura(perfil?.nome, perfil?.posto ?? null), funcao: FUNCAO_RESPONSAVEL },
     militar: {
       postoGraduacao: militar.posto_graduacao, nome: militar.nome, precCp: militar.prec_cp, identidade: militar.identidade,
       cpf: militar.cpf, banco: militar.banco, agencia: militar.agencia, conta: militar.conta, situacao: militar.situacao,

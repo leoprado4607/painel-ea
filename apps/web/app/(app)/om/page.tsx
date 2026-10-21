@@ -10,7 +10,7 @@ import { VALOR_UFIR, type Om } from "@/lib/tipos";
 const ROTULOS = {
   nome: "OM do Ordenador de Despesas", regiao_militar: "Região Militar (ex.: 7ª)", unidade_gestora: "Unidade Gestora (UG)",
   cidade_uf: "Cidade e Estado (ex.: Natal-RN)",
-  ordenador_nome: "Ordenador de Despesas — nome e posto", ordenador_funcao: "Ordenador de Despesas — função",
+  ordenador_nome: "Ordenador de Despesas — nome e posto (ex.: LEONARDO PRADO DO MONTE BORGES - Maj)", ordenador_funcao: "Ordenador de Despesas — função",
 } as const;
 // Fiscal Adm e Chefe da Div Pessoal não aparecem mais nos documentos: quem assina é o operador logado (Auxiliar Div Pg Pes).
 const CAMPOS = Object.entries(ROTULOS) as [keyof typeof ROTULOS, string][];
