@@ -14,7 +14,6 @@ export default function Login() {
           <img src="/brasao-badm.png" alt="Brasão da B Adm Gu Natal" className="h-14 w-auto object-contain" />
           <div>
             <p className="font-marca text-[15px] italic leading-tight text-white">Divisão de Pagamento de Pessoal</p>
-            <p className="mt-0.5 text-[11px] font-semibold uppercase tracking-[.16em] text-ouro-claro">B Adm Gu Natal</p>
           </div>
         </div>
       </header>
@@ -44,7 +43,7 @@ export default function Login() {
         </div>
       </main>
 
-      <footer className="bg-carvao px-4 py-3 text-center text-xs text-creme/70">© {new Date().getFullYear()} Divisão de Pagamento de Pessoal · B Adm Gu Natal</footer>
+      <footer className="bg-carvao px-4 py-3 text-center text-xs text-creme/70">© {new Date().getFullYear()} Divisão de Pagamento de Pessoal</footer>
     </div>
   );
 }
