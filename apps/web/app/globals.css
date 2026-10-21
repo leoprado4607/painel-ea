@@ -74,3 +74,81 @@ body {
   .ajuda { @apply mt-1 text-xs text-suave; }
   .erro { @apply mt-1 text-xs text-red-700; }
 }
+
+/*
+ * Perfil Admin: tema escuro rústico (couro, madeira escura, pergaminho e latão envelhecido).
+ * O layout interno põe "tema-admin" no contêiner; as cores são trocadas redefinindo as variáveis do tema,
+ * então os componentes não mudam. Moldura (barra lateral, tira de abas = "cromo") e conteúdo (main) têm paletas próprias.
+ */
+.tema-admin,
+.tema-admin main .cromo {
+  color-scheme: dark;
+  --color-exercito: #261b12;
+  --color-carvao: #1c130c;
+  --color-creme: #ecdfc4;
+  --color-ouro: #a9843a;
+  --color-ouro-escuro: #c49a4c;
+  --color-ouro-claro: #d8b46c;
+  --color-white: #fff;
+}
+.tema-admin main {
+  --color-fundo: #18110b;
+  --color-white: #241a12;     /* superfície dos cartões e campos */
+  --color-gray-50: #1d150e;
+  --color-tinta: #eadcc2;
+  --color-suave: #a8957a;
+  --color-borda: #47382a;
+  --color-carvao: #f1e3c6;    /* títulos */
+  --color-creme: #33261a;     /* realces de fundo (hover, abas ativas) */
+  --color-exercito: #d8b46c;  /* "hover:text-exercito" nos links */
+  --color-marca-50: #30241a;
+  --color-marca-100: #3e2e1c;
+  --color-marca-600: #b08a3e;
+  --color-marca-700: #cfa65a; /* links e botões ativos (o texto "white" vira escuro sobre o latão) */
+  --color-marca-800: #e3c37c;
+  --color-red-50: #2d1511;
+  --color-red-100: #3d1a14;
+  --color-red-200: #6a2b20;
+  --color-red-300: #8c3b2c;
+  --color-red-700: #e8917c;
+  --color-red-800: #eda592;
+  --color-red-900: #f2b8a8;
+  --color-amber-50: #2b2010;
+  --color-amber-100: #3d2d12;
+  --color-amber-200: #6a5022;
+  --color-amber-800: #e8c27a;
+  --color-amber-900: #efcd8d;
+  --color-green-50: #17231a;
+  --color-green-100: #1e3323;
+  --color-green-200: #2f4d35;
+  --color-green-800: #a3d2aa;
+  --color-green-900: #b8debd;
+  --color-sky-50: #13202a;
+  --color-sky-200: #284658;
+  --color-sky-900: #aed3ea;
+}
+/* fundo de madeira escura com grão leve e vinheta */
+body:has(.tema-admin) {
+  background-color: #18110b;
+  background-image:
+    radial-gradient(ellipse at 50% 0%, rgb(120 84 40 / .14), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgb(0 0 0 / .55), transparent 65%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.012 .55' numOctaves='3' seed='7'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .31 0 0 0 0 .17 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  color: #eadcc2;
+}
+/* barra lateral e tira de abas: couro com grão */
+.tema-admin aside,
+.tema-admin .cromo,
+.tema-admin #menu-celular {
+  background-image:
+    linear-gradient(180deg, rgb(255 255 255 / .03), rgb(0 0 0 / .25)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' seed='3'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .22 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23c)'/%3E%3C/svg%3E");
+}
+.tema-admin main .cartao {
+  box-shadow: inset 0 1px 0 rgb(255 240 210 / .04), 0 6px 18px -10px rgb(0 0 0 / .7);
+}
+.tema-admin main .entrada { background-color: #1c140d; }
+.tema-admin main .entrada:disabled { background-color: #18110b; }
+.tema-admin main .botao { background-color: #a9843a; color: #1c130c; }
+.tema-admin main .botao:hover { background-color: #c49a4c; }

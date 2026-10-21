@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import { EditarProcesso } from "@/components/EditarProcesso";
 import { ExcluirProcesso } from "@/components/ExcluirProcesso";
 import { normalizarBusca } from "@/lib/busca";
 
@@ -69,8 +70,10 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
                 </span>
               </Link>
               {p.meu && (
-                <div className="pb-4 pr-5 sm:pb-0">
+                <div className="flex flex-col items-end gap-2 pb-4 pr-5 sm:pb-0">
                   <ExcluirProcesso id={p.id} emitido={p.situacao !== "rascunho"} descricao={p.descricao} />
+                  {/* só depois de emitido: reabre como rascunho, mantendo tudo o que foi lançado */}
+                  {p.situacao === "emitido" && <EditarProcesso id={p.id} descricao={p.descricao} />}
                 </div>
               )}
             </li>

@@ -20,5 +20,6 @@ export async function reabrirProcesso(processoId: string) {
   const { error } = await supabase.from("processo").update({ situacao: "rascunho" }).eq("id", processoId);
   if (error) return { erro: error.message };
   revalidatePath(`/processos/${processoId}`, "layout");
+  revalidatePath("/processos");
   return { ok: true as const };
 }

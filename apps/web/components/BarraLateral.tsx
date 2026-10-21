@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { sair } from "@/app/login/actions";
 import { abaAtiva, type Aba } from "@/lib/abas";
-import { DOCUMENTOS, FOCO, LANCAMENTOS, Numero, Ponto, SeloSituacao, type SituacaoProcesso } from "./abas-processo-ui";
+import { DOCUMENTOS, FOCO, LANCAMENTOS, Numero, Ponto, type SituacaoProcesso } from "./abas-processo-ui";
 
 /* ------------------------------------------------------------------ processo aberto
  * O layout do processo "registra" o processo aberto; a barra lateral (do layout geral, que não recarrega ao
@@ -91,12 +91,8 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
         )}
           {aberto && (
             <section aria-label="Processo aberto" className="bg-black/15 p-2 ring-1 ring-white/10">
-              <div className="flex flex-col gap-1 px-1 pb-2">
-                <p className="text-[13px] font-bold leading-snug text-white">{aberto.titulo}</p>
-                <p className="text-[11px] leading-snug text-ouro-claro">{aberto.subtitulo}</p>
-                <SeloSituacao situacao={aberto.situacao} />
-              </div>
-              <div className="space-y-2 border-t border-white/10 pt-2" aria-label="Abas do processo" role="group">
+              {/* só as abas: nome, número e situação do processo já aparecem na página (não poluem a barra) */}
+              <div className="space-y-2" aria-label="Abas do processo" role="group">
                 <p id="lat-lancamentos" className="px-1 text-[11px] font-semibold uppercase tracking-[.14em] text-ouro-claro">Lançamentos</p>
                 {/* linha vertical ligando as etapas, atrás dos números */}
                 <ol aria-labelledby="lat-lancamentos" className="relative space-y-0.5 before:absolute before:bottom-4 before:left-[17px] before:top-4 before:w-px before:bg-ouro-claro/30">

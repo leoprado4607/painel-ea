@@ -43,7 +43,7 @@ export function AbasProcesso({ id, titulo, subtitulo, situacao }: { id: string; 
       </div>
       {/* irmã do cabeçalho (não dentro dele) para o "sticky" valer na página toda */}
       <nav aria-label="Abas do processo"
-        className="sticky top-16 z-20 overflow-x-auto border-b-2 border-ouro bg-exercito p-1 [mask-image:linear-gradient(90deg,transparent,#000_10px,#000_calc(100%-10px),transparent)] [scrollbar-width:none] lg:hidden print:hidden">
+        className="cromo sticky top-16 z-20 overflow-x-auto border-b-2 border-ouro bg-exercito p-1 [mask-image:linear-gradient(90deg,transparent,#000_10px,#000_calc(100%-10px),transparent)] [scrollbar-width:none] lg:hidden print:hidden">
         <ul className="flex w-max items-center gap-1">
           {LANCAMENTOS.map((a, i) => item(a, <Numero n={i + 1} ativa={a === ativa} />))}
           <li aria-hidden className="mx-1 h-5 w-px shrink-0 bg-white/15" />

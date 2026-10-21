@@ -22,7 +22,7 @@ export function ExcluirProcesso({ id, descricao, emitido }: { id: string; descri
   return (
     <div className="flex shrink-0 flex-col items-end gap-1">
       <button type="button" onClick={excluir} disabled={ocupado} aria-label={`Excluir o processo ${descricao}`}
-        className="botao-sec py-1.5 text-red-800 hover:border-red-300 hover:bg-red-50">
+        className="botao-sec min-w-[5.5rem] py-1.5 text-red-800 hover:border-red-300 hover:bg-red-50">
         {ocupado ? "Excluindo…" : "Excluir"}
       </button>
       {erro && <p role="alert" className="max-w-48 text-right text-xs text-red-800">{erro}</p>}

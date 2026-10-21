@@ -11,7 +11,8 @@ export default async function LayoutApp({ children }: { children: React.ReactNod
   const admin = perfil?.papel === "admin";
   return (
     <ProvedorProcesso>
-      <div className="min-h-screen lg:flex">
+      {/* Admin: tema escuro rústico (globals.css, .tema-admin) */}
+      <div className={`min-h-screen lg:flex ${admin ? "tema-admin" : ""}`}>
         <BarraLateral admin={admin} usuario={[perfil?.posto, perfil?.nome].filter(Boolean).join(" ")} />
         <main className="min-w-0 flex-1 px-4 pb-10 pt-5 lg:px-8 lg:pt-8">
           <div className="mx-auto max-w-6xl">

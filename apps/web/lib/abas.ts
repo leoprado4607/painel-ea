@@ -22,11 +22,12 @@ export const ABAS: Aba[] = [
   { rotulo: "Códigos lançamento", grupo: "lancamento", caminho: "rubricas", doProcesso: true },
   { rotulo: "Contracheque - F Financeira", grupo: "lancamento", caminho: "recebidos", doProcesso: true },
   { rotulo: "Lançar valor devido", grupo: "lancamento", caminho: "devidos", doProcesso: true },
+  // 5º passo dos lançamentos: conferência do cálculo e emissão dos documentos
+  { rotulo: "Impressão", grupo: "lancamento", caminho: "conferencia", doProcesso: true },
   { rotulo: "Solicitação", grupo: "documento", caminho: "solicitacao", doProcesso: true },
   { rotulo: "Solicitação verso", grupo: "documento", caminho: "solicitacao-verso", doProcesso: true },
   { rotulo: "CPEX", grupo: "documento", caminho: "cpex", doProcesso: true },
   { rotulo: "Recapitulação", grupo: "documento", caminho: "recapitulacao", doProcesso: true },
-  { rotulo: "Impressão", grupo: "documento", caminho: "conferencia", doProcesso: true },
   { rotulo: "Resumo", grupo: "documento", caminho: "resumo", doProcesso: true },
   { rotulo: "Exercícios por ano", grupo: "documento", caminho: "exercicios", doProcesso: true },
 ];
