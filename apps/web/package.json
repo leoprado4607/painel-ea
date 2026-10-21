@@ -11,21 +11,22 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@painel-ea/documentos": "*",
     "@painel-ea/engine": "*",
+    "@painel-ea/leitor-ficha": "*",
     "@supabase/ssr": "0.7.0",
     "@supabase/supabase-js": "2.57.4",
+    "fflate": "0.8.3",
     "next": "15.5.28",
     "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "@painel-ea/leitor-ficha": "*",
-    "@painel-ea/documentos": "*"
+    "react-dom": "19.1.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.13",
-    "tailwindcss": "4.1.13",
+    "@types/node": "22.18.0",
     "@types/react": "19.1.12",
     "@types/react-dom": "19.1.9",
-    "@types/node": "22.18.0",
+    "tailwindcss": "4.1.13",
     "typescript": "5.9.3",
     "vitest": "3.2.4"
   },

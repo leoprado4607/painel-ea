@@ -106,3 +106,15 @@ it("Nº de Ordem não repete o ano quando o número já o traz", async () => {
   expect(numeroOrdem({ ...d, processo: { ...d.processo, numero: "640093.005344/2026-43", ano: 2026 } })).toBe("640093.005344/2026-43");
   expect(numeroOrdem({ ...d, processo: { ...d.processo, numero: "001", ano: 2026 } })).toBe("001/2026");
 });
+
+it("partes separadas: um PDF por documento, na ordem do compilado", async () => {
+  const { gerarPartes } = await import("../src");
+  const partes = await gerarPartes(dadosC01());
+  expect(partes.map((p) => p.nome)).toEqual([
+    "01 - Solicitação de Pagamento.pdf", "02 - Solicitação de Pagamento (verso).pdf",
+    "03 - 2020 - Solicitação.pdf", "04 - 2020 - Solicitação (verso).pdf",
+    "05 - 2020 - Comprovação dos valores recebidos.pdf", "06 - 2020 - Comprovação dos valores devidos.pdf",
+    "07 - Recapitulação.pdf", "08 - CPEX.pdf", "09 - Resumo.pdf",
+  ]);
+  expect(partes.every((p) => p.pdf.subarray(0, 5).toString() === "%PDF-")).toBe(true);
+}, 60_000);

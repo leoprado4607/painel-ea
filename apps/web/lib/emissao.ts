@@ -1,5 +1,7 @@
 import { calcular } from "@painel-ea/engine";
 import type { DadosDocumentos, TipoDocumento } from "@painel-ea/documentos";
+import { zipSync } from "fflate";
+import { caminhoDoZip, nomeDoPacote } from "./pacote";
 import { createHash } from "node:crypto";
 import { montarEntrada } from "./calculo";
 import { dataPorExtenso, descreverRegra } from "./indice";
@@ -66,20 +68,30 @@ export async function montarDocumentos(
   // gerador de PDF carregado só aqui: não pesa na partida das demais páginas
   const { gerarPdf } = await import("@painel-ea/documentos");
   const pdf = await gerarPdf(dados, opcoes.tipo ?? "pacote_completo", opcoes.ano);
-  return { pdf, supabase, om, processo, entrada, ate };
+  return { pdf, dados, supabase, om, processo, militar, entrada, ate };
 }
 
-/** Emite: gera o PDF definitivo, guarda no Storage, registra o documento e trava o processo com o índice usado. */
+/**
+ * Emite: gera o PDF compilado definitivo e o ZIP (uma pasta com cada documento em PDF separado, com a mesma data e
+ * rodapé), guarda os dois no Storage, registra o documento e trava o processo com o índice usado.
+ */
 export async function emitir(processoId: string) {
   const { supabase } = await carregarProcesso(processoId);
   const { count } = await supabase.from("documento").select("id", { count: "exact", head: true })
     .eq("processo_id", processoId).eq("tipo", "pacote_completo");
   const versao = (count ?? 0) + 1;
-  const { pdf, om, processo, entrada, ate } = await montarDocumentos(processoId, { rascunho: false, versao });
+  const { pdf, dados, om, processo, militar, entrada, ate } = await montarDocumentos(processoId, { rascunho: false, versao });
   if (processo.situacao !== "rascunho") throw new Error("Processo já emitido.");
   const caminho = `${om!.id}/${processoId}/emissao-v${versao}.pdf`;
+  // arquivos separados, numa pasta dentro do ZIP
+  const { gerarPartes } = await import("@painel-ea/documentos");
+  const pasta = nomeDoPacote(processo.numero, militar.nome);
+  const partes = await gerarPartes(dados);
+  const zip = zipSync({ [pasta]: Object.fromEntries(partes.map((p) => [p.nome, new Uint8Array(p.pdf)])) });
   const up = await supabase.storage.from("documentos").upload(caminho, pdf, { contentType: "application/pdf", upsert: false });
   if (up.error) throw new Error(`Falha ao guardar o PDF: ${up.error.message}`);
+  const upZip = await supabase.storage.from("documentos").upload(caminhoDoZip(caminho), zip, { contentType: "application/zip", upsert: false });
+  if (upZip.error) throw new Error(`Falha ao guardar os arquivos separados: ${upZip.error.message}`);
   const indiceAte = `${ate.ano}-${String(ate.mes).padStart(2, "0")}-01`;
   const { data: doc, error } = await supabase.from("documento").insert({
     processo_id: processoId, om_id: om!.id, tipo: "pacote_completo", caminho_storage: caminho,
