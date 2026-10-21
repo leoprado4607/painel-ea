@@ -80,13 +80,22 @@ it("comprovação mostra o valor da UFIR, como a planilha (Informações!B17)", 
   expect(t).toContain("UFIR: 1,0641");
 }, 60_000);
 
-it("Solicitação de Pagamento: OD da OM do Ordenador; cabeçalho e CODOM da OM de vinculação", async () => {
+it("Solicitação de Pagamento: cabeçalho e OD da OM do Ordenador; CODOM da OM de vinculação; número abaixo do título", async () => {
   const d = dadosC01();
   const pdf = await gerarPdf({ ...d, om: { ...d.om, nome: "16º BI Mtz", codom: "007807", omOrdenador: "B Adm Gu Natal" } }, "pacote_completo");
   const t = (await palavrasDoPdf(new Uint8Array(pdf))).map((p) => p.texto).join(" ");
   expect(t).toContain("Do OD do(a): B Adm Gu Natal");
   expect(t).toContain("CODOM: 007807");
-  expect(t).toContain("BI MTZ"); // cabeçalho com a OM de vinculação ("16 º BI MTZ" na leitura do PDF)
+  expect(t).toContain("BI MTZ"); // demais documentos: cabeçalho com a OM de vinculação ("16 º BI MTZ" na leitura do PDF)
+  const sol = await gerarPdf({ ...d, om: { ...d.om, nome: "16º BI Mtz", omOrdenador: "B Adm Gu Natal" } }, "solicitacao");
+  writeFileSync(join(__dirname, "saida", "solicitacao.pdf"), sol);
+  const p = await palavrasDoPdf(new Uint8Array(sol));
+  const ts = p.map((x) => x.texto).join(" ");
+  expect(ts).toContain("B ADM GU NATAL");
+  expect(ts).not.toContain("BI MTZ");
+  const y = (txt: string) => p.find((x) => x.texto === txt)!.y;
+  expect(ts).toContain("Processo Nº");
+  expect(y("Processo")).not.toBe(y("PAGAMENTO")); // número na linha de baixo
 }, 60_000);
 
 it("verso: amparo e explicação com negrito/itálico/sublinhado saem sem as marcações", async () => {

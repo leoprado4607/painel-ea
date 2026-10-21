@@ -58,8 +58,12 @@ export function SolicitacaoPagamento({ d }: { d: DadosDocumentos }) {
   const local = [d.om.cidadeUf, d.processo.dataExtenso].filter(Boolean).join(", ");
   return (
     <Page size="A4" style={e.pagina}>
-      <Cabecalho d={d} />
-      <Text style={[e.centro, e.negrito, { fontSize: 10, marginVertical: 6 }]}>SOLICITAÇÃO DE PAGAMENTO Nº {numeroOrdem(d) || "______/______"}</Text>
+      <Cabecalho d={d} om={d.om.omOrdenador} />
+      {/* número abaixo do título e 2 linhas a mais antes do corpo */}
+      <View style={{ marginTop: 6, marginBottom: 30 }}>
+        <Text style={[e.centro, e.negrito, { fontSize: 10 }]}>SOLICITAÇÃO DE PAGAMENTO</Text>
+        <Text style={[e.centro, e.negrito, { fontSize: 10 }]}>Processo Nº {numeroOrdem(d) || "______/______"}</Text>
+      </View>
 
       <View style={[e.linha, { gap: 10, marginBottom: 8 }]}>
         <View style={{ width: "62%", gap: 4 }}>

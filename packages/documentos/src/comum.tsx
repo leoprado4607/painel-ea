@@ -109,14 +109,15 @@ export const e = StyleSheet.create({
 });
 
 /** Cabeçalho institucional com brasão (igual ao das abas Solicitação, Recapitulação e Resumo). */
-export function Cabecalho({ d, brasao = true }: { d: DadosDocumentos; brasao?: boolean }) {
+/** `om`: nome abaixo da Região Militar (padrão: OM de vinculação; na Solicitação de Pagamento, a OM do Ordenador). */
+export function Cabecalho({ d, brasao = true, om }: { d: DadosDocumentos; brasao?: boolean; om?: string | null }) {
   return (
     <View style={{ alignItems: "center", marginBottom: 6 }}>
       {brasao && <Image src={BRASAO_PNG} style={{ width: 46, height: 48, marginBottom: 3 }} />}
       <Text>MINISTÉRIO DA DEFESA</Text>
       <Text>EXÉRCITO BRASILEIRO</Text>
       {d.om.regiaoMilitar && <Text>{d.om.regiaoMilitar} - REGIÃO MILITAR</Text>}
-      <Text>{d.om.nome.toUpperCase()}</Text>
+      <Text>{(om || d.om.nome).toUpperCase()}</Text>
     </View>
   );
 }
