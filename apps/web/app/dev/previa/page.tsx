@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { AbaDocumento } from "@/components/AbaDocumento";
 import { AbasProcesso } from "@/components/AbasProcesso";
+import { DadosFavorecido } from "@/components/DadosFavorecido";
 import { BarraLateral, ProvedorProcesso, RegistrarProcesso } from "@/components/BarraLateral";
 import { FormularioProcesso } from "@/components/FormularioProcesso";
 import { FormularioRubricas } from "@/components/FormularioRubricas";
@@ -41,7 +42,9 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           </main>
         </div>
         </ProvedorProcesso>
-      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "valores" ? (
+      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "aviso" ? (
+        <DadosFavorecido processoId="previa" valores={{}} rubricas={[]} bloqueado={false} conferirBanco />
+      ) : tela === "valores" ? (
         <ValoresMensais processoId="previa" tipo="devido" proximaEtapa="conferencia" bloqueado={false} rubricas={rubricas}
           inicio={{ ano: 2020, mes: 11 }} fim={{ ano: 2021, mes: 6 }}
           linhas={[{ ano: 2020, mes: 11, posicao: 1, valor: 5500 }, { ano: 2020, mes: 11, posicao: 13, valor: 165 }]} />

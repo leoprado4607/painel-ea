@@ -152,3 +152,5 @@ body:has(.tema-admin) {
 .tema-admin main .entrada:disabled { background-color: #18110b; }
 .tema-admin main .botao { background-color: #a9843a; color: #1c130c; }
 .tema-admin main .botao:hover { background-color: #c49a4c; }
+
+@keyframes encolher { from { transform: scaleX(1); } to { transform: scaleX(0); } }

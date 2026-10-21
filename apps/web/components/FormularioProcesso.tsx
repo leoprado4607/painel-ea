@@ -1,6 +1,7 @@
 "use client";
 import { cpfValido, identidadeValida, precCpValido } from "@painel-ea/engine";
 import { useActionState, useState } from "react";
+import { PopupPendencias, pendenciasDoFormulario, type Pendencia } from "@/components/PopupPendencias";
 import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
 import { POSTOS, postoAbreviado } from "@/lib/postos";
@@ -108,8 +109,19 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
   const [inicio, setInicio] = useState(valores.periodo_inicio ?? "");
   const [fim, setFim] = useState(valores.periodo_fim ?? "");
   const qtdeMeses = quantidadeMeses(inicio, fim);
+  // ao salvar com campo obrigatório vazio: pop-up com as pendências (no lugar do balão do navegador)
+  const [pendentes, setPendentes] = useState<{ pendencias: Pendencia[]; primeiro: HTMLElement | null } | null>(null);
   return (
-    <form action={acao} className="space-y-6">
+    <form action={acao} className="space-y-6" noValidate
+      onSubmit={(e) => {
+        const form = e.currentTarget;
+        const r = pendenciasDoFormulario(form);
+        if (r.pendencias.length) { e.preventDefault(); setPendentes(r); return; }
+        // demais regras do navegador (formato, mínimo/máximo) continuam com o aviso dele
+        if (!form.checkValidity()) { e.preventDefault(); form.reportValidity(); }
+      }}>
+      {pendentes && <PopupPendencias pendencias={pendentes.pendencias}
+        aoFechar={() => { const el = pendentes.primeiro; setPendentes(null); setTimeout(() => el?.focus(), 0); }} />}
       {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}
       <fieldset disabled={bloqueado} className="space-y-6">
         {oms.length > 0 && <section className="cartao sm:max-w-md"><EscolhaOm oms={oms} erro={c.om_id} /></section>}

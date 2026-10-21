@@ -210,7 +210,8 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     if (e2) return { erro: e2.message };
     const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
     if (e3) return { erro: e3.message };
-    destino = `/processos/${p.id}/dados`;
+    // ?conferir=banco: a aba Informações abre o aviso para conferir os dados bancários com o Requerimento
+    destino = `/processos/${p.id}/dados?conferir=banco`;
   } catch (e) {
     return { erro: (e as Error).message };
   }
