@@ -19,7 +19,7 @@ const contracheque = (ano: number, mes: number, banco = "1"): DocumentoExtraido 
 
 describe("dados do favorecido lidos dos documentos", () => {
   it("banco pelo código: 1 → 001 - Brasil; código fora da lista fica com 3 dígitos", () => {
-    expect(bancoDaLista("1")).toBe("001 - Brasil");
+    expect(bancoDaLista("1")).toBe("001 - Banco do Brasil");
     expect(bancoDaLista("0104")).toBe("104 - CEF");
     expect(bancoDaLista("77")).toBe("077");
     expect(bancoDaLista(null)).toBeUndefined();
@@ -29,9 +29,9 @@ describe("dados do favorecido lidos dos documentos", () => {
     const r = dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }) }, contracheque(2026, 8)]);
     expect(r).toEqual({
       posto_graduacao: "MAJOR", nome: "FULANO DE TAL", prec_cp: "111111111", identidade: "0123456789", cpf: "529.982.247-25",
-      om_vinculacao: "OM DA FICHA", banco: "001 - Brasil", agencia: "2857", conta: "0005593204",
+      om_vinculacao: "OM DA FICHA", banco: "001 - Banco do Brasil", agencia: "2857", conta: "0005593204",
     });
-    expect(dadosDoFavorecido([contracheque(2026, 8)])).toEqual({ banco: "001 - Brasil", agencia: "2857", conta: "0005593204" });
+    expect(dadosDoFavorecido([contracheque(2026, 8)])).toEqual({ banco: "001 - Banco do Brasil", agencia: "2857", conta: "0005593204" });
   });
 
   it("período: das fichas, de janeiro ao último mês com valor; o contracheque não conta", () => {

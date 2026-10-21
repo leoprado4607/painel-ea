@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import { Aviso } from "@/components/Aviso";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
-import { BANCOS, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
+import { BANCOS, bancoDaLista, ESPECIES_DIVIDA, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
 
 /** "situacao" do formulário é a do militar (Ativa, Reformado…); a do processo (rascunho/emitido) fica de fora. */
 export type Valores = Partial<Omit<Processo, "situacao"> & Militar>;
@@ -29,17 +29,21 @@ function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, v
   );
 }
 
-function Lista({ nome, rotulo, valor, opcoes, aceitaOutro }: { nome: string; rotulo: string; valor?: string | null; opcoes: string[]; aceitaOutro?: boolean }) {
+function Lista({ nome, rotulo, valor, opcoes, aceitaOutro, obrigatorio, erro }: {
+  nome: string; rotulo: string; valor?: string | null; opcoes: string[]; aceitaOutro?: boolean; obrigatorio?: boolean; erro?: string;
+}) {
   const atual = valor && (aceitaOutro || opcoes.includes(valor)) ? valor : "";
   return (
     <div>
-      <label htmlFor={nome} className="rotulo">{rotulo}</label>
-      <select id={nome} name={nome} defaultValue={atual} className="entrada">
+      <label htmlFor={nome} className="rotulo">{rotulo}{obrigatorio && <span className="text-red-700"> *</span>}</label>
+      <select id={nome} name={nome} defaultValue={atual} required={obrigatorio} aria-invalid={!!erro}
+        className={`entrada ${erro ? "entrada-erro" : ""}`}>
         <option value="">Selecione…</option>
         {/* valor lido de um documento e fora da lista (ex.: banco "077") continua aparecendo */}
         {atual && !opcoes.includes(atual) && <option>{atual}</option>}
         {opcoes.map((o) => <option key={o}>{o}</option>)}
       </select>
+      {erro && <p className="erro">{erro}</p>}
     </div>
   );
 }
@@ -55,21 +59,23 @@ function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<s
         ? "sm:grid-cols-[minmax(9rem,1fr)_auto_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"
         : "sm:grid-cols-[minmax(9rem,1fr)_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"}`}>
         <div>
-          <label htmlFor="documento_averbacao" className="rotulo">Documento de averbação</label>
-          <select id="documento_averbacao" name="documento_averbacao" value={documento} onChange={(e) => setDocumento(e.target.value)} className="entrada">
+          <label htmlFor="documento_averbacao" className="rotulo">Documento de averbação<span className="text-red-700"> *</span></label>
+          <select id="documento_averbacao" name="documento_averbacao" value={documento} onChange={(e) => setDocumento(e.target.value)} required
+            aria-invalid={!!erros.documento_averbacao} className={`entrada ${erros.documento_averbacao ? "entrada-erro" : ""}`}>
             <option value="">Selecione…</option>
             {DOCUMENTOS_AVERBACAO.map((d) => <option key={d}>{d}</option>)}
           </select>
+          {erros.documento_averbacao && <p className="erro">{erros.documento_averbacao}</p>}
         </div>
         {documento === "Adt" && (
-          <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} inputMode="numeric" maxLength={3} classeEntrada="w-[4.5rem] text-center tabular-nums"
+          <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} obrigatorio inputMode="numeric" maxLength={3} classeEntrada="w-[4.5rem] text-center tabular-nums"
             erro={erros.adt_numero} validar={(v) => (/^\d{1,3}$/.test(v.trim()) ? null : "Até 3 dígitos.")} />
         )}
-        <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} inputMode="numeric" maxLength={3} pattern="\d{3}"
+        <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} obrigatorio inputMode="numeric" maxLength={3} pattern="\d{3}"
           title="3 dígitos" classeEntrada="w-[4.5rem] text-center tabular-nums" erro={erros.bi_numero}
           validar={(v) => (numeroBoletimValido(v.trim()) ? null : "Use exatamente 3 dígitos (ex.: 045).")} />
-        <Lista nome="om_averbacao" rotulo="OM averbação" valor={valores.om_averbacao} opcoes={[...OMS_AVERBACAO]} />
-        <Campo nome="bi_data" rotulo="Data averbação" tipo="date" valor={valores.bi_data} />
+        <Lista nome="om_averbacao" rotulo="OM averbação" valor={valores.om_averbacao} opcoes={[...OMS_AVERBACAO]} obrigatorio erro={erros.om_averbacao} />
+        <Campo nome="bi_data" rotulo="Data averbação" tipo="date" valor={valores.bi_data} obrigatorio erro={erros.bi_data} />
       </div>
     </fieldset>
   );
@@ -105,20 +111,20 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         <section className="cartao">
           <h2 className="mb-4 font-semibold">Militar</h2>
           <div className="grid gap-4 sm:grid-cols-[10rem_1fr]">
-            <Campo nome="posto_graduacao" rotulo="Posto/Graduação" valor={valores.posto_graduacao} placeholder="1º Sgt" />
+            <Campo nome="posto_graduacao" rotulo="Posto/Graduação" valor={valores.posto_graduacao} placeholder="1º Sgt" obrigatorio erro={c.posto_graduacao} />
             <Campo nome="nome" rotulo="Nome completo" valor={valores.nome} obrigatorio erro={c.nome} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
-            <Campo nome="prec_cp" rotulo="Prec-CP" valor={valores.prec_cp} inputMode="numeric" erro={c.prec_cp}
+            <Campo nome="prec_cp" rotulo="Prec-CP" valor={valores.prec_cp} inputMode="numeric" obrigatorio erro={c.prec_cp}
               validar={(v) => (precCpValido(v) ? null : "Dígito verificador não confere.")} />
-            <Campo nome="identidade" rotulo="Identidade militar" valor={valores.identidade} placeholder="000.000.000-0"
+            <Campo nome="identidade" rotulo="Identidade militar" valor={valores.identidade} placeholder="000.000.000-0" obrigatorio erro={c.identidade}
               validar={(v) => (identidadeValida(v) ? null : "Confira o número (regra do dígito ainda em validação).")} />
-            <Campo nome="cpf" rotulo="CPF" valor={valores.cpf} placeholder="000.000.000-00" erro={c.cpf}
+            <Campo nome="cpf" rotulo="CPF" valor={valores.cpf} placeholder="000.000.000-00" obrigatorio erro={c.cpf}
               validar={(v) => (cpfValido(v) ? null : "CPF inválido.")} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-[14rem_1fr]">
-            <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} />
-            <Campo nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={valores.om_vinculacao} placeholder="Ex.: B ADM GU NATAL" />
+            <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} obrigatorio erro={c.situacao} />
+            <Campo nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={valores.om_vinculacao} placeholder="Ex.: B ADM GU NATAL" obrigatorio erro={c.om_vinculacao} />
           </div>
         </section>
 
@@ -126,24 +132,25 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         <section className="cartao">
           <h2 className="mb-4 font-semibold">Dados bancários</h2>
           <div className="grid gap-4 sm:grid-cols-3">
-            <Lista nome="banco" rotulo="Banco" valor={valores.banco} opcoes={BANCOS} aceitaOutro />
-            <Campo nome="agencia" rotulo="Agência" valor={valores.agencia} />
-            <Campo nome="conta" rotulo="Conta corrente" valor={valores.conta} />
+            {/* banco gravado com o nome antigo ("001 - Brasil") aparece pelo código na lista atual; fora da lista (lido do PDF) continua aparecendo */}
+            <Lista nome="banco" rotulo="Banco" valor={bancoDaLista(valores.banco) ?? null} opcoes={BANCOS} aceitaOutro obrigatorio erro={c.banco} />
+            <Campo nome="agencia" rotulo="Agência" valor={valores.agencia} obrigatorio erro={c.agencia} />
+            <Campo nome="conta" rotulo="Conta corrente" valor={valores.conta} obrigatorio erro={c.conta} />
           </div>
         </section>
 
         <section className="cartao">
           <h2 className="mb-4 font-semibold">Dívida e processo</h2>
           <div className="grid gap-4 sm:grid-cols-3">
-            <Campo nome="periodo_inicio" rotulo="Início da dívida" tipo="date" valor={valores.periodo_inicio} obrigatorio />
-            <Campo nome="periodo_fim" rotulo="Fim da dívida" tipo="date" valor={valores.periodo_fim} obrigatorio erro={c.periodo} />
-            <Campo nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} placeholder="Ex.: diferença de adicional" />
+            <Campo nome="periodo_inicio" rotulo="Início da dívida" tipo="date" valor={valores.periodo_inicio} obrigatorio erro={c.periodo_inicio} />
+            <Campo nome="periodo_fim" rotulo="Fim da dívida" tipo="date" valor={valores.periodo_fim} obrigatorio erro={c.periodo ?? c.periodo_fim} />
+            <Lista nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} opcoes={ESPECIES_DIVIDA} obrigatorio erro={c.especie_divida} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-4">
-            <Campo nome="numero" rotulo="Nº do processo" valor={valores.numero} />
-            <Campo nome="ano" rotulo="Ano do processo" tipo="number" valor={valores.ano} min={2000} max={2100} />
-            <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} />
-            <Campo nome="data_solicitacao_extenso" rotulo="Data por extenso" valor={valores.data_solicitacao_extenso} placeholder="17 de outubro de 2026" />
+            <Campo nome="numero" rotulo="Nº do processo" valor={valores.numero} obrigatorio erro={c.numero} />
+            <Campo nome="ano" rotulo="Ano do processo" tipo="number" valor={valores.ano} min={2000} max={2100} obrigatorio erro={c.ano} />
+            <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} obrigatorio erro={c.data_requerimento} />
+            <Campo nome="data_solicitacao_extenso" rotulo="Data por extenso" valor={valores.data_solicitacao_extenso} placeholder="17 de outubro de 2026" obrigatorio erro={c.data_solicitacao_extenso} />
           </div>
           <CamposAverbacao valores={valores} erros={c} />
           <div className="mt-4">

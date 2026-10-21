@@ -1,5 +1,7 @@
 import { CODIGO_SIAPPES, CODIGO_SIPPES, type Contracheque, type FichaFinanceira } from "@painel-ea/leitor-ficha";
-import { BANCOS } from "./tipos";
+import { bancoDaLista } from "./tipos";
+
+export { bancoDaLista };
 
 /** Dados do favorecido extraídos dos documentos (só o que foi encontrado; o resto fica como está no cadastro). */
 export interface DadosLidos {
@@ -13,14 +15,6 @@ export interface DocumentoExtraido {
   tipo: "contracheque" | "ficha";
   ficha: FichaFinanceira;
   contracheque?: Contracheque;
-}
-
-/** "1" ou "001" → "001 - Brasil" (lista do formulário); código fora da lista fica como veio, com 3 dígitos. */
-export function bancoDaLista(codigo: string | null | undefined): string | undefined {
-  const d = (codigo ?? "").replace(/\D/g, "");
-  if (!d) return undefined;
-  const n = Number(d);
-  return BANCOS.find((b) => Number(b.slice(0, 3)) === n) ?? d.padStart(3, "0");
 }
 
 const definido = (o: Record<string, string | null | undefined>) =>

@@ -26,7 +26,24 @@ export interface Lancamento { processo_id: string; tipo: "recebido" | "devido"; 
 /** Função de quem assina os documentos (o operador logado). */
 export const FUNCAO_RESPONSAVEL = "Auxiliar Div Pg Pes";
 
-export const BANCOS = ["001 - Brasil", "033 - Santander", "041 - Banrisul", "070 - BRB", "104 - CEF", "237 - Bradesco", "341 - Itaú"];
+export const BANCOS = [
+  "001 - Banco do Brasil", "033 - Santander", "041 - Banrisul", "070 - BRB", "104 - CEF",
+  "237 - Bradesco", "341 - Itaú", "399 - HSBC", "745 - Citibank", "765 - Sicoob",
+];
+/** "1" ou "001" → "001 - Banco do Brasil" (lista do formulário); código fora da lista fica como veio, com 3 dígitos. */
+export function bancoDaLista(codigo: string | null | undefined): string | undefined {
+  const d = (codigo ?? "").replace(/\D/g, "");
+  if (!d) return undefined;
+  const n = Number(d);
+  return BANCOS.find((b) => Number(b.slice(0, 3)) === n) ?? d.padStart(3, "0");
+}
+
+/** Espécies da dívida (lista definida em 21/10/2026), em ordem alfabética. */
+export const ESPECIES_DIVIDA = [
+  "Adicional Habilitação", "Adicional Natalino", "Adicional Permanência", "Auxílio fardamento", "Auxílio Funeral",
+  "Auxílio Natalidade", "Auxílio Transporte", "Compensação Orgânica", "Complemento de salário mínimo",
+  "Férias / Indenização de férias", "Gratificação de Representação",
+].sort((a, b) => a.localeCompare(b, "pt-BR"));
 export const SITUACOES = ["Ativa", "Reintegrado", "Ex-Militar", "Veterano", "Reformado", "Pensionista"];
 export const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 export const MESES_CURTOS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];

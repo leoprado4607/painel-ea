@@ -4,10 +4,17 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { omParaNovoProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
-import { SITUACOES } from "@/lib/tipos";
+import { ESPECIES_DIVIDA, SITUACOES } from "@/lib/tipos";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 
 export interface EstadoForm { erro?: string; campos?: Record<string, string> }
+
+/** Campos do formulário "Dados do favorecido" que não podem ficar em branco (só a pensão judicial, sim/não, fica de fora). */
+const OBRIGATORIOS = [
+  "posto_graduacao", "nome", "prec_cp", "identidade", "cpf", "situacao", "om_vinculacao", "banco", "agencia", "conta",
+  "periodo_inicio", "periodo_fim", "especie_divida", "numero", "ano", "data_requerimento", "data_solicitacao_extenso",
+  "documento_averbacao", "bi_numero", "om_averbacao", "bi_data",
+];
 
 const txt = (f: FormData, k: string) => {
   const v = String(f.get(k) ?? "").trim();
@@ -20,14 +27,19 @@ const dataPeriodo = (v: string | null) => (!v ? null : /^\d{4}-\d{2}$/.test(v) ?
 export async function salvarProcesso(processoId: string | null, _: EstadoForm | undefined, f: FormData): Promise<EstadoForm> {
   const { supabase, perfil } = await sessao();
   const campos: Record<string, string> = {};
+  // todos os campos são obrigatórios (decisão de 21/10/2026); o Nr Adt, só quando o documento é "Adt"
+  for (const k of [...OBRIGATORIOS, ...(txt(f, "documento_averbacao") === "Adt" ? ["adt_numero"] : [])]) {
+    if (!txt(f, k)) campos[k] = "Preencha este campo.";
+  }
   const nome = txt(f, "nome");
-  if (!nome) campos.nome = "Informe o nome do militar.";
   const prec = txt(f, "prec_cp");
   if (prec && !precCpValido(prec)) campos.prec_cp = "Prec-CP com dígito verificador inválido.";
   const cpf = txt(f, "cpf");
   if (cpf && !cpfValido(cpf)) campos.cpf = "CPF inválido.";
   const situacao = txt(f, "situacao");
   if (situacao && !SITUACOES.includes(situacao)) campos.situacao = "Escolha a situação do militar na lista.";
+  const especie = txt(f, "especie_divida");
+  if (especie && !ESPECIES_DIVIDA.includes(especie)) campos.especie_divida = "Escolha a espécie da dívida na lista.";
   // averbação: documento e OM só da lista; Nr BI/BAR com 3 dígitos; Nr Adt só quando o documento é "Adt"
   const documentoAverbacao = txt(f, "documento_averbacao");
   if (documentoAverbacao && !(DOCUMENTOS_AVERBACAO as readonly string[]).includes(documentoAverbacao)) campos.documento_averbacao = "Escolha BI, Adt ou BAR.";
