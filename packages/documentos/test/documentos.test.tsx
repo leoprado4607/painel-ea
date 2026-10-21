@@ -36,7 +36,8 @@ it("gera só a parte pedida (prévias das abas)", async () => {
     complementos: { pensao: { nome: "Maria Pensionista" }, operadorCpex: { nome: "Cb Operador CPEX" } } }, "cpex")));
   const t = cpex.map((p) => p.texto).join(" ");
   expect(t).toContain("Maria Pensionista");
-  expect(t).toContain("Cb Operador CPEX");
+  expect(t).not.toContain("NOME/OP"); // linhas do operador CPEx saíram do documento
+  expect(t).not.toContain("Cb Operador CPEX");
 }, 60_000);
 
 it("gera o pacote completo com os valores da planilha", async () => {

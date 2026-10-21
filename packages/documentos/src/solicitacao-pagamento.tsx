@@ -139,11 +139,13 @@ export function SolicitacaoPagamentoVerso({ d }: { d: DadosDocumentos }) {
       <Text style={[e.centro, e.negrito, { marginTop: 10 }]}>Folha de Solicitação de Pagamento</Text>
       <Text style={[e.centro, { marginBottom: 12 }]}>(Verso)</Text>
       <View style={[borda, { flexDirection: "row" }]}>
-        {cols.map((x, i) => <Text key={i} style={[e.negrito, e.centro, { width: x.w, padding: 3, fontSize: 7.5, borderLeftWidth: i ? 0.6 : 0 }]}>{x.t}</Text>)}
+        {/* títulos sem hifenização: palavra longa ("Requerimento") vai inteira para a linha de baixo */}
+        {cols.map((x, i) => <Text key={i} style={[e.negrito, e.centro, { width: x.w, padding: 3, fontSize: 7.5, borderLeftWidth: i ? 0.6 : 0 }]}
+          hyphenationCallback={(palavra) => [palavra]}>{x.t}</Text>)}
       </View>
       <View style={[borda, { borderTopWidth: 0, flexDirection: "row", minHeight: 360 }]}>
         {cols.map((x, i) => (
-          <Text key={i} style={[{ width: x.w, padding: 3, fontSize: 7.5, borderLeftWidth: i ? 0.6 : 0, textAlign: i === 2 || i === 4 ? "justify" : i < 2 ? "center" : "left" }]}>{x.v}</Text>
+          <Text key={i} style={[{ width: x.w, padding: 3, fontSize: 7.5, borderLeftWidth: i ? 0.6 : 0, textAlign: i >= 2 ? "justify" : "center" }]}>{x.v}</Text>
         ))}
       </View>
       <Text style={{ marginTop: 14 }}>{c.parecer?.trim() || PARECER_PADRAO}</Text>

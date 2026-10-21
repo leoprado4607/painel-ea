@@ -3,6 +3,7 @@ import { cpfValido, identidadeValida, precCpValido } from "@painel-ea/engine";
 import { useActionState, useState } from "react";
 import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
+import { POSTOS, postoAbreviado } from "@/lib/postos";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 import { BANCOS, bancoDaLista, ESPECIES_DIVIDA, omDeVinculacao, OMS_VINCULACAO, quantidadeMeses, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
@@ -115,7 +116,9 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         <section className="cartao">
           <h2 className="mb-4 font-semibold">Militar</h2>
           <div className="grid gap-4 sm:grid-cols-[10rem_1fr]">
-            <Campo nome="posto_graduacao" rotulo="Posto/Graduação" valor={valores.posto_graduacao} placeholder="1º Sgt" obrigatorio erro={c.posto_graduacao} />
+            {/* abreviações padrão; posto lido por extenso ("PRIMEIRO SARGENTO") aparece já abreviado */}
+            <Lista nome="posto_graduacao" rotulo="Posto/Graduação" valor={postoAbreviado(valores.posto_graduacao)} opcoes={[...POSTOS]} aceitaOutro
+              obrigatorio erro={c.posto_graduacao} />
             <Campo nome="nome" rotulo="Nome completo" valor={valores.nome} obrigatorio erro={c.nome} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">

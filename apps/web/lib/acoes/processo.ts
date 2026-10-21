@@ -3,6 +3,7 @@ import { cpfValido, normalizarFormatado, precCpValido, textoSemFormatacao } from
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { inserirRubricasIniciais, omParaNovoProcesso, podeAlterarProcesso } from "@/lib/processo";
+import { postoAbreviado } from "@/lib/postos";
 import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
@@ -73,7 +74,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (Object.keys(campos).length) return { erro: "Corrija os campos destacados.", campos };
 
   const militar = {
-    nome, posto_graduacao: txt(f, "posto_graduacao"), prec_cp: prec, identidade: txt(f, "identidade"),
+    nome, posto_graduacao: postoAbreviado(txt(f, "posto_graduacao")), prec_cp: prec, identidade: txt(f, "identidade"),
     cpf, banco: txt(f, "banco"), agencia: txt(f, "agencia"), conta: txt(f, "conta"), situacao: txt(f, "situacao"),
     om_vinculacao: txt(f, "om_vinculacao"),
   };

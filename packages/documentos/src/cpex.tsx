@@ -18,7 +18,7 @@ export function Cpex({ d }: { d: DadosDocumentos }) {
   const periodo = `${mesAno(ini)} a ${mesAno(fim)}`;
   // coluna "Período da Dívida" mesclada da 1ª rubrica até o TOTAL: as células não têm a borda de baixo (só a última)
   const mesclada = [undefined, undefined, undefined, { borderBottomWidth: 0 }, undefined];
-  const pj = d.complementos?.pensao ?? {}, op = d.complementos?.operadorCpex ?? {};
+  const pj = d.complementos?.pensao ?? {};
   return (
     <Page size="A4" style={e.pagina}>
       <Text style={e.titulo}>Folha de Cálculo para ser informado ao CPEx</Text>
@@ -76,9 +76,7 @@ export function Cpex({ d }: { d: DadosDocumentos }) {
         )}
       </View>
       <Assinaturas d={d} />
-      <View style={[e.linha, { marginTop: 14 }]}>
-        <Campo rotulo="NOME/OP:" valor={op.nome ?? ""} largura="60%" /><Campo rotulo="CPF:" valor={op.cpf ?? ""} largura="35%" />
-      </View>
+      {/* as linhas "NOME/OP" e "CPF" do operador CPEx saíram (sem utilidade, pedido de 21/10/2026) */}
       <Rodape d={d} nome="CPEX" />
     </Page>
   );

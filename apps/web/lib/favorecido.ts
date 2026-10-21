@@ -1,4 +1,5 @@
 import { CODIGO_SIAPPES, CODIGO_SIPPES, type Contracheque, type FichaFinanceira } from "@painel-ea/leitor-ficha";
+import { postoAbreviado } from "./postos";
 import { bancoDaLista, omDeVinculacao } from "./tipos";
 
 export { bancoDaLista };
@@ -37,7 +38,7 @@ export function dadosDoFavorecido(docs: DocumentoExtraido[]): DadosLidos {
   let r: DadosLidos = {};
   for (const f of [...fichas].reverse()) {
     const c = f.ficha.cabecalho;
-    r = { ...r, ...definido({ posto_graduacao: c.posto, nome: c.nome, prec_cp: c.precCp, identidade: c.identidade, cpf: c.cpf, om_vinculacao: nomeDaOm(c.siglaUa, c.codom) }) };
+    r = { ...r, ...definido({ posto_graduacao: postoAbreviado(c.posto), nome: c.nome, prec_cp: c.precCp, identidade: c.identidade, cpf: c.cpf, om_vinculacao: nomeDaOm(c.siglaUa, c.codom) }) };
   }
   for (const d of [...contracheques].reverse()) {
     const c = d.contracheque!.cabecalho;

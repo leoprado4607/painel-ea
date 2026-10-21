@@ -4,7 +4,11 @@ import { anosDoPeriodo, Assinaturas, Cabecalho, e, Linha, mesAno, reais, requere
 
 export function Recapitulacao({ d }: { d: DadosDocumentos }) {
   const r = d.resultado.recapitulacao;
-  const cols: Coluna[] = [{ largura: "11%", alinhar: "center" }, { largura: "17%", alinhar: "right" }, { largura: "38%" }, { largura: "16%", alinhar: "right" }, { largura: "18%", alinhar: "right" }];
+  // conteúdo de todas as células centralizado (pedido de 21/10/2026)
+  const cols: Coluna[] = [
+    { largura: "11%", alinhar: "center" }, { largura: "17%", alinhar: "center" }, { largura: "38%", alinhar: "center" },
+    { largura: "16%", alinhar: "center" }, { largura: "18%", alinhar: "center" },
+  ];
   return (
     <Page size="A4" style={e.pagina}>
       <Cabecalho d={d} />

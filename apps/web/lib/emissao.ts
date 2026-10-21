@@ -7,7 +7,7 @@ import { montarEntrada } from "./calculo";
 import { dataPorExtenso, descreverRegra } from "./indice";
 import { textoBoletim } from "./averbacao";
 import { carregarProcesso, operadorDoProcesso } from "./processo";
-import { nomeNaAssinatura } from "./postos";
+import { nomeNaAssinatura, postoAbreviado } from "./postos";
 import { FUNCAO_RESPONSAVEL, MESES, omDeVinculacao, VALOR_UFIR } from "./tipos";
 
 /** Reúne tudo o que os documentos precisam e gera o PDF do pacote completo. */
@@ -43,7 +43,7 @@ export async function montarDocumentos(
     // Ordenador (frente da Solicitação de Pagamento, abaixo da data, e o verso) — decisões de 19 e 21/10/2026.
     responsavel: { nome: nomeNaAssinatura(operador?.nome, operador?.posto ?? null), funcao: FUNCAO_RESPONSAVEL },
     militar: {
-      postoGraduacao: militar.posto_graduacao, nome: militar.nome, precCp: militar.prec_cp, identidade: militar.identidade,
+      postoGraduacao: postoAbreviado(militar.posto_graduacao), nome: militar.nome, precCp: militar.prec_cp, identidade: militar.identidade,
       cpf: militar.cpf, banco: militar.banco, agencia: militar.agencia, conta: militar.conta, situacao: militar.situacao,
     },
     processo: {

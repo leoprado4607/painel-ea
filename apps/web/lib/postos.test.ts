@@ -23,3 +23,8 @@ describe("posto/graduação nas assinaturas", () => {
     expect(nomeNaAssinatura("", "Cb")).toBeNull();
   });
 });
+
+it("posto por extenso vira abreviado em documentos e telas; desconhecido fica como veio", async () => {
+  const { postoAbreviado } = await import("./postos");
+  expect(["PRIMEIRO SARGENTO", "MAJOR", "1º SGT", "Coronel PM", null].map(postoAbreviado)).toEqual(["1º Sgt", "Maj", "1º Sgt", "Coronel PM", null]);
+});

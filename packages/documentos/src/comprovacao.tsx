@@ -7,7 +7,8 @@ export function Comprovacao({ d, ano, tipo }: { d: DadosDocumentos; ano: number;
   const bruto = tipo === "recebido" ? a.recebido : a.devido;
   const corrigido = tipo === "recebido" ? a.recebidoCorrigido : a.devidoCorrigido;
   const titulo = tipo === "recebido" ? "Comprovação dos Valores Recebidos em" : "Comprovação dos Valores Devidos em";
-  const cols: Coluna[] = [{ largura: "19%" }, ...Array.from({ length: 6 }, () => ({ largura: "13.5%", alinhar: "right" as const }))];
+  // conteúdo de todas as células centralizado (pedido de 21/10/2026)
+  const cols: Coluna[] = [{ largura: "19%", alinhar: "center" }, ...Array.from({ length: 6 }, () => ({ largura: "13.5%", alinhar: "center" as const }))];
   return (
     <Page size="A4" style={[e.pagina, { fontSize: 6, paddingHorizontal: 24, paddingTop: 20 }]}>
       <Text style={[e.centro, e.negrito, { fontSize: 11, marginBottom: 3 }]}>{titulo} {ano}</Text>

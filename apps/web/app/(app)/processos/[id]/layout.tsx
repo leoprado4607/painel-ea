@@ -1,6 +1,7 @@
 import { AbasProcesso } from "@/components/AbasProcesso";
 import { Aviso } from "@/components/Aviso";
 import { RegistrarProcesso } from "@/components/BarraLateral";
+import { postoAbreviado } from "@/lib/postos";
 import { carregarProcesso } from "@/lib/processo";
 
 /**
@@ -10,7 +11,7 @@ import { carregarProcesso } from "@/lib/processo";
 export default async function LayoutProcesso({ children, params }: { children: React.ReactNode; params: Promise<{ id: string }> }) {
   const { id } = await params;
   const { processo, militar, bloqueado, somenteConsulta } = await carregarProcesso(id);
-  const titulo = [militar.posto_graduacao, militar.nome].filter(Boolean).join(" ");
+  const titulo = [postoAbreviado(militar.posto_graduacao), militar.nome].filter(Boolean).join(" ");
   const subtitulo = `Processo ${processo.numero || "s/nº"}${processo.especie_divida ? ` · ${processo.especie_divida}` : ""}`;
   return (
     <div className="space-y-4 lg:space-y-5">

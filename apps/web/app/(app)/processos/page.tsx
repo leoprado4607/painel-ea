@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ExcluirProcesso } from "@/components/ExcluirProcesso";
+import { postoAbreviado } from "@/lib/postos";
 import { podeAlterarProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import type { Militar, Processo } from "@/lib/tipos";
@@ -31,7 +32,7 @@ export default async function Processos() {
       ) : (
         <ul className="space-y-2">
           {processos.map((p) => {
-            const nome = [p.militar?.posto_graduacao, p.militar?.nome].filter(Boolean).join(" ");
+            const nome = [postoAbreviado(p.militar?.posto_graduacao), p.militar?.nome].filter(Boolean).join(" ");
             // excluir: só o criador e o Admin; processo de outro operador aparece como "só consulta"
             const meu = podeAlterarProcesso(perfil, p);
             return (

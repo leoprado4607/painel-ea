@@ -40,7 +40,7 @@ describe("dados do favorecido lidos dos documentos", () => {
   it("a ficha traz os dados do militar; o contracheque, banco, agência, conta e a OM de vinculação (pelo CODOM)", () => {
     const r = dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }) }, contracheque(2026, 8)]);
     expect(r).toEqual({
-      posto_graduacao: "MAJOR", nome: "FULANO DE TAL", prec_cp: "111111111", identidade: "0123456789", cpf: "529.982.247-25",
+      posto_graduacao: "Maj", nome: "FULANO DE TAL", prec_cp: "111111111", identidade: "0123456789", cpf: "529.982.247-25",
       om_vinculacao: "B Adm Gu Natal", banco: "001 - Banco do Brasil", agencia: "2857", conta: "0005593204", om_do_contracheque: true,
     });
     // sem contracheque, a OM da ficha (fora da lista, fica o texto lido para o operador trocar)

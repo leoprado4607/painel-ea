@@ -58,3 +58,6 @@ export function nomeNaAssinatura(nome: string | null | undefined, posto?: string
   const p = s.posto ? abreviarPosto(s.posto) ?? s.posto : null;
   return p ? `${s.nome.toUpperCase()} - ${p}` : s.nome.toUpperCase();
 }
+
+/** Posto como deve aparecer em documentos e telas: abreviado no padrão ("PRIMEIRO SARGENTO" → "1º Sgt"); desconhecido, como veio. */
+export const postoAbreviado = (texto: string | null | undefined) => (texto ? abreviarPosto(texto) ?? texto.trim() : texto ?? null);
