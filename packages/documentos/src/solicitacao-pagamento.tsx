@@ -29,7 +29,7 @@ export function SolicitacaoPagamento({ d }: { d: DadosDocumentos }) {
 
       <View style={[e.linha, { gap: 10, marginBottom: 8 }]}>
         <View style={{ width: "62%", gap: 4 }}>
-          <Text>Do OD do(a): {d.om.nome}</Text>
+          <Text>Do OD do(a): {d.om.omOrdenador || d.om.nome}</Text>
           <Text style={e.negrito}>Ao Sr Ordenador de Despesas</Text>
           <Text>Cod UG: {d.om.unidadeGestora ?? ""}        CODOM: {d.om.codom ?? ""}</Text>
           <Text style={{ marginTop: 2 }}>Solicito o pagamento de despesas por mim reconhecidas e declaro não haver duplicidade.</Text>

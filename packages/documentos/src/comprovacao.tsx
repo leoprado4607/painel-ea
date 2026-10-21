@@ -13,7 +13,11 @@ export function Comprovacao({ d, ano, tipo }: { d: DadosDocumentos; ano: number;
       <Text style={[e.centro, e.negrito, { fontSize: 11, marginBottom: 3 }]}>{titulo} {ano}</Text>
       <View style={[e.linha, { justifyContent: "space-between", marginBottom: 4 }]}>
         <Text>Nome do Requerente: {requerente(d)}</Text>
-        <Text>Corrigido pela série {d.descricaoIndice}, atualizada até {d.indiceAte}</Text>
+        {/* como na planilha (J4/K4 das abas NN-Recebido/NN-Devido): o valor da UFIR ao lado do índice */}
+        <Text>
+          {d.valorUfir ? `UFIR: ${d.valorUfir.toLocaleString("pt-BR", { minimumFractionDigits: 4 })}    ` : ""}
+          Corrigido pela série {d.descricaoIndice}, atualizada até {d.indiceAte}
+        </Text>
       </View>
       {[0, 1, 2, 3].map((g) => (
         <View key={g} style={[e.tabela, { marginBottom: 4 }]} wrap={false}>

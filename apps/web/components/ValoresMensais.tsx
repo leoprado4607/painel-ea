@@ -78,7 +78,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
       {tipo === "recebido" && (
         <Aviso tipo="info">
           Valores recebidos, exatamente como constam na ficha financeira. Para preenchê-los pelos PDFs, envie as fichas
-          financeiras (SIPPES ou SIAPPES) em <Link href={`/processos/${processoId}/dados`} className="font-medium underline">Dados do favorecido</Link>;
+          financeiras (SIPPES ou SIAPPES) em <Link href={`/processos/${processoId}/dados`} className="font-medium underline">Informações</Link>;
           confira e corrija aqui se precisar.
         </Aviso>
       )}

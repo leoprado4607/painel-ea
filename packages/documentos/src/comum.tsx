@@ -25,7 +25,10 @@ export const PARECER_PADRAO = "Sou de parecer que o requerimento deve ser atendi
 
 export interface DadosDocumentos {
   om: {
+    /** OM de vinculação do militar (cabeçalho dos documentos); o CODOM abaixo é o dela. */
     nome: string; regiaoMilitar: string | null; cidadeUf: string | null;
+    /** OM do Ordenador de Despesas (Dados da OM): "Do OD do(a)" da Solicitação de Pagamento. Sem ela, a OM de vinculação. */
+    omOrdenador?: string | null;
     unidadeGestora?: string | null; codom?: string | null;
     /** Ordenador de Despesas: assina a Solicitação de Pagamento e o Verso. */
     ordenadorNome?: string | null; ordenadorFuncao?: string | null;
@@ -50,6 +53,8 @@ export interface DadosDocumentos {
   descricaoIndice: string;
   /** Ex.: "Setembro/2026" */
   indiceAte: string;
+  /** Valor da UFIR (Informações!B17 da planilha: 1,0641, último valor antes da extinção em 2000). Só é exibido nas comprovações. */
+  valorUfir?: number | null;
   /** Rodapé de rastreabilidade (ex.: "Processo 001/2026 · emitido em 17/10/2026 · versão 1 · sha256 …") */
   rodape: string;
 }

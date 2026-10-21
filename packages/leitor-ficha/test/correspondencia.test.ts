@@ -51,3 +51,16 @@ describe("correspondência SIAPPES → rubricas do processo", () => {
     expect(r.naoUsadas.map((l) => l.codigo)).toEqual(["Z10"]);
   });
 });
+
+describe("rubrica escolhida na lista da Tab_pag", () => {
+  it("o código do SIPPES chega à rubrica pelo código, mesmo com outro rótulo", () => {
+    const rub = [{ posicao: 1, codigo: "AL0 - AD C DISP MIL" }, { posicao: 2, codigo: "A85 - ADIC NATAL" }, { posicao: 7, codigo: "" }];
+    const r = aplicarCorrespondencia([ficha(2025, [lin("NR0170", 100, 1), lin("NR0085", 50, 1)])], rub, CORRESPONDENCIA_PADRAO);
+    expect(r.lancamentos.map((l) => [l.posicao, l.valor])).toEqual([[1, 100], [2, 50]]);
+  });
+  it("receitas em branco: os valores ficam em 'não usadas'", () => {
+    const r = aplicarCorrespondencia([ficha(2025, [lin("NR0001", 100, 1)])], [{ posicao: 1, codigo: "" }], CORRESPONDENCIA_PADRAO);
+    expect(r.lancamentos).toEqual([]);
+    expect(r.naoUsadas.map((l) => l.codigo)).toEqual(["NR0001"]);
+  });
+});

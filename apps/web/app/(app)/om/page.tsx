@@ -3,10 +3,12 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { Aviso } from "@/components/Aviso";
 import { sessao } from "@/lib/sessao";
-import type { Om } from "@/lib/tipos";
+import { VALOR_UFIR, type Om } from "@/lib/tipos";
 
+// "nome" é a OM do operador e do Ordenador de Despesas (só o "Do OD do(a)" da Solicitação de Pagamento). O nome da OM
+// no cabeçalho e o CODOM são os da OM de vinculação do militar (Informações), que nem sempre é a do OD (21/10/2026).
 const ROTULOS = {
-  nome: "Nome da OM", regiao_militar: "Região Militar (ex.: 10ª)", codom: "CODOM", unidade_gestora: "Unidade Gestora (UG)",
+  nome: "OM do Ordenador de Despesas", regiao_militar: "Região Militar (ex.: 7ª)", unidade_gestora: "Unidade Gestora (UG)",
   cidade_uf: "Cidade e Estado (ex.: Natal-RN)",
   ordenador_nome: "Ordenador de Despesas — nome e posto", ordenador_funcao: "Ordenador de Despesas — função",
 } as const;
@@ -36,7 +38,10 @@ export default async function DadosOm({ searchParams }: { searchParams: Promise<
   return (
     <div className="space-y-4">
       <h1 className="titulo-pagina">Dados da OM</h1>
-      <p className="text-sm text-suave">Aparecem no cabeçalho e nas assinaturas dos documentos emitidos.</p>
+      <p className="text-sm text-suave">
+        OM do Ordenador de Despesas, Região Militar, UG, cidade e Ordenador de Despesas são fixos e aparecem em todos os documentos.
+        O nome da OM no cabeçalho e o CODOM vêm da OM de vinculação de cada militar, escolhida em Informações.
+      </p>
       {(oms?.length ?? 0) > 1 && (
         <nav aria-label="OMs" className="flex flex-wrap gap-2">
           {oms!.map((o) => (
@@ -52,10 +57,16 @@ export default async function DadosOm({ searchParams }: { searchParams: Promise<
         <fieldset className="contents">
           {CAMPOS.map(([k, rotulo]) => (
             <div key={k} className={k === "nome" ? "sm:col-span-2" : ""}>
-              <label htmlFor={k} className="rotulo">{rotulo}</label>
+              <label htmlFor={k} className="rotulo">{rotulo}{k === "nome" && <span className="text-red-700"> *</span>}</label>
               <input id={k} name={k} defaultValue={om[k] ?? ""} className="entrada" required={k === "nome"} />
             </div>
           ))}
+          <div>
+            <span className="rotulo">Valor da UFIR</span>
+            {/* registro da planilha original (Informações!B17); não entra no cálculo, só aparece nas comprovações */}
+            <p className="entrada bg-gray-50 tabular-nums">R$ {VALOR_UFIR.toLocaleString("pt-BR", { minimumFractionDigits: 4 })}</p>
+            <p className="ajuda">Último valor da UFIR (extinta em 2000), como na planilha. Aparece no cabeçalho das comprovações; não entra no cálculo.</p>
+          </div>
           <div className="sm:col-span-2 flex justify-end"><button className="botao">Salvar</button></div>
         </fieldset>
       </form>

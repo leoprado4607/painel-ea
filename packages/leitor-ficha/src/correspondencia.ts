@@ -69,7 +69,10 @@ export function aplicarCorrespondencia(
   }
   for (const [c, ps] of porCodigo) if (ps.length === 1) destino.set(c, ps[0]!);
   for (const c of [...CORRESPONDENCIA_SIAPPES, ...tabela]) {
-    const p = posicaoDoCodigo.get(c.codigoRubrica.trim());
+    // rótulo exato ("Z02 - P MIL 1,5%"); senão, o código do início, se só uma rubrica o usa
+    // (a rubrica escolhida na lista da Tab_pag vem como "AL0 - AD C DISP MIL", e a tabela diz "AL0 - ACDM")
+    const unica = porCodigo.get(c.codigoRubrica.trim().split(/\s/)[0] ?? "");
+    const p = posicaoDoCodigo.get(c.codigoRubrica.trim()) ?? (unica?.length === 1 ? unica[0] : undefined);
     if (p !== undefined) destino.set(c.codigoSippes, p);
   }
   for (const [sippes, p] of Object.entries(escolhasExtras)) destino.set(sippes, p);

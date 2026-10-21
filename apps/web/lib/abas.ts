@@ -18,7 +18,7 @@ export const ABAS: Aba[] = [
   { rotulo: "Atualização do IPCA-E", grupo: "sistema", caminho: "/ipca", doProcesso: false },
   { rotulo: "Dados da OM", grupo: "sistema", caminho: "/om", doProcesso: false },
   { rotulo: "Operadores", grupo: "sistema", caminho: "/operadores", doProcesso: false, soAdmin: true },
-  { rotulo: "Dados do favorecido", grupo: "lancamento", caminho: "dados", doProcesso: true },
+  { rotulo: "Informações", grupo: "lancamento", caminho: "dados", doProcesso: true },
   { rotulo: "Códigos lançamento", grupo: "lancamento", caminho: "rubricas", doProcesso: true },
   { rotulo: "Contracheque - F Financeira", grupo: "lancamento", caminho: "recebidos", doProcesso: true },
   { rotulo: "Lançar valor devido", grupo: "lancamento", caminho: "devidos", doProcesso: true },

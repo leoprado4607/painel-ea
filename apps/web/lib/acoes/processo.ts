@@ -2,14 +2,14 @@
 import { cpfValido, precCpValido } from "@painel-ea/engine";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { omParaNovoProcesso } from "@/lib/processo";
+import { inserirRubricasIniciais, omParaNovoProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
-import { ESPECIES_DIVIDA, SITUACOES } from "@/lib/tipos";
+import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 
 export interface EstadoForm { erro?: string; campos?: Record<string, string> }
 
-/** Campos do formulário "Dados do favorecido" que não podem ficar em branco (só a pensão judicial, sim/não, fica de fora). */
+/** Campos do formulário "Informações" que não podem ficar em branco (só a pensão judicial, sim/não, fica de fora). */
 const OBRIGATORIOS = [
   "posto_graduacao", "nome", "prec_cp", "identidade", "cpf", "situacao", "om_vinculacao", "banco", "agencia", "conta",
   "periodo_inicio", "periodo_fim", "especie_divida", "numero", "ano", "data_requerimento", "data_solicitacao_extenso",
@@ -38,6 +38,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (cpf && !cpfValido(cpf)) campos.cpf = "CPF inválido.";
   const situacao = txt(f, "situacao");
   if (situacao && !SITUACOES.includes(situacao)) campos.situacao = "Escolha a situação do militar na lista.";
+  const omVinculacao = txt(f, "om_vinculacao");
+  if (omVinculacao && !OMS_VINCULACAO.some((o) => o.nome === omVinculacao)) campos.om_vinculacao = "Escolha a OM de vinculação na lista.";
   const especie = txt(f, "especie_divida");
   if (especie && !ESPECIES_DIVIDA.includes(especie)) campos.especie_divida = "Escolha a espécie da dívida na lista.";
   // averbação: documento e OM só da lista; Nr BI/BAR com 3 dígitos; Nr Adt só quando o documento é "Adt"
@@ -87,8 +89,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (e1) return { erro: e1.message };
   const { data: p, error: e2 } = await supabase.from("processo").insert({ ...processo, om_id: omId, militar_id: m.id }).select("id").single();
   if (e2) return { erro: e2.message };
-  const { data: padrao } = await supabase.from("rubrica_padrao").select("posicao, codigo, tipo").order("posicao");
-  const { error: e3 } = await supabase.from("processo_rubrica").insert((padrao ?? []).map((r) => ({ ...r, processo_id: p.id })));
+  const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
   if (e3) return { erro: e3.message };
   redirect(`/processos/${p.id}/rubricas`);
 }

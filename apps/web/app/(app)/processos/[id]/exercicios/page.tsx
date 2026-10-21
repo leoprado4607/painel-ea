@@ -11,7 +11,7 @@ export default async function Exercicios({ params, searchParams }: { params: Pro
   const anos = ini && fim ? Array.from({ length: fim - ini + 1 }, (_, i) => ini + i) : [];
   const pedido = Number((await searchParams).ano);
   const ano = anos.includes(pedido) ? pedido : anos[0];
-  if (!ano) return <p className="cartao text-sm text-suave">Informe o período da dívida em “Dados do favorecido”.</p>;
+  if (!ano) return <p className="cartao text-sm text-suave">Informe o período da dívida em “Informações”.</p>;
   return (
     <AbaDocumento processoId={id} doc="exercicio" ano={ano} bloqueado={bloqueado} observacao={
       <AvisoSoCalculado processoId={id} titulo="Ano do exercício"

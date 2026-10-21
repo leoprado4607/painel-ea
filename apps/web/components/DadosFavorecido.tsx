@@ -8,7 +8,7 @@ import type { DadosLidos } from "@/lib/favorecido";
 const CAMPOS_DOS_PDFS: (keyof DadosLidos)[] = ["posto_graduacao", "nome", "prec_cp", "cpf", "identidade", "om_vinculacao", "banco", "agencia", "conta"];
 
 /**
- * Aba "Dados do favorecido": envie contracheques/fichas para preencher os dados (e os recebidos), ou digite no formulário.
+ * Aba "Informações": envie contracheques/fichas para preencher os dados (e os recebidos), ou digite no formulário.
  * Os dados lidos só vão para o formulário; o usuário confere e grava em "Salvar e continuar".
  */
 export function DadosFavorecido({ processoId, valores, rubricas, bloqueado }: {

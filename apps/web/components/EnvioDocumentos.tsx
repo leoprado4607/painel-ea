@@ -11,7 +11,7 @@ interface Props {
   processoId: string;
   rubricas: { posicao: number; codigo: string }[];
   bloqueado: boolean;
-  /** Na aba "Dados do favorecido": recebe os dados lidos para preencher o formulário. */
+  /** Na aba "Informações": recebe os dados lidos para preencher o formulário. */
   aoLerDados?: (dados: DadosLidos) => void;
 }
 
@@ -141,7 +141,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
 
           {aoLerDados && previa!.dados && (
             <div className="space-y-2">
-              <h3 className="text-sm font-semibold">Dados do favorecido encontrados</h3>
+              <h3 className="text-sm font-semibold">Dados lidos dos documentos</h3>
               <dl className="grid gap-x-4 gap-y-1 text-sm sm:grid-cols-2">
                 {ROTULOS.filter(([k]) => previa!.dados![k]).map(([k, rotulo]) => (
                   <div key={k} className="flex gap-2"><dt className="text-suave">{rotulo}:</dt><dd className="font-medium">{k === "cpf" ? formatarCpf(previa!.dados![k]) : previa!.dados![k]}</dd></div>

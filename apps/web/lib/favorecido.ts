@@ -1,5 +1,5 @@
 import { CODIGO_SIAPPES, CODIGO_SIPPES, type Contracheque, type FichaFinanceira } from "@painel-ea/leitor-ficha";
-import { bancoDaLista } from "./tipos";
+import { bancoDaLista, omDeVinculacao } from "./tipos";
 
 export { bancoDaLista };
 
@@ -22,8 +22,12 @@ const definido = (o: Record<string, string | null | undefined>) =>
 
 /**
  * Junta o que os documentos trazem do favorecido. As fichas (a mais recente por último) dão nome, P/G, Prec-CP,
- * identidade, CPF e OM; o contracheque serve só para os dados bancários (decisão de 21/10/2026).
+ * identidade e CPF; o contracheque, os dados bancários (decisão de 21/10/2026). A OM de vinculação vem do
+ * contracheque (ou, sem ele, da ficha mais recente), reconhecida pelo CODOM na lista de OMS_VINCULACAO.
  */
+/** Nome da OM como está na lista (pelo CODOM ou pelo nome); fora da lista, o texto lido, para o operador ver e escolher. */
+const nomeDaOm = (texto: string | null, codom: string | null) => omDeVinculacao(texto, codom)?.nome ?? texto;
+
 export function dadosDoFavorecido(docs: DocumentoExtraido[]): DadosLidos {
   const ordem = (d: DocumentoExtraido) => (d.contracheque ? (d.contracheque.ano ?? 0) * 100 + (d.contracheque.mes ?? 0) : (d.ficha.ano ?? 0) * 100);
   const contracheques = docs.filter((d) => d.contracheque).sort((a, b) => ordem(b) - ordem(a));
@@ -31,11 +35,11 @@ export function dadosDoFavorecido(docs: DocumentoExtraido[]): DadosLidos {
   let r: DadosLidos = {};
   for (const f of [...fichas].reverse()) {
     const c = f.ficha.cabecalho;
-    r = { ...r, ...definido({ posto_graduacao: c.posto, nome: c.nome, prec_cp: c.precCp, identidade: c.identidade, cpf: c.cpf, om_vinculacao: c.siglaUa }) };
+    r = { ...r, ...definido({ posto_graduacao: c.posto, nome: c.nome, prec_cp: c.precCp, identidade: c.identidade, cpf: c.cpf, om_vinculacao: nomeDaOm(c.siglaUa, c.codom) }) };
   }
   for (const d of [...contracheques].reverse()) {
     const c = d.contracheque!.cabecalho;
-    r = { ...r, ...definido({ banco: bancoDaLista(c.banco), agencia: c.agencia, conta: c.conta }) };
+    r = { ...r, ...definido({ banco: bancoDaLista(c.banco), agencia: c.agencia, conta: c.conta, om_vinculacao: nomeDaOm(c.omVinculacao, c.codom) }) };
   }
   return r;
 }

@@ -3,6 +3,7 @@ import { AbaDocumento } from "@/components/AbaDocumento";
 import { AbasProcesso } from "@/components/AbasProcesso";
 import { BarraLateral, ProvedorProcesso, RegistrarProcesso } from "@/components/BarraLateral";
 import { FormularioProcesso } from "@/components/FormularioProcesso";
+import { FormularioRubricas } from "@/components/FormularioRubricas";
 import { ValoresMensais } from "@/components/ValoresMensais";
 
 /** Prévia das telas com dados fictícios, para conferir o visual sem banco. Só existe em desenvolvimento. */
@@ -41,6 +42,10 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         <ValoresMensais processoId="previa" tipo="devido" proximaEtapa="conferencia" bloqueado={false} rubricas={rubricas}
           inicio={{ ano: 2020, mes: 11 }} fim={{ ano: 2021, mes: 6 }}
           linhas={[{ ano: 2020, mes: 11, posicao: 1, valor: 5500 }, { ano: 2020, mes: 11, posicao: 13, valor: 165 }]} />
+      ) : tela === "rubricas" ? (
+        <FormularioRubricas processoId="previa" bloqueado={false} rubricas={Array.from({ length: 17 }, (_, i) => ({
+          posicao: i + 1, codigo: i >= 12 ? rubricas.find((r) => r.posicao === i + 1)?.codigo ?? "" : "", tipo: i < 12 ? "Receita" as const : "Despesa" as const,
+        }))} />
       ) : (
         <FormularioProcesso processoId={null} />
       )}

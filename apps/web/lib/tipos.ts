@@ -38,6 +38,49 @@ export function bancoDaLista(codigo: string | null | undefined): string | undefi
   return BANCOS.find((b) => Number(b.slice(0, 3)) === n) ?? d.padStart(3, "0");
 }
 
+/**
+ * Valor da UFIR registrado na planilha original (Informações!B17): R$ 1,0641, o último antes da extinção da UFIR (2000).
+ * Na planilha não entra em nenhuma fórmula de cálculo: só aparece no cabeçalho das comprovações (NN-Recebido/NN-Devido).
+ */
+export const VALOR_UFIR = 1.0641;
+
+/**
+ * OMs de vinculação e seus CODOM (tabela de 21/10/2026). Nome da OM e CODOM dos documentos são os da OM de
+ * vinculação do militar, que nem sempre é a OM do operador e do Ordenador de Despesas.
+ */
+export const OMS_VINCULACAO = [
+  { codom: "024406", nome: "Cmdo 7ª Bda Inf Mtz" },
+  { codom: "003004", nome: "7º BE Cmb" },
+  { codom: "001420", nome: "B Adm Gu Natal" },
+  { codom: "065623", nome: "7º Pel PE" },
+  { codom: "030007", nome: "Cia C/Cmdo 7ª Bda Inf Mtz" },
+  { codom: "007807", nome: "16º BI Mtz" },
+  { codom: "061200", nome: "HGuN" },
+  { codom: "056507", nome: "17º GAC" },
+].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { numeric: true }));
+
+/** "B ADM GU NATAL", "16 B I MTZ" → só letras e dígitos, sem acento nem º/ª, para comparar com a lista. */
+const chaveOm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+
+/** OM da lista pelo CODOM (com ou sem zeros à esquerda) ou pelo nome escrito de outro jeito; fora da lista, undefined. */
+export function omDeVinculacao(texto: string | null | undefined, codom?: string | null) {
+  const d = (codom ?? "").replace(/\D/g, "");
+  const porCodom = d ? OMS_VINCULACAO.find((o) => Number(o.codom) === Number(d)) : undefined;
+  if (porCodom) return porCodom;
+  const k = chaveOm(texto ?? "");
+  return k ? OMS_VINCULACAO.find((o) => chaveOm(o.nome) === k) : undefined;
+}
+
+/**
+ * Meses do período da dívida, contando inteiro o mês com pelo menos 1 dia no período
+ * (15/01 a 02/03 → 3 meses). Datas "2025-01-15"; sem as duas datas ou com o fim antes do início, null.
+ */
+export function quantidadeMeses(inicio: string | null | undefined, fim: string | null | undefined): number | null {
+  const a = /^(\d{4})-(\d{2})/.exec(inicio ?? ""), b = /^(\d{4})-(\d{2})/.exec(fim ?? "");
+  if (!a || !b || fim! < inicio!) return null;
+  return (Number(b[1]) - Number(a[1])) * 12 + (Number(b[2]) - Number(a[2])) + 1;
+}
+
 /** Espécies da dívida (lista definida em 21/10/2026), em ordem alfabética. */
 export const ESPECIES_DIVIDA = [
   "Adicional Habilitação", "Adicional Natalino", "Adicional Permanência", "Auxílio fardamento", "Auxílio Funeral",

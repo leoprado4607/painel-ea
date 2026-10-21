@@ -7,7 +7,7 @@ import { aplicarCorrespondencia, lerDocumentosPdf, type Correspondencia, type Fi
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { dadosDoFavorecido, fichaValida, periodoDosDocumentos, type DadosLidos, type DocumentoExtraido } from "@/lib/favorecido";
-import { omParaNovoProcesso } from "@/lib/processo";
+import { inserirRubricasIniciais, omParaNovoProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
@@ -197,7 +197,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const { supabase, perfil } = await sessao();
     const omId = await omParaNovoProcesso(supabase, perfil, String(form.get("om_id") ?? "") || null);
     const docs = await lerArquivos(form);
-    // o período da dívida fica em branco: o operador preenche (obrigatório) em Dados do favorecido
+    // o período da dívida fica em branco: o operador preenche (obrigatório) em Informações
     if (!docs.some((d) => d.tipo === "ficha")) return { erro: "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
     if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
@@ -211,8 +211,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
       om_id: omId, militar_id: m.id, periodo_inicio: null, periodo_fim: null,
     }).select("id").single();
     if (e2) return { erro: e2.message };
-    const { data: padrao } = await supabase.from("rubrica_padrao").select("posicao, codigo, tipo").order("posicao");
-    const { error: e3 } = await supabase.from("processo_rubrica").insert((padrao ?? []).map((r) => ({ ...r, processo_id: p.id })));
+    const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
     if (e3) return { erro: e3.message };
     await gravarRecebidosDe(supabase, p.id, docs, {});
     destino = `/processos/${p.id}/dados`;

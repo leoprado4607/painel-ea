@@ -5,7 +5,7 @@ const ID = "3f0a8d7e-1c2b-4d5e-8f90-a1b2c3d4e5f6";
 
 describe("abas do rodapé", () => {
   it("seguem a ordem pedida: passo a passo, IPCA-E, OM, operadores, favorecido e as abas da planilha", () => {
-    expect(ABAS.slice(0, 5).map((a) => a.rotulo)).toEqual(["Passo a passo", "Atualização do IPCA-E", "Dados da OM", "Operadores", "Dados do favorecido"]);
+    expect(ABAS.slice(0, 5).map((a) => a.rotulo)).toEqual(["Passo a passo", "Atualização do IPCA-E", "Dados da OM", "Operadores", "Informações"]);
     expect(ABAS.find((a) => a.rotulo === "Operadores")?.soAdmin).toBe(true);
   });
   it("identifica a aba ativa e o processo pelo endereço", () => {

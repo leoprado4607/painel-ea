@@ -4,7 +4,7 @@ import { useActionState, useState } from "react";
 import { Aviso } from "@/components/Aviso";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
-import { BANCOS, bancoDaLista, ESPECIES_DIVIDA, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
+import { BANCOS, bancoDaLista, ESPECIES_DIVIDA, omDeVinculacao, OMS_VINCULACAO, quantidadeMeses, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
 
 /** "situacao" do formulário é a do militar (Ativa, Reformado…); a do processo (rascunho/emitido) fica de fora. */
 export type Valores = Partial<Omit<Processo, "situacao"> & Militar>;
@@ -98,11 +98,14 @@ export function EscolhaOm({ oms, id = "om_id", erro }: { oms: { id: string; nome
 
 export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = [], aoLimpar }: {
   processoId: string | null; valores?: Valores; bloqueado?: boolean; oms?: { id: string; nome: string }[];
-  /** "Dados do favorecido": esvazia os campos preenchidos pelos PDFs (só no formulário, até salvar). */
+  /** "Informações": esvazia os campos preenchidos pelos PDFs (só no formulário, até salvar). */
   aoLimpar?: () => void;
 }) {
   const [estado, acao, enviando] = useActionState<EstadoForm | undefined, FormData>(salvarProcesso.bind(null, processoId), undefined);
   const c = estado?.campos ?? {};
+  const [inicio, setInicio] = useState(valores.periodo_inicio ?? "");
+  const [fim, setFim] = useState(valores.periodo_fim ?? "");
+  const qtdeMeses = quantidadeMeses(inicio, fim);
   return (
     <form action={acao} className="space-y-6">
       {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}
@@ -124,7 +127,9 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-[14rem_1fr]">
             <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} obrigatorio erro={c.situacao} />
-            <Campo nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={valores.om_vinculacao} placeholder="Ex.: B ADM GU NATAL" obrigatorio erro={c.om_vinculacao} />
+            {/* nome e CODOM da OM nos documentos vêm daqui; valor lido do PDF fora da lista aparece para o operador trocar */}
+            <Lista nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={omDeVinculacao(valores.om_vinculacao)?.nome ?? valores.om_vinculacao}
+              opcoes={OMS_VINCULACAO.map((o) => o.nome)} aceitaOutro obrigatorio erro={c.om_vinculacao} />
           </div>
         </section>
 
@@ -141,9 +146,17 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
 
         <section className="cartao">
           <h2 className="mb-4 font-semibold">Dívida e processo</h2>
-          <div className="grid gap-4 sm:grid-cols-3">
-            <Campo nome="periodo_inicio" rotulo="Início da dívida" tipo="date" valor={valores.periodo_inicio} obrigatorio erro={c.periodo_inicio} />
-            <Campo nome="periodo_fim" rotulo="Fim da dívida" tipo="date" valor={valores.periodo_fim} obrigatorio erro={c.periodo ?? c.periodo_fim} />
+          <div className="grid gap-4 sm:grid-cols-[1fr_1fr_6.5rem_1.4fr]">
+            <Campo nome="periodo_inicio" rotulo="Início da dívida" tipo="date" valor={valores.periodo_inicio} obrigatorio erro={c.periodo_inicio}
+              onChange={(e) => setInicio(e.target.value)} />
+            <Campo nome="periodo_fim" rotulo="Fim da dívida" tipo="date" valor={valores.periodo_fim} obrigatorio erro={c.periodo ?? c.periodo_fim}
+              onChange={(e) => setFim(e.target.value)} />
+            {/* calculado: mês com pelo menos 1 dia no período conta inteiro; não é gravado */}
+            <div>
+              <label htmlFor="qtde_meses" className="rotulo">Qtde meses</label>
+              <output id="qtde_meses" htmlFor="periodo_inicio periodo_fim" aria-live="polite"
+                className="entrada block bg-gray-50 text-center tabular-nums">{qtdeMeses ?? "–"}</output>
+            </div>
             <Lista nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} opcoes={ESPECIES_DIVIDA} obrigatorio erro={c.especie_divida} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-4">

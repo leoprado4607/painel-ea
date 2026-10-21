@@ -17,7 +17,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
       {importado && (
         <Aviso tipo="ok">Valores recebidos preenchidos pelos documentos enviados. Confira mês a mês abaixo.</Aviso>
       )}
-      {/* o envio de contracheque e fichas fica só em "Dados do favorecido" (pedido do usuário) */}
+      {/* o envio de contracheque e fichas fica só em "Informações" (pedido do usuário) */}
       <ValoresMensais
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}

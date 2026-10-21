@@ -44,3 +44,14 @@ export async function omParaNovoProcesso(supabase: Supabase, perfil: Perfil | nu
   if (data?.length === 1) return data[0]!.id as string;
   throw new Error("Escolha a OM do processo.");
 }
+
+/**
+ * Rubricas de um processo novo: as despesas da rubrica_padrao; as 12 posições de receita em branco, para o operador
+ * escolher na lista da Tab_pag do SIAPPES em "Códigos lançamento" (decisão de 21/10/2026).
+ */
+export async function inserirRubricasIniciais(supabase: Supabase, processoId: string) {
+  const { data: padrao } = await supabase.from("rubrica_padrao").select("posicao, codigo, tipo").order("posicao");
+  return supabase.from("processo_rubrica").insert((padrao ?? []).map((r) => ({
+    ...r, codigo: r.tipo === "Receita" ? "" : r.codigo, processo_id: processoId,
+  })));
+}

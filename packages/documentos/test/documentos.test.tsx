@@ -72,3 +72,18 @@ it("gera o pacote completo com os valores da planilha", async () => {
   expect(tudo).toContain("Auxiliar Div Pg Pes");
   expect(tudo).not.toMatch(/Fiscal|Chefe da Divis/);
 }, 60_000); // gerar e reler um PDF inteiro leva alguns segundos
+
+it("comprovação mostra o valor da UFIR, como a planilha (Informações!B17)", async () => {
+  const d = { ...dadosC01(), valorUfir: 1.0641 };
+  const t = (await palavrasDoPdf(new Uint8Array(await gerarPdf(d, "exercicio", 2020)))).map((p) => p.texto).join(" ");
+  expect(t).toContain("UFIR: 1,0641");
+}, 60_000);
+
+it("Solicitação de Pagamento: OD da OM do Ordenador; cabeçalho e CODOM da OM de vinculação", async () => {
+  const d = dadosC01();
+  const pdf = await gerarPdf({ ...d, om: { ...d.om, nome: "16º BI Mtz", codom: "007807", omOrdenador: "B Adm Gu Natal" } }, "pacote_completo");
+  const t = (await palavrasDoPdf(new Uint8Array(pdf))).map((p) => p.texto).join(" ");
+  expect(t).toContain("Do OD do(a): B Adm Gu Natal");
+  expect(t).toContain("CODOM: 007807");
+  expect(t).toContain("BI MTZ"); // cabeçalho com a OM de vinculação ("16 º BI MTZ" na leitura do PDF)
+}, 60_000);

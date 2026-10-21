@@ -5,7 +5,7 @@ import { montarEntrada } from "./calculo";
 import { dataPorExtenso, descreverRegra } from "./indice";
 import { textoBoletim } from "./averbacao";
 import { carregarProcesso } from "./processo";
-import { FUNCAO_RESPONSAVEL, MESES } from "./tipos";
+import { FUNCAO_RESPONSAVEL, MESES, omDeVinculacao, VALOR_UFIR } from "./tipos";
 
 /** Reúne tudo o que os documentos precisam e gera o PDF do pacote completo. */
 export async function montarDocumentos(
@@ -15,6 +15,9 @@ export async function montarDocumentos(
   const { supabase, perfil, om, processo, militar, rubricas, lancamentos } = await carregarProcesso(processoId);
   if (!om) throw new Error("OM do processo não encontrada.");
   if (!processo.periodo_inicio || !processo.periodo_fim) throw new Error("Informe o período da dívida.");
+  // nome da OM e CODOM nos documentos: os da OM de vinculação do militar (o resto vem dos Dados da OM do operador)
+  const omVinculacao = omDeVinculacao(militar.om_vinculacao);
+  if (!omVinculacao) throw new Error("Escolha a OM de vinculação do militar em Informações.");
   const [{ data: indices }, { data: regras }] = await Promise.all([
     supabase.from("indice_composto").select("ano, mes, percentual"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
@@ -27,7 +30,7 @@ export async function montarDocumentos(
   const quando = agora.toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" });
   const dados: DadosDocumentos = {
     om: {
-      nome: om.nome, regiaoMilitar: om.regiao_militar, cidadeUf: om.cidade_uf, unidadeGestora: om.unidade_gestora, codom: om.codom,
+      nome: omVinculacao.nome, omOrdenador: om.nome, regiaoMilitar: om.regiao_militar, cidadeUf: om.cidade_uf, unidadeGestora: om.unidade_gestora, codom: omVinculacao.codom,
       ordenadorNome: om.ordenador_nome, ordenadorFuncao: om.ordenador_funcao,
     },
     // Quem gera o PDF assina como Auxiliar Div Pg Pes (decisão de 19/10/2026: sai Fiscal Adm e Chefe da Div Pessoal).
@@ -49,6 +52,7 @@ export async function montarDocumentos(
     resultado,
     descricaoIndice: descreverRegra(regras ?? []),
     indiceAte: `${MESES[ate.mes - 1]}/${ate.ano}`,
+    valorUfir: VALOR_UFIR,
     rodape: opcoes.rascunho
       ? `RASCUNHO — não vale como documento · gerado em ${quando}`
       : `Processo ${processo.numero || "s/nº"} · emitido em ${quando} · versão ${opcoes.versao ?? 1} · índice até ${MESES[ate.mes - 1]}/${ate.ano}`,

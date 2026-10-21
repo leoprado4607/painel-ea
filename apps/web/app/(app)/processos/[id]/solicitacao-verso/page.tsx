@@ -14,7 +14,7 @@ export default async function SolicitacaoVerso({ params }: { params: Promise<{ i
       <section className="cartao space-y-1 text-sm">
         <h2 className="font-semibold">Boletim que averbou</h2>
         <p>{textoBoletim(processo) || <span className="text-suave">Não informado.</span>}</p>
-        <p className="ajuda">Altere em <Link href={`/processos/${id}/dados`} className="underline">Dados do favorecido</Link> (Averbação).</p>
+        <p className="ajuda">Altere em <Link href={`/processos/${id}/dados`} className="underline">Informações</Link> (Averbação).</p>
       </section>
     } grupos={[
       { titulo: "Requerimento", campos: [
