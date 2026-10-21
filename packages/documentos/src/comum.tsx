@@ -70,7 +70,13 @@ export const anosDoPeriodo = (d: DadosDocumentos) => {
   return Array.from({ length: fim - ini + 1 }, (_, i) => ini + i);
 };
 /** "12/2026" (número e ano do processo), ou "" se não houver número. */
-export const numeroOrdem = (d: DadosDocumentos) => [d.processo.numero, d.processo.ano].filter(Boolean).join("/");
+/**
+ * Nº de Ordem: "número/ano" ("001/2026"); se o número já traz o ano depois de uma barra (NUP do SPED,
+ * "640093.005344/2026-43"), fica só o número, sem repetir o ano.
+ */
+export const numeroOrdem = (d: DadosDocumentos) =>
+  d.processo.numero && /\/\d{4}/.test(d.processo.numero) ? d.processo.numero
+    : [d.processo.numero, d.processo.ano].filter(Boolean).join("/");
 /** "2026-10-17" → "17/10/2026" */
 export const dataBr = (s: string | null | undefined) => (s ? `${s.slice(8, 10)}/${s.slice(5, 7)}/${s.slice(0, 4)}` : "");
 /** Anexos com os padrões: uma ficha e uma folha de cálculo por ano do período; um de cada nos demais. */

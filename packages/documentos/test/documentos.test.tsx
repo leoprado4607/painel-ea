@@ -99,3 +99,10 @@ it("verso: amparo e explicação com negrito/itálico/sublinhado saem sem as mar
   expect(t).toContain("<à época>");
   expect(t).not.toContain("<b>");
 }, 60_000);
+
+it("Nº de Ordem não repete o ano quando o número já o traz", async () => {
+  const { numeroOrdem } = await import("../src/comum");
+  const d = dadosC01();
+  expect(numeroOrdem({ ...d, processo: { ...d.processo, numero: "640093.005344/2026-43", ano: 2026 } })).toBe("640093.005344/2026-43");
+  expect(numeroOrdem({ ...d, processo: { ...d.processo, numero: "001", ano: 2026 } })).toBe("001/2026");
+});
