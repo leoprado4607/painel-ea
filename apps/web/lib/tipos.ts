@@ -62,7 +62,7 @@ export const OMS_VINCULACAO = [
 ].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { numeric: true }));
 
 /** "B ADM GU NATAL", "16 B I MTZ" → só letras e dígitos, sem acento nem º/ª, para comparar com a lista. */
-const chaveOm = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+const chaveOm = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase().replace(/[^A-Z0-9]/g, "");
 
 /** OM da lista pelo CODOM (com ou sem zeros à esquerda) ou pelo nome escrito de outro jeito; fora da lista, undefined. */
 export function omDeVinculacao(texto: string | null | undefined, codom?: string | null) {

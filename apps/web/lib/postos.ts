@@ -2,10 +2,10 @@
  * Postos e graduações nas assinaturas dos documentos (decisão de 21/10/2026): "NOME COMPLETO - Abreviação",
  * ex.: "LEONARDO PRADO DO MONTE BORGES - Maj". Abreviações padrão, na ordem hierárquica.
  */
-export const POSTOS = ["Cel", "Ten Cel", "Maj", "Cap", "1º Ten", "2º Ten", "Asp", "S Ten", "1º Sgt", "2º Sgt", "3º Sgt", "Cb", "Sd EP", "Sd Ev"] as const;
+export const POSTOS = ["Cel", "Ten Cel", "Maj", "Cap", "1º Ten", "2º Ten", "Asp", "S Ten", "1º Sgt", "2º Sgt", "3º Sgt", "Cb", "Sd EP", "Sd EV"] as const;
 
 /** "1º SGT", "Primeiro-Sargento" → "1 SGT", "PRIMEIRO SARGENTO": sem acento, º/ª, ponto e hífen. */
-const chave = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toUpperCase()
+const chave = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
   .replace(/[º°ª.]/g, "").replace(/[-_/]/g, " ").replace(/\s+/g, " ").trim();
 
 /** Formas aceitas de cada posto (comparadas pela chave). */
@@ -23,7 +23,7 @@ const SINONIMOS: Record<(typeof POSTOS)[number], string[]> = {
   "3º Sgt": ["3 SGT", "3O SGT", "TERCEIRO SARGENTO"],
   "Cb": ["CB", "CABO"],
   "Sd EP": ["SD EP", "SOLDADO EP", "SOLDADO EFETIVO PROFISSIONAL"],
-  "Sd Ev": ["SD EV", "SOLDADO EV", "SOLDADO EFETIVO VARIAVEL"],
+  "Sd EV": ["SD EV", "SOLDADO EV", "SOLDADO EFETIVO VARIAVEL"],
 };
 const PORCHAVE = new Map(Object.entries(SINONIMOS).flatMap(([p, ss]) => ss.map((s) => [s, p])));
 
