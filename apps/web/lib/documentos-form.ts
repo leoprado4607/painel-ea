@@ -1,7 +1,7 @@
 import type { Complementos } from "@painel-ea/documentos";
 
 /** Campos do processo que as abas dos documentos podem editar (os demais ficam em "Informações"). */
-const DO_PROCESSO = ["numero", "ano", "data_solicitacao_extenso", "data_requerimento"] as const; // averbação: em Informações
+const DO_PROCESSO = ["numero", "ano", "data_requerimento"] as const; // data por extenso: automática (dia em que o PDF é gerado) // averbação: em Informações
 const NUMERICOS = new Set(["ano"]);
 /** Complementos editáveis: "grupo.campo" ou "campo". Anexos são quantidades. */
 const COMPLEMENTOS = [

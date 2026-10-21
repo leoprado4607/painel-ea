@@ -24,3 +24,14 @@ it("entrada montada a partir das linhas do banco dá o mesmo resultado do caso d
     expect(obtido.porAno[2016]!.verso).toEqual(esperado.porAno[2016]!.verso);
   }
 });
+
+it("só os lançamentos do período da dívida entram no cálculo (caso real: período corrigido de 06/2026 para 06/2021)", () => {
+  const indices = ler<IndiceMensal[]>("indices-planilha.json").filter((i) => i.percentual !== null) as { ano: number; mes: number; percentual: number }[];
+  const rubricas = [{ posicao: 1, codigo: "A56 - AUX FARD 1 SOLDO", tipo: "Receita" as const }];
+  const linhas = [2026, 2021].flatMap((ano) => [
+    { tipo: "devido" as const, ano, mes: 6, posicao: 1, valor: 5483 }, { tipo: "recebido" as const, ano, mes: 6, posicao: 1, valor: 713 },
+  ]);
+  const total = (inicio: string, fim: string) => calcular(montarEntrada(rubricas, linhas, indices, { inicio, fim })).cpex.importanciaBasicaTotalCorrigida;
+  expect(total("2026-06-01", "2026-06-01")).toBe(4806.67); // o que saiu com o período errado
+  expect(total("2021-06-01", "2021-06-01")).toBe(6389.41); // período certo: os valores de 2026 não somam
+});

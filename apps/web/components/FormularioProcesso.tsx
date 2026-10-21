@@ -72,9 +72,9 @@ function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<s
           <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} obrigatorio inputMode="numeric" maxLength={3} classeEntrada="w-[4.5rem] text-center tabular-nums"
             erro={erros.adt_numero} validar={(v) => (/^\d{1,3}$/.test(v.trim()) ? null : "Até 3 dígitos.")} />
         )}
-        <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} obrigatorio inputMode="numeric" maxLength={3} pattern="\d{3}"
-          title="3 dígitos" classeEntrada="w-[4.5rem] text-center tabular-nums" erro={erros.bi_numero}
-          validar={(v) => (numeroBoletimValido(v.trim()) ? null : "Use exatamente 3 dígitos (ex.: 045).")} />
+        <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} obrigatorio inputMode="numeric" maxLength={3} pattern="\d{1,3}"
+          title="Até 3 dígitos" classeEntrada="w-[4.5rem] text-center tabular-nums" erro={erros.bi_numero}
+          validar={(v) => (numeroBoletimValido(v.trim()) ? null : "Use até 3 dígitos (ex.: 45).")} />
         <Lista nome="om_averbacao" rotulo="OM averbação" valor={valores.om_averbacao} opcoes={[...OMS_AVERBACAO]} obrigatorio erro={erros.om_averbacao} />
         <Campo nome="bi_data" rotulo="Data averbação" tipo="date" valor={valores.bi_data} obrigatorio erro={erros.bi_data} />
       </div>
@@ -160,11 +160,10 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
             </div>
             <Lista nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} opcoes={ESPECIES_DIVIDA} obrigatorio erro={c.especie_divida} />
           </div>
-          <div className="mt-4 grid gap-4 sm:grid-cols-4">
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <Campo nome="numero" rotulo="Nº do processo" valor={valores.numero} obrigatorio erro={c.numero} />
             <Campo nome="ano" rotulo="Ano do processo" tipo="number" valor={valores.ano} min={2000} max={2100} obrigatorio erro={c.ano} />
             <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} obrigatorio erro={c.data_requerimento} />
-            <Campo nome="data_solicitacao_extenso" rotulo="Data por extenso" valor={valores.data_solicitacao_extenso} placeholder="17 de outubro de 2026" obrigatorio erro={c.data_solicitacao_extenso} />
           </div>
           <CamposAverbacao valores={valores} erros={c} />
           <div className="mt-4">

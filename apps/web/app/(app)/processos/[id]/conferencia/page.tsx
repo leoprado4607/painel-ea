@@ -20,7 +20,7 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
   ]);
   if (!indices?.length) return <Aviso tipo="erro">Não foi possível carregar os índices de correção.</Aviso>;
 
-  const r = calcular(montarEntrada(rubricas, lancamentos, indices));
+  const r = calcular(montarEntrada(rubricas, lancamentos, indices, { inicio: processo.periodo_inicio, fim: processo.periodo_fim }));
   const ate = r.tabela.atualizadoAte;
   const ini = processo.periodo_inicio ? Number(processo.periodo_inicio.slice(0, 4)) : 2006;
   const fim = processo.periodo_fim ? Number(processo.periodo_fim.slice(0, 4)) : 2028;

@@ -23,7 +23,7 @@ export async function montarDocumentos(
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
   ]);
   if (!indices?.length) throw new Error("Índices de correção indisponíveis.");
-  const entrada = montarEntrada(rubricas, lancamentos, indices);
+  const entrada = montarEntrada(rubricas, lancamentos, indices, { inicio: processo.periodo_inicio, fim: processo.periodo_fim });
   const resultado = calcular(entrada);
   const ate = resultado.tabela.atualizadoAte!;
   const agora = new Date();
@@ -42,7 +42,8 @@ export async function montarDocumentos(
     processo: {
       numero: processo.numero, especieDivida: processo.especie_divida,
       periodoInicio: processo.periodo_inicio, periodoFim: processo.periodo_fim,
-      dataExtenso: processo.data_solicitacao_extenso || dataPorExtenso(agora),
+      // data dos documentos: o dia em que são gerados, no fuso de Brasília ("12 de janeiro de 2026")
+      dataExtenso: dataPorExtenso(agora),
       possuiPensaoJudicial: processo.possui_pensao_judicial,
       ano: processo.ano, dataRequerimento: processo.data_requerimento, biNumero: processo.bi_numero, biData: processo.bi_data,
       boletimAverbou: textoBoletim(processo) || null,

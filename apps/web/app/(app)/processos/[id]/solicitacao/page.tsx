@@ -1,5 +1,4 @@
 import { AbaDocumento } from "@/components/AbaDocumento";
-import { dataPorExtenso } from "@/lib/indice";
 import { carregarProcesso } from "@/lib/processo";
 
 /** Aba "Solicitação": folha de rosto da Solicitação de Pagamento ao Ordenador de Despesas. */
@@ -11,11 +10,9 @@ export default async function Solicitacao({ params }: { params: Promise<{ id: st
   const a = processo.complementos?.anexos ?? {};
   return (
     <AbaDocumento processoId={id} doc="solicitacao" bloqueado={bloqueado} grupos={[
-      { titulo: "Numeração e data", campos: [
+      { titulo: "Numeração", campos: [
         { nome: "numero", rotulo: "Nº da solicitação", valor: processo.numero },
         { nome: "ano", rotulo: "Ano", tipo: "number", valor: processo.ano },
-        { nome: "data_solicitacao_extenso", rotulo: "Data por extenso", valor: processo.data_solicitacao_extenso, largo: true,
-          placeholder: dataPorExtenso(), ajuda: "Vazio: usa a data do dia em que o PDF for gerado." },
       ] },
       { titulo: "Anexos (quantidade)", campos: [
         { nome: "c.anexos.fichas", rotulo: "Ficha(s) Financeira(s)", tipo: "number", valor: a.fichas, placeholder: anos },

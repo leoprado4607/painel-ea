@@ -16,7 +16,8 @@ export interface Averbacao {
 }
 
 /** "Nr BI/BAR": exatamente 3 dígitos. */
-export const numeroBoletimValido = (v: string) => /^\d{3}$/.test(v);
+/** Nr BI/BAR: até 3 dígitos (1, 2 ou 3). */
+export const numeroBoletimValido = (v: string) => /^\d{1,3}$/.test(v);
 
 /**
  * Texto da coluna "Boletim que Averbou" do Verso.

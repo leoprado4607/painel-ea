@@ -4,9 +4,10 @@ import { numeroBoletimValido, textoBoletim } from "./averbacao";
 const base = { documento_averbacao: null, adt_numero: null, bi_numero: null, om_averbacao: null, bi_data: null };
 
 describe("averbação", () => {
-  it("Nr BI/BAR tem exatamente 3 dígitos", () => {
+  it("Nr BI/BAR tem de 1 a 3 dígitos", () => {
     expect(numeroBoletimValido("045")).toBe(true);
-    expect(["45", "0451", "04a", ""].some(numeroBoletimValido)).toBe(false);
+    expect(["5", "45", "045"].every(numeroBoletimValido)).toBe(true); // 1, 2 ou 3 dígitos
+    expect(["0451", "04a", "", "4 5"].some(numeroBoletimValido)).toBe(false);
   });
   it("monta o texto do boletim para o Verso", () => {
     expect(textoBoletim({ ...base, documento_averbacao: "Adt", adt_numero: "12", bi_numero: "045", om_averbacao: "17º GAC", bi_data: "2026-09-20" }))

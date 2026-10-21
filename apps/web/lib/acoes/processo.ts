@@ -19,7 +19,7 @@ export interface EstadoForm { erro?: string; campos?: Record<string, string> }
 /** Campos do formulário "Informações" que não podem ficar em branco (só a pensão judicial, sim/não, fica de fora). */
 const OBRIGATORIOS = [
   "posto_graduacao", "nome", "prec_cp", "identidade", "cpf", "situacao", "om_vinculacao", "banco", "agencia", "conta",
-  "periodo_inicio", "periodo_fim", "especie_divida", "numero", "ano", "data_requerimento", "data_solicitacao_extenso",
+  "periodo_inicio", "periodo_fim", "especie_divida", "numero", "ano", "data_requerimento",
   "documento_averbacao", "bi_numero", "om_averbacao", "bi_data",
 ];
 
@@ -64,7 +64,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   const omAverbacao = txt(f, "om_averbacao");
   if (omAverbacao && !(OMS_AVERBACAO as readonly string[]).includes(omAverbacao)) campos.om_averbacao = "Escolha a OM na lista.";
   const nrBoletim = txt(f, "bi_numero");
-  if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use exatamente 3 dígitos (ex.: 045).";
+  if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use até 3 dígitos (ex.: 45).";
   const nrAdt = documentoAverbacao === "Adt" ? txt(f, "adt_numero") : null;
   if (nrAdt && !/^\d{1,3}$/.test(nrAdt)) campos.adt_numero = "Até 3 dígitos.";
   const ini = dataPeriodo(txt(f, "periodo_inicio")), fim = dataPeriodo(txt(f, "periodo_fim"));
@@ -82,7 +82,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     data_requerimento: txt(f, "data_requerimento"), bi_numero: nrBoletim, bi_data: txt(f, "bi_data"),
     documento_averbacao: documentoAverbacao, adt_numero: nrAdt, om_averbacao: omAverbacao,
     especie_divida: txt(f, "especie_divida"), periodo_inicio: ini, periodo_fim: fim,
-    data_solicitacao_extenso: txt(f, "data_solicitacao_extenso"), possui_pensao_judicial: f.get("possui_pensao_judicial") === "on",
+    possui_pensao_judicial: f.get("possui_pensao_judicial") === "on",
   };
 
   if (processoId) {
