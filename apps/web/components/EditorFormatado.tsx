@@ -1,5 +1,5 @@
 "use client";
-import { marcacaoDosTrechos, normalizarFormatado, textoSemFormatacao, type TrechoFormatado } from "@painel-ea/engine";
+import { formatarTextoColado, marcacaoDosTrechos, normalizarFormatado, textoSemFormatacao, type TrechoFormatado } from "@painel-ea/engine";
 import { useEffect, useRef, useState } from "react";
 
 /** DOM do editor → trechos com estilo (b/strong, i/em, u; quebras de linha por <br> e blocos). */
@@ -29,9 +29,13 @@ const paraHtml = (marcacao: string) => marcacao.replace(/\n/g, "<br>");
  * Caixa de texto com negrito, itálico e sublinhado, na Helvetica dos documentos. O valor vai num campo oculto
  * (nome do formulário) como marcação <b>/<i>/<u>; o limite conta só os caracteres do texto.
  */
-export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro, placeholder, bloqueado }: {
+export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado }: {
   nome: string; rotulo: string; valor?: string | null; limite: number; obrigatorio?: boolean; erro?: string;
   placeholder?: string; bloqueado?: boolean;
+  /** botão "Formatar texto colado": junta linhas cortadas, arruma espaços e parágrafos (formatarTextoColado) */
+  arrumarColado?: boolean;
+  /** texto justificado, como sai no PDF */
+  justificado?: boolean;
 }) {
   const editor = useRef<HTMLDivElement>(null);
   const valido = useRef("");
@@ -53,6 +57,13 @@ export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro
     valido.current = el.innerHTML;
     setMarcacao(normalizarFormatado(m));
   };
+  const arrumar = () => {
+    const el = editor.current!;
+    const m = formatarTextoColado(marcacaoDosTrechos(trechosDoDom(el)));
+    el.innerHTML = paraHtml(m); // só b/i/u e texto escapado
+    valido.current = el.innerHTML;
+    setMarcacao(m);
+  };
   const formatar = (cmd: "bold" | "italic" | "underline") => {
     editor.current?.focus();
     document.execCommand("styleWithCSS", false, "false");
@@ -73,12 +84,17 @@ export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro
             onMouseDown={(e) => { e.preventDefault(); formatar("italic"); }}>I</button>
           <button type="button" className={`${botao} underline`} title="Sublinhado (Ctrl+U)" aria-label="Sublinhado" disabled={bloqueado}
             onMouseDown={(e) => { e.preventDefault(); formatar("underline"); }}>S</button>
+          {arrumarColado && (
+            <button type="button" className="h-7 border border-borda bg-white px-2 text-xs hover:bg-gray-50 disabled:opacity-50" disabled={bloqueado || !total}
+              title="Junta as linhas cortadas na cópia, tira espaços repetidos e arruma os parágrafos (mantém negrito, itálico e sublinhado)"
+              onClick={arrumar}>Formatar texto colado</button>
+          )}
         </div>
       </div>
       <div className="relative">
         <div ref={editor} contentEditable={!bloqueado} suppressContentEditableWarning role="textbox" aria-multiline
           aria-labelledby={`${nome}-rotulo`} aria-invalid={!!erro} aria-describedby={`${nome}-contador`} data-placeholder={placeholder}
-          className={`entrada min-h-24 whitespace-pre-wrap leading-snug [font-family:Helvetica,Arial,sans-serif] empty:before:text-suave empty:before:content-[attr(data-placeholder)] ${erro ? "entrada-erro" : ""}`}
+          className={`entrada min-h-24 whitespace-pre-wrap leading-snug ${justificado ? "text-justify" : ""} [font-family:Helvetica,Arial,sans-serif] empty:before:text-suave empty:before:content-[attr(data-placeholder)] ${erro ? "entrada-erro" : ""}`}
           onInput={atualizar}
           // colar só o texto, sem a formatação de outro programa, e só o que couber no limite (descontado o que está selecionado)
           onPaste={(e) => {
@@ -88,8 +104,9 @@ export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro
             document.execCommand("insertText", false, e.clipboardData.getData("text/plain").slice(0, cabe));
           }} />
         {/* o navegador exige o preenchimento por este campo; o valor gravado é a marcação */}
-        <input name={nome} value={total ? marcacao : ""} required={obrigatorio} onChange={() => {}} tabIndex={-1} aria-hidden
-          className="pointer-events-none absolute bottom-0 left-4 h-px w-px opacity-0"
+        {/* textarea (não input): o input apaga as quebras de linha do valor */}
+        <textarea name={nome} value={total ? marcacao : ""} required={obrigatorio} onChange={() => {}} tabIndex={-1} aria-hidden
+          className="pointer-events-none absolute bottom-0 left-4 h-px w-px resize-none overflow-hidden opacity-0"
           onFocus={() => editor.current?.focus()} />
       </div>
       <div className="mt-1 flex justify-between gap-2">

@@ -19,7 +19,8 @@ export const carregarProcesso = cache(async (id: string) => {
     supabase.from("lancamento").select("processo_id, tipo, ano, mes, posicao, valor").eq("processo_id", id).returns<Lancamento[]>(),
   ]);
   if (!linha) notFound();
-  const { militar, om, ...processo } = linha;
+  // fichas_lidas (números das fichas) só é usado no servidor (lib/receitas): não vai para as telas
+  const { militar, om, fichas_lidas: _fichas, ...processo } = linha as typeof linha & { fichas_lidas?: unknown };
   // processo de outro operador: só consulta (o banco também barra a gravação)
   const somenteConsulta = !podeAlterarProcesso(perfil, processo);
   return {

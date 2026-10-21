@@ -9,9 +9,9 @@ import { BRASAO_PNG } from "./brasao";
 export interface Complementos {
   /** Quantidades da lista de anexos da Solicitação de Pagamento (vazio = padrão calculado). */
   anexos?: { fichas?: number | null; folhasCalculo?: number | null; recapitulacao?: number | null; comprovacao?: number | null; bi?: number | null };
-  /** Verso: documento que materializou o direito (quadro de Informações, até 300 caracteres; marcação <b>/<i>/<u>). */
+  /** Verso: documento que materializou o direito (quadro de Informações, até 100 caracteres; marcação <b>/<i>/<u>). */
   amparo?: string;
-  /** Verso: explicação do não pagamento à época devida (quadro de Informações, até 500 caracteres; marcação <b>/<i>/<u>). */
+  /** Verso: explicação do não pagamento à época devida (quadro de Informações, até 800 caracteres; marcação <b>/<i>/<u>). */
   explicacao?: string;
   /** Verso: parecer (padrão: "Sou de parecer que o requerimento deve ser atendido."). */
   parecer?: string;

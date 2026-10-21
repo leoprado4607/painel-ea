@@ -45,7 +45,8 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
   // textos dos campos acompanham o mês selecionado
   useEffect(() => {
     const v = valoresDoMes(grade, atual);
-    setTextos(Object.fromEntries(ativas.map((r) => [r.posicao, formatarReais(v[r.posicao])])));
+    // campo sem valor aparece como 0,00 (despesas são digitadas; receitas vêm das fichas ou são digitadas)
+    setTextos(Object.fromEntries(ativas.map((r) => [r.posicao, formatarReais(v[r.posicao] ?? 0)])));
     setErros({});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [atual, grade]);

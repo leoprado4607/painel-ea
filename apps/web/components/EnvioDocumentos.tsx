@@ -50,12 +50,10 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
     setPrevia(restantes.length ? await reanalisarDocumentos(processoId, restantes) : undefined);
     setDadosUsados(false);
   });
-  const [escolhas, setEscolhas] = useState<Record<string, number>>({});
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [gravando, iniciar] = useTransition();
   const [dadosUsados, setDadosUsados] = useState(false);
   const temPrevia = !!previa?.documentos?.length;
-  const ativas = rubricas.filter((r) => r.codigo);
   const naoUsadasPorCodigo = Object.values(
     (previa?.naoUsadas ?? []).reduce<Record<string, { codigo: string; descricao: string; natureza: string; anos: number[]; total: number }>>((acc, l) => {
       const a = (acc[l.codigo] ??= { codigo: l.codigo, descricao: l.descricao, natureza: l.natureza, anos: [], total: 0 });
@@ -66,9 +64,9 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
   );
 
   const gravar = () => iniciar(async () => {
-    const r = await gravarRecebidos(processoId, previa!.documentos!, escolhas);
+    const r = await gravarRecebidos(processoId, previa!.documentos!);
     if ("erro" in r && r.erro) return setMsg({ tipo: "erro", texto: r.erro });
-    if ("gravados" in r) setMsg({ tipo: "ok", texto: `${r.gravados} valores gravados em ${r.cobertura.join(", ")}. Confira na aba Contracheque - F Financeira.` });
+    if ("gravados" in r) setMsg({ tipo: "ok", texto: `Fichas de ${r.cobertura.join(", ") || "—"} guardadas; ${r.gravados} valores de receita preenchidos. Confira na aba Contracheque - F Financeira.` });
     router.refresh();
   });
 
@@ -77,8 +75,9 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
       <div>
         <h2 className="font-semibold">Contracheque e fichas financeiras (PDF)</h2>
         <p className="text-sm text-suave">
-          Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque. Os valores recebidos vêm das fichas; o contracheque serve só
-          para os dados bancários. Os arquivos são lidos e descartados: nenhum PDF fica guardado. Ao gravar, os recebidos são substituídos no ano de cada ficha.
+          Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque. Das fichas, só as receitas das rubricas escolhidas em Códigos
+          lançamento, nos meses do período da dívida, preenchem os valores recebidos; despesas são digitadas pelo operador. O contracheque serve só
+          para os dados bancários. Os PDFs são descartados: ficam guardados só os números das fichas, e valores digitados nunca são substituídos.
         </p>
       </div>
 
@@ -157,31 +156,23 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
           )}
 
           <p className="text-sm">
-            <strong>{previa!.lancamentos?.length ?? 0}</strong> valores mensais vão para as rubricas do processo
-            {previa!.cobertura?.length ? `, substituindo os recebidos de ${previa!.cobertura.join(", ")}` : ""}.
+            <strong>{previa!.lancamentos?.length ?? 0}</strong> valores de receita vão para as rubricas do processo, no período da dívida
+            {previa!.cobertura?.length ? ` (fichas de ${previa!.cobertura.join(", ")})` : ""}. Valores já digitados não são substituídos.
           </p>
+          {previa!.pendencia && <Aviso tipo="info">{previa!.pendencia}</Aviso>}
 
           {naoUsadasPorCodigo.length > 0 && (
             <details>
               <summary className="cursor-pointer text-sm font-semibold">Códigos que não entram no cálculo ({naoUsadasPorCodigo.length})</summary>
-              <p className="ajuda my-2">Imposto, empréstimos, pensão alimentícia, acertos etc. ficam de fora. Se algum deve entrar, escolha a rubrica.</p>
+              <p className="ajuda my-2">
+                Despesas e receitas sem rubrica escolhida em Códigos lançamento não preenchem nada. Para usar uma receita, inclua o código dela
+                em Códigos lançamento; as despesas são digitadas na aba Contracheque - F Financeira.
+              </p>
               <div className="divide-y divide-borda border border-borda">
                 {naoUsadasPorCodigo.map((l) => (
-                  <div key={l.codigo} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2 text-sm">
-                    <span>
-                      <span className="font-mono text-xs text-suave">{l.codigo}</span> {l.descricao}
-                      <span className="ml-2 text-xs text-suave">{l.natureza} · {l.anos.join(", ")} · R$ {formatarReais(l.total)}</span>
-                    </span>
-                    <label className="sr-only" htmlFor={`esc-${processoId}-${l.codigo}`}>Rubrica para {l.codigo}</label>
-                    <select id={`esc-${processoId}-${l.codigo}`} className="entrada w-auto py-1" disabled={bloqueado}
-                      value={escolhas[l.codigo] ?? ""}
-                      onChange={(e) => setEscolhas((x) => {
-                        const { [l.codigo]: _, ...resto } = x;
-                        return e.target.value ? { ...resto, [l.codigo]: Number(e.target.value) } : resto;
-                      })}>
-                      <option value="">Não usar</option>
-                      {ativas.map((r) => <option key={r.posicao} value={r.posicao}>Somar em {r.codigo}</option>)}
-                    </select>
+                  <div key={l.codigo} className="px-3 py-2 text-sm">
+                    <span className="font-mono text-xs text-suave">{l.codigo}</span> {l.descricao}
+                    <span className="ml-2 text-xs text-suave">{l.natureza} · {l.anos.join(", ")} · R$ {formatarReais(l.total)}</span>
                   </div>
                 ))}
               </div>
@@ -190,7 +181,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
 
           {!bloqueado && (
             <div className="flex justify-end">
-              <button className="botao" disabled={gravando} onClick={gravar}>{gravando ? "Gravando…" : "Gravar valores recebidos"}</button>
+              <button className="botao" disabled={gravando} onClick={gravar}>{gravando ? "Gravando…" : "Guardar fichas e preencher receitas"}</button>
             </div>
           )}
         </div>

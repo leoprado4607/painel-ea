@@ -3,14 +3,15 @@ import { cpfValido, normalizarFormatado, precCpValido, textoSemFormatacao } from
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { inserirRubricasIniciais, omParaNovoProcesso, podeAlterarProcesso } from "@/lib/processo";
+import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 
 /** Quadros de texto formatado de Informações que vão para o verso da Solicitação de Pagamento, com o limite de caracteres. */
 const QUADROS_VERSO = [
-  { chave: "amparo", limite: 300 },
-  { chave: "explicacao", limite: 500 },
+  { chave: "amparo", limite: 100 },
+  { chave: "explicacao", limite: 800 },
 ] as const;
 
 export interface EstadoForm { erro?: string; campos?: Record<string, string> }
@@ -90,6 +91,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     const r1 = await supabase.from("militar").update(militar).eq("id", atual.militar_id);
     const r2 = await supabase.from("processo").update({ ...processo, complementos: { ...(atual.complementos ?? {}), ...quadros } }).eq("id", processoId);
     if (r1.error || r2.error) return { erro: (r1.error ?? r2.error)!.message };
+    // o período pode ter mudado: refaz as receitas vindas das fichas (sem tocar nos digitados)
+    try { await preencherReceitas(supabase, processoId); } catch (e) { return { erro: (e as Error).message }; }
     revalidatePath(`/processos/${processoId}`, "layout");
     redirect(`/processos/${processoId}/rubricas`);
   }

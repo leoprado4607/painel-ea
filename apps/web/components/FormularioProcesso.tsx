@@ -178,14 +178,14 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         {/* textos do verso da Solicitação de Pagamento (colunas "Nº/Data Doc/Materializou Direito" e "Explicação…") */}
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Documento que materializa o direito</h2>
-          <EditorFormatado nome="c.amparo" rotulo="Nº/data do documento" valor={valores.complementos?.amparo} limite={300}
+          <EditorFormatado nome="c.amparo" rotulo="Nº/data do documento" valor={valores.complementos?.amparo} limite={100}
             obrigatorio erro={c["c.amparo"]} bloqueado={bloqueado}
             placeholder="Ex.: DIEx nº 103-ASSE1/B Adm Gu Natal, de 20 Set 26" />
         </section>
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Explicação do não pagamento à época</h2>
-          <EditorFormatado nome="c.explicacao" rotulo="Explicação" valor={valores.complementos?.explicacao} limite={500}
-            obrigatorio erro={c["c.explicacao"]} bloqueado={bloqueado}
+          <EditorFormatado nome="c.explicacao" rotulo="Explicação" valor={valores.complementos?.explicacao} limite={800}
+            arrumarColado justificado obrigatorio erro={c["c.explicacao"]} bloqueado={bloqueado}
             placeholder="Ex.: O militar fazia jus a … no período de … e não recebeu à época porque …" />
         </section>
       </fieldset>

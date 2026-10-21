@@ -26,3 +26,16 @@ describe("texto formatado (negrito, itálico, sublinhado)", () => {
     expect(textoSemFormatacao(m)).toHaveLength(15);
   });
 });
+
+describe("formatar texto colado", () => {
+  it("junta linhas cortadas, mantém parágrafos e arruma espaços", async () => {
+    const { formatarTextoColado } = await import("../src/texto-formatado");
+    const colado = "  O militar fazia jus ao\nadicional  de habilitação ,\r\nmas não recebeu o paga-\nmento à época ( por falta de averbação ) .\n\n\n\tSegundo   parágrafo.  ";
+    expect(formatarTextoColado(colado)).toBe(
+      "O militar fazia jus ao adicional de habilitação, mas não recebeu o pagamento à época (por falta de averbação).\nSegundo parágrafo.");
+  });
+  it("preserva negrito, itálico e sublinhado e não junta hífen de sigla", async () => {
+    const { formatarTextoColado } = await import("../src/texto-formatado");
+    expect(formatarTextoColado("<b>DIEx nº 103</b>\n<i>de 20 Set 26</i>, IPCA-\nE")).toBe("<b>DIEx nº 103</b> <i>de 20 Set 26</i>, IPCA-E");
+  });
+});
