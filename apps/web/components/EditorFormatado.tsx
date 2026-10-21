@@ -29,8 +29,12 @@ const paraHtml = (marcacao: string) => marcacao.replace(/\n/g, "<br>");
  * Caixa de texto com negrito, itálico e sublinhado, na Helvetica dos documentos. O valor vai num campo oculto
  * (nome do formulário) como marcação <b>/<i>/<u>; o limite conta só os caracteres do texto.
  */
-export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado }: {
-  nome: string; rotulo: string; valor?: string | null; limite: number; obrigatorio?: boolean; erro?: string;
+export function EditorFormatado({ nome, rotulo, rotuloOculto, ferramentasAEsquerda, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado }: {
+  nome: string; rotulo: string;
+  /** rótulo só para leitores de tela (o título do quadro já diz o que é) */
+  rotuloOculto?: boolean;
+  /** com o rótulo oculto: ferramentas no lugar dele, à esquerda (padrão: à direita) */
+  ferramentasAEsquerda?: boolean; valor?: string | null; limite: number; obrigatorio?: boolean; erro?: string;
   placeholder?: string; bloqueado?: boolean;
   /** botão "Formatar texto colado": junta linhas cortadas, arruma espaços e parágrafos (formatarTextoColado) */
   arrumarColado?: boolean;
@@ -74,8 +78,8 @@ export function EditorFormatado({ nome, rotulo, valor, limite, obrigatorio, erro
 
   return (
     <div>
-      <div className="mb-1 flex items-end justify-between gap-2">
-        <span id={`${nome}-rotulo`} className="rotulo mb-0">{rotulo}{obrigatorio && <span className="text-red-700"> *</span>}</span>
+      <div className={`mb-1 flex items-end gap-2 ${!rotuloOculto ? "justify-between" : ferramentasAEsquerda ? "justify-start" : "justify-end"}`}>
+        <span id={`${nome}-rotulo`} className={rotuloOculto ? "sr-only" : "rotulo mb-0"}>{rotulo}{obrigatorio && <span className="text-red-700"> *</span>}</span>
         <div role="toolbar" aria-label={`Formatação de ${rotulo}`} className="flex gap-1">
           {/* onMouseDown: não tira o foco (nem a seleção) do texto */}
           <button type="button" className={`${botao} font-bold`} title="Negrito (Ctrl+B)" aria-label="Negrito" disabled={bloqueado}
