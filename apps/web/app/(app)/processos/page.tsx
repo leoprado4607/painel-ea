@@ -21,6 +21,13 @@ export default async function Processos() {
   const processos = data ?? [];
   // valor final corrigido de cada processo (no lugar da OM, pedido de 21/10/2026)
   const corrigidos = await valoresCorrigidos(supabase, processos);
+  // só o Admin vê no card o operador responsável (quem criou o processo); o Admin lê todos os perfis
+  const operadores = new Map<string, string>();
+  if (perfil?.papel === "admin") {
+    const ids = [...new Set(processos.map((p) => p.criado_por).filter((id): id is string => !!id))];
+    const { data: perfis } = ids.length ? await supabase.from("perfil").select("usuario_id, nome, posto").in("usuario_id", ids) : { data: [] };
+    for (const op of perfis ?? []) operadores.set(op.usuario_id, [postoAbreviado(op.posto), op.nome].filter(Boolean).join(" "));
+  }
   // cards prontos (o filtro da pesquisa roda no navegador, em ListaProcessos)
   const cards: CardProcesso[] = processos.map((p) => {
     const nome = [postoAbreviado(p.militar?.posto_graduacao), p.militar?.nome].filter(Boolean).join(" ");
@@ -31,8 +38,10 @@ export default async function Processos() {
       valor: valor != null ? `R$ ${formatarReais(valor)}` : "R$ —", situacao: p.situacao,
       // excluir: só o criador e o Admin; processo de outro operador aparece como "só consulta"
       meu: podeAlterarProcesso(perfil, p), descricao: `${p.numero || "s/nº"} de ${nome}`,
+      operador: p.criado_por ? operadores.get(p.criado_por) ?? null : null,
       // pesquisa: nome, posto (abreviado e como foi gravado), OM e espécie da dívida
-      busca: normalizarBusca([nome, p.militar?.posto_graduacao, om, p.militar?.om_vinculacao, p.especie_divida].filter(Boolean).join(" ")),
+      busca: normalizarBusca([nome, p.militar?.posto_graduacao, om, p.militar?.om_vinculacao, p.especie_divida,
+        p.criado_por ? operadores.get(p.criado_por) : null].filter(Boolean).join(" ")),
     };
   });
   if (!cards.length) {

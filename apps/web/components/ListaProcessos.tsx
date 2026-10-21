@@ -15,6 +15,8 @@ export interface CardProcesso {
   meu: boolean;
   /** "640093.005344/2026-43 de 1º Sgt …" (confirmação da exclusão) */
   descricao: string;
+  /** só para o Admin: operador responsável (quem criou), "Cb Bruno Guilherme de Souza Bezerra" */
+  operador?: string | null;
   /** texto em que a pesquisa procura: nome, posto (abreviado e por extenso), OM e espécie da dívida */
   busca: string;
 }
@@ -57,6 +59,7 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
                     {p.om ? `${p.om} · ` : ""}Dívida de {p.periodo}{p.especie ? ` · ${p.especie}` : ""}
                     {" · "}<span className="font-medium text-carvao">{p.valor}</span>
                   </p>
+                  {p.operador && <p className="text-sm text-suave">Operador: {p.operador}</p>}
                 </div>
                 <span className="flex flex-wrap items-center gap-2">
                   {!p.meu && <span className="border border-borda px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] text-suave">Só consulta</span>}
