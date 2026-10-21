@@ -249,3 +249,14 @@ describe("exclusão de processos", () => {
     expect(aud).toEqual([{ acao: "DELETE" }]); // exclusão fica registrada na auditoria
   });
 });
+
+describe("quem assina como operador", () => {
+  it("é o criador do processo, para qualquer usuário ativo (o operador não lê o perfil dos outros)", async () => {
+    const P = "30000000-0000-0000-0000-00000000000a"; // criado pelo operador A
+    for (const u of [U.operadorA, U.operadorB, U.admin]) {
+      expect(await como(u, `select nome, posto from operador_do_processo('${P}')`)).toEqual([{ nome: "Op A", posto: null }]);
+    }
+    expect(await como(U.operadorB, `select nome from perfil where usuario_id = '${U.operadorA}'`)).toEqual([]); // RLS continua
+    expect(await como("00000000-0000-0000-0000-0000000000ee", `select * from operador_do_processo('${P}')`)).toEqual([]); // sem perfil
+  });
+});

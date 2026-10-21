@@ -64,3 +64,13 @@ export async function inserirRubricasIniciais(supabase: Supabase, processoId: st
     ...r, codigo: r.tipo === "Receita" ? "" : r.codigo, processo_id: processoId,
   })));
 }
+
+/**
+ * Operador que assina os documentos: quem CRIOU o processo (não quem gera o PDF). Sem o criador (processo antigo),
+ * quem está gerando.
+ */
+export async function operadorDoProcesso(supabase: Supabase, processoId: string, perfil: Perfil | null) {
+  const { data } = await supabase.rpc("operador_do_processo", { pid: processoId });
+  const op = (data as { nome: string; posto: string | null }[] | null)?.[0];
+  return op ?? (perfil ? { nome: perfil.nome, posto: perfil.posto } : null);
+}
