@@ -3,17 +3,24 @@ import { ExcluirProcesso } from "@/components/ExcluirProcesso";
 import { postoAbreviado } from "@/lib/postos";
 import { podeAlterarProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
+import { formatarReais } from "@/lib/dinheiro";
 import type { Militar, Processo } from "@/lib/tipos";
+import { valoresCorrigidos } from "@/lib/valor-corrigido";
 
 const SITUACAO = { rascunho: "Rascunho", emitido: "Emitido", arquivado: "Arquivado" } as const;
 const mesAno = (d: string | null) => (d ? `${d.slice(5, 7)}/${d.slice(0, 4)}` : "—");
 
 export default async function Processos() {
   const { supabase, perfil } = await sessao();
+  // só as colunas do card (fichas_lidas, complementos etc. ficam de fora)
   const { data } = await supabase.from("processo")
-    .select("*, militar(nome, posto_graduacao), om(nome)").order("atualizado_em", { ascending: false })
-    .returns<(Processo & { militar: Pick<Militar, "nome" | "posto_graduacao">; om: { nome: string } | null })[]>();
+    .select("id, numero, situacao, periodo_inicio, periodo_fim, especie_divida, criado_por, indices_usados, militar(nome, posto_graduacao)")
+    .order("atualizado_em", { ascending: false })
+    .returns<(Pick<Processo, "id" | "numero" | "situacao" | "periodo_inicio" | "periodo_fim" | "especie_divida" | "criado_por">
+      & { indices_usados: { ano: number; mes: number; percentual: number | null }[] | null; militar: Pick<Militar, "nome" | "posto_graduacao"> })[]>();
   const processos = data ?? [];
+  // valor final corrigido de cada processo (no lugar da OM, pedido de 21/10/2026)
+  const corrigidos = await valoresCorrigidos(supabase, processos);
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
@@ -44,7 +51,9 @@ export default async function Processos() {
                     <p className="text-sm text-suave">
                       Processo {p.numero || "s/nº"} · Dívida de {mesAno(p.periodo_inicio)} a {mesAno(p.periodo_fim)}
                       {p.especie_divida ? ` · ${p.especie_divida}` : ""}
-                      {p.om ? ` · ${p.om.nome}` : ""}
+                      {" · "}<span className="font-medium text-carvao">
+                        {corrigidos.get(p.id) != null ? `Valor corrigido: R$ ${formatarReais(corrigidos.get(p.id))}` : "Valor corrigido: —"}
+                      </span>
                     </p>
                   </div>
                   <span className="flex flex-wrap items-center gap-2">
