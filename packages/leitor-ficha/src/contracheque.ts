@@ -1,9 +1,9 @@
 /**
  * Leitura do Comprovante Mensal de Rendimentos (contracheque) do CPEx a partir das palavras do PDF.
- * Usa os mesmos códigos do SIPPES da Ficha Financeira (NR/ND/AR/AD), então a correspondência com as rubricas
- * do processo é a mesma: ver contrachequeComoFicha.
+ * Modelo atual (códigos do SIPPES, "AGOSTO / 2026") e antigo, da época do SIAPPES (códigos A01/Z10, "JUNHO 2024",
+ * coluna "Prazo"). No site, o contracheque serve só para os dados bancários.
  */
-import { agruparLinhas, CODIGO_SIPPES, lerValor, naturezaDoCodigo, type FichaFinanceira, type LinhaFicha, type Palavra } from "./leitor";
+import { agruparLinhas, CODIGO_SIAPPES, CODIGO_SIPPES, lerValor, naturezaDoCodigo, naturezaSiappes, type FichaFinanceira, type LinhaFicha, type Palavra } from "./leitor";
 
 export interface LinhaContracheque {
   /** Ex.: NR0001 */
@@ -31,11 +31,13 @@ export interface Contracheque {
 }
 
 const MESES = ["JANEIRO", "FEVEREIRO", "MARÇO", "ABRIL", "MAIO", "JUNHO", "JULHO", "AGOSTO", "SETEMBRO", "OUTUBRO", "NOVEMBRO", "DEZEMBRO"];
-const CODIGO = CODIGO_SIPPES;
+const ehCodigo = (t: string) => CODIGO_SIPPES.test(t) || CODIGO_SIAPPES.test(t);
 const VALOR = /^-?\d{1,3}(\.\d{3})*,\d{2}$/;
 const centavos = (v: number) => Math.round(v * 100);
 /** Marca d'água ("Acessado por … Em: …"): fonte grande e inclinada, sobreposta às linhas. */
 const ehMarcaDagua = (p: Palavra) => p.inclinada || (p.tamanho ?? 0) > 12;
+/** Texto da imagem do brasão: no modelo antigo cai no meio da linha de banco, agência e conta. */
+const ehBrasao = (p: Palavra) => p.texto === "brasao";
 const limpar = (s: string) => s.replace(/\s+/g, " ").trim() || null;
 
 type Linha = ReturnType<typeof agruparLinhas>[number];
@@ -61,13 +63,13 @@ function xDoRotulo(l: Linha, ...textos: string[]): number | null {
 
 export function lerContracheque(todas: Palavra[]): Contracheque {
   const avisos: string[] = [];
-  const linhas = agruparLinhas(todas.filter((p) => !ehMarcaDagua(p)));
+  const linhas = agruparLinhas(todas.filter((p) => !ehMarcaDagua(p) && !ehBrasao(p)));
   const proxima = (l: Linha) => linhas[linhas.indexOf(l) + 1];
 
-  // Mês de referência: "AGOSTO / 2026"
+  // Mês de referência: "AGOSTO / 2026" (modelo antigo: "JUNHO 2024")
   let ano: number | null = null, mes: number | null = null;
   for (const l of linhas) {
-    const m = l.texto.toUpperCase().match(/\b(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)\s*\/\s*(\d{4})\b/);
+    const m = l.texto.toUpperCase().match(/\b(JANEIRO|FEVEREIRO|MAR[ÇC]O|ABRIL|MAIO|JUNHO|JULHO|AGOSTO|SETEMBRO|OUTUBRO|NOVEMBRO|DEZEMBRO)\s*\/?\s*(\d{4})\b/);
     if (m) { mes = MESES.indexOf(m[1]!.replace("MARCO", "MARÇO")) + 1; ano = Number(m[2]); break; }
   }
   if (!ano) avisos.push("Mês de referência não encontrado.");
@@ -96,7 +98,8 @@ export function lerContracheque(todas: Palavra[]): Contracheque {
       { chave: "ind", x: xDoRotulo(r2, "IND") ?? Infinity },
     ]);
     // "7 - MAJOR" → "MAJOR" (o número é o código do posto no SIPPES)
-    const pg = (s: string | null) => (s ? s.replace(/^\d+\s*-\s*/, "").trim() || null : null);
+    // modelo antigo: "19 (1º SGT)" → "1º SGT"
+    const pg = (s: string | null) => (s ? s.replace(/^\d+\s*-\s*/, "").replace(/^\d+\s*\(\s*(.+?)\s*\)$/, "$1").trim() || null : null);
     cab.pgReal = pg(v.real);
     cab.pgPagamento = pg(v.pag);
   }
@@ -120,17 +123,18 @@ export function lerContracheque(todas: Palavra[]): Contracheque {
   let totais: Contracheque["totais"] = null;
   for (const l of linhas) {
     const [primeira, ...resto] = l.palavras;
-    if (primeira && CODIGO.test(primeira.texto)) {
+    if (primeira && ehCodigo(primeira.texto) && resto.some((p) => VALOR.test(p.texto))) {
       const valorP = [...resto].reverse().find((p) => VALOR.test(p.texto) && p.x >= xReceitas - 30);
       if (!valorP) { avisos.push(`${primeira.texto}: valor não encontrado.`); continue; }
       const codigo = primeira.texto;
-      const natureza = naturezaDoCodigo(codigo);
+      const siappes = CODIGO_SIAPPES.test(codigo);
+      const natureza = siappes ? naturezaSiappes(codigo) : naturezaDoCodigo(codigo);
       // confere com a coluna: receita termina antes de "Despesas"
       const naColunaDeReceita = valorP.x + valorP.largura < xDespesas;
       if ((natureza === "receita") !== naColunaDeReceita) avisos.push(`${codigo}: valor em coluna diferente do esperado para ${natureza}.`);
       const meio = resto.filter((p) => p !== valorP);
       itens.push({
-        codigo, natureza, acerto: codigo[0] !== "N",
+        codigo, natureza, acerto: siappes ? /^[GHI]/.test(codigo) : codigo[0] !== "N",
         descricao: meio.filter((p) => p.x < xInfo).map((p) => p.texto).join(" "),
         info: meio.filter((p) => p.x >= xInfo).map((p) => p.texto).join(" "),
         valor: lerValor(valorP.texto),

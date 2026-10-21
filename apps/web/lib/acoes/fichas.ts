@@ -57,6 +57,14 @@ async function lerArquivos(form: FormData): Promise<DocumentoExtraido[]> {
     } catch {
       throw new Error(`Não foi possível ler ${a.name}. Envie o contracheque ou a Ficha Financeira (SIPPES ou SIAPPES) em PDF, como baixados do sistema.`);
     }
+    // o contracheque serve só para os dados bancários: é isso que precisa estar nele
+    const [cc] = docs;
+    if (cc?.tipo === "contracheque") {
+      const c = cc.contracheque.cabecalho;
+      if (!c.banco && !c.conta) throw new Error(`${a.name}: não encontrei os dados bancários (banco, agência e conta).`);
+      lidos.push({ arquivo: a.name, tipo: "contracheque", ficha: cc.ficha, contracheque: cc.contracheque });
+      continue;
+    }
     if (!docs.length || docs.every((d) => !d.ficha.linhas.length)) throw new Error(`${a.name}: não encontrei as linhas de pagamento.`);
     for (const doc of docs) {
       if (!doc.ficha.ano) throw new Error(`${a.name}: não encontrei o ano/mês de referência.`);
@@ -77,9 +85,12 @@ async function lerArquivos(form: FormData): Promise<DocumentoExtraido[]> {
 /** Só as fichas financeiras entram nos valores recebidos: o contracheque serve para os dados bancários. */
 const fichasDoCalculo = (docs: DocumentoExtraido[]): FichaFinanceira[] => docs.filter((d) => d.tipo === "ficha").map((d) => d.ficha);
 
+/** O que volta da tela de revisão: as fichas são conferidas; o contracheque não entra nos valores. */
+const documentoValido = (d: DocumentoExtraido) => d.tipo === "contracheque" || fichaValida(d.ficha);
+
 const resumir = (d: DocumentoExtraido): ResumoDocumento => ({
   arquivo: d.arquivo, tipo: d.tipo, sistema: d.ficha.sistema ?? "sippes",
-  referencia: d.contracheque?.mes ? `${MESES[d.contracheque.mes - 1]}/${d.ficha.ano}` : String(d.ficha.ano),
+  referencia: d.tipo === "ficha" ? String(d.ficha.ano) : d.contracheque?.mes ? `${MESES[d.contracheque.mes - 1]}/${d.ficha.ano}` : "(mês não lido)",
   linhas: d.ficha.linhas.length, conferenciaOk: d.ficha.conferencias.ok,
   avisos: d.tipo === "contracheque" ? ["Usado só para os dados bancários (os valores vêm das fichas)."] : d.ficha.avisos,
 });
@@ -137,7 +148,7 @@ export async function analisarDocumentos(processoId: string, _: Previa | undefin
 export async function reanalisarDocumentos(processoId: string, docs: DocumentoExtraido[]): Promise<Previa> {
   try {
     if (!docs.length) return {};
-    if (!docs.every((d) => fichaValida(d.ficha))) return { erro: "Dados dos documentos inválidos. Envie os PDFs de novo." };
+    if (!docs.every(documentoValido)) return { erro: "Dados dos documentos inválidos. Envie os PDFs de novo." };
     const { supabase } = await sessao();
     return await montarPrevia(supabase, processoId, docs);
   } catch (e) {
@@ -147,7 +158,7 @@ export async function reanalisarDocumentos(processoId: string, docs: DocumentoEx
 
 /** Grava os recebidos: substitui os anos cobertos pelas fichas financeiras. */
 async function gravarRecebidosDe(supabase: Supabase, processoId: string, docs: DocumentoExtraido[], escolhasExtras: Record<string, number>) {
-  if (!docs.length || !docs.every((d) => fichaValida(d.ficha))) throw new Error("Dados dos documentos inválidos. Envie os PDFs de novo.");
+  if (!docs.length || !docs.every(documentoValido)) throw new Error("Dados dos documentos inválidos. Envie os PDFs de novo.");
   const { data: rubricas } = await supabase.from("processo_rubrica").select("posicao, codigo").eq("processo_id", processoId);
   const r = aplicarCorrespondencia(fichasDoCalculo(docs), rubricas ?? [], await tabelaCorrespondencia(supabase), escolhasExtras);
   const cobertura = mesesCobertos(docs);
