@@ -20,7 +20,7 @@ export function NovoPorFichas({ oms = [] }: { oms?: { id: string; nome: string }
         <label htmlFor="documentos-novo" className="sr-only">Arquivos PDF</label>
         <input id="documentos-novo" name="documentos" type="file" accept="application/pdf,.pdf" multiple required
           className="text-sm file:mr-3 file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
-        <button className="botao" disabled={enviando}>{enviando ? "Lendo e criando…" : "Criar processo pelos documentos"}</button>
+        <button className="botao" disabled={enviando}>{enviando ? "Lendo e criando…" : "Iniciar cálculos"}</button>
       </form>
     </section>
   );
