@@ -4,15 +4,15 @@ import { Aviso } from "@/components/Aviso";
 import { EscolhaOm } from "@/components/FormularioProcesso";
 import { criarProcessoDeDocumentos } from "@/lib/acoes/fichas";
 
-/** Novo processo pelos documentos: dados do favorecido e valores recebidos vêm do contracheque e/ou das fichas; o período fica para o operador. */
+/** Novo processo pelos documentos: dados e valores recebidos vêm das fichas; o contracheque, só os dados bancários. O período fica para o operador. */
 export function NovoPorFichas({ oms = [] }: { oms?: { id: string; nome: string }[] }) {
   const [estado, enviar, enviando] = useActionState(criarProcessoDeDocumentos, undefined);
   return (
     <section className="cartao space-y-3 border-marca-600">
-      <h2 className="font-semibold">1. Envie o contracheque e/ou as fichas financeiras (recomendado)</h2>
+      <h2 className="font-semibold">1. Envie as fichas financeiras e o contracheque (recomendado)</h2>
       <p className="text-sm text-suave">
-        Selecione um ou mais PDFs. O site cria o processo com nome, Prec-CP, CPF, P/G, OM de vinculação, banco, agência e conta,
-        e os valores recebidos. O período da dívida fica em branco para você informar. Os arquivos são lidos e descartados: nenhum PDF fica guardado.
+        Selecione um ou mais PDFs. Das fichas financeiras (SIPPES ou SIAPPES, que pode trazer vários anos) vêm nome, Prec-CP, identidade,
+        CPF, P/G, OM de vinculação e os valores recebidos; do contracheque, só banco, agência e conta. O período da dívida fica em branco para você informar. Os arquivos são lidos e descartados: nenhum PDF fica guardado.
       </p>
       {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}
       <form action={enviar} className="flex flex-wrap items-end gap-3">

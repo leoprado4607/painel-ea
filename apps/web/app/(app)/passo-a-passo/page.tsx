@@ -8,7 +8,7 @@ const ETAPAS: { aba: string; texto: string; href?: string; soAdmin?: boolean }[]
   { aba: "Dados da OM", href: "/om", soAdmin: true,
     texto: "Nome, RM, UG, CODOM, cidade e Ordenador de Despesas aparecem no cabeçalho e nas assinaturas dos documentos." },
   { aba: "Dados do favorecido",
-    texto: "Abra ou crie um processo (menu “Novo processo”). Envie o contracheque e/ou as fichas financeiras em PDF, ou digite os dados do militar, o período e a espécie da dívida." },
+    texto: "Abra ou crie um processo (menu “Novo processo”). Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque em PDF, ou digite os dados do militar, o período e a espécie da dívida." },
   { aba: "Códigos lançamento", texto: "Confira as rubricas do processo. É possível alterar ou incluir códigos e marcar cada um como Receita ou Despesa." },
   { aba: "Contracheque - F Financeira", texto: "Valores recebidos, exatamente como na ficha financeira. Quando as fichas são enviadas, já vêm preenchidos para conferência." },
   { aba: "Lançar valor devido", texto: "Valores que o militar deveria ter recebido, mês a mês e rubrica a rubrica." },

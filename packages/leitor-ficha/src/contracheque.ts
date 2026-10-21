@@ -163,6 +163,7 @@ export function contrachequeComoFicha(c: Contracheque): FichaFinanceira {
     return { codigo: l.codigo, natureza: l.natureza, acerto: l.acerto, descricao: l.info ? `${l.descricao} (${l.info})` : l.descricao, meses, total: l.valor };
   });
   return {
+    sistema: "sippes",
     ano: c.ano,
     cabecalho: {
       posto: c.cabecalho.pgPagamento ?? c.cabecalho.pgReal, nome: c.cabecalho.nome, precCp: c.cabecalho.precCp, identidade: null,

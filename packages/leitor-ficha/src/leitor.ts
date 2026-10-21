@@ -30,6 +30,8 @@ export interface LinhaFicha {
 }
 
 export interface FichaFinanceira {
+  /** SIPPES (atual, uma ficha por ano) ou SIAPPES (antigo, vários anos no mesmo PDF). Sem o campo: SIPPES. */
+  sistema?: "sippes" | "siappes";
   ano: number | null;
   cabecalho: {
     posto: string | null; nome: string | null; precCp: string | null; identidade: string | null;
@@ -59,6 +61,15 @@ export const CODIGO_SIPPES = /^[A-Z][RD]\d{4}$/;
 export function naturezaDoCodigo(codigo: string): "receita" | "desconto" {
   const receita = codigo[1] === "R";
   return (codigo[0] === "D" ? !receita : receita) ? "receita" : "desconto";
+}
+/**
+ * Código do SIAPPES (Tab_pag): 3 caracteres. 1ª letra A/B/C = receita (ativa, inativa, pensionista);
+ * G/H/I = reposição dessas receitas (desconto); Z ou dígito = desconto.
+ * Conferido nas fichas de 2021 a 2024: só assim os totais de cada mês fecham (G07 e G84 descontam).
+ */
+export const CODIGO_SIAPPES = /^[A-Z0-9]{3}$/;
+export function naturezaSiappes(codigo: string): "receita" | "desconto" {
+  return /^[ABCR]/.test(codigo) ? "receita" : "desconto";
 }
 const CODIGO = CODIGO_SIPPES;
 const VALOR = /^-?\d{1,3}(\.\d{3})*,\d{2}$/;
@@ -94,12 +105,15 @@ function lerCabecalho(linhas: Linha[]): FichaFinanceira["cabecalho"] & { ano: nu
     return null;
   };
   const nome = buscar(/^(.*?)\s*NOME:\s*(.+?)\s*$/);
+  // SIAPPES: "19 ( PRIMEIRO-SARGENTO )" → "PRIMEIRO SARGENTO"
+  const posto = nome?.[1]?.trim().replace(/^\d*\s*\(\s*(.+?)\s*\)$/, (_, p: string) => p.replace(/-/g, " ")) || null;
   return {
     ano: Number(buscar(/\bAno\s+(\d{4})\b/)?.[1]) || null,
-    posto: nome?.[1]?.trim() || null,
+    posto,
     nome: nome?.[2]?.trim() || null,
-    precCp: buscar(/PREC\/CP:\s*(\d+)/)?.[1] ?? null,
-    identidade: buscar(/IDENTIDADE:\s*(\d+)/)?.[1] ?? null,
+    precCp: buscar(/PREC\/CP:\s*(\d+)/i)?.[1] ?? null,
+    // SIAPPES traz a identidade com o prefixo "EB"
+    identidade: buscar(/IDENTIDADE:\s*(?:[A-Z]{2})?(\d+)/i)?.[1] ?? null,
     cpf: buscar(/\bCPF:\s*(\d+)/)?.[1] ?? null,
     codom: buscar(/CODOM:\s*(\d+)/)?.[1] ?? null,
     rm: buscar(/\bRM:\s*(\d+)/)?.[1] ?? null,
@@ -188,23 +202,81 @@ export function lerFicha(palavras: Palavra[]): FichaFinanceira {
   }
 
   if (xJan === null) avisos.push("tabela não encontrada (cabeçalho Código/Descrição/Jan…Total)");
+  return { sistema: "sippes", ano, cabecalho, linhas: resultado, totaisLiquidos, conferencias: conferir(resultado, totaisLiquidos, avisos), avisos };
+}
 
-  const linhasDivergentes = resultado
+/** Soma de cada linha × total impresso, e receitas − descontos de cada mês × linha de totais líquidos. */
+function conferir(linhas: LinhaFicha[], totaisLiquidos: number[] | null, avisos: string[]): FichaFinanceira["conferencias"] {
+  const linhasDivergentes = linhas
     .filter((l) => centavos(l.meses.reduce((a, b) => a + b, 0)) !== centavos(l.total))
     .map((l) => l.codigo);
   const mesesDivergentes: number[] = [];
   if (totaisLiquidos) {
     for (let m = 0; m < 12; m++) {
-      const liq = resultado.reduce((s, l) => s + (l.natureza === "receita" ? 1 : -1) * centavos(l.meses[m]!), 0);
+      const liq = linhas.reduce((s, l) => s + (l.natureza === "receita" ? 1 : -1) * centavos(l.meses[m]!), 0);
       if (liq !== centavos(totaisLiquidos[m]!)) mesesDivergentes.push(m + 1);
     }
   } else avisos.push("sem linha TOTAIS LÍQUIDOS para conferir");
+  return { linhasDivergentes, mesesDivergentes, ok: linhasDivergentes.length === 0 && mesesDivergentes.length === 0 && !!totaisLiquidos };
+}
 
-  return {
-    ano, cabecalho, linhas: resultado, totaisLiquidos,
-    conferencias: { linhasDivergentes, mesesDivergentes, ok: linhasDivergentes.length === 0 && mesesDivergentes.length === 0 && !!totaisLiquidos },
-    avisos,
-  };
+/** Ficha do SIAPPES: o cabeçalho da tabela começa por "Cód." (no SIPPES, "Código"). */
+export function ehFichaSiappes(palavras: Palavra[]): boolean {
+  return agruparLinhas(palavras).some((l) => /^C[óo]d\.\s/.test(l.texto) && /\bJan\b/.test(l.texto));
+}
+
+/**
+ * Ficha Financeira do SIAPPES (sistema antigo). Um PDF traz vários anos, cada um com o próprio cabeçalho
+ * ("Ano 2024 (MOEDA: REAL)", nome, Prec/CP, CODOM…) e tabela; a tabela pode continuar na página seguinte,
+ * repetindo a linha "Cód. Descrição Jan … Total". Cada linha: código de 3 caracteres, descrição numa linha só,
+ * 12 meses e total; a tabela fecha com "TOTAL" (12 líquidos). Devolve uma ficha por ano, na ordem do PDF.
+ */
+export function lerFichasSiappes(palavras: Palavra[]): FichaFinanceira[] {
+  const fichas: FichaFinanceira[] = [];
+  let bloco: Linha[] | null = null;
+  const fechar = () => { if (bloco) fichas.push(lerAnoSiappes(bloco)); };
+  for (const l of agruparLinhas(palavras)) {
+    // o título "MINISTÉRIO DA DEFESA" fica 2 linhas acima de "Ano": o bloco é aberto pelo "Ano"
+    if (/^Ano\s+\d{4}\b/.test(l.texto)) { fechar(); bloco = []; }
+    bloco?.push(l);
+  }
+  fechar();
+  return fichas;
+}
+
+function lerAnoSiappes(linhas: Linha[]): FichaFinanceira {
+  const avisos: string[] = [];
+  const { ano, ...cabecalho } = lerCabecalho(linhas);
+  const resultado: LinhaFicha[] = [];
+  let totaisLiquidos: number[] | null = null;
+  let xJan: number | null = null;
+  for (const l of linhas) {
+    if (/^C[óo]d\.\s/.test(l.texto)) { xJan = l.palavras.find((p) => p.texto === "Jan")?.x ?? xJan; continue; }
+    if (xJan === null) continue;
+    const valores = l.palavras.filter((p) => VALOR.test(p.texto) && p.x >= xJan! - 30);
+    if (/^TOT\s?AL\b/.test(l.texto)) {
+      if (valores.length >= 12) totaisLiquidos = valores.slice(0, 12).map((p) => lerValor(p.texto));
+      else avisos.push("linha TOTAL incompleta");
+      continue;
+    }
+    const codigo = l.palavras[0]!.texto;
+    if (!CODIGO_SIAPPES.test(codigo) || !valores.length) continue;
+    if (valores.length !== 13) {
+      avisos.push(`${codigo}: esperava 12 meses + total, encontrei ${valores.length} valores`);
+      continue;
+    }
+    const nums = valores.map((p) => lerValor(p.texto));
+    resultado.push({
+      codigo,
+      descricao: l.palavras.slice(1).filter((p) => p.x < xJan! - 2 && !valores.includes(p)).map((p) => p.texto).join(" ").trim(),
+      natureza: naturezaSiappes(codigo),
+      acerto: /^[GHI]/.test(codigo),
+      meses: nums.slice(0, 12),
+      total: nums[12]!,
+    });
+  }
+  if (xJan === null) avisos.push("tabela não encontrada (cabeçalho Cód./Descrição/Jan…Total)");
+  return { sistema: "siappes", ano, cabecalho, linhas: resultado, totaisLiquidos, conferencias: conferir(resultado, totaisLiquidos, avisos), avisos };
 }
 
 function codigoDe(it: unknown): string {

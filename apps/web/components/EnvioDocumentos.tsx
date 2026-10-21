@@ -77,8 +77,8 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
       <div>
         <h2 className="font-semibold">Contracheque e fichas financeiras (PDF)</h2>
         <p className="text-sm text-suave">
-          Envie um ou mais contracheques e/ou fichas financeiras. O site lê os dados e os valores e descarta os arquivos: nenhum PDF fica guardado.
-          Ao gravar, os recebidos são substituídos no ano de cada ficha e no mês de cada contracheque.
+          Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque. Os valores recebidos vêm das fichas; o contracheque serve só
+          para os dados bancários. Os arquivos são lidos e descartados: nenhum PDF fica guardado. Ao gravar, os recebidos são substituídos no ano de cada ficha.
         </p>
       </div>
 
@@ -120,7 +120,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados }:
                 <span className={`px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] ${f.conferenciaOk ? "bg-green-100 text-green-900" : "bg-red-100 text-red-900"}`}>
                   {f.conferenciaOk ? "conferido" : "não conferiu"}
                 </span>
-                <span className="font-medium">{f.tipo === "contracheque" ? "Contracheque" : "Ficha financeira"} {f.referencia}</span>
+                <span className="font-medium">{f.tipo === "contracheque" ? "Contracheque" : `Ficha financeira ${f.sistema === "siappes" ? "SIAPPES" : "SIPPES"}`} {f.referencia}</span>
                 <span className="text-suave">{f.arquivo} · {f.linhas} linhas</span>
                 {f.avisos.length > 0 && <span className="text-xs text-amber-800">{f.avisos.join("; ")}</span>}
                 {!bloqueado && (

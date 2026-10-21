@@ -1,8 +1,9 @@
 /**
- * Converte as linhas da Ficha Financeira (códigos do SIPPES) nas rubricas do processo (códigos da planilha).
- * A tabela de correspondência fica no banco (correspondencia_rubrica) e pode ser ajustada sem mexer no código.
+ * Converte as linhas da Ficha Financeira nas rubricas do processo, que usam os códigos do SIAPPES (Tab_pag).
+ * - SIPPES (NR0001…): pela tabela de correspondência do banco (correspondencia_rubrica), ajustável sem mexer no código.
+ * - SIAPPES (A01…): o código já é o da rubrica ("A01" → "A01 - SOLDO"), com as exceções de CORRESPONDENCIA_SIAPPES.
  */
-import type { FichaFinanceira, LinhaFicha } from "./leitor";
+import { CODIGO_SIAPPES, type FichaFinanceira, type LinhaFicha } from "./leitor";
 
 export interface Correspondencia {
   /** Código da rubrica no processo, ex.: "A01 - SOLDO" */
@@ -28,6 +29,18 @@ export const CORRESPONDENCIA_PADRAO: Correspondencia[] = [
   { codigoRubrica: "ZM7 - DESC DEP FUSEX", codigoSippes: "ND0011" },
 ];
 
+/**
+ * Códigos do SIAPPES que não são o código impresso na rubrica (Tab_pag set/26):
+ * - Z02 aparece em duas rubricas da planilha; no SIAPPES, Z02 é a P Mil 7,5/9,5/10,5% e Z05 a de 1,5%.
+ * - ZM5 e ZM7 são ambos "DESC DEP FUSEX" (nas fichas de 2021–2022 um substitui o outro no meio do ano).
+ * O código que coincide com o da rubrica (A01, Z01, Z99…) não precisa estar aqui. A tabela do banco tem prioridade.
+ */
+export const CORRESPONDENCIA_SIAPPES: Correspondencia[] = [
+  { codigoRubrica: "Z02 - P MIL 7,5/9,5/10,5%", codigoSippes: "Z02" },
+  { codigoRubrica: "Z02 - P MIL 1,5%", codigoSippes: "Z05" },
+  { codigoRubrica: "ZM7 - DESC DEP FUSEX", codigoSippes: "ZM5" },
+];
+
 export interface RubricaPosicao { posicao: number; codigo: string }
 export interface LancamentoLido { ano: number; mes: number; posicao: number; valor: number; codigosSippes: string[] }
 
@@ -48,7 +61,14 @@ export function aplicarCorrespondencia(
 ): ResultadoCorrespondencia {
   const posicaoDoCodigo = new Map(rubricas.filter((r) => r.codigo).map((r) => [r.codigo.trim(), r.posicao]));
   const destino = new Map<string, number>();
-  for (const c of tabela) {
+  // SIAPPES: o código no início da rubrica ("A01 - SOLDO"), quando só uma rubrica o usa
+  const porCodigo = new Map<string, number[]>();
+  for (const r of rubricas) {
+    const c = r.codigo?.trim().split(/\s/)[0] ?? "";
+    if (CODIGO_SIAPPES.test(c)) porCodigo.set(c, [...(porCodigo.get(c) ?? []), r.posicao]);
+  }
+  for (const [c, ps] of porCodigo) if (ps.length === 1) destino.set(c, ps[0]!);
+  for (const c of [...CORRESPONDENCIA_SIAPPES, ...tabela]) {
     const p = posicaoDoCodigo.get(c.codigoRubrica.trim());
     if (p !== undefined) destino.set(c.codigoSippes, p);
   }

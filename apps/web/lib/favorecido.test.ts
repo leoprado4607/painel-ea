@@ -25,18 +25,19 @@ describe("dados do favorecido lidos dos documentos", () => {
     expect(bancoDaLista(null)).toBeUndefined();
   });
 
-  it("contracheque traz banco, agência, conta e OM de vinculação; a ficha completa a identidade", () => {
+  it("a ficha traz os dados do militar; o contracheque, só banco, agência e conta", () => {
     const r = dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }) }, contracheque(2026, 8)]);
     expect(r).toEqual({
       posto_graduacao: "MAJOR", nome: "FULANO DE TAL", prec_cp: "111111111", identidade: "0123456789", cpf: "529.982.247-25",
-      om_vinculacao: "B ADM GU NATAL", banco: "001 - Brasil", agencia: "2857", conta: "0005593204",
+      om_vinculacao: "OM DA FICHA", banco: "001 - Brasil", agencia: "2857", conta: "0005593204",
     });
+    expect(dadosDoFavorecido([contracheque(2026, 8)])).toEqual({ banco: "001 - Brasil", agencia: "2857", conta: "0005593204" });
   });
 
-  it("período: ficha começa em janeiro; contracheque no próprio mês; termina no último mês com valor", () => {
-    expect(periodoDosDocumentos([contracheque(2026, 8)])).toEqual({ inicio: "2026-08-01", fim: "2026-08-01" });
+  it("período: das fichas, de janeiro ao último mês com valor; o contracheque não conta", () => {
+    expect(periodoDosDocumentos([contracheque(2026, 8)])).toBeNull();
     expect(periodoDosDocumentos([{ arquivo: "f", tipo: "ficha", ficha: ficha(2025, { 3: 1, 11: 1 }) }, contracheque(2026, 2)]))
-      .toEqual({ inicio: "2025-01-01", fim: "2026-02-01" });
+      .toEqual({ inicio: "2025-01-01", fim: "2025-11-01" });
     expect(periodoDosDocumentos([{ arquivo: "f", tipo: "ficha", ficha: ficha(2025, {}) }])).toBeNull();
   });
 
@@ -45,6 +46,8 @@ describe("dados do favorecido lidos dos documentos", () => {
     expect(fichaValida({ ...ficha(2025, {}), ano: 1990 })).toBe(false);
     expect(fichaValida({ ...ficha(2025, {}), linhas: [{ codigo: "XX1", meses: [] }] })).toBe(false);
     expect(fichaValida(null)).toBe(false);
+    // ficha do SIAPPES: códigos de 3 caracteres
+    expect(fichaValida({ ...ficha(2021, {}), linhas: [{ ...ficha(2021, { 1: 1 }).linhas[0]!, codigo: "A01" }] })).toBe(true);
   });
 });
 
@@ -58,15 +61,14 @@ const PASTA = join(__dirname, "..", "..", "..", "exemplos", "contracheques");
 const reais = existsSync(PASTA) ? readdirSync(PASTA).filter((f) => f.toLowerCase().endsWith(".pdf")) : [];
 
 describe.skipIf(reais.length === 0).each(reais)("contracheque real %s no fluxo do site", (arq) => {
-  it("preenche os dados do favorecido e os recebidos do mês pelas rubricas padrão", async () => {
+  it("preenche os dados bancários; os valores lidos são de um mês só", async () => {
     const lido = await lerDocumentoPdf(new Uint8Array(readFileSync(join(PASTA, arq))));
     const doc: DocumentoExtraido = { arquivo: arq, tipo: lido.tipo, ficha: lido.ficha, contracheque: lido.tipo === "contracheque" ? lido.contracheque : undefined };
     const dados = dadosDoFavorecido([doc]);
-    expect(Object.keys(dados).sort()).toEqual(["agencia", "banco", "conta", "cpf", "nome", "om_vinculacao", "posto_graduacao", "prec_cp"]);
-    expect(cpfValido(dados.cpf!)).toBe(true);
+    expect(Object.keys(dados).sort()).toEqual(["agencia", "banco", "conta"]);
+    expect(cpfValido(doc.contracheque!.cabecalho.cpf!)).toBe(true);
     expect(fichaValida(doc.ficha)).toBe(true);
-    const periodo = periodoDosDocumentos([doc])!;
-    expect(periodo.inicio).toBe(periodo.fim);
+    expect(periodoDosDocumentos([doc])).toBeNull(); // valores só das fichas
     const rubricas = CORRESPONDENCIA_PADRAO.map((c, i) => ({ posicao: i + 1, codigo: c.codigoRubrica }));
     const r = aplicarCorrespondencia([doc.ficha], rubricas, CORRESPONDENCIA_PADRAO);
     expect(r.lancamentos.length).toBeGreaterThan(2);
@@ -76,7 +78,7 @@ describe.skipIf(reais.length === 0).each(reais)("contracheque real %s no fluxo d
 
 const FICHA_2026 = join(__dirname, "..", "..", "..", "exemplos", "fichas", "Ficha Financeira - 2026 (out-2026).pdf");
 describe.skipIf(reais.length === 0 || !existsSync(FICHA_2026))("ficha + contracheque reais juntos", () => {
-  it("a identidade vem da Ficha Financeira; banco, agência, conta e OM de vinculação do contracheque", async () => {
+  it("identidade e OM vêm da Ficha Financeira; banco, agência e conta do contracheque", async () => {
     const extrair = async (caminho: string, arquivo: string): Promise<DocumentoExtraido> => {
       const d = await lerDocumentoPdf(new Uint8Array(readFileSync(caminho)));
       return { arquivo, tipo: d.tipo, ficha: d.ficha, contracheque: d.tipo === "contracheque" ? d.contracheque : undefined };
@@ -87,7 +89,7 @@ describe.skipIf(reais.length === 0 || !existsSync(FICHA_2026))("ficha + contrach
     expect(dados.identidade).toBe(ficha.ficha.cabecalho.identidade);
     expect(dados.identidade).toMatch(/^\d{10}$/);
     expect(dados.banco).toBe(bancoDaLista(cc.contracheque!.cabecalho.banco));
-    expect(dados.om_vinculacao).toBe(cc.contracheque!.cabecalho.omVinculacao);
+    expect(dados.om_vinculacao).toBe(ficha.ficha.cabecalho.siglaUa);
     expect(dadosDoFavorecido([cc]).identidade).toBeUndefined(); // o contracheque sozinho não traz identidade
   });
 });

@@ -22,9 +22,9 @@ export default async function Processos() {
       {processos.length === 0 ? (
         <div className="cartao space-y-4 py-10 text-center">
           <p className="rotulo-secao mx-auto max-w-md">Nenhum processo</p>
-          <h2 className="text-2xl font-semibold text-carvao">Comece pelo contracheque ou pelas fichas</h2>
+          <h2 className="text-2xl font-semibold text-carvao">Comece pelas fichas financeiras</h2>
           <p className="mx-auto max-w-lg text-sm text-suave">
-            Envie os PDFs e o site cria o processo com os dados do favorecido, o período e os valores recebidos. Também é possível digitar tudo.
+            Envie as fichas e o contracheque em PDF e o site cria o processo com os dados do favorecido e os valores recebidos. Também é possível digitar tudo.
           </p>
           <Link href="/processos/novo" className="botao">Criar o primeiro processo</Link>
         </div>

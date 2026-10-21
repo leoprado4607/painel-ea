@@ -38,3 +38,16 @@ describe("correspondência SIPPES → rubricas do processo", () => {
     expect(periodoDasFichas([ficha(2025, [lin("NR0001", 1)]), ficha(2026, [lin("NR0001", 1, 4)])])).toEqual({ inicio: "2025-01-01", fim: "2026-04-01" });
   });
 });
+
+describe("correspondência SIAPPES → rubricas do processo", () => {
+  const padrao = [
+    { posicao: 1, codigo: "A01 - SOLDO" }, { posicao: 14, codigo: "Z02 - P MIL 7,5/9,5/10,5%" }, { posicao: 15, codigo: "Z02 - P MIL 1,5%" },
+    { posicao: 16, codigo: "Z99 - PENS JUDICIARIA" }, { posicao: 17, codigo: "ZM7 - DESC DEP FUSEX" },
+  ];
+  it("o código da ficha é o da rubrica; Z02/Z05 e ZM5 pela tabela do SIAPPES", () => {
+    const r = aplicarCorrespondencia([ficha(2021, [lin("A01", 900, 1), lin("Z02", 70, 1), lin("Z05", 15, 1), lin("Z99", 5, 1), lin("ZM5", 20, 1), lin("ZM7", 1, 1), lin("Z10", 50, 1)])],
+      padrao, CORRESPONDENCIA_PADRAO);
+    expect(r.lancamentos.map((l) => [l.posicao, l.valor])).toEqual([[1, 900], [14, 70], [15, 15], [16, 5], [17, 21]]);
+    expect(r.naoUsadas.map((l) => l.codigo)).toEqual(["Z10"]);
+  });
+});

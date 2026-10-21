@@ -4,7 +4,7 @@ import { EnvioDocumentos } from "@/components/EnvioDocumentos";
 import { FormularioProcesso, type Valores } from "@/components/FormularioProcesso";
 import type { DadosLidos } from "@/lib/favorecido";
 
-/** Campos do formulário que o contracheque e as fichas preenchem. */
+/** Campos do formulário que as fichas (e, nos dados bancários, o contracheque) preenchem. */
 const CAMPOS_DOS_PDFS: (keyof DadosLidos)[] = ["posto_graduacao", "nome", "prec_cp", "cpf", "identidade", "om_vinculacao", "banco", "agencia", "conta"];
 
 /**

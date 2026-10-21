@@ -3,7 +3,7 @@
  * Contracheques e fichas financeiras em PDF: o arquivo é lido na memória e descartado. Só os dados extraídos
  * vão para a tela de revisão e, depois de confirmados, para o banco (decisão de 19/10/2026: nada de guardar os PDFs).
  */
-import { aplicarCorrespondencia, lerDocumentoPdf, type Correspondencia, type FichaFinanceira } from "@painel-ea/leitor-ficha";
+import { aplicarCorrespondencia, lerDocumentosPdf, type Correspondencia, type FichaFinanceira } from "@painel-ea/leitor-ficha";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { dadosDoFavorecido, fichaValida, periodoDosDocumentos, type DadosLidos, type DocumentoExtraido } from "@/lib/favorecido";
@@ -15,6 +15,7 @@ type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 export interface ResumoDocumento {
   arquivo: string;
   tipo: "contracheque" | "ficha";
+  sistema: "sippes" | "siappes";
   /** "Agosto/2026" (contracheque) ou "2025" (ficha) */
   referencia: string;
   linhas: number;
@@ -50,37 +51,43 @@ async function lerArquivos(form: FormData): Promise<DocumentoExtraido[]> {
   const lidos: DocumentoExtraido[] = [];
   for (const a of arquivos) {
     if (!a.name.toLowerCase().endsWith(".pdf")) throw new Error(`${a.name} não é PDF.`);
-    let doc;
+    let docs;
     try {
-      doc = await lerDocumentoPdf(new Uint8Array(await a.arrayBuffer()));
+      docs = await lerDocumentosPdf(new Uint8Array(await a.arrayBuffer()));
     } catch {
-      throw new Error(`Não foi possível ler ${a.name}. Envie o contracheque ou a Ficha Financeira em PDF, como baixados do sistema.`);
+      throw new Error(`Não foi possível ler ${a.name}. Envie o contracheque ou a Ficha Financeira (SIPPES ou SIAPPES) em PDF, como baixados do sistema.`);
     }
-    if (!doc.ficha.linhas.length) throw new Error(`${a.name}: não encontrei as linhas de pagamento.`);
-    if (!doc.ficha.ano) throw new Error(`${a.name}: não encontrei o ano/mês de referência.`);
-    lidos.push({ arquivo: a.name, tipo: doc.tipo, ficha: doc.ficha, contracheque: doc.tipo === "contracheque" ? doc.contracheque : undefined });
+    if (!docs.length || docs.every((d) => !d.ficha.linhas.length)) throw new Error(`${a.name}: não encontrei as linhas de pagamento.`);
+    for (const doc of docs) {
+      if (!doc.ficha.ano) throw new Error(`${a.name}: não encontrei o ano/mês de referência.`);
+      // a ficha do SIAPPES traz vários anos: cada ano vira um documento, identificado pelo ano
+      const arquivo = docs.length > 1 ? `${a.name} (${doc.ficha.ano})` : a.name;
+      if (doc.ficha.linhas.length) lidos.push({ arquivo, tipo: doc.tipo, ficha: doc.ficha, contracheque: doc.tipo === "contracheque" ? doc.contracheque : undefined });
+    }
   }
+  // o mesmo ano em duas fichas somaria os valores duas vezes
+  const anosFicha = lidos.filter((l) => l.tipo === "ficha").map((l) => l.ficha.ano);
+  const repetido = anosFicha.find((ano, i) => anosFicha.indexOf(ano) !== i);
+  if (repetido) throw new Error(`A ficha financeira de ${repetido} foi enviada mais de uma vez.`);
   const cpfs = new Set(lidos.map((l) => soDigitos(l.ficha.cabecalho.cpf)).filter(Boolean));
   if (cpfs.size > 1) throw new Error("Os documentos enviados são de militares diferentes (CPFs diferentes).");
   return lidos;
 }
 
+/** Só as fichas financeiras entram nos valores recebidos: o contracheque serve para os dados bancários. */
+const fichasDoCalculo = (docs: DocumentoExtraido[]): FichaFinanceira[] => docs.filter((d) => d.tipo === "ficha").map((d) => d.ficha);
+
 const resumir = (d: DocumentoExtraido): ResumoDocumento => ({
-  arquivo: d.arquivo, tipo: d.tipo,
+  arquivo: d.arquivo, tipo: d.tipo, sistema: d.ficha.sistema ?? "sippes",
   referencia: d.contracheque?.mes ? `${MESES[d.contracheque.mes - 1]}/${d.ficha.ano}` : String(d.ficha.ano),
-  linhas: d.ficha.linhas.length, conferenciaOk: d.ficha.conferencias.ok, avisos: d.ficha.avisos,
+  linhas: d.ficha.linhas.length, conferenciaOk: d.ficha.conferencias.ok,
+  avisos: d.tipo === "contracheque" ? ["Usado só para os dados bancários (os valores vêm das fichas)."] : d.ficha.avisos,
 });
 
-/** Meses que cada documento substitui nos recebidos: a ficha, o ano inteiro; o contracheque, só o mês dele. */
+/** Meses que os documentos substituem nos recebidos: o ano inteiro de cada ficha (o contracheque não entra nos valores). */
 function mesesCobertos(docs: DocumentoExtraido[]): { ano: number; meses: number[] }[] {
-  const porAno = new Map<number, Set<number>>();
-  for (const d of docs) {
-    const ano = d.ficha.ano!;
-    const s = porAno.get(ano) ?? new Set<number>();
-    for (const m of d.contracheque?.mes ? [d.contracheque.mes] : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]) s.add(m);
-    porAno.set(ano, s);
-  }
-  return [...porAno].sort(([a], [b]) => a - b).map(([ano, s]) => ({ ano, meses: [...s].sort((a, b) => a - b) }));
+  const anos = [...new Set(fichasDoCalculo(docs).map((f) => f.ano!))].sort((a, b) => a - b);
+  return anos.map((ano) => ({ ano, meses: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] }));
 }
 const descreverCobertura = (c: { ano: number; meses: number[] }[]) =>
   c.flatMap(({ ano, meses }) => (meses.length === 12 ? [String(ano)] : meses.map((m) => `${String(m).padStart(2, "0")}/${ano}`)));
@@ -103,7 +110,7 @@ async function montarPrevia(supabase: Supabase, processoId: string, docs: Docume
   ]);
   if (!processo) return { erro: "Processo não encontrado." };
   if (processo.situacao !== "rascunho") return { erro: "Processo já emitido. Reabra na aba Impressão para alterar." };
-  const r = aplicarCorrespondencia(docs.map((d) => d.ficha), rubricas ?? [], await tabelaCorrespondencia(supabase));
+  const r = aplicarCorrespondencia(fichasDoCalculo(docs), rubricas ?? [], await tabelaCorrespondencia(supabase));
   return {
     documentos: docs, resumo: docs.map(resumir), dados: dadosDoFavorecido(docs),
     divergenciasMilitar: compararMilitar(docs, (processo.militar ?? {}) as unknown as Record<string, string | null>),
@@ -138,12 +145,11 @@ export async function reanalisarDocumentos(processoId: string, docs: DocumentoEx
   }
 }
 
-/** Grava os recebidos: substitui os meses cobertos pelos documentos (ano inteiro da ficha; o mês do contracheque). */
+/** Grava os recebidos: substitui os anos cobertos pelas fichas financeiras. */
 async function gravarRecebidosDe(supabase: Supabase, processoId: string, docs: DocumentoExtraido[], escolhasExtras: Record<string, number>) {
-  const fichas: FichaFinanceira[] = docs.map((d) => d.ficha);
-  if (!fichas.length || !fichas.every(fichaValida)) throw new Error("Dados dos documentos inválidos. Envie os PDFs de novo.");
+  if (!docs.length || !docs.every((d) => fichaValida(d.ficha))) throw new Error("Dados dos documentos inválidos. Envie os PDFs de novo.");
   const { data: rubricas } = await supabase.from("processo_rubrica").select("posicao, codigo").eq("processo_id", processoId);
-  const r = aplicarCorrespondencia(fichas, rubricas ?? [], await tabelaCorrespondencia(supabase), escolhasExtras);
+  const r = aplicarCorrespondencia(fichasDoCalculo(docs), rubricas ?? [], await tabelaCorrespondencia(supabase), escolhasExtras);
   const cobertura = mesesCobertos(docs);
   for (const { ano, meses } of cobertura) {
     const { error } = await supabase.from("lancamento").delete()
@@ -181,7 +187,8 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const omId = await omParaNovoProcesso(supabase, perfil, String(form.get("om_id") ?? "") || null);
     const docs = await lerArquivos(form);
     // o período da dívida fica em branco: o operador preenche (obrigatório) em Dados do favorecido
-    if (!periodoDosDocumentos(docs)) return { erro: "Os documentos não têm valores." };
+    if (!docs.some((d) => d.tipo === "ficha")) return { erro: "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
+    if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
     const { data: m, error: e1 } = await supabase.from("militar").insert({
       om_id: omId, nome: dados.nome ?? "(nome não lido)", posto_graduacao: dados.posto_graduacao ?? null, prec_cp: dados.prec_cp ?? null,
