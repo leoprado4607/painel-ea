@@ -7,6 +7,8 @@ export { bancoDaLista };
 export interface DadosLidos {
   posto_graduacao?: string; nome?: string; prec_cp?: string; identidade?: string; cpf?: string;
   om_vinculacao?: string; banco?: string; agencia?: string; conta?: string;
+  /** A OM lida veio do contracheque (prioridade sempre dele); sem isso, veio da ficha e não substitui uma OM já preenchida. */
+  om_do_contracheque?: boolean;
 }
 
 /** Documento já lido, sem o arquivo: é isto que vai e volta entre a tela de revisão e o servidor. */
@@ -39,7 +41,8 @@ export function dadosDoFavorecido(docs: DocumentoExtraido[]): DadosLidos {
   }
   for (const d of [...contracheques].reverse()) {
     const c = d.contracheque!.cabecalho;
-    r = { ...r, ...definido({ banco: bancoDaLista(c.banco), agencia: c.agencia, conta: c.conta, om_vinculacao: nomeDaOm(c.omVinculacao, c.codom) }) };
+    const om = nomeDaOm(c.omVinculacao, c.codom);
+    r = { ...r, ...definido({ banco: bancoDaLista(c.banco), agencia: c.agencia, conta: c.conta, om_vinculacao: om }), ...(om ? { om_do_contracheque: true } : {}) };
   }
   return r;
 }

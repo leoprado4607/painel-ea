@@ -41,10 +41,12 @@ describe("dados do favorecido lidos dos documentos", () => {
     const r = dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }) }, contracheque(2026, 8)]);
     expect(r).toEqual({
       posto_graduacao: "MAJOR", nome: "FULANO DE TAL", prec_cp: "111111111", identidade: "0123456789", cpf: "529.982.247-25",
-      om_vinculacao: "B Adm Gu Natal", banco: "001 - Banco do Brasil", agencia: "2857", conta: "0005593204",
+      om_vinculacao: "B Adm Gu Natal", banco: "001 - Banco do Brasil", agencia: "2857", conta: "0005593204", om_do_contracheque: true,
     });
     // sem contracheque, a OM da ficha (fora da lista, fica o texto lido para o operador trocar)
     expect(dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }) }]).om_vinculacao).toBe("OM DA FICHA");
+    // OM só da ficha: sem a marca do contracheque (não substitui uma OM já preenchida no formulário)
+    expect(dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }) }]).om_do_contracheque).toBeUndefined();
     expect(dadosDoFavorecido([{ arquivo: "f.pdf", tipo: "ficha", ficha: ficha(2025, { 1: 1 }, { siglaUa: "16 B I MTZ", codom: "007807" }) }]).om_vinculacao)
       .toBe("16º BI Mtz");
   });
@@ -80,7 +82,7 @@ describe.skipIf(reais.length === 0).each(reais)("contracheque real %s no fluxo d
     const lido = await lerDocumentoPdf(new Uint8Array(readFileSync(join(PASTA, arq))));
     const doc: DocumentoExtraido = { arquivo: arq, tipo: lido.tipo, ficha: lido.ficha, contracheque: lido.tipo === "contracheque" ? lido.contracheque : undefined };
     const dados = dadosDoFavorecido([doc]);
-    expect(Object.keys(dados).sort()).toEqual(["agencia", "banco", "conta", "om_vinculacao"]);
+    expect(Object.keys(dados).sort()).toEqual(["agencia", "banco", "conta", "om_do_contracheque", "om_vinculacao"]);
     expect(cpfValido(doc.contracheque!.cabecalho.cpf!)).toBe(true);
     expect(fichaValida(doc.ficha)).toBe(true);
     expect(periodoDosDocumentos([doc])).toBeNull(); // valores só das fichas

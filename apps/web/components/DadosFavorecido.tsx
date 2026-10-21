@@ -26,7 +26,16 @@ export function DadosFavorecido({ processoId, valores, rubricas, bloqueado }: {
   return (
     <div className="space-y-5">
       <EnvioDocumentos key={`envio-${envio}`} processoId={processoId} rubricas={rubricas} bloqueado={bloqueado}
-        aoLerDados={(d) => { setLidos(d); setVersao((v) => v + 1); }} />
+        aoLerDados={(d) => {
+          // OM de vinculação: prioridade sempre do contracheque; a da ficha só preenche se o campo estiver vazio
+          setLidos((antes) => {
+            const atual = { ...valores, ...antes }.om_vinculacao;
+            const { om_do_contracheque, ...dados } = d;
+            if (!om_do_contracheque && atual) delete dados.om_vinculacao;
+            return dados;
+          });
+          setVersao((v) => v + 1);
+        }} />
       {/* a chave remonta o formulário com os dados lidos por cima do cadastro */}
       <FormularioProcesso key={versao} processoId={processoId} valores={{ ...valores, ...lidos }} bloqueado={bloqueado} aoLimpar={limpar} />
     </div>
