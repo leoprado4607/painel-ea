@@ -14,13 +14,17 @@ export default function TrocarSenha() {
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    if (senha.length < 10 || !/[A-Za-z]/.test(senha) || !/\d/.test(senha)) return setErro("Use pelo menos 10 caracteres, com letras e números.");
     if (senha !== repetir) return setErro("As senhas não conferem.");
     setOcupado(true);
     setErro(null);
     const supabase = supabaseNavegador();
     const { error } = await supabase.auth.updateUser({ password: senha });
-    if (error) { setOcupado(false); return setErro(error.message.includes("different") ? "A nova senha precisa ser diferente da provisória." : error.message); }
+    // formato livre (decisão de 22/10/2026): só o mínimo do próprio Supabase Auth continua valendo
+    if (error) {
+      setOcupado(false);
+      return setErro(error.message.includes("different") ? "A nova senha precisa ser diferente da provisória."
+        : /at least \d+/.test(error.message) ? `A senha precisa ter pelo menos ${error.message.match(/at least (\d+)/)![1]} caracteres.` : error.message);
+    }
     const { error: e2 } = await supabase.rpc("concluir_troca_senha");
     setOcupado(false);
     if (e2) return setErro(e2.message);
@@ -37,7 +41,6 @@ export default function TrocarSenha() {
         <div>
           <label htmlFor="senha" className="rotulo">Nova senha</label>
           <input id="senha" type="password" autoComplete="new-password" required value={senha} onChange={(e) => setSenha(e.target.value)} className="entrada" />
-          <p className="ajuda">Mínimo de 10 caracteres, com letras e números.</p>
         </div>
         <div>
           <label htmlFor="repetir" className="rotulo">Repita a nova senha</label>
