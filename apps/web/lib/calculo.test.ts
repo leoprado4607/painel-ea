@@ -35,3 +35,19 @@ it("só os lançamentos do período da dívida entram no cálculo (caso real: pe
   expect(total("2026-06-01", "2026-06-01")).toBe(4806.67); // o que saiu com o período errado
   expect(total("2021-06-01", "2021-06-01")).toBe(6389.41); // período certo: os valores de 2026 não somam
 });
+
+it("recebidos após o período entram no cálculo como recebidos do mês do pagamento (os de dentro do período, não)", () => {
+  const indices = ler<IndiceMensal[]>("indices-planilha.json").filter((i) => i.percentual !== null) as { ano: number; mes: number; percentual: number }[];
+  const rubricas = [{ posicao: 1, codigo: "A56 - AUX FARD 1 SOLDO", tipo: "Receita" as const }];
+  const linhas = [{ tipo: "devido" as const, ano: 2021, mes: 6, posicao: 1, valor: 5483 }];
+  const periodo = { inicio: "2021-06-01", fim: "2021-06-01" };
+  const sem = calcular(montarEntrada(rubricas, linhas, indices, periodo));
+  const com = calcular(montarEntrada(rubricas, linhas, indices, {
+    ...periodo, posPeriodo: [{ ano: 2022, mes: 3, posicao: 1, valor: 1000 }, { ano: 2021, mes: 6, posicao: 1, valor: 999 }],
+  }));
+  const corrigido2022 = com.porAno[2022]!.recebidoCorrigido[0]![2]!;
+  expect(com.porAno[2022]!.recebido[0]![2]).toBe(1000);
+  expect(com.porAno[2021]!.recebido[0]![5]).toBe(0); // o de dentro do período é ignorado
+  expect(corrigido2022).toBeGreaterThan(1000);
+  expect(com.cpex.importanciaBasicaTotalCorrigida).toBeCloseTo(sem.cpex.importanciaBasicaTotalCorrigida - corrigido2022, 1);
+});

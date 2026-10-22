@@ -4,6 +4,7 @@
  */
 import { calcular } from "@painel-ea/engine";
 import { montarEntrada } from "./calculo";
+import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
 import type { Rubrica } from "@painel-ea/engine";
 
@@ -11,6 +12,7 @@ type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 interface ProcessoResumo {
   id: string; situacao: string; periodo_inicio: string | null; periodo_fim: string | null;
   indices_usados?: { ano: number; mes: number; percentual: number | string | null }[] | null;
+  complementos?: { recebidosPosPeriodo?: unknown } | null;
 }
 type Indice = { ano: number; mes: number; percentual: number | string };
 
@@ -33,7 +35,7 @@ export async function valoresCorrigidos(supabase: Supabase, processos: ProcessoR
       const entrada = montarEntrada(
         (rubricas ?? []).filter((r) => r.processo_id === p.id) as { posicao: number; codigo: string; tipo: Rubrica["tipo"] }[],
         (lancamentos ?? []).filter((l) => l.processo_id === p.id).map((l) => ({ ...l, valor: Number(l.valor) })),
-        usados, { inicio: p.periodo_inicio, fim: p.periodo_fim },
+        usados, { inicio: p.periodo_inicio, fim: p.periodo_fim, posPeriodo: recebidosPosPeriodo(p.complementos) },
       );
       valores.set(p.id, calcular(entrada).cpex.importanciaBasicaTotalCorrigida);
     } catch {

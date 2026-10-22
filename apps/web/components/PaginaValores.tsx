@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Aviso } from "@/components/Aviso";
 import { ValoresMensais } from "@/components/ValoresMensais";
 import { mesDeData } from "@/lib/lancamentos";
+import { recebidosPosPeriodo } from "@/lib/pos-periodo";
 import { carregarProcesso } from "@/lib/processo";
 
 export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
@@ -22,6 +23,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}
         linhas={lancamentos.filter((l) => l.tipo === tipo).map(({ ano, mes, posicao, valor }) => ({ ano, mes, posicao, valor }))}
+        posPeriodo={tipo === "recebido" ? recebidosPosPeriodo(processo.complementos) : []}
       />
     </div>
   );

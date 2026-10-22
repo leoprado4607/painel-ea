@@ -1,6 +1,6 @@
 /** "Solicitação Recapitulação": receitas, descontos e valor líquido corrigidos, ano a ano. */
 import { Page, Text, View } from "@react-pdf/renderer";
-import { anosDoPeriodo, Assinaturas, Cabecalho, e, Linha, mesAno, reais, requerente, Rodape, type Coluna, type DadosDocumentos } from "./comum";
+import { anosDoPeriodo, Assinaturas, Cabecalho, dataBr, e, Linha, reais, requerente, Rodape, type Coluna, type DadosDocumentos } from "./comum";
 
 export function Recapitulacao({ d }: { d: DadosDocumentos }) {
   const r = d.resultado.recapitulacao;
@@ -15,7 +15,7 @@ export function Recapitulacao({ d }: { d: DadosDocumentos }) {
       <Text style={e.titulo}>Folha de Cálculo Recapitulação</Text>
       <View style={{ gap: 2, marginBottom: 6 }}>
         <Text>Requerente: {requerente(d)}</Text>
-        <Text>Período: {mesAno(d.processo.periodoInicio)} a {mesAno(d.processo.periodoFim)}</Text>
+        <Text>Período: {dataBr(d.processo.periodoInicio)} a {dataBr(d.processo.periodoFim)}</Text>
         <Text>Espécie da Dívida: {d.processo.especieDivida ?? ""}</Text>
         <Text>Importância Básica Total Corrigida: R$ {reais(r.saldo)}</Text>
       </View>

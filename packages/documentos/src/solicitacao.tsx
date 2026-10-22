@@ -1,6 +1,6 @@
 /** "Solicitação NN" (Folha de Cálculo por Exercício) e "Solicitação NN Verso" (Discriminação dos Valores Devidos e Descontos). */
 import { Page, Text, View } from "@react-pdf/renderer";
-import { Assinaturas, Cabecalho, corDoTipo, e, Linha, mesAno, reais, requerente, Rodape, type Coluna, type DadosDocumentos } from "./comum";
+import { Assinaturas, Cabecalho, corDoTipo, dataBr, e, Linha, reais, requerente, Rodape, type Coluna, type DadosDocumentos } from "./comum";
 
 export function Solicitacao({ d, ano }: { d: DadosDocumentos; ano: number }) {
   const a = d.resultado.porAno[ano]!;
@@ -12,7 +12,7 @@ export function Solicitacao({ d, ano }: { d: DadosDocumentos; ano: number }) {
       <Text style={[e.centro, e.negrito, { marginVertical: 8 }]}>Exercício - {ano}</Text>
       <View style={{ gap: 3, marginBottom: 4 }}>
         <Text>Requerente: {requerente(d)}</Text>
-        <Text>Período: {mesAno(d.processo.periodoInicio)} a {mesAno(d.processo.periodoFim)}</Text>
+        <Text>Período: {dataBr(d.processo.periodoInicio)} a {dataBr(d.processo.periodoFim)}</Text>
         <Text>Espécie da Dívida: {d.processo.especieDivida ?? ""}</Text>
         <Text>Importância Básica (A receber - Recebido): R$ {reais(a.importanciaBasica)}</Text>
       </View>

@@ -3,6 +3,7 @@ import { Aviso } from "@/components/Aviso";
 import { PainelEmissao } from "@/components/PainelEmissao";
 import { descreverRegra } from "@/lib/indice";
 import { montarEntrada } from "@/lib/calculo";
+import { recebidosPosPeriodo } from "@/lib/pos-periodo";
 import { formatarReais } from "@/lib/dinheiro";
 import { nomeNaAssinatura } from "@/lib/postos";
 import { carregarProcesso, operadorDoProcesso } from "@/lib/processo";
@@ -22,10 +23,12 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
   ]);
   if (!indices?.length) return <Aviso tipo="erro">Não foi possível carregar os índices de correção.</Aviso>;
 
-  const r = calcular(montarEntrada(rubricas, lancamentos, indices, { inicio: processo.periodo_inicio, fim: processo.periodo_fim }));
+  const posPeriodo = recebidosPosPeriodo(processo.complementos);
+  const r = calcular(montarEntrada(rubricas, lancamentos, indices, { inicio: processo.periodo_inicio, fim: processo.periodo_fim, posPeriodo }));
   const ate = r.tabela.atualizadoAte;
   const ini = processo.periodo_inicio ? Number(processo.periodo_inicio.slice(0, 4)) : 2006;
-  const fim = processo.periodo_fim ? Number(processo.periodo_fim.slice(0, 4)) : 2028;
+  // recebidos após o período: os anos deles também aparecem
+  const fim = Math.max(processo.periodo_fim ? Number(processo.periodo_fim.slice(0, 4)) : 2028, ...posPeriodo.map((x) => x.ano));
   const anos = r.anos.filter((a) => a.ano >= ini && a.ano <= fim);
   const ativas = rubricas.filter((x) => x.codigo);
   const descricaoIndice = descreverRegra(regras ?? []);

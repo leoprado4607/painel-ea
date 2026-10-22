@@ -1,7 +1,7 @@
 /** "CPEX": Folha de Cálculo para ser informado ao CPEx (totais do período por rubrica, sem e com correção). */
 import { Page, Text, View } from "@react-pdf/renderer";
 import { quantidadeMeses } from "@painel-ea/engine";
-import { Assinaturas, corDoTipo, e, Linha, mesAno, reais, requerente, Rodape, type Coluna, type DadosDocumentos } from "./comum";
+import { Assinaturas, corDoTipo, dataBr, e, Linha, reais, requerente, Rodape, type Coluna, type DadosDocumentos } from "./comum";
 
 const Campo = ({ rotulo, valor, largura = "auto" }: { rotulo: string; valor: string; largura?: number | string }) => (
   <View style={[e.linha, { width: largura, marginRight: 10 }]}>
@@ -15,7 +15,7 @@ export function Cpex({ d }: { d: DadosDocumentos }) {
   const ini = d.processo.periodoInicio, fim = d.processo.periodoFim;
   const meses = quantidadeMeses({ ano: +ini.slice(0, 4), mes: +ini.slice(5, 7) }, { ano: +fim.slice(0, 4), mes: +fim.slice(5, 7) });
   const cols: Coluna[] = [{ largura: "30%" }, { largura: "10%", alinhar: "center" }, { largura: "20%", alinhar: "center" }, { largura: "20%", alinhar: "center" }, { largura: "20%", alinhar: "center" }];
-  const periodo = `${mesAno(ini)} a ${mesAno(fim)}`;
+  const periodo = `${dataBr(ini)} a ${dataBr(fim)}`;
   // coluna "Período da Dívida" mesclada da 1ª rubrica até o TOTAL: as células não têm a borda de baixo (só a última)
   const mesclada = [undefined, undefined, undefined, { borderBottomWidth: 0 }, undefined];
   const pj = d.complementos?.pensao ?? {};

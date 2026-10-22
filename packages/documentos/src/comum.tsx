@@ -19,7 +19,14 @@ export interface Complementos {
   pensao?: { nome?: string; cpf?: string; banco?: string; agencia?: string; conta?: string };
   /** CPEX: operador que fará o lançamento no sistema. */
   operadorCpex?: { nome?: string; cpf?: string };
+  /**
+   * Valores recebidos depois do período da dívida (aba Contracheque - F Financeira): entram no cálculo como recebidos,
+   * corrigidos pelo índice do mês em que foram pagos; os anos deles também ganham as páginas do ano nos documentos.
+   */
+  recebidosPosPeriodo?: RecebidoPosPeriodo[];
 }
+
+export interface RecebidoPosPeriodo { ano: number; mes: number; posicao: number; valor: number }
 
 export const PARECER_PADRAO = "Sou de parecer que o requerimento deve ser atendido.";
 
@@ -65,9 +72,11 @@ export const traco = (v: number) => (v === 0 ? "-" : fmt.format(v));
 export const pct = (v: number) => `${new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 4, maximumFractionDigits: 4 }).format(v * 100)}%`;
 export const mesAno = (d: string) => `${d.slice(5, 7)}/${d.slice(0, 4)}`;
 export const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+/** Anos dos documentos: os do período da dívida e, depois deles, os anos com valor recebido após o período. */
 export const anosDoPeriodo = (d: DadosDocumentos) => {
   const ini = Number(d.processo.periodoInicio.slice(0, 4)), fim = Number(d.processo.periodoFim.slice(0, 4));
-  return Array.from({ length: fim - ini + 1 }, (_, i) => ini + i);
+  const depois = (d.complementos?.recebidosPosPeriodo ?? []).map((r) => r.ano).filter((a) => a > fim);
+  return [...Array.from({ length: fim - ini + 1 }, (_, i) => ini + i), ...[...new Set(depois)].sort((a, b) => a - b)];
 };
 /** "12/2026" (número e ano do processo), ou "" se não houver número. */
 /**

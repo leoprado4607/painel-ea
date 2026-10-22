@@ -9,7 +9,7 @@ import { Resumo } from "./resumo";
 import { Solicitacao, SolicitacaoVerso } from "./solicitacao";
 import { SolicitacaoPagamento, SolicitacaoPagamentoVerso } from "./solicitacao-pagamento";
 
-export type { Complementos, DadosDocumentos } from "./comum";
+export type { Complementos, DadosDocumentos, RecebidoPosPeriodo } from "./comum";
 export { PARECER_PADRAO, anexos } from "./comum";
 
 /** Documento a gerar: o pacote completo ou uma parte dele (prévias das abas). */

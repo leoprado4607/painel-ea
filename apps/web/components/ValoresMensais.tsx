@@ -4,12 +4,14 @@ import type { TipoRubrica } from "@painel-ea/engine";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
-import { salvarLancamentos } from "@/lib/acoes/valores";
+import { RecebidosPosPeriodo, itemDaLinha, type LinhaPosPeriodo } from "@/components/RecebidosPosPeriodo";
+import { salvarLancamentos, salvarRecebidosPosPeriodo } from "@/lib/acoes/valores";
 import { formatarReais, lerReais } from "@/lib/dinheiro";
 import {
   anosDoPeriodo, copiarMes, definirValor, diferencas, gradeDeLinhas, linhasDaGrade, mesesDoPeriodo, repetirAte, totalDoMes,
   valoresDoMes, type Linha, type MesAno,
 } from "@/lib/lancamentos";
+import type { RecebidoPosPeriodo } from "@/lib/pos-periodo";
 import { MESES, MESES_CURTOS } from "@/lib/tipos";
 
 interface Props {
@@ -21,11 +23,13 @@ interface Props {
   linhas: Linha[];
   bloqueado: boolean;
   proximaEtapa: string;
+  /** só nos recebidos: valores recebidos após o período da dívida */
+  posPeriodo?: RecebidoPosPeriodo[];
 }
 
 const igual = (a: MesAno, b: MesAno) => a.ano === b.ano && a.mes === b.mes;
 
-export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas, bloqueado, proximaEtapa }: Props) {
+export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas, bloqueado, proximaEtapa, posPeriodo = [] }: Props) {
   const router = useRouter();
   const [grade, setGrade] = useState(() => gradeDeLinhas(linhas));
   const [atual, setAtual] = useState<MesAno>(inicio);
@@ -34,11 +38,18 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
   const [erros, setErros] = useState<Record<number, string>>({});
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
+  // recebidos após o período: edição em texto; comparados com o gravado para saber se há alteração
+  const paraLinhas = (lista: RecebidoPosPeriodo[]): LinhaPosPeriodo[] =>
+    lista.map((r, i) => ({ id: i + 1, ano: String(r.ano), mes: r.mes, posicao: r.posicao, valor: formatarReais(r.valor) }));
+  const [linhasPos, setLinhasPos] = useState(() => paraLinhas(posPeriodo));
+  const [errosPos, setErrosPos] = useState<Record<number, string>>({});
+  const assinaturaPos = (l: LinhaPosPeriodo[]) => JSON.stringify(l.map(({ ano, mes, posicao, valor }) => [ano, mes, posicao, lerReais(valor)]));
+  const posAlterado = tipo === "recebido" && assinaturaPos(linhasPos) !== assinaturaPos(paraLinhas(posPeriodo));
 
   const meses = useMemo(() => mesesDoPeriodo(inicio, fim), [inicio, fim]);
   const ativas = rubricas.filter((r) => r.codigo);
   const pendentes = diferencas(linhas, linhasDaGrade(grade));
-  const alterado = pendentes.gravar.length + pendentes.apagar.length > 0;
+  const alterado = pendentes.gravar.length + pendentes.apagar.length > 0 || posAlterado;
   const idx = meses.findIndex((m) => igual(m, atual));
   const valores = valoresDoMes(grade, atual);
 
@@ -65,8 +76,20 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
   }
 
   const salvar = (seguir: boolean) => iniciar(async () => {
+    let itensPos: RecebidoPosPeriodo[] | null = null;
+    if (posAlterado) {
+      const lidos = linhasPos.map((l) => ({ id: l.id, ...itemDaLinha(l, fim) }));
+      const erradas = Object.fromEntries(lidos.filter((x) => x.erro).map((x) => [x.id, x.erro!]));
+      setErrosPos(erradas);
+      if (Object.keys(erradas).length) return setMsg({ tipo: "erro", texto: "Confira os recebidos após o período da dívida." });
+      itensPos = lidos.map((x) => x.item!);
+    }
     const r = await salvarLancamentos(processoId, tipo, pendentes.gravar, pendentes.apagar);
     if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
+    if (itensPos) {
+      const r2 = await salvarRecebidosPosPeriodo(processoId, itensPos);
+      if (r2.erro) return setMsg({ tipo: "erro", texto: r2.erro });
+    }
     setMsg({ tipo: "ok", texto: "Valores salvos." });
     router.refresh();
     if (seguir) router.push(`/processos/${processoId}/${proximaEtapa}`);
@@ -104,6 +127,10 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
             </button>
           ))}
         </div>
+        {tipo === "recebido" && (
+          <RecebidosPosPeriodo linhas={linhasPos} setLinhas={setLinhasPos} fim={fim} bloqueado={bloqueado} erros={errosPos}
+            receitas={ativas.filter((r) => r.tipo === "Receita").map(({ posicao, codigo }) => ({ posicao, codigo }))} />
+        )}
       </div>
 
       <section className="cartao">
@@ -168,7 +195,7 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
       {!bloqueado && (
         <div className="sticky bottom-2 z-20 border border-borda bg-white/95 shadow-[0_8px_24px_-12px_rgba(29,36,32,.45)] backdrop-blur">
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-            <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length} alteração(ões) não salvas` : "Tudo salvo"}</span>
+            <span className="text-sm text-suave">{alterado ? `${pendentes.gravar.length + pendentes.apagar.length + (posAlterado ? 1 : 0)} alteração(ões) não salvas` : "Tudo salvo"}</span>
             <div className="flex gap-2">
               <button className="botao-sec" disabled={!alterado || salvando} onClick={() => salvar(false)}>Salvar</button>
               <button className="botao" disabled={salvando} onClick={() => salvar(true)}>{salvando ? "Salvando…" : "Salvar e continuar"}</button>

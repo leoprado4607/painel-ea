@@ -44,6 +44,10 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         </ProvedorProcesso>
       ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "aviso" ? (
         <DadosFavorecido processoId="previa" valores={{}} rubricas={[]} bloqueado={false} conferirBanco />
+      ) : tela === "recebidos" ? (
+        <ValoresMensais processoId="previa" tipo="recebido" proximaEtapa="devidos" bloqueado={false} rubricas={rubricas}
+          inicio={{ ano: 2020, mes: 11 }} fim={{ ano: 2021, mes: 6 }} linhas={[]}
+          posPeriodo={[{ ano: 2022, mes: 3, posicao: 1, valor: 1000 }]} />
       ) : tela === "valores" ? (
         <ValoresMensais processoId="previa" tipo="devido" proximaEtapa="conferencia" bloqueado={false} rubricas={rubricas}
           inicio={{ ano: 2020, mes: 11 }} fim={{ ano: 2021, mes: 6 }}

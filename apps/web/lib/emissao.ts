@@ -4,6 +4,7 @@ import { zipSync } from "fflate";
 import { caminhoDoZip, nomeDoPacote } from "./pacote";
 import { createHash } from "node:crypto";
 import { montarEntrada } from "./calculo";
+import { recebidosPosPeriodo } from "./pos-periodo";
 import { dataPorExtenso, descreverRegra } from "./indice";
 import { textoBoletim } from "./averbacao";
 import { carregarProcesso, operadorDoProcesso } from "./processo";
@@ -28,7 +29,9 @@ export async function montarDocumentos(
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
   ]);
   if (!indices?.length) throw new Error("Índices de correção indisponíveis.");
-  const entrada = montarEntrada(rubricas, lancamentos, indices, { inicio: processo.periodo_inicio, fim: processo.periodo_fim });
+  const entrada = montarEntrada(rubricas, lancamentos, indices, {
+    inicio: processo.periodo_inicio, fim: processo.periodo_fim, posPeriodo: recebidosPosPeriodo(processo.complementos),
+  });
   const resultado = calcular(entrada);
   const ate = resultado.tabela.atualizadoAte!;
   const agora = new Date();

@@ -119,6 +119,14 @@ it("verso: vários documentos que materializam o direito, um por linha", async (
   expect(y("245-16")).not.toBe(y("300-17"));
 }, 60_000);
 
+it("Solicitação de Pagamento: período total da dívida com dia, mês e ano", async () => {
+  const d = dadosC01();
+  const pdf = await gerarPdf({ ...d, processo: { ...d.processo, periodoInicio: "2022-03-01", periodoFim: "2023-02-28" } }, "solicitacao");
+  const t = (await palavrasDoPdf(new Uint8Array(pdf))).filter((x) => x.pagina === 1).map((x) => x.texto).join(" ");
+  expect(t).toContain("01/03/2022");
+  expect(t).toContain("28/02/2023");
+}, 60_000);
+
 it("Nº de Ordem não repete o ano quando o número já o traz", async () => {
   const { numeroOrdem } = await import("../src/comum");
   const d = dadosC01();

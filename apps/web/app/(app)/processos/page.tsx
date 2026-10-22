@@ -12,9 +12,9 @@ const mesAno = (d: string | null) => (d ? `${d.slice(5, 7)}/${d.slice(0, 4)}` : 
 
 export default async function Processos() {
   const { supabase, perfil } = await sessao();
-  // só as colunas do card (fichas_lidas, complementos etc. ficam de fora)
+  // só as colunas do card (fichas_lidas etc. ficam de fora; complementos traz os recebidos após o período, que entram no valor)
   const { data } = await supabase.from("processo")
-    .select("id, numero, situacao, periodo_inicio, periodo_fim, especie_divida, criado_por, indices_usados, militar(nome, posto_graduacao, om_vinculacao)")
+    .select("id, numero, situacao, periodo_inicio, periodo_fim, especie_divida, criado_por, indices_usados, complementos, militar(nome, posto_graduacao, om_vinculacao)")
     .order("atualizado_em", { ascending: false })
     .returns<(Pick<Processo, "id" | "numero" | "situacao" | "periodo_inicio" | "periodo_fim" | "especie_divida" | "criado_por">
       & { indices_usados: { ano: number; mes: number; percentual: number | null }[] | null; militar: Pick<Militar, "nome" | "posto_graduacao" | "om_vinculacao"> })[]>();

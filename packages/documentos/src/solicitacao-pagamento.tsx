@@ -3,7 +3,7 @@ import { trechosFormatados } from "@painel-ea/engine";
 import { Page, Text, View } from "@react-pdf/renderer";
 import type { ReactNode } from "react";
 import {
-  anexos, Assinaturas, Cabecalho, dataBr, e, mesAno, numeroOrdem, PARECER_PADRAO, reais, Rodape, type DadosDocumentos,
+  anexos, Assinaturas, Cabecalho, dataBr, e, numeroOrdem, PARECER_PADRAO, reais, Rodape, type DadosDocumentos,
 } from "./comum";
 
 const borda = { borderWidth: 0.6, borderColor: "#000" } as const;
@@ -106,7 +106,8 @@ export function SolicitacaoPagamento({ d }: { d: DadosDocumentos }) {
           <Text style={e.centro}>Situação: {m.situacao ?? ""}</Text>
         </View>
         <View style={celula("13%", 2)}>
-          <Text style={e.centro}>{mesAno(d.processo.periodoInicio)} a {mesAno(d.processo.periodoFim)}</Text>
+          {/* datas completas, como em Informações; sem hifenizar as datas */}
+          <Text style={e.centro} hyphenationCallback={(p) => [p]}>{dataBr(d.processo.periodoInicio)} a {dataBr(d.processo.periodoFim)}</Text>
         </View>
         <View style={celula("13%", 3)}><Text style={e.centro}>{reais(r.receitas)}</Text></View>
         <View style={[celula("19%", 4), { gap: 3 }]}>

@@ -33,7 +33,8 @@ export interface EntradaCalculo {
    * "planilha" (padrão): como a planilha original ("Precisão conforme exibido"), cada valor corrigido e cada
    * subtotal é arredondado a 2 casas antes de entrar na soma seguinte.
    * "total": soma tudo com todas as casas e arredonda só o que é exibido (decisão de 22/10/2026, para bater
-   * com a planilha de conferência usada fora do sistema). Os índices continuam com as casas da planilha.
+   * com a planilha de conferência usada fora do sistema). Nesse modo o índice acumulado também entra com todas
+   * as casas (não cortado em 0,0000%).
    */
   arredondamento?: "planilha" | "total";
 }
@@ -138,7 +139,7 @@ export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
   const soNoTotal = entrada.arredondamento === "total";
   // valor intermediário: com todas as casas no modo "total"; a 2 casas no modo da planilha
   const c = soNoTotal ? (x: number) => x : dinheiro;
-  const tabela = calcularTabelaAcumulada(entrada.indices);
+  const tabela = calcularTabelaAcumulada(entrada.indices, soNoTotal);
   const rubricas = Array.from({ length: POSICOES }, (_, i) => entrada.rubricas[i]);
   const tipos = rubricas.map(tipoEfetivo);
 
