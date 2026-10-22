@@ -29,6 +29,13 @@ export interface EntradaCalculo {
    * A planilha soma de 2008 em diante (decisão: manter assim).
    */
   anoInicialTotaisCpex?: number;
+  /**
+   * "planilha" (padrão): como a planilha original ("Precisão conforme exibido"), cada valor corrigido e cada
+   * subtotal é arredondado a 2 casas antes de entrar na soma seguinte.
+   * "total": soma tudo com todas as casas e arredonda só o que é exibido (decisão de 22/10/2026, para bater
+   * com a planilha de conferência usada fora do sistema). Os índices continuam com as casas da planilha.
+   */
+  arredondamento?: "planilha" | "total";
 }
 
 export const POSICOES = 17;
@@ -128,6 +135,9 @@ const colunaMes = (m: Matriz, mes: number) => m.map((linha) => linha[mes]!);
 export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
   const anos = entrada.anos ?? ANOS_PADRAO;
   const anoCpex = entrada.anoInicialTotaisCpex ?? 2008;
+  const soNoTotal = entrada.arredondamento === "total";
+  // valor intermediário: com todas as casas no modo "total"; a 2 casas no modo da planilha
+  const c = soNoTotal ? (x: number) => x : dinheiro;
   const tabela = calcularTabelaAcumulada(entrada.indices);
   const rubricas = Array.from({ length: POSICOES }, (_, i) => entrada.rubricas[i]);
   const tipos = rubricas.map(tipoEfetivo);
@@ -136,12 +146,12 @@ export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
     const acumuladoMes = Array.from({ length: 12 }, (_, m) => tabela.acumulado(ano, m + 1));
     const recebido = rubricas.map((_, p) => valoresDe(entrada.recebido, ano, p + 1));
     const devido = rubricas.map((_, p) => valoresDe(entrada.devido, ano, p + 1));
-    const corrigir = (m: Matriz) => m.map((linha) => linha.map((v, i) => dinheiro(v * acumuladoMes[i]! + v)));
+    const corrigir = (m: Matriz) => m.map((linha) => linha.map((v, i) => c(v * acumuladoMes[i]! + v)));
     const recebidoCorrigido = corrigir(recebido);
     const devidoCorrigido = corrigir(devido);
-    const liquidoCorrigido = devidoCorrigido.map((linha, p) => linha.map((v, m) => dinheiro(v - recebidoCorrigido[p]![m]!)));
-    const totalLinha = (m: Matriz) => m.map((linha) => dinheiro(somar(linha)));
-    const totalMes = (m: Matriz) => Array.from({ length: 12 }, (_, i) => dinheiro(saldoPorTipo(colunaMes(m, i), tipos)));
+    const liquidoCorrigido = devidoCorrigido.map((linha, p) => linha.map((v, m) => c(v - recebidoCorrigido[p]![m]!)));
+    const totalLinha = (m: Matriz) => m.map((linha) => c(somar(linha)));
+    const totalMes = (m: Matriz) => Array.from({ length: 12 }, (_, i) => c(saldoPorTipo(colunaMes(m, i), tipos)));
 
     const totalRecebidoMes = totalMes(recebido);
     const totalDevidoMes = totalMes(devido);
@@ -149,14 +159,14 @@ export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
     const totalDevidoCorrigidoMes = totalMes(devidoCorrigido);
     const totalLiquidoMes = totalMes(liquidoCorrigido);
     const liquidoCorrigidoAno = totalLinha(liquidoCorrigido);
-    const liquidoReceitas = dinheiro(somaPorTipo(liquidoCorrigidoAno, tipos, "RECEITA"));
-    const liquidoDespesas = dinheiro(somaPorTipo(liquidoCorrigidoAno, tipos, "DESPESA"));
+    const liquidoReceitas = c(somaPorTipo(liquidoCorrigidoAno, tipos, "RECEITA"));
+    const liquidoDespesas = c(somaPorTipo(liquidoCorrigidoAno, tipos, "DESPESA"));
 
     const vDevido = totalLinha(devido);
     const vRecebido = totalLinha(recebido);
-    const totalDevidoAnoSemCorrecao = dinheiro(somar(totalDevidoMes));
-    const totalRecebidoAnoSemCorrecao = dinheiro(somar(totalRecebidoMes));
-    const totalLiquidoAno = dinheiro(somar(totalLiquidoMes));
+    const totalDevidoAnoSemCorrecao = c(somar(totalDevidoMes));
+    const totalRecebidoAnoSemCorrecao = c(somar(totalRecebidoMes));
+    const totalLiquidoAno = c(somar(totalLiquidoMes));
 
     return {
       ano, acumuladoMes, recebido, devido, recebidoCorrigido, devidoCorrigido, liquidoCorrigido,
@@ -164,19 +174,19 @@ export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
       devidoCorrigidoAno: totalLinha(devidoCorrigido),
       liquidoCorrigidoAno,
       totalRecebidoMes, totalDevidoMes,
-      totalRecebidoCorrigidoMes, totalRecebidoCorrigidoAno: dinheiro(somar(totalRecebidoCorrigidoMes)),
-      totalDevidoCorrigidoMes, totalDevidoCorrigidoAno: dinheiro(somar(totalDevidoCorrigidoMes)),
+      totalRecebidoCorrigidoMes, totalRecebidoCorrigidoAno: c(somar(totalRecebidoCorrigidoMes)),
+      totalDevidoCorrigidoMes, totalDevidoCorrigidoAno: c(somar(totalDevidoCorrigidoMes)),
       totalLiquidoMes, totalLiquidoAno,
-      liquidoReceitas, liquidoDespesas, liquidoSaldo: dinheiro(liquidoReceitas - liquidoDespesas),
+      liquidoReceitas, liquidoDespesas, liquidoSaldo: c(liquidoReceitas - liquidoDespesas),
       verso: {
         devido: vDevido,
         recebido: vRecebido,
-        diferenca: vDevido.map((d, p) => dinheiro(d - vRecebido[p]!)),
+        diferenca: vDevido.map((d, p) => c(d - vRecebido[p]!)),
         corrigido: liquidoCorrigidoAno,
         total: {
           devido: totalDevidoAnoSemCorrecao,
           recebido: totalRecebidoAnoSemCorrecao,
-          diferenca: dinheiro(totalDevidoAnoSemCorrecao - totalRecebidoAnoSemCorrecao),
+          diferenca: c(totalDevidoAnoSemCorrecao - totalRecebidoAnoSemCorrecao),
           corrigido: totalLiquidoAno,
         },
       },
@@ -191,31 +201,31 @@ export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
     for (const r of resultados) {
       const v = valor(r);
       s[r.ano] = v;
-      totalPosicional[r.ano] = dinheiro(somar(v.slice(0, ULTIMA_POSICAO_RECEITA)) - somar(v.slice(ULTIMA_POSICAO_RECEITA)));
+      totalPosicional[r.ano] = c(somar(v.slice(0, ULTIMA_POSICAO_RECEITA)) - somar(v.slice(ULTIMA_POSICAO_RECEITA)));
     }
     const doPeriodo = resultados.filter((r) => r.ano >= anoCpex);
-    const totalPeriodo = rubricas.map((_, p) => dinheiro(somar(doPeriodo.map((r) => s[r.ano]![p]!))));
-    const receitas = dinheiro(somaPorTipo(totalPeriodo, tipos, "RECEITA"));
-    const despesas = dinheiro(somaPorTipo(totalPeriodo, tipos, "DESPESA"));
+    const totalPeriodo = rubricas.map((_, p) => c(somar(doPeriodo.map((r) => s[r.ano]![p]!))));
+    const receitas = c(somaPorTipo(totalPeriodo, tipos, "RECEITA"));
+    const despesas = c(somaPorTipo(totalPeriodo, tipos, "DESPESA"));
     return { porAno: s, totalPosicionalPorAno: totalPosicional, totalPeriodo, receitas, despesas,
-      saldo: dinheiro(saldoPorTipo(totalPeriodo, tipos)) };
+      saldo: c(saldoPorTipo(totalPeriodo, tipos)) };
   };
   const recebidoSemCorrecao = secao((r) => r.verso.recebido);
   const devidoSemCorrecao = secao((r) => r.verso.devido);
   const diferencaSemCorrecao = secao((r) =>
-    r.verso.devido.map((d, p) => dinheiro(d - recebidoSemCorrecao.porAno[r.ano]![p]!)));
+    r.verso.devido.map((d, p) => c(d - recebidoSemCorrecao.porAno[r.ano]![p]!)));
   const diferencaComCorrecao = secao((r) => r.liquidoCorrigidoAno);
 
   const semCorrecao = diferencaSemCorrecao.totalPeriodo;
   const comCorrecao = diferencaComCorrecao.totalPeriodo;
-  const totalComCorrecao = dinheiro(saldoPorTipo(comCorrecao, tipos));
+  const totalComCorrecao = c(saldoPorTipo(comCorrecao, tipos));
 
   const recapPorAno = Object.fromEntries(resultados.map((r) => [r.ano, {
     receitas: r.liquidoReceitas, despesas: r.liquidoDespesas,
-    saldo: dinheiro(r.liquidoReceitas - r.liquidoDespesas),
+    saldo: c(r.liquidoReceitas - r.liquidoDespesas),
   }]));
-  const recapReceitas = dinheiro(somar(resultados.map((r) => r.liquidoReceitas)));
-  const recapDespesas = dinheiro(somar(resultados.map((r) => r.liquidoDespesas)));
+  const recapReceitas = c(somar(resultados.map((r) => r.liquidoReceitas)));
+  const recapDespesas = c(somar(resultados.map((r) => r.liquidoDespesas)));
 
   // Lista_Suspensa!C15 concatena as posições 13…17 e depois 12…1.
   const ordemCompactada = [13, 14, 15, 16, 17, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1];
@@ -224,23 +234,42 @@ export function calcular(entrada: EntradaCalculo): ResultadoCalculo {
     .map((r) => (r && r.codigo && r.tipo === "Despesa" ? `${r.codigo} / ` : ""))
     .join("");
 
-  return {
+  const resultado: ResultadoCalculo = {
     tabela, anos: resultados, porAno,
     codigosAnos: { recebidoSemCorrecao, devidoSemCorrecao, diferencaSemCorrecao, diferencaComCorrecao },
     cpex: {
       semCorrecao, comCorrecao,
-      totalSemCorrecao: dinheiro(saldoPorTipo(semCorrecao, tipos)),
+      totalSemCorrecao: c(saldoPorTipo(semCorrecao, tipos)),
       totalComCorrecao,
       importanciaBasicaTotalCorrigida: totalComCorrecao,
       valorCorrigidoPensaoJudicial: comCorrecao[15]!,
     },
     recapitulacao: {
       porAno: recapPorAno, receitas: recapReceitas, despesas: recapDespesas,
-      saldo: dinheiro(recapReceitas - recapDespesas),
+      saldo: c(recapReceitas - recapDespesas),
     },
     despesasCompactadas,
   };
+  if (!soNoTotal) return resultado;
+  // modo "total": tudo o que sai (valores corrigidos, subtotais e totais) é arredondado uma vez só, a partir das somas exatas
+  const anosArredondados = resultados.map((r) => ({ ...arredondarValores(r), ano: r.ano, acumuladoMes: r.acumuladoMes }));
+  return {
+    ...arredondarValores({ ...resultado, tabela: undefined, anos: undefined, porAno: undefined }),
+    tabela, anos: anosArredondados,
+    porAno: Object.fromEntries(anosArredondados.map((r) => [r.ano, r])),
+    despesasCompactadas,
+  } as ResultadoCalculo;
 }
+
+/** Arredonda a 2 casas todos os números de uma estrutura (listas e objetos aninhados). */
+function arredondarValores<T>(v: T): T {
+  if (typeof v === "number") return dinheiro(v) as T;
+  if (Array.isArray(v)) return v.map(arredondarValores) as T;
+  if (v && typeof v === "object") return Object.fromEntries(Object.entries(v).map(([k, x]) => [k, arredondarValores(x)])) as T;
+  return v;
+}
+
+
 
 /** Informações!H32: quantidade de meses da dívida (início e fim inclusive). */
 export function quantidadeMeses(inicio: { ano: number; mes: number }, fim: { ano: number; mes: number }): number {

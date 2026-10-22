@@ -45,5 +45,6 @@ export function montarEntrada(
       serie.push({ ano: a, mes: m, percentual: conhecidos.get(a * 100 + m) ?? null });
     }
 
-  return { indices: serie, rubricas: rubs, recebido, devido, anos };
+  // soma com todas as casas e arredonda só os totais (decisão de 22/10/2026; a planilha original arredondava mês a mês)
+  return { indices: serie, rubricas: rubs, recebido, devido, anos, arredondamento: "total" };
 }

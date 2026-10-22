@@ -17,7 +17,7 @@ it("entrada montada a partir das linhas do banco dá o mesmo resultado do caso d
           vals.flatMap((v, i) => (v ? [{ tipo, ano: +ano, mes: i + 1, posicao: +pos, valor: v }] : [])))));
     const rubricas = caso.rubricas.map((r, i) => ({ posicao: i + 1, ...r }));
     const doBanco = montarEntrada(rubricas, linhas, indices.filter((i) => i.percentual !== null) as { ano: number; mes: number; percentual: number }[]);
-    const esperado = calcular({ ...caso, indices });
+    const esperado = calcular({ ...caso, indices, arredondamento: "total" }); // o sistema arredonda só os totais
     const obtido = calcular(doBanco);
     expect(obtido.cpex).toEqual(esperado.cpex);
     expect(obtido.recapitulacao).toEqual(esperado.recapitulacao);
