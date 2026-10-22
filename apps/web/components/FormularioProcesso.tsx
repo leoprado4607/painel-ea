@@ -7,7 +7,7 @@ import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
 import { POSTOS, postoAbreviado } from "@/lib/postos";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
-import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
+import { BOLETINS_ADT, DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 import { BANCOS, bancoDaLista, ESPECIES_DIVIDA, omDeVinculacao, OMS_VINCULACAO, quantidadeMeses, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
 
 /** "situacao" do formulário é a do militar (Ativa, Reformado…); a do processo (rascunho/emitido) fica de fora. */
@@ -52,7 +52,7 @@ function Lista({ nome, rotulo, valor, opcoes, aceitaOutro, obrigatorio, erro }: 
   );
 }
 
-/** Averbação do direito: documento (BI, Adt, BAR), Nr Adt (só quando Adt), Nr BI/BAR, OM e data. */
+/** Averbação do direito: documento (BI, Adt, BAR), Nr Adt e o BI/BAR de que o Adt faz parte (só quando Adt), Nr BI/BAR, OM e data. */
 function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<string, string> }) {
   const [documento, setDocumento] = useState(valores.documento_averbacao ?? "");
   return (
@@ -60,7 +60,7 @@ function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<s
       <legend className="mb-2 text-sm font-semibold text-tinta">Averbação</legend>
       {/* os números (3 dígitos) ocupam só a própria largura; listas e data dividem o resto */}
       <div className={`grid gap-4 ${documento === "Adt"
-        ? "sm:grid-cols-[minmax(9rem,1fr)_auto_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"
+        ? "sm:grid-cols-[minmax(9rem,1fr)_auto_minmax(7rem,.7fr)_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"
         : "sm:grid-cols-[minmax(9rem,1fr)_auto_minmax(11rem,1.4fr)_minmax(9rem,1fr)]"}`}>
         <div>
           <label htmlFor="documento_averbacao" className="rotulo">Documento de averbação<span className="text-red-700"> *</span></label>
@@ -74,6 +74,10 @@ function CamposAverbacao({ valores, erros }: { valores: Valores; erros: Record<s
         {documento === "Adt" && (
           <Campo nome="adt_numero" rotulo="Nr Adt" valor={valores.adt_numero} obrigatorio inputMode="numeric" maxLength={3} classeEntrada="w-[4.5rem] text-center tabular-nums"
             erro={erros.adt_numero} validar={(v) => (/^\d{1,3}$/.test(v.trim()) ? null : "Até 3 dígitos.")} />
+        )}
+        {/* todo Adt é parte de um BI ou de um BAR */}
+        {documento === "Adt" && (
+          <Lista nome="adt_boletim" rotulo="Boletim do Adt" valor={valores.adt_boletim} opcoes={[...BOLETINS_ADT]} obrigatorio erro={erros.adt_boletim} />
         )}
         <Campo nome="bi_numero" rotulo="Nr BI/BAR" valor={valores.bi_numero} obrigatorio inputMode="numeric" maxLength={3} pattern="\d{1,3}"
           title="Até 3 dígitos" classeEntrada="w-[4.5rem] text-center tabular-nums" erro={erros.bi_numero}

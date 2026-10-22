@@ -1,14 +1,15 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { sair } from "@/app/login/actions";
 import { abaAtiva, type Aba } from "@/lib/abas";
+import { COOKIE_TEMA } from "@/lib/tema";
 import { DOCUMENTOS, FOCO, LANCAMENTOS, Numero, Ponto, type SituacaoProcesso } from "./abas-processo-ui";
 
 /* ------------------------------------------------------------------ processo aberto
  * O layout do processo "registra" o processo aberto; a barra lateral (do layout geral, que não recarrega ao
- * navegar) mostra as abas dele logo abaixo de "Processos".
+ * navegar) mostra as abas dele logo abaixo de "Meus cálculos".
  */
 interface ProcessoAberto { id: string; titulo: string; subtitulo: string; situacao: SituacaoProcesso }
 const Contexto = createContext<{ processo: ProcessoAberto | null; definir: (p: ProcessoAberto | null) => void }>({ processo: null, definir: () => {} });
@@ -29,9 +30,9 @@ export function RegistrarProcesso(p: ProcessoAberto) {
 interface Item { rotulo: string; href: string; ativo: (caminho: string) => boolean }
 const PRINCIPAIS: Item[] = [
   { rotulo: "Passo a passo", href: "/passo-a-passo", ativo: (c) => c === "/passo-a-passo" },
+  { rotulo: "Novo cálculo", href: "/processos/novo", ativo: (c) => c === "/processos/novo" },
   // destacado também dentro de um processo (as abas dele aparecem logo abaixo, em "Processo aberto")
-  { rotulo: "Processos", href: "/processos", ativo: (c) => c === "/processos" || (c.startsWith("/processos/") && c !== "/processos/novo") },
-  { rotulo: "Novo processo", href: "/processos/novo", ativo: (c) => c === "/processos/novo" },
+  { rotulo: "Meus cálculos", href: "/processos", ativo: (c) => c === "/processos" || (c.startsWith("/processos/") && c !== "/processos/novo") },
   { rotulo: "Atualização do IPCA-E", href: "/ipca", ativo: (c) => c === "/ipca" },
 ];
 const ADMINISTRACAO: Item[] = [
@@ -43,7 +44,9 @@ const classeItem = (ativo: boolean) =>
   `group flex items-center gap-2.5 px-2.5 py-2 text-sm font-medium transition-colors motion-reduce:transition-none ${FOCO}
    ${ativo ? "bg-creme text-carvao shadow-[inset_3px_0_0_var(--color-ouro)]" : "text-creme/85 hover:bg-white/10 hover:text-white"}`;
 
-function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
+interface PropsConteudo { admin: boolean; usuario: string; escuro: boolean; trocarTema: (escuro: boolean) => void }
+
+function Conteudo({ admin, usuario, escuro, trocarTema }: PropsConteudo) {
   const caminho = usePathname();
   const { processo } = useContext(Contexto);
   // (na prévia de desenvolvimento, /dev/previa, o processo fictício também aparece)
@@ -106,6 +109,13 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
       <div className="mt-4 border-t border-white/10 pt-3">
         <p className="truncate px-2.5 text-xs font-medium text-white">{usuario}</p>
         <p className="px-2.5 pb-2 text-[11px] text-ouro-claro">{admin ? "Admin" : "Operador"}</p>
+        <div role="group" aria-label="Modo da tela" className="mb-2 grid grid-cols-2 ring-1 ring-white/15">
+          {([["Modo claro", false], ["Modo escuro", true]] as const).map(([rotulo, valor]) => (
+            <button key={rotulo} type="button" aria-pressed={escuro === valor} onClick={() => trocarTema(valor)}
+              className={`px-2 py-1.5 text-xs font-medium transition-colors motion-reduce:transition-none ${FOCO}
+                ${escuro === valor ? "bg-creme text-carvao" : "text-creme/85 hover:bg-white/10 hover:text-white"}`}>{rotulo}</button>
+          ))}
+        </div>
         <form action={sair}>
           <button className={`w-full border border-ouro-claro/60 bg-white/5 px-2.5 py-2 text-center text-sm font-semibold text-white transition-colors hover:border-ouro hover:bg-ouro hover:text-carvao motion-reduce:transition-none ${FOCO}`}>Sair</button>
         </form>
@@ -118,9 +128,19 @@ function Conteudo({ admin, usuario }: { admin: boolean; usuario: string }) {
  * Barra lateral do sistema. Computador: fixa à esquerda, com o menu, as abas do processo aberto e o usuário.
  * Celular: barra no topo com botão que abre o mesmo menu.
  */
-export function BarraLateral({ admin, usuario }: { admin: boolean; usuario: string }) {
+export function BarraLateral({ admin, usuario, escuro: escuroInicial }: { admin: boolean; usuario: string; escuro: boolean }) {
   const [aberta, setAberta] = useState(false);
+  const [escuro, setEscuro] = useState(escuroInicial);
+  const router = useRouter();
   const caminho = usePathname();
+  // troca na hora (classe no contêiner do layout) e guarda a escolha por 1 ano; o refresh alinha o servidor
+  const trocarTema = (valor: boolean) => {
+    setEscuro(valor);
+    document.getElementById("raiz-app")?.classList.toggle("tema-escuro", valor);
+    document.cookie = `${COOKIE_TEMA}=${valor ? "escuro" : "claro"}; path=/; max-age=31536000; samesite=lax`;
+    router.refresh();
+  };
+  const props = { admin, usuario, escuro, trocarTema };
   useEffect(() => setAberta(false), [caminho]);
   useEffect(() => {
     if (!aberta) return;
@@ -132,7 +152,7 @@ export function BarraLateral({ admin, usuario }: { admin: boolean; usuario: stri
   return (
     <>
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 border-r-2 border-ouro bg-exercito p-3 text-creme/85 lg:block print:hidden">
-        <Conteudo admin={admin} usuario={usuario} />
+        <Conteudo {...props} />
       </aside>
 
       {/* celular: barra no topo e menu em gaveta */}
@@ -145,7 +165,7 @@ export function BarraLateral({ admin, usuario }: { admin: boolean; usuario: stri
         <div className="fixed inset-0 z-40 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <button type="button" aria-label="Fechar menu" className="absolute inset-0 bg-black/40" onClick={() => setAberta(false)} />
           <div id="menu-celular" className="absolute inset-y-0 left-0 w-72 max-w-[85vw] border-r-2 border-ouro bg-exercito p-3 text-creme/85 shadow-xl">
-            <Conteudo admin={admin} usuario={usuario} />
+            <Conteudo {...props} />
           </div>
         </div>
       )}

@@ -22,11 +22,11 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
     { posicao: 14, codigo: "Z02 - P MIL 7,5/9,5/10,5%", tipo: "Despesa" as const },
   ];
   return (
-    <div className={tema === "admin" ? "tema-admin" : ""}>
+    <div id="raiz-app" className={tema === "admin" ? "tema-escuro" : ""}>
       {tela === "abas" ? (
         <ProvedorProcesso>
         <div className="min-h-screen lg:flex">
-          <BarraLateral admin usuario="Maj FULANO DE TAL" />
+          <BarraLateral admin escuro={tema === "admin"} usuario="Maj FULANO DE TAL" />
           <RegistrarProcesso id="00000000-0000-0000-0000-000000000000" situacao="rascunho"
             titulo="1º Sgt FULANO DE TAL DA SILVA" subtitulo="Processo 012/2026 · Diferença de adicional de habilitação" />
           <main className="min-w-0 flex-1 space-y-4 px-4 pb-10 pt-5 lg:px-8 lg:pt-8">
@@ -55,9 +55,9 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
       ) : tela === "processos" ? (
         <ListaProcessos cards={[
           { id: "a", nome: "1º Sgt SANDRO LUIS DE LIMA GONCALVES", om: "16º BI Mtz", periodo: "06/2021 a 06/2021", especie: "Auxílio fardamento",
-            valor: "R$ 6.389,41", situacao: "emitido", meu: true, descricao: "001 de 1º Sgt SANDRO", operador: "Cb Bruno Guilherme de Souza Bezerra", busca: normalizarBusca("1º Sgt SANDRO LUIS DE LIMA GONCALVES PRIMEIRO SARGENTO 16º BI Mtz Auxílio fardamento") },
+            valor: "R$ 6.389,41", valorNumero: 6389.41, situacao: "emitido", meu: true, descricao: "001 de 1º Sgt SANDRO", operador: "Cb Bruno Guilherme de Souza Bezerra", busca: normalizarBusca("1º Sgt SANDRO LUIS DE LIMA GONCALVES PRIMEIRO SARGENTO 16º BI Mtz Auxílio fardamento") },
           { id: "b", nome: "Cb FULANO DE TAL", om: "B Adm Gu Natal", periodo: "01/2024 a 12/2024", especie: "Adicional Habilitação",
-            valor: "R$ 1.234,56", situacao: "rascunho", meu: false, descricao: "002 de Cb FULANO", busca: normalizarBusca("Cb FULANO DE TAL B Adm Gu Natal Adicional Habilitação") },
+            valor: "R$ 1.234,56", valorNumero: 1234.56, situacao: "rascunho", meu: false, descricao: "002 de Cb FULANO", busca: normalizarBusca("Cb FULANO DE TAL B Adm Gu Natal Adicional Habilitação") },
         ]} />
       ) : tela === "rubricas" ? (
         <FormularioRubricas processoId="previa" bloqueado={false} rubricas={Array.from({ length: 17 }, (_, i) => ({

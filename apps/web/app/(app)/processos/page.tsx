@@ -35,7 +35,7 @@ export default async function Processos() {
     const valor = corrigidos.get(p.id);
     return {
       id: p.id, nome, om, periodo: `${mesAno(p.periodo_inicio)} a ${mesAno(p.periodo_fim)}`, especie: p.especie_divida,
-      valor: valor != null ? `R$ ${formatarReais(valor)}` : "R$ —", situacao: p.situacao,
+      valor: valor != null ? `R$ ${formatarReais(valor)}` : "R$ —", valorNumero: valor ?? null, situacao: p.situacao,
       // excluir: só o criador e o Admin; processo de outro operador aparece como "só consulta"
       meu: podeAlterarProcesso(perfil, p), descricao: `${p.numero || "s/nº"} de ${nome}`,
       operador: p.criado_por ? operadores.get(p.criado_por) ?? null : null,
@@ -48,8 +48,8 @@ export default async function Processos() {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
-          <h1 className="titulo-pagina">Processos</h1>
-          <Link href="/processos/novo" className="botao">Novo processo</Link>
+          <h1 className="titulo-pagina">Meus cálculos</h1>
+          <Link href="/processos/novo" className="botao">Novo cálculo</Link>
         </div>
         <div className="cartao space-y-4 py-10 text-center">
           <p className="rotulo-secao mx-auto max-w-md">Nenhum processo</p>

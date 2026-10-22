@@ -10,7 +10,7 @@ export default async function NovoProcesso() {
   return (
     <div className="space-y-4">
       <Link href="/processos" className="text-sm text-marca-700 hover:underline">← Processos</Link>
-      <h1 className="titulo-pagina">Novo processo</h1>
+      <h1 className="titulo-pagina">Novo cálculo</h1>
       <NovoPorFichas oms={oms} />
       <details className="cartao">
         <summary className="cursor-pointer font-semibold">Preencher manualmente</summary>

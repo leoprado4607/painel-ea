@@ -11,6 +11,8 @@ export interface CardProcesso {
   nome: string;
   /** linha de baixo: OM · dívida · espécie · valor */
   om: string | null; periodo: string; especie: string | null; valor: string;
+  /** valor final corrigido, para ordenar (null se ainda não calculado) */
+  valorNumero: number | null;
   situacao: "rascunho" | "emitido" | "arquivado";
   /** pode excluir (criador ou Admin); senão, "Só consulta" */
   meu: boolean;
@@ -23,31 +25,52 @@ export interface CardProcesso {
 }
 
 const SITUACAO = { rascunho: "Rascunho", emitido: "Emitido", arquivado: "Arquivado" } as const;
+type Situacao = CardProcesso["situacao"];
+// ordem dos cards: rascunhos, depois emitidos (e arquivados); em cada situação, do maior valor para o menor
+const ORDEM: Record<Situacao, number> = { rascunho: 0, emitido: 1, arquivado: 2 };
+const ordenar = (a: CardProcesso, b: CardProcesso) =>
+  ORDEM[a.situacao] - ORDEM[b.situacao] || (b.valorNumero ?? -Infinity) - (a.valorNumero ?? -Infinity);
 
-/** Lista de processos com a caixa de pesquisa ao lado de "Novo processo" (filtra enquanto digita, no navegador). */
+/** Lista de processos com os filtros de situação e a caixa de pesquisa ao lado de "Novo cálculo" (filtra no navegador). */
 export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
   const [texto, setTexto] = useState("");
+  // filtro por situação: clicar de novo no botão ativo tira o filtro
+  const [filtro, setFiltro] = useState<Situacao | null>(null);
   // todas as palavras digitadas precisam aparecer (em qualquer ordem): "sgt fard" acha 1º Sgt com auxílio fardamento
   const palavras = normalizarBusca(texto).split(" ").filter(Boolean);
-  const visiveis = palavras.length ? cards.filter((c) => palavras.every((p) => c.busca.includes(p))) : cards;
+  const visiveis = cards
+    .filter((c) => (!filtro || c.situacao === filtro) && palavras.every((p) => c.busca.includes(p)))
+    .sort(ordenar);
+  const filtrando = palavras.length > 0 || filtro !== null;
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="titulo-pagina">Processos</h1>
+        <h1 className="titulo-pagina">Meus cálculos</h1>
         <div className="flex flex-1 flex-wrap items-center justify-end gap-3">
+          <div role="group" aria-label="Filtrar por situação" className="flex gap-2">
+            {(["emitido", "rascunho"] as const).map((s) => (
+              <button key={s} type="button" aria-pressed={filtro === s} onClick={() => setFiltro(filtro === s ? null : s)}
+                className={`border px-3 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marca-600
+                  ${filtro === s ? "border-marca-700 bg-marca-700 text-white" : "border-borda bg-white text-tinta hover:border-marca-600"}`}>
+                {SITUACAO[s]}
+              </button>
+            ))}
+          </div>
           <label htmlFor="pesquisa-processos" className="sr-only">Pesquisar processos</label>
           <input id="pesquisa-processos" type="search" value={texto} onChange={(e) => setTexto(e.target.value)}
             placeholder="Pesquisar por nome, posto, OM ou tipo da dívida" className="entrada w-full sm:w-80" autoComplete="off" />
-          <Link href="/processos/novo" className="botao">Novo processo</Link>
+          <Link href="/processos/novo" className="botao">Novo cálculo</Link>
         </div>
       </div>
-      {palavras.length > 0 && (
+      {filtrando && (
         <p className="text-sm text-suave" aria-live="polite">
           {visiveis.length === 1 ? "1 processo encontrado" : `${visiveis.length} processos encontrados`}
         </p>
       )}
       {visiveis.length === 0 ? (
-        <p className="cartao text-sm text-suave">Nenhum processo encontrado para “{texto.trim()}”.</p>
+        <p className="cartao text-sm text-suave">
+          Nenhum processo{filtro ? ` ${SITUACAO[filtro].toLowerCase()}` : ""} encontrado{palavras.length ? ` para “${texto.trim()}”` : ""}.
+        </p>
       ) : (
         <ul className="space-y-2">
           {visiveis.map((p) => (

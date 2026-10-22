@@ -8,7 +8,7 @@ import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { LIMITE_DOCUMENTO } from "@/lib/amparo";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
-import { DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
+import { BOLETINS_ADT, DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 
 /** Quadros de texto formatado de Informações que vão para o verso da Solicitação de Pagamento, com o limite de caracteres. */
 const QUADROS_VERSO = [
@@ -35,8 +35,8 @@ const dataPeriodo = (v: string | null) => (!v ? null : /^\d{4}-\d{2}$/.test(v) ?
 export async function salvarProcesso(processoId: string | null, _: EstadoForm | undefined, f: FormData): Promise<EstadoForm> {
   const { supabase, perfil } = await sessao();
   const campos: Record<string, string> = {};
-  // todos os campos são obrigatórios (decisão de 21/10/2026); o Nr Adt, só quando o documento é "Adt"
-  for (const k of [...OBRIGATORIOS, ...(txt(f, "documento_averbacao") === "Adt" ? ["adt_numero"] : [])]) {
+  // todos os campos são obrigatórios (decisão de 21/10/2026); o Nr Adt e o BI/BAR do Adt, só quando o documento é "Adt"
+  for (const k of [...OBRIGATORIOS, ...(txt(f, "documento_averbacao") === "Adt" ? ["adt_numero", "adt_boletim"] : [])]) {
     if (!txt(f, k)) campos[k] = "Preencha este campo.";
   }
   // quadros do verso: marcação limpa (só b/i/u), obrigatórios e com limite de caracteres do texto
@@ -77,6 +77,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use até 3 dígitos (ex.: 45).";
   const nrAdt = documentoAverbacao === "Adt" ? txt(f, "adt_numero") : null;
   if (nrAdt && !/^\d{1,3}$/.test(nrAdt)) campos.adt_numero = "Até 3 dígitos.";
+  const boletimAdt = documentoAverbacao === "Adt" ? txt(f, "adt_boletim") : null;
+  if (boletimAdt && !(BOLETINS_ADT as readonly string[]).includes(boletimAdt)) campos.adt_boletim = "Escolha BI ou BAR.";
   const ini = dataPeriodo(txt(f, "periodo_inicio")), fim = dataPeriodo(txt(f, "periodo_fim"));
   if (!ini || !fim) campos.periodo = "Informe o início e o fim da dívida.";
   else if (fim < ini) campos.periodo = "O fim da dívida é anterior ao início.";
@@ -90,7 +92,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   const processo = {
     numero: txt(f, "numero"), ano: txt(f, "ano") ? Number(txt(f, "ano")) : null,
     data_requerimento: txt(f, "data_requerimento"), bi_numero: nrBoletim, bi_data: txt(f, "bi_data"),
-    documento_averbacao: documentoAverbacao, adt_numero: nrAdt, om_averbacao: omAverbacao,
+    documento_averbacao: documentoAverbacao, adt_numero: nrAdt, adt_boletim: boletimAdt, om_averbacao: omAverbacao,
     especie_divida: txt(f, "especie_divida"), periodo_inicio: ini, periodo_fim: fim,
     possui_pensao_judicial: f.get("possui_pensao_judicial") === "on",
   };
