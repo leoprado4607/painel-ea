@@ -154,3 +154,4 @@ body:has(.tema-escuro) {
 .tema-escuro main .botao:hover { background-color: #c49a4c; }
 
 @keyframes encolher { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes surgir { from { opacity: 0; transform: scale(.95); } to { opacity: 1; transform: scale(1); } }
