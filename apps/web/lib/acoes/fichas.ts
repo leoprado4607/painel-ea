@@ -3,7 +3,7 @@
  * Contracheques e fichas financeiras em PDF: o arquivo é lido na memória e descartado. Só os dados extraídos
  * vão para a tela de revisão e, depois de confirmados, para o banco (decisão de 19/10/2026: nada de guardar os PDFs).
  */
-import { aplicarCorrespondencia, lerDocumentosPdf, type FichaFinanceira } from "@painel-ea/leitor-ficha";
+import { aplicarCorrespondencia, lerDocumentosPdf, PdfSemTexto, type FichaFinanceira } from "@painel-ea/leitor-ficha";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { dadosDoFavorecido, fichaValida, periodoDosDocumentos, type DadosLidos, type DocumentoExtraido } from "@/lib/favorecido";
@@ -54,7 +54,10 @@ async function lerArquivos(form: FormData): Promise<DocumentoExtraido[]> {
     let docs;
     try {
       docs = await lerDocumentosPdf(new Uint8Array(await a.arrayBuffer()));
-    } catch {
+    } catch (e) {
+      if (e instanceof PdfSemTexto) {
+        throw new Error(`${a.name}: o PDF não tem texto, só a imagem da página (foi gerado pela impressora "Microsoft Print to PDF"). Abra o documento no Chrome ou Edge, clique em Imprimir e escolha o destino "Salvar como PDF".`);
+      }
       throw new Error(`Não foi possível ler ${a.name}. Envie o contracheque ou a Ficha Financeira (SIPPES ou SIAPPES) em PDF, como baixados do sistema.`);
     }
     // o contracheque serve só para os dados bancários: é isso que precisa estar nele

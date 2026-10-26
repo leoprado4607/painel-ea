@@ -16,6 +16,17 @@ export async function lerContrachequePdf(dados: Uint8Array): Promise<Contrachequ
   return lerContracheque(await palavrasDoPdf(dados));
 }
 
+/**
+ * PDF sem nenhum texto: as letras viraram desenho. Acontece ao imprimir a página do SIPPES na impressora
+ * "Microsoft Print to PDF"; o "Salvar como PDF" do Chrome/Edge mantém o texto (conferido em 26/10/2026).
+ */
+export class PdfSemTexto extends Error {
+  constructor() {
+    super("PDF sem texto (impresso como imagem)");
+    this.name = "PdfSemTexto";
+  }
+}
+
 export type DocumentoLido =
   | { tipo: "contracheque"; contracheque: Contracheque; ficha: FichaFinanceira }
   | { tipo: "ficha"; ficha: FichaFinanceira };
@@ -27,6 +38,7 @@ export type DocumentoLido =
  */
 export async function lerDocumentosPdf(dados: Uint8Array): Promise<DocumentoLido[]> {
   const palavras = await palavrasDoPdf(dados);
+  if (!palavras.length) throw new PdfSemTexto();
   const texto = palavras.slice(0, 400).map((p) => p.texto.toUpperCase()).join(" ");
   if (/COMPROVANTE MENSAL DE RENDIMENTOS/.test(texto)) {
     const contracheque = lerContracheque(palavras);
