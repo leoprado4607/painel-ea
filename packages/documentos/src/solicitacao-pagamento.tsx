@@ -30,7 +30,9 @@ const celula = (largura: string, i: number) =>
  */
 function quebravel(t: string, porLinha = 12): string {
   const linhas: string[] = [];
-  for (const parte of t.split(/(?<=[./])/)) {
+  // trecho sem "." nem "/" maior que a linha (número digitado sem separadores) é cortado no tamanho da linha
+  const partes = t.split(/(?<=[./])/).flatMap((p) => p.match(new RegExp(`.{1,${porLinha}}`, "g")) ?? []);
+  for (const parte of partes) {
     const u = linhas.length - 1;
     if (u >= 0 && (linhas[u]! + parte).length <= porLinha) linhas[u] += parte;
     else linhas.push(parte);
@@ -133,7 +135,7 @@ export function SolicitacaoPagamentoVerso({ d }: { d: DadosDocumentos }) {
     ?? (d.processo.biNumero ? `BI/Adt ${d.processo.biNumero}${d.processo.biData ? ` de ${dataBr(d.processo.biData)}` : ""}` : "");
   // amparo e explicação vêm dos quadros de Informações, com negrito/itálico/sublinhado
   const cols: { w: string; t: string; v: ReactNode }[] = [
-    { w: "10%", t: "Nº de Ordem", v: quebravel(numeroOrdem(d), 11) },
+    { w: "10%", t: "Nº de Ordem", v: quebravel(numeroOrdem(d), 10) },
     { w: "11%", t: "Data do Requerimento", v: dataBr(d.processo.dataRequerimento) },
     { w: "30%", t: "Nº/Data Doc/Materializou Direito", v: <Formatado marcacao={c.amparo} /> },
     { w: "12%", t: "Boletim que Averbou", v: bi },

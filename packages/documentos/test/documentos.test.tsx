@@ -127,6 +127,15 @@ it("Solicitação de Pagamento: período total da dívida com dia, mês e ano", 
   expect(t).toContain("28/02/2023");
 }, 60_000);
 
+it("Nº de Ordem sem separadores quebra dentro da coluna no verso", async () => {
+  const d = dadosC01();
+  const pdf = await gerarPdf({ ...d, processo: { ...d.processo, numero: "6409300523920261", dataRequerimento: "2023-07-31" } }, "solicitacao");
+  if (process.env.SALVAR_PDF) writeFileSync(process.env.SALVAR_PDF, pdf);
+  const verso = (await palavrasDoPdf(new Uint8Array(pdf))).filter((p) => p.pagina === 2).map((p) => p.texto);
+  expect(verso).toContain("6409300523");
+  expect(verso).toContain("31/07/2023");
+}, 60_000);
+
 it("Nº de Ordem não repete o ano quando o número já o traz", async () => {
   const { numeroOrdem } = await import("../src/comum");
   const d = dadosC01();
