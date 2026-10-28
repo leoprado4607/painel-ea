@@ -12,7 +12,7 @@ export function NovoPorFichas({ oms = [] }: { oms?: { id: string; nome: string }
       <h2 className="font-semibold">1. Envie as fichas financeiras e o contracheque (recomendado)</h2>
       <p className="text-sm text-suave">
         Selecione um ou mais PDFs. Das fichas financeiras (SIPPES ou SIAPPES, que pode trazer vários anos) vêm nome, Prec-CP, identidade,
-        CPF, P/G, OM de vinculação e os valores recebidos; do contracheque, só banco, agência e conta. O período da dívida fica em branco para você informar. Os arquivos são lidos e descartados: nenhum PDF fica guardado.
+        CPF, P/G, OM de vinculação e os valores recebidos; do contracheque (do CPEx ou a 2ª via do SIPPES), só banco, agência e conta. O período da dívida fica em branco para você informar. Os arquivos são lidos e descartados: nenhum PDF fica guardado.
       </p>
       {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}
       <form action={enviar} className="flex flex-wrap items-end gap-3">

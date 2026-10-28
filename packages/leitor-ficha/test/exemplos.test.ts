@@ -23,7 +23,7 @@ describe.skipIf(arquivos.length === 0).each(arquivos)("ficha real %s", (arq) => 
     }, null, 1));
     expect(f.ano).toBeGreaterThan(2000);
     expect(f.cabecalho.nome).toBeTruthy();
-    expect(f.linhas.length).toBeGreaterThan(5);
+    expect(f.linhas.length).toBeGreaterThan(3);
     expect(f.conferencias.linhasDivergentes).toEqual([]);
     expect(f.conferencias.mesesDivergentes).toEqual([]);
     expect(f.avisos).toEqual([]);

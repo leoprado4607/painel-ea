@@ -5,7 +5,7 @@ describe("posto/graduação nas assinaturas", () => {
   it("abrevia no padrão, escrito de qualquer forma", () => {
     expect(["MAJOR", "maj", "Maj."].map(abreviarPosto)).toEqual(["Maj", "Maj", "Maj"]);
     expect(["PRIMEIRO SARGENTO", "1º SGT", "Primeiro-Sargento", "1o Sgt"].map(abreviarPosto)).toEqual(["1º Sgt", "1º Sgt", "1º Sgt", "1º Sgt"]);
-    expect(["TC", "Tenente-Coronel", "SUBTENENTE", "cabo", "Sd EP", "sd ev"].map(abreviarPosto)).toEqual(["Ten Cel", "Ten Cel", "S Ten", "Cb", "Sd EP", "Sd EV"]);
+    expect(["TC", "Tenente-Coronel", "SUBTENENTE", "cabo", "Cabo Engajado", "Sd EP", "sd ev"].map(abreviarPosto)).toEqual(["Ten Cel", "Ten Cel", "S Ten", "Cb", "Cb", "Sd EP", "Sd EV"]);
     expect(abreviarPosto("General")).toBeNull();
   });
 

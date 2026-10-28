@@ -72,7 +72,8 @@ export function naturezaSiappes(codigo: string): "receita" | "desconto" {
   return /^[ABCR]/.test(codigo) ? "receita" : "desconto";
 }
 const CODIGO = CODIGO_SIPPES;
-const VALOR = /^-?\d{1,3}(\.\d{3})*,\d{2}$/;
+/** "1.177,00"; a ficha nova do SIPPES (out/2026) escreve sem ponto de milhar: "1177,00". */
+export const VALOR = /^-?(\d{1,3}(\.\d{3})*|\d+),\d{2}$/;
 const TOLERANCIA_LINHA = 2.5;
 
 export const lerValor = (t: string): number => Number(t.replace(/\./g, "").replace(",", "."));
@@ -96,7 +97,33 @@ export function agruparLinhas(palavras: Palavra[]): Linha[] {
   return linhas;
 }
 
+/** Rótulos do cabeçalho da ficha nova do SIPPES: vários campos na mesma linha ("Nr de idt/Cadastro: … Nome: … CPF: …"). */
+const ROTULOS_NOVOS = /(Nr de idt\/Cadastro:|Nome:|CPF:|Categoria:|Posto\/Grad real:|PREC\/CP:|OM:|RM:|Número de dependentes de IR:)/;
+
+function lerCabecalhoNovo(linhas: Linha[]): FichaFinanceira["cabecalho"] & { ano: number | null } {
+  const campos: Record<string, string> = {};
+  // a linha de "Nome:" do rodapé (quem acessou) vem depois: fica o 1º valor de cada rótulo
+  for (const l of linhas) {
+    const partes = l.texto.split(ROTULOS_NOVOS);
+    for (let i = 1; i < partes.length; i += 2) campos[partes[i]!] ??= partes[i + 1]!.trim();
+  }
+  const digitos = (s: string | undefined) => s?.replace(/\D/g, "") || null;
+  const om = campos["OM:"]?.match(/^(\d+)\s*-\s*(.+)$/);
+  return {
+    ano: Number(linhas.map((l) => /\bAno:?\s*(\d{4})/.exec(l.texto)?.[1]).find(Boolean)) || null,
+    posto: campos["Posto/Grad real:"]?.replace(/-/g, " ") || null,
+    nome: campos["Nome:"] || null,
+    precCp: digitos(campos["PREC/CP:"]),
+    identidade: digitos(campos["Nr de idt/Cadastro:"]),
+    cpf: digitos(campos["CPF:"]),
+    codom: om?.[1] ?? null,
+    rm: campos["RM:"]?.match(/^(\d+)/)?.[1] ?? null,
+    siglaUa: om?.[2] ?? null,
+  };
+}
+
 function lerCabecalho(linhas: Linha[]): FichaFinanceira["cabecalho"] & { ano: number | null } {
+  if (linhas.some((l) => /idt\/Cadastro:/.test(l.texto))) return lerCabecalhoNovo(linhas);
   const buscar = (re: RegExp) => {
     for (const l of linhas) {
       const m = re.exec(l.texto);
@@ -138,7 +165,9 @@ export function lerFicha(palavras: Palavra[]): FichaFinanceira {
     if (iCab >= 0) xJan = daPagina[iCab]!.palavras.find((p) => p.texto === "Jan")!.x;
     if (xJan === null) continue;
     const corpo = daPagina.slice(iCab + 1);
-    const iTot = corpo.findIndex((l) => /TOTAIS/.test(l.texto));
+    // fim da tabela: "TOTAIS LÍQUIDOS"; na ficha nova, "Total Receitas", "Total Despesas" e "Total Líquido"
+    const iTot = corpo.findIndex((l) => /TOTAIS|^Total\s+(Receitas|Despesas|L[íi]quido)\b/.test(l.texto));
+    const iLiq = corpo.findIndex((l) => /TOTAIS|^Total\s+L[íi]quido\b/.test(l.texto));
     const tabela = iTot >= 0 ? corpo.slice(0, iTot) : corpo;
 
     // Classifica as linhas: com código, ou só continuação de descrição.
@@ -194,8 +223,8 @@ export function lerFicha(palavras: Palavra[]): FichaFinanceira {
       });
     });
 
-    if (iTot >= 0) {
-      const v = corpo[iTot]!.palavras.filter((p) => VALOR.test(p.texto)).map((p) => lerValor(p.texto));
+    if (iLiq >= 0) {
+      const v = corpo[iLiq]!.palavras.filter((p) => VALOR.test(p.texto)).map((p) => lerValor(p.texto));
       if (v.length >= 12) totaisLiquidos = v.slice(0, 12);
       else avisos.push("linha TOTAIS LÍQUIDOS incompleta");
     }

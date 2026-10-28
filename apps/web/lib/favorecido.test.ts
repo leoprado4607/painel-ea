@@ -82,7 +82,9 @@ describe.skipIf(reais.length === 0).each(reais)("contracheque real %s no fluxo d
     const lido = await lerDocumentoPdf(new Uint8Array(readFileSync(join(PASTA, arq))));
     const doc: DocumentoExtraido = { arquivo: arq, tipo: lido.tipo, ficha: lido.ficha, contracheque: lido.tipo === "contracheque" ? lido.contracheque : undefined };
     const dados = dadosDoFavorecido([doc]);
-    expect(Object.keys(dados).sort()).toEqual(["agencia", "banco", "conta", "om_do_contracheque", "om_vinculacao"]);
+    // a 2ª via do SIPPES não traz a OM de vinculação: aí ela vem da ficha
+    const comOm = doc.contracheque!.cabecalho.omVinculacao ? ["om_do_contracheque", "om_vinculacao"] : [];
+    expect(Object.keys(dados).sort()).toEqual(["agencia", "banco", "conta", ...comOm]);
     expect(cpfValido(doc.contracheque!.cabecalho.cpf!)).toBe(true);
     expect(fichaValida(doc.ficha)).toBe(true);
     expect(periodoDosDocumentos([doc])).toBeNull(); // valores só das fichas

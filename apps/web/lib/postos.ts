@@ -21,7 +21,7 @@ const SINONIMOS: Record<(typeof POSTOS)[number], string[]> = {
   "1º Sgt": ["1 SGT", "1O SGT", "PRIMEIRO SARGENTO"],
   "2º Sgt": ["2 SGT", "2O SGT", "SEGUNDO SARGENTO"],
   "3º Sgt": ["3 SGT", "3O SGT", "TERCEIRO SARGENTO"],
-  "Cb": ["CB", "CABO"],
+  "Cb": ["CB", "CABO", "CABO ENGAJADO", "CB ENGAJADO"],
   "Sd EP": ["SD EP", "SOLDADO EP", "SOLDADO EFETIVO PROFISSIONAL"],
   "Sd EV": ["SD EV", "SOLDADO EV", "SOLDADO EFETIVO VARIAVEL"],
 };

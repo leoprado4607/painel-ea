@@ -78,7 +78,7 @@ export function EnvioDocumentos({ processoId, rubricas, bloqueado, aoLerDados, j
         <h2 className="font-semibold">Contracheque e fichas financeiras (PDF)</h2>
         {/* instruções só até os dados dos PDFs serem copiados ou carregados */}
         {!(jaCarregados || dadosUsados || msg?.tipo === "ok") && <p className="text-sm text-suave">
-          Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque. Das fichas, só as receitas das rubricas escolhidas em Códigos
+          Envie as fichas financeiras (SIPPES ou SIAPPES) e o contracheque (do CPEx ou a 2ª via do SIPPES). Das fichas, só as receitas das rubricas escolhidas em Códigos
           lançamento, nos meses do período da dívida, preenchem os valores recebidos; despesas são digitadas pelo operador. O contracheque serve só
           para os dados bancários. Os PDFs são descartados: ficam guardados só os números das fichas, e valores digitados nunca são substituídos.
         </p>}
