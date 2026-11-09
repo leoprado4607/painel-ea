@@ -86,7 +86,7 @@ export function quantidadeMeses(inicio: string | null | undefined, fim: string |
 /** Espécies da dívida (lista definida em 21/10/2026), em ordem alfabética. */
 export const ESPECIES_DIVIDA = [
   "Adicional Habilitação", "Adicional Natalino", "Adicional Permanência", "Auxílio fardamento", "Auxílio Funeral",
-  "Auxílio Natalidade", "Auxílio Transporte", "Compensação Orgânica", "Complemento de salário mínimo",
+  "Auxílio Natalidade", "Auxílio pré-escolar", "Auxílio Transporte", "Compensação Orgânica", "Complemento de salário mínimo",
   "Férias / Indenização de férias", "Gratificação de Representação",
 ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 export const SITUACOES = ["Ativa", "Reintegrado", "Ex-Militar", "Veterano", "Reformado", "Pensionista"];
