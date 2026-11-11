@@ -59,6 +59,7 @@ export const OMS_VINCULACAO = [
   { codom: "007807", nome: "16º BI Mtz" },
   { codom: "061200", nome: "HGuN" },
   { codom: "056507", nome: "17º GAC" },
+  { codom: "032045", nome: "17ª Cia Com" },
 ].sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR", { numeric: true }));
 
 /** "B ADM GU NATAL", "16 B I MTZ" → só letras e dígitos, sem acento nem º/ª, para comparar com a lista. */

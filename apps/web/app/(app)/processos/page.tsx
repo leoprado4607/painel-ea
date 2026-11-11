@@ -28,6 +28,17 @@ export default async function Processos() {
     const { data: perfis } = ids.length ? await supabase.from("perfil").select("usuario_id, nome, posto").in("usuario_id", ids) : { data: [] };
     for (const op of perfis ?? []) operadores.set(op.usuario_id, [postoAbreviado(op.posto), op.nome].filter(Boolean).join(" "));
   }
+  // quem emitiu a última versão de cada processo emitido (pode não ser quem criou)
+  const emissores = new Map<string, { versao: number; nome: string | null }>();
+  const emitidos = processos.filter((p) => p.situacao !== "rascunho").map((p) => p.id);
+  if (emitidos.length) {
+    const { data: docs } = await supabase.from("documento").select("processo_id, versao, emitido_por_nome")
+      .eq("tipo", "pacote_completo").in("processo_id", emitidos);
+    for (const d of docs ?? []) {
+      const atual = emissores.get(d.processo_id);
+      if (!atual || d.versao > atual.versao) emissores.set(d.processo_id, { versao: d.versao, nome: d.emitido_por_nome });
+    }
+  }
   // cards prontos (o filtro da pesquisa roda no navegador, em ListaProcessos)
   const cards: CardProcesso[] = processos.map((p) => {
     const nome = [postoAbreviado(p.militar?.posto_graduacao), p.militar?.nome].filter(Boolean).join(" ");
@@ -39,9 +50,10 @@ export default async function Processos() {
       // excluir: só o criador e o Admin; processo de outro operador aparece como "só consulta"
       meu: podeAlterarProcesso(perfil, p), descricao: `${p.numero || "s/nº"} de ${nome}`,
       operador: p.criado_por ? operadores.get(p.criado_por) ?? null : null,
+      emitidoPor: p.situacao !== "rascunho" ? emissores.get(p.id)?.nome ?? null : null,
       // pesquisa: nome, posto (abreviado e como foi gravado), OM e espécie da dívida
       busca: normalizarBusca([nome, p.militar?.posto_graduacao, om, p.militar?.om_vinculacao, p.especie_divida,
-        p.criado_por ? operadores.get(p.criado_por) : null].filter(Boolean).join(" ")),
+        p.criado_por ? operadores.get(p.criado_por) : null, emissores.get(p.id)?.nome].filter(Boolean).join(" ")),
     };
   });
   if (!cards.length) {

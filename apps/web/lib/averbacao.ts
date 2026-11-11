@@ -6,7 +6,7 @@ export type DocumentoAverbacao = (typeof DOCUMENTOS_AVERBACAO)[number];
 export const BOLETINS_ADT = ["BI", "BAR"] as const;
 
 export const OMS_AVERBACAO = [
-  "B Adm Gu Natal", "HGuN", "17º GAC", "16º BI Mtz", "7º BE Cmb", "Cmdo 7ª Bda Inf Mtz", "Cia Cmdo/7ª Bda Inf Mtz", "7º Pel PE",
+  "B Adm Gu Natal", "HGuN", "17º GAC", "16º BI Mtz", "7º BE Cmb", "Cmdo 7ª Bda Inf Mtz", "Cia Cmdo/7ª Bda Inf Mtz", "7º Pel PE", "17ª Cia Com",
 ] as const;
 
 export interface Averbacao {

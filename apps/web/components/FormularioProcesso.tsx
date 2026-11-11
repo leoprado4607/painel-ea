@@ -174,7 +174,7 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
           <div className="mt-4 grid gap-4 sm:grid-cols-[14rem_1fr]">
             <Lista nome="situacao" rotulo="Situação" valor={valores.situacao} opcoes={SITUACOES} obrigatorio erro={c.situacao} />
             {/* nome e CODOM da OM nos documentos vêm daqui; valor lido do PDF fora da lista aparece para o operador trocar */}
-            <Lista nome="om_vinculacao" rotulo="OM de vinculação (órgão pagador)" valor={omDeVinculacao(valores.om_vinculacao)?.nome ?? valores.om_vinculacao}
+            <Lista nome="om_vinculacao" rotulo="OMV" valor={omDeVinculacao(valores.om_vinculacao)?.nome ?? valores.om_vinculacao}
               opcoes={OMS_VINCULACAO.map((o) => o.nome)} aceitaOutro obrigatorio erro={c.om_vinculacao} />
           </div>
         </section>
@@ -225,7 +225,20 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
           <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} />
         </section>
         <section className="cartao">
-          <h2 className="mb-3 font-semibold">Explicação do não pagamento à época</h2>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <h2 className="font-semibold">Explicação do não pagamento à época</h2>
+            {/* baixa um .txt (Bloco de Notas) com as explicações já registradas para a espécie da dívida escolhida acima */}
+            <button type="button" className="botao-sec px-3 py-1.5 text-sm"
+              title="Baixa um arquivo de texto com as explicações já registradas no sistema para a espécie da dívida escolhida"
+              onClick={(e) => {
+                const especie = (e.currentTarget.form?.elements.namedItem("especie_divida") as HTMLSelectElement | null)?.value ?? "";
+                if (!especie) { alert("Escolha a espécie da dívida (em “Dívida e processo”) para abrir o repositório."); return; }
+                const q = new URLSearchParams({ especie, ...(processoId ? { exceto: processoId } : {}) });
+                window.location.href = `/processos/repositorio?${q}`;
+              }}>
+              Repositório
+            </button>
+          </div>
           <EditorFormatado nome="c.explicacao" rotulo="Explicação" rotuloOculto ferramentasAEsquerda valor={valores.complementos?.explicacao} limite={800}
             arrumarColado justificado obrigatorio erro={c["c.explicacao"]} bloqueado={bloqueado}
             placeholder="Ex.: O militar fazia jus a … no período de … e não recebeu à época porque …" />

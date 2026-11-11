@@ -18,7 +18,7 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
   const [{ data: indices }, { data: regras }, { data: documentos }] = await Promise.all([
     supabase.from("indice_composto").select("ano, mes, percentual"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
-    supabase.from("documento").select("id, versao, criado_em, indice_ate, tamanho_bytes")
+    supabase.from("documento").select("id, versao, criado_em, indice_ate, tamanho_bytes, emitido_por_nome")
       .eq("processo_id", id).eq("tipo", "pacote_completo").order("versao", { ascending: false }),
   ]);
   if (!indices?.length) return <Aviso tipo="erro">Não foi possível carregar os índices de correção.</Aviso>;

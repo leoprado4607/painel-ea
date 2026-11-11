@@ -76,10 +76,12 @@ export async function montarDocumentos(
 
 /**
  * Emite: gera o PDF compilado definitivo e o ZIP (uma pasta com cada documento em PDF separado, com a mesma data e
- * rodapé), guarda os dois no Storage, registra o documento e trava o processo com o índice usado.
+ * rodapé), guarda os dois no Storage, registra o documento (com o nome de quem emitiu) e trava o processo com o índice usado.
  */
 export async function emitir(processoId: string) {
-  const { supabase } = await carregarProcesso(processoId);
+  const { supabase, perfil } = await carregarProcesso(processoId);
+  // quem clicou para gerar o PDF (pode não ser quem criou o processo, que é quem assina)
+  const emissor = [postoAbreviado(perfil?.posto), perfil?.nome].filter(Boolean).join(" ") || null;
   const { count } = await supabase.from("documento").select("id", { count: "exact", head: true })
     .eq("processo_id", processoId).eq("tipo", "pacote_completo");
   const versao = (count ?? 0) + 1;
@@ -99,6 +101,7 @@ export async function emitir(processoId: string) {
   const { data: doc, error } = await supabase.from("documento").insert({
     processo_id: processoId, om_id: om!.id, tipo: "pacote_completo", caminho_storage: caminho,
     sha256: createHash("sha256").update(pdf).digest("hex"), tamanho_bytes: pdf.length, indice_ate: indiceAte, versao,
+    emitido_por_nome: emissor,
   }).select("id").single();
   if (error) throw new Error(error.message);
   const usados = entrada.indices.filter((i) => i.percentual !== null);

@@ -260,3 +260,33 @@ describe("quem assina como operador", () => {
     expect(await como("00000000-0000-0000-0000-0000000000ee", `select * from operador_do_processo('${P}')`)).toEqual([]); // sem perfil
   });
 });
+
+describe("repositório de explicações e quem emitiu", () => {
+  const M = "20000000-0000-0000-0000-0000000000c1";
+  const P = { rascunho: "30000000-0000-0000-0000-0000000000c1", emitido: "30000000-0000-0000-0000-0000000000c2",
+    outraEspecie: "30000000-0000-0000-0000-0000000000c3", semTexto: "30000000-0000-0000-0000-0000000000c4" };
+  beforeAll(async () => {
+    await como(U.operadorA, `insert into militar (id, om_id, nome, posto_graduacao) values ('${M}', '${OM.a}', 'Militar C', 'Cb')`);
+    const ins = (id: string, especie: string, explicacao: string) => como(U.operadorA, `insert into processo
+      (id, om_id, militar_id, especie_divida, periodo_inicio, periodo_fim, complementos) values
+      ('${id}', '${OM.a}', '${M}', '${especie}', '2024-01-01', '2024-12-31', jsonb_build_object('explicacao', '${explicacao}'))`);
+    await ins(P.rascunho, "Auxílio fardamento", "Texto <b>do</b> rascunho");
+    await ins(P.emitido, "Auxílio fardamento", "Texto do emitido");
+    await ins(P.outraEspecie, "Adicional Natalino", "Outra espécie");
+    await ins(P.semTexto, "Auxílio fardamento", "  ");
+    // o Admin emite o processo do operador A: o nome de quem emitiu fica no documento
+    await como(U.admin, `insert into documento (processo_id, om_id, tipo, caminho_storage, sha256, versao, emitido_por_nome)
+      values ('${P.emitido}', '${OM.a}', 'pacote_completo', 'x/${P.emitido}/v1.pdf', 'h', 1, 'Admin')`);
+    await como(U.admin, `update processo set situacao = 'emitido' where id = '${P.emitido}'`);
+  });
+
+  it("lista só a espécie pedida e com texto, com quem emitiu (rascunho: quem criou), para qualquer operador", async () => {
+    const r = await como<{ processo_id: string; operador: string; emitido: boolean; explicacao: string; militar_posto: string }>(U.operadorB,
+      `select processo_id, operador, emitido, explicacao, militar_posto from repositorio_explicacoes('Auxílio fardamento') order by processo_id`);
+    expect(r).toEqual([
+      { processo_id: P.rascunho, operador: "Op A", emitido: false, explicacao: "Texto <b>do</b> rascunho", militar_posto: "Cb" },
+      { processo_id: P.emitido, operador: "Admin", emitido: true, explicacao: "Texto do emitido", militar_posto: "Cb" },
+    ]);
+    expect(await como("00000000-0000-0000-0000-0000000000ee", `select * from repositorio_explicacoes('Auxílio fardamento')`)).toEqual([]); // sem perfil
+  });
+});

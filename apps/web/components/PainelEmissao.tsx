@@ -4,7 +4,9 @@ import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { emitirDocumentos, reabrirProcesso } from "@/lib/acoes/emissao";
 
-interface Doc { id: string; versao: number; criado_em: string; indice_ate: string | null; tamanho_bytes: number | null }
+interface Doc { id: string; versao: number; criado_em: string; indice_ate: string | null; tamanho_bytes: number | null;
+  /** quem clicou para gerar o PDF ("Cb Fulano de Tal"); pode não ser quem criou o processo */
+  emitido_por_nome?: string | null }
 
 export function PainelEmissao({ processoId, situacao, documentos, somenteConsulta }: {
   processoId: string; situacao: string; documentos: Doc[];
@@ -73,6 +75,7 @@ export function PainelEmissao({ processoId, situacao, documentos, somenteConsult
             <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 px-3 py-2">
               <span>
                 <strong>Versão {d.versao}</strong> · emitida em {data(d.criado_em)}
+                {d.emitido_por_nome ? ` por ${d.emitido_por_nome}` : ""}
                 {d.indice_ate ? ` · índice até ${d.indice_ate.slice(5, 7)}/${d.indice_ate.slice(0, 4)}` : ""}
               </span>
               <span className="flex gap-4">
