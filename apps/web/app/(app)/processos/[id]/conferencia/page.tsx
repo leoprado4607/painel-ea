@@ -5,16 +5,14 @@ import { descreverRegra } from "@/lib/indice";
 import { montarEntrada } from "@/lib/calculo";
 import { recebidosPosPeriodo } from "@/lib/pos-periodo";
 import { formatarReais } from "@/lib/dinheiro";
-import { nomeNaAssinatura } from "@/lib/postos";
-import { carregarProcesso, operadorDoProcesso } from "@/lib/processo";
-import { FUNCAO_RESPONSAVEL, MESES } from "@/lib/tipos";
+import { carregarProcesso } from "@/lib/processo";
+import { MESES } from "@/lib/tipos";
 
 const R = (v: number) => `R$ ${formatarReais(v)}`;
 
 export default async function Conferencia({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { supabase, perfil, processo, rubricas, lancamentos, somenteConsulta } = await carregarProcesso(id);
-  const operador = await operadorDoProcesso(supabase, id, perfil);
+  const { supabase, processo, rubricas, lancamentos, somenteConsulta } = await carregarProcesso(id);
   const [{ data: indices }, { data: regras }, { data: documentos }] = await Promise.all([
     supabase.from("indice_composto").select("ano, mes, percentual"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
@@ -103,12 +101,6 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
         </table>
       </section>
 
-      {/* quem assina como operador: quem criou o processo (mesmo que o PDF seja gerado pelo Admin) */}
-      <Aviso tipo="info">
-        Os documentos são assinados, como {FUNCAO_RESPONSAVEL}, pelo operador que criou o processo:{" "}
-        <strong>{operador ? nomeNaAssinatura(operador.nome, operador.posto) : "—"}</strong>.
-        O Ordenador de Despesas assina só a Solicitação de Pagamento (abaixo da data) e o verso.
-      </Aviso>
       <PainelEmissao processoId={id} situacao={processo.situacao} documentos={documentos ?? []} somenteConsulta={somenteConsulta} />
     </div>
   );

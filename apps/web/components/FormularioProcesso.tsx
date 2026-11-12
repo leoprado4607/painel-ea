@@ -115,7 +115,6 @@ function DocumentosDireito({ valor, erros, bloqueado }: { valor?: string | null;
         <EditorFormatado key={d.id} nome="c.amparo" idBase={`c.amparo-${d.id}`} rotulo={i ? `Nº/data do documento ${i + 1}` : "Nº/data do documento"}
           rotuloOculto ferramentasAEsquerda umaLinha valor={d.texto} limite={LIMITE_DOCUMENTO} obrigatorio={i === 0}
           erro={erros[i ? `c.amparo.${i}` : "c.amparo"]} bloqueado={bloqueado}
-          placeholder="Ex: BI Nr 245-16º BI Mtz, de 10 de outubro de 2026."
           aoLado={!bloqueado && (
             <>
               {i > 0 && <button type="button" className={botao} aria-label={`Remover o documento ${i + 1}`} title="Remover este documento"
