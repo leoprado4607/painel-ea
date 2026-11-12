@@ -7,9 +7,9 @@ import { montarEntrada } from "./calculo";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import { dataPorExtenso, descreverRegra } from "./indice";
 import { textoBoletim } from "./averbacao";
-import { carregarProcesso, operadorDoProcesso } from "./processo";
+import { carregarProcesso } from "./processo";
 import { nomeNaAssinatura, postoAbreviado } from "./postos";
-import { FUNCAO_RESPONSAVEL, MESES, omDeVinculacao, VALOR_UFIR } from "./tipos";
+import { FUNCAO_RESPONSAVEL, MESES, MSG_ADMIN_NAO_EMITE, omDeVinculacao, VALOR_UFIR } from "./tipos";
 
 /** Reúne tudo o que os documentos precisam e gera o PDF do pacote completo. */
 export async function montarDocumentos(
@@ -17,8 +17,8 @@ export async function montarDocumentos(
   opcoes: { rascunho: boolean; versao?: number; tipo?: TipoDocumento; ano?: number },
 ) {
   const { supabase, perfil, om, processo, militar, rubricas, lancamentos } = await carregarProcesso(processoId);
-  // operador que assina: quem criou o processo, mesmo que o PDF seja gerado pelo Admin
-  const operador = await operadorDoProcesso(supabase, processoId, perfil);
+  // operador que assina: quem gera o PDF (quem emite), não quem criou o processo — decisão de 11/11/2026
+  const operador = perfil ? { nome: perfil.nome, posto: perfil.posto } : null;
   if (!om) throw new Error("OM do processo não encontrada.");
   if (!processo.periodo_inicio || !processo.periodo_fim) throw new Error("Informe o período da dívida.");
   // nome da OM e CODOM nos documentos: os da OM de vinculação do militar (o resto vem dos Dados da OM do operador)
@@ -42,8 +42,8 @@ export async function montarDocumentos(
       // assinaturas: "NOME COMPLETO - Posto" (ex.: "LEONARDO PRADO DO MONTE BORGES - Maj")
       ordenadorNome: nomeNaAssinatura(om.ordenador_nome), ordenadorFuncao: om.ordenador_funcao,
     },
-    // O operador que criou o processo assina como Auxiliar Div Pg Pes em todos os documentos, menos nas assinaturas do
-    // Ordenador (frente da Solicitação de Pagamento, abaixo da data, e o verso) — decisões de 19 e 21/10/2026.
+    // O operador que emite (gera o PDF) assina como Auxiliar Div Pg Pes em todos os documentos, menos nas assinaturas do
+    // Ordenador (frente da Solicitação de Pagamento, abaixo da data, e o verso) — decisões de 19/10 e 11/11/2026.
     responsavel: { nome: nomeNaAssinatura(operador?.nome, operador?.posto ?? null), funcao: FUNCAO_RESPONSAVEL },
     militar: {
       postoGraduacao: postoAbreviado(militar.posto_graduacao), nome: militar.nome, precCp: militar.prec_cp, identidade: militar.identidade,
@@ -80,7 +80,9 @@ export async function montarDocumentos(
  */
 export async function emitir(processoId: string) {
   const { supabase, perfil } = await carregarProcesso(processoId);
-  // quem clicou para gerar o PDF (pode não ser quem criou o processo, que é quem assina)
+  // o Admin é o Ordenador de Despesas: não emite; só operadores (o banco também barra)
+  if (perfil?.papel === "admin") throw new Error(MSG_ADMIN_NAO_EMITE);
+  // quem clicou para gerar o PDF (é quem assina; pode não ser quem criou o processo)
   const emissor = [postoAbreviado(perfil?.posto), perfil?.nome].filter(Boolean).join(" ") || null;
   const { count } = await supabase.from("documento").select("id", { count: "exact", head: true })
     .eq("processo_id", processoId).eq("tipo", "pacote_completo");

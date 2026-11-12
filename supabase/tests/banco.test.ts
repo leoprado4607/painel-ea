@@ -106,17 +106,50 @@ describe("acesso (RLS): Admin e Operador veem todos os processos", () => {
     }
   });
 
-  it("só o criador e o admin editam o processo; outro operador só consulta", async () => {
+  it("rascunho: qualquer operador altera e emite; emitido: só o criador e o admin reabrem; o criador não muda", async () => {
     const P = "30000000-0000-0000-0000-00000000000a";
-    expect(await como(U.operadorB, `update processo set numero = '002/2026' where id = '${P}' returning numero`)).toEqual([]);
-    expect(await como(U.operadorB, `update militar set nome = 'mudou' where id = '20000000-0000-0000-0000-00000000000a' returning id`)).toEqual([]);
-    await expect(como(U.operadorB, `insert into lancamento (processo_id, tipo, ano, mes, posicao, valor) values ('${P}', 'devido', 2019, 1, 1, 1)`))
-      .rejects.toThrow(/row-level security/);
-    expect(await como(U.operadorB, `update processo_rubrica set codigo = 'X' where processo_id = '${P}' returning posicao`)).toEqual([]);
+    // processo próprio deste teste (o P acima é usado depois, com contagem de auditoria dos lançamentos)
+    const PX = "30000000-0000-0000-0000-0000000000f1";
+    const MX = "20000000-0000-0000-0000-0000000000f1";
+    await como(U.operadorA, `insert into militar (id, om_id, nome) values ('${MX}', '${OM.a}', 'Militar X')`);
+    await como(U.operadorA, `insert into processo (id, om_id, militar_id, numero) values ('${PX}', '${OM.a}', '${MX}', '010/2026')`);
+    await como(U.operadorA, `insert into processo_rubrica (processo_id, posicao, codigo, tipo) values ('${PX}', 1, 'A', 'Receita')`);
+    // em rascunho, o operador B continua o cálculo do A: processo, militar, rubricas e lançamentos
+    expect(await como(U.operadorB, `update processo set numero = '011/2026' where id = '${PX}' returning numero`)).toEqual([{ numero: "011/2026" }]);
+    expect(await como(U.operadorB, `update militar set nome = 'Militar X2' where id = '${MX}' returning nome`)).toEqual([{ nome: "Militar X2" }]);
+    expect(await como(U.operadorB, `update processo_rubrica set codigo = 'B' where processo_id = '${PX}' returning codigo`)).toEqual([{ codigo: "B" }]);
+    await como(U.operadorB, `insert into lancamento (processo_id, tipo, ano, mes, posicao, valor) values ('${PX}', 'devido', 2019, 1, 1, 1)`);
+    // ...mas não toma o processo para si (o criador assina os documentos)
+    await expect(como(U.operadorB, `update processo set criado_por = '${U.operadorB}' where id = '${PX}'`)).rejects.toThrow(/criador/);
+    await expect(como(U.operadorA, `update processo set criado_por = '${U.operadorB}' where id = '${PX}'`)).rejects.toThrow(/criador/);
+    // o Admin (Ordenador de Despesas) não emite; o B emite: registra o documento e trava o processo
+    await expect(como(U.admin, `update processo set situacao = 'emitido' where id = '${PX}'`)).rejects.toThrow(/Ordenador de Despesas/);
+    await como(U.operadorB, `insert into documento (processo_id, om_id, tipo, caminho_storage, sha256, versao, emitido_por_nome)
+      values ('${PX}', '${OM.a}', 'pacote_completo', 'x/${PX}/v1.pdf', 'h', 1, 'Op B')`);
+    expect(await como(U.operadorB, `update processo set situacao = 'emitido' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "emitido" }]);
+    expect((await db.query(`select criado_por from processo where id = '${PX}'`)).rows).toEqual([{ criado_por: U.operadorA }]);
+    // emitido: o B não reabre nem altera; o A (criador) reabre
+    expect(await como(U.operadorB, `update processo set situacao = 'rascunho' where id = '${PX}' returning id`)).toEqual([]);
+    expect(await como(U.operadorB, `update militar set nome = 'mudou' where id = '${MX}' returning id`)).toEqual([]);
+    expect(await como(U.operadorA, `update processo set situacao = 'rascunho' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "rascunho" }]);
+    // o Admin reabre (só não emite)
+    await como(U.operadorB, `update processo set situacao = 'emitido' where id = '${PX}'`);
+    expect(await como(U.admin, `update processo set situacao = 'rascunho' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "rascunho" }]);
+    // excluir continua só do criador e do admin
+    expect(await como(U.operadorB, `delete from processo where id = '${PX}' returning id`)).toEqual([]);
+    expect(await como(U.admin, `delete from processo where id = '${PX}' returning id`)).toEqual([{ id: PX }]);
+    await db.query(`delete from auditoria where tabela = 'lancamento'`);
+    // o criador e o admin seguem alterando o processo do A
     expect(await como(U.operadorA, `update processo set numero = '002/2026' where id = '${P}' returning numero`)).toEqual([{ numero: "002/2026" }]);
     expect(await como(U.admin, `update processo set numero = '001/2026' where id = '${P}' returning numero`)).toEqual([{ numero: "001/2026" }]);
-    // o criador não passa o processo para outro operador
-    await expect(como(U.operadorA, `update processo set criado_por = '${U.operadorB}' where id = '${P}'`)).rejects.toThrow(/row-level security/);
+  });
+
+  it("todos veem o nome de quem iniciou cada processo (o operador não lê o perfil dos outros)", async () => {
+    const P = "30000000-0000-0000-0000-00000000000a";
+    for (const u of [U.operadorA, U.operadorB, U.admin]) {
+      expect(await como(u, `select nome, posto from operadores_dos_processos(array['${P}']::uuid[])`)).toEqual([{ nome: "Op A", posto: null }]);
+    }
+    expect(await como("00000000-0000-0000-0000-0000000000ee", `select * from operadores_dos_processos(array['${P}']::uuid[])`)).toEqual([]);
   });
 
   it("usuário sem perfil ou desativado não vê nada", async () => {
@@ -274,10 +307,10 @@ describe("repositório de explicações e quem emitiu", () => {
     await ins(P.emitido, "Auxílio fardamento", "Texto do emitido");
     await ins(P.outraEspecie, "Adicional Natalino", "Outra espécie");
     await ins(P.semTexto, "Auxílio fardamento", "  ");
-    // o Admin emite o processo do operador A: o nome de quem emitiu fica no documento
-    await como(U.admin, `insert into documento (processo_id, om_id, tipo, caminho_storage, sha256, versao, emitido_por_nome)
-      values ('${P.emitido}', '${OM.a}', 'pacote_completo', 'x/${P.emitido}/v1.pdf', 'h', 1, 'Admin')`);
-    await como(U.admin, `update processo set situacao = 'emitido' where id = '${P.emitido}'`);
+    // o operador B emite o processo do operador A: o nome de quem emitiu fica no documento
+    await como(U.operadorB, `insert into documento (processo_id, om_id, tipo, caminho_storage, sha256, versao, emitido_por_nome)
+      values ('${P.emitido}', '${OM.a}', 'pacote_completo', 'x/${P.emitido}/v1.pdf', 'h', 1, 'Op B')`);
+    await como(U.operadorB, `update processo set situacao = 'emitido' where id = '${P.emitido}'`);
   });
 
   it("lista só a espécie pedida e com texto, com quem emitiu (rascunho: quem criou), para qualquer operador", async () => {
@@ -285,7 +318,7 @@ describe("repositório de explicações e quem emitiu", () => {
       `select processo_id, operador, emitido, explicacao, militar_posto from repositorio_explicacoes('Auxílio fardamento') order by processo_id`);
     expect(r).toEqual([
       { processo_id: P.rascunho, operador: "Op A", emitido: false, explicacao: "Texto <b>do</b> rascunho", militar_posto: "Cb" },
-      { processo_id: P.emitido, operador: "Admin", emitido: true, explicacao: "Texto do emitido", militar_posto: "Cb" },
+      { processo_id: P.emitido, operador: "Op B", emitido: true, explicacao: "Texto do emitido", militar_posto: "Cb" },
     ]);
     expect(await como("00000000-0000-0000-0000-0000000000ee", `select * from repositorio_explicacoes('Auxílio fardamento')`)).toEqual([]); // sem perfil
   });

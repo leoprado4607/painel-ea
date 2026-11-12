@@ -3,15 +3,18 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { emitirDocumentos, reabrirProcesso } from "@/lib/acoes/emissao";
+import { MSG_ADMIN_NAO_EMITE } from "@/lib/tipos";
 
 interface Doc { id: string; versao: number; criado_em: string; indice_ate: string | null; tamanho_bytes: number | null;
   /** quem clicou para gerar o PDF ("Cb Fulano de Tal"); pode não ser quem criou o processo */
   emitido_por_nome?: string | null }
 
-export function PainelEmissao({ processoId, situacao, documentos, somenteConsulta }: {
+export function PainelEmissao({ processoId, situacao, documentos, somenteConsulta, ehAdmin }: {
   processoId: string; situacao: string; documentos: Doc[];
   /** processo de outro operador: vê a prévia e os PDFs, mas não emite nem reabre */
   somenteConsulta?: boolean;
+  /** o Admin (Ordenador de Despesas) não emite: em rascunho, os botões só mostram o aviso */
+  ehAdmin?: boolean;
 }) {
   const router = useRouter();
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
@@ -29,6 +32,7 @@ export function PainelEmissao({ processoId, situacao, documentos, somenteConsult
       else window.location.href = enderecoZip(ultima.id);
       return;
     }
+    if (ehAdmin) { setMsg({ tipo: "erro", texto: MSG_ADMIN_NAO_EMITE }); alert(MSG_ADMIN_NAO_EMITE); return; }
     if (!confirm("Emitir os documentos? O PDF compilado e os arquivos separados ficam guardados e o processo é travado (para alterar, será preciso reabrir e emitir nova versão).")) return;
     // a aba do PDF é aberta já no clique (depois da emissão o navegador bloquearia)
     const aba = forma === "compilado" ? window.open("about:blank", "_blank") : null;

@@ -2,7 +2,7 @@
 import { cpfValido, normalizarFormatado, precCpValido, textoSemFormatacao } from "@painel-ea/engine";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { inserirRubricasIniciais, omParaNovoProcesso, podeAlterarProcesso } from "@/lib/processo";
+import { ehDonoDoProcesso, inserirRubricasIniciais, omParaNovoProcesso } from "@/lib/processo";
 import { postoAbreviado } from "@/lib/postos";
 import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
@@ -133,7 +133,7 @@ export async function excluirProcesso(processoId: string): Promise<{ erro?: stri
   const { supabase, perfil } = await sessao();
   const { data: processo } = await supabase.from("processo").select("id, militar_id, criado_por").eq("id", processoId).maybeSingle();
   if (!processo) return { erro: "Processo não encontrado." };
-  if (!podeAlterarProcesso(perfil, processo)) return { erro: "Só quem criou o processo (ou o Admin) pode excluí-lo." };
+  if (!ehDonoDoProcesso(perfil, processo)) return { erro: "Só quem criou o processo (ou o Admin) pode excluí-lo." };
   const { data: docs } = await supabase.from("documento").select("caminho_storage").eq("processo_id", processoId);
   const { data: apagados, error } = await supabase.from("processo").delete().eq("id", processoId).select("id");
   if (error) return { erro: error.message };

@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ListaProcessos, type CardProcesso } from "@/components/ListaProcessos";
 import { normalizarBusca } from "@/lib/busca";
 import { postoAbreviado } from "@/lib/postos";
-import { podeAlterarProcesso } from "@/lib/processo";
+import { ehDonoDoProcesso, podeAlterarProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import { formatarReais } from "@/lib/dinheiro";
 import { omDeVinculacao, type Militar, type Processo } from "@/lib/tipos";
@@ -21,14 +21,17 @@ export default async function Processos() {
   const processos = data ?? [];
   // valor final corrigido de cada processo (no lugar da OM, pedido de 21/10/2026)
   const corrigidos = await valoresCorrigidos(supabase, processos);
-  // só o Admin vê no card o operador responsável (quem criou o processo); o Admin lê todos os perfis
+  // operador que iniciou cada processo (quem criou): o Admin vê em todos os cards; o operador, nos rascunhos
+  // (11/11/2026: rascunho pode ser continuado por outro operador). O operador não lê o perfil dos outros: vem da função.
   const operadores = new Map<string, string>();
-  if (perfil?.papel === "admin") {
-    const ids = [...new Set(processos.map((p) => p.criado_por).filter((id): id is string => !!id))];
-    const { data: perfis } = ids.length ? await supabase.from("perfil").select("usuario_id, nome, posto").in("usuario_id", ids) : { data: [] };
-    for (const op of perfis ?? []) operadores.set(op.usuario_id, [postoAbreviado(op.posto), op.nome].filter(Boolean).join(" "));
+  const mostrarOperador = (p: Pick<Processo, "situacao">) => perfil?.papel === "admin" || p.situacao === "rascunho";
+  const comOperador = processos.filter(mostrarOperador).map((p) => p.id);
+  if (comOperador.length) {
+    const { data: ops } = await supabase.rpc("operadores_dos_processos", { pids: comOperador });
+    for (const op of (ops ?? []) as { processo_id: string; nome: string; posto: string | null }[])
+      operadores.set(op.processo_id, [postoAbreviado(op.posto), op.nome].filter(Boolean).join(" "));
   }
-  // quem emitiu a última versão de cada processo emitido (pode não ser quem criou)
+  // quem emitiu (e assinou) a última versão de cada processo emitido (pode não ser quem criou)
   const emissores = new Map<string, { versao: number; nome: string | null }>();
   const emitidos = processos.filter((p) => p.situacao !== "rascunho").map((p) => p.id);
   if (emitidos.length) {
@@ -47,13 +50,13 @@ export default async function Processos() {
     return {
       id: p.id, nome, om, periodo: `${mesAno(p.periodo_inicio)} a ${mesAno(p.periodo_fim)}`, especie: p.especie_divida,
       valor: valor != null ? `R$ ${formatarReais(valor)}` : "R$ —", valorNumero: valor ?? null, situacao: p.situacao,
-      // excluir: só o criador e o Admin; processo de outro operador aparece como "só consulta"
-      meu: podeAlterarProcesso(perfil, p), descricao: `${p.numero || "s/nº"} de ${nome}`,
-      operador: p.criado_por ? operadores.get(p.criado_por) ?? null : null,
+      // excluir e reabrir: só o criador e o Admin; rascunho de outro operador pode ser continuado; emitido dele, "só consulta"
+      meu: ehDonoDoProcesso(perfil, p), editavel: podeAlterarProcesso(perfil, p), descricao: `${p.numero || "s/nº"} de ${nome}`,
+      operador: operadores.get(p.id) ?? null,
       emitidoPor: p.situacao !== "rascunho" ? emissores.get(p.id)?.nome ?? null : null,
       // pesquisa: nome, posto (abreviado e como foi gravado), OM e espécie da dívida
       busca: normalizarBusca([nome, p.militar?.posto_graduacao, om, p.militar?.om_vinculacao, p.especie_divida,
-        p.criado_por ? operadores.get(p.criado_por) : null, emissores.get(p.id)?.nome].filter(Boolean).join(" ")),
+        operadores.get(p.id), emissores.get(p.id)?.nome].filter(Boolean).join(" ")),
     };
   });
   if (!cards.length) {

@@ -14,11 +14,13 @@ export interface CardProcesso {
   /** valor final corrigido, para ordenar (null se ainda não calculado) */
   valorNumero: number | null;
   situacao: "rascunho" | "emitido" | "arquivado";
-  /** pode excluir (criador ou Admin); senão, "Só consulta" */
+  /** pode excluir e reabrir (criador ou Admin) */
   meu: boolean;
+  /** pode alterar e emitir (rascunho: qualquer operador); senão, "Só consulta" */
+  editavel?: boolean;
   /** "640093.005344/2026-43 de 1º Sgt …" (confirmação da exclusão) */
   descricao: string;
-  /** só para o Admin: operador responsável (quem criou), "Cb Bruno Guilherme de Souza Bezerra" */
+  /** operador que iniciou o processo (Admin: todos os cards; operador: só os rascunhos), "Cb Bruno Guilherme de Souza Bezerra" */
   operador?: string | null;
   /** quem gerou o PDF da última versão emitida (pode não ser quem criou o processo) */
   emitidoPor?: string | null;
@@ -100,7 +102,7 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
                   )}
                 </div>
                 <span className="flex flex-wrap items-center gap-2">
-                  {!p.meu && <span className="border border-borda px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] text-suave">Só consulta</span>}
+                  {!(p.editavel ?? p.meu) && <span className="border border-borda px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] text-suave">Só consulta</span>}
                   <span className={`px-2 py-0.5 text-[11px] font-bold uppercase tracking-[.05em] ${p.situacao === "rascunho" ? "bg-amber-100 text-amber-900" : "bg-marca-100 text-marca-800"}`}>
                     {SITUACAO[p.situacao]}
                   </span>

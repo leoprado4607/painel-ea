@@ -21,7 +21,7 @@ export const carregarProcesso = cache(async (id: string) => {
   if (!linha) notFound();
   // fichas_lidas (números das fichas) só é usado no servidor (lib/receitas): não vai para as telas
   const { militar, om, fichas_lidas: _fichas, ...processo } = linha as typeof linha & { fichas_lidas?: unknown };
-  // processo de outro operador: só consulta (o banco também barra a gravação)
+  // processo de outro operador já emitido: só consulta (o banco também barra a gravação); em rascunho, qualquer um continua
   const somenteConsulta = !podeAlterarProcesso(perfil, processo);
   return {
     supabase, perfil, om, processo: processo as Processo, militar,
@@ -34,9 +34,17 @@ export const carregarProcesso = cache(async (id: string) => {
   };
 });
 
-/** Só o criador do processo e o Admin alteram, emitem, reabrem e excluem (decisão de 21/10/2026). */
-export function podeAlterarProcesso(perfil: Perfil | null, processo: Pick<Processo, "criado_por">) {
+/** Quem criou o processo, ou o Admin: os únicos que reabrem um processo emitido e excluem (decisão de 21/10/2026). */
+export function ehDonoDoProcesso(perfil: Perfil | null, processo: Pick<Processo, "criado_por">) {
   return perfil?.papel === "admin" || (!!perfil && processo.criado_por === perfil.usuario_id);
+}
+
+/**
+ * Alterar e emitir: em rascunho, qualquer operador (um começa o cálculo e outro termina e emite — 11/11/2026);
+ * depois de emitido, só o dono (criador ou Admin).
+ */
+export function podeAlterarProcesso(perfil: Perfil | null, processo: Pick<Processo, "criado_por" | "situacao">) {
+  return ehDonoDoProcesso(perfil, processo) || (!!perfil && processo.situacao === "rascunho");
 }
 
 /** OMs que o Admin pode escolher ao criar um processo (só quando há mais de uma; o operador usa a própria). */
@@ -65,14 +73,4 @@ export async function inserirRubricasIniciais(supabase: Supabase, processoId: st
   return supabase.from("processo_rubrica").insert((padrao ?? []).map((r) => ({
     ...r, codigo: r.tipo === "Receita" ? "" : r.codigo, processo_id: processoId,
   })));
-}
-
-/**
- * Operador que assina os documentos: quem CRIOU o processo (não quem gera o PDF). Sem o criador (processo antigo),
- * quem está gerando.
- */
-export async function operadorDoProcesso(supabase: Supabase, processoId: string, perfil: Perfil | null) {
-  const { data } = await supabase.rpc("operador_do_processo", { pid: processoId });
-  const op = (data as { nome: string; posto: string | null }[] | null)?.[0];
-  return op ?? (perfil ? { nome: perfil.nome, posto: perfil.posto } : null);
 }

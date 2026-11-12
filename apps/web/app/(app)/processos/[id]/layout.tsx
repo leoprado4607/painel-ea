@@ -19,7 +19,7 @@ export default async function LayoutProcesso({ children, params }: { children: R
       <AbasProcesso id={id} titulo={titulo} subtitulo={subtitulo} situacao={processo.situacao} />
       {/* no computador, o nome do processo fica na barra lateral; aqui só o aviso de processo travado */}
       {somenteConsulta
-        ? <Aviso tipo="info">Este processo foi criado por outro operador e está somente para consulta.</Aviso>
+        ? <Aviso tipo="info">Este processo foi criado e emitido por outro operador e está somente para consulta.</Aviso>
         : bloqueado && <Aviso tipo="info">Este processo já foi emitido e está somente para consulta.</Aviso>}
       {children}
     </div>

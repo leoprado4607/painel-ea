@@ -84,6 +84,10 @@ export function quantidadeMeses(inicio: string | null | undefined, fim: string |
   return (Number(b[1]) - Number(a[1])) * 12 + (Number(b[2]) - Number(a[2])) + 1;
 }
 
+/** O Admin é o Ordenador de Despesas: não emite cálculos (decisão de 11/11/2026). */
+export const MSG_ADMIN_NAO_EMITE =
+  "O Admin é o Ordenador de Despesas e não pode emitir cálculos. A emissão deve ser feita por um operador.";
+
 /** Espécies da dívida (lista definida em 21/10/2026), em ordem alfabética. */
 export const ESPECIES_DIVIDA = [
   "Adicional Habilitação", "Adicional Natalino", "Adicional Permanência", "Auxílio fardamento", "Auxílio Funeral",
