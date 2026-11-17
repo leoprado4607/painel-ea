@@ -1,0 +1,56 @@
+import { describe, expect, it } from "vitest";
+import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin, RUBRICA_AGA, RUBRICA_GR } from "./compl-sal-min";
+import type { FichaLida } from "./receitas";
+
+/** meses: { 5: 10 } → maio = 10 */
+const linha = (codigo: string, meses: Record<number, number>) =>
+  ({ codigo, descricao: codigo, meses: Array.from({ length: 12 }, (_, i) => meses[i + 1] ?? 0) });
+const ficha = (ano: number, ...linhas: ReturnType<typeof linha>[]): FichaLida => ({ ano, sistema: "sippes", linhas });
+
+describe("complemento de salário mínimo automático", () => {
+  it("só com a espécie e nos processos criados depois da mudança", () => {
+    const especie_divida = "Complemento de salário mínimo";
+    expect(complSalMinAutomatico({ especie_divida, complementos: { calculoAutomatico: true } })).toBe(true);
+    expect(complSalMinAutomatico({ especie_divida, complementos: {} })).toBe(false); // rascunhos e emitidos antigos
+    expect(complSalMinAutomatico({ especie_divida: "Auxílio Transporte", complementos: { calculoAutomatico: true } })).toBe(false);
+  });
+
+  it("recebidos no período, após o período (antes é desconsiderado) e devidos com a gratificação abatida", () => {
+    const fichas = [
+      ficha(2022, linha("AR0026", { 1: 5, 3: 20 }), linha("AR0061", { 1: 9, 3: 30, 4: 80.1, 5: 100 }), linha("NR0001", { 3: 1000 })),
+      ficha(2023, linha("AR0026", { 2: 15 })),
+      ficha(2024, linha("AGA", { 1: 170.1 })),
+    ];
+    const p = planoComplSalMin(fichas, { ano: 2022, mes: 3 }, { ano: 2023, mes: 1 });
+    expect(p.aga).toEqual([{ ano: 2022, mes: 3, valor: 20 }]); // jan/2022 é antes do período
+    expect(p.gr).toEqual([{ ano: 2022, mes: 3, valor: 30 }, { ano: 2022, mes: 4, valor: 80.1 }, { ano: 2022, mes: 5, valor: 100 }]);
+    expect(p.posPeriodo).toEqual([{ ano: 2023, mes: 2, valor: 15 }, { ano: 2024, mes: 1, valor: 170.1 }]);
+    // mar: 80,10 − 30; abr e mai: gratificação igual ou maior, não computados; jun a dez: 80,10; jan/2023: 170,10
+    expect(p.devidos[0]).toEqual({ ano: 2022, mes: 3, valor: 50.1 });
+    expect(p.devidos.find((d) => d.mes === 4 && d.ano === 2022)).toBeUndefined();
+    expect(p.devidos.find((d) => d.mes === 5 && d.ano === 2022)).toBeUndefined();
+    expect(p.devidos.filter((d) => d.ano === 2022 && d.mes >= 6).every((d) => d.valor === 80.1)).toBe(true);
+    expect(p.devidos.at(-1)).toEqual({ ano: 2023, mes: 1, valor: 170.1 });
+    expect(p.devidos).toHaveLength(9);
+    expect(p.notas["2022-3"]).toContain("Abatido R$ 30,00");
+    expect(p.notas["2022-4"]).toContain("Mês não computado");
+    expect(p.notas["2022-6"]).toBeUndefined();
+  });
+
+  it("não há complemento fora de 2022 e 2023", () => {
+    expect(planoComplSalMin([], { ano: 2021, mes: 11 }, { ano: 2024, mes: 2 }).devidos.map((d) => d.ano))
+      .toEqual([...Array(12).fill(2022), ...Array(12).fill(2023)]);
+  });
+
+  it("AGA na posição 1 e AR0061 neutra à direita, só se houver gratificação", () => {
+    const vazias = Array.from({ length: 17 }, (_, i) => ({ posicao: i + 1, codigo: i >= 12 ? "Z01 - FUSEX" : "", tipo: i >= 12 ? "Despesa" : "Receita" }));
+    const sem = rubricasComplSalMin(vazias, false);
+    expect(sem.mudadas).toEqual([{ posicao: 1, codigo: RUBRICA_AGA, tipo: "Receita" }]);
+    expect(sem.posicaoGr).toBeNull();
+    const com = rubricasComplSalMin(vazias, true);
+    expect(com.mudadas).toEqual([{ posicao: 1, codigo: RUBRICA_AGA, tipo: "Receita" }, { posicao: 2, codigo: RUBRICA_GR, tipo: "-" }]);
+    // já escolhidas: nada muda
+    const prontas = vazias.map((r) => (r.posicao === 1 ? { ...r, codigo: RUBRICA_AGA } : r.posicao === 2 ? { ...r, codigo: RUBRICA_GR, tipo: "-" } : r));
+    expect(rubricasComplSalMin(prontas, true)).toEqual({ mudadas: [], posicaoAga: 1, posicaoGr: 2 });
+  });
+});

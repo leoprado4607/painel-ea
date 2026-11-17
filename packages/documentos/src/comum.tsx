@@ -24,6 +24,11 @@ export interface Complementos {
    * corrigidos pelo índice do mês em que foram pagos; os anos deles também ganham as páginas do ano nos documentos.
    */
   recebidosPosPeriodo?: RecebidoPosPeriodo[];
+  /**
+   * Processo criado a partir de 17/11/2026: segue os cálculos automáticos por espécie (complemento de salário mínimo,
+   * apps/web/lib/compl-sal-min). Os anteriores não têm a marca e não mudam.
+   */
+  calculoAutomatico?: boolean;
 }
 
 export interface RecebidoPosPeriodo { ano: number; mes: number; posicao: number; valor: number }

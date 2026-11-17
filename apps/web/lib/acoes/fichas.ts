@@ -12,6 +12,8 @@ import {
   fichasLidasDosDocumentos, fichasLidasValidas, mesclarFichasLidas, preencherReceitas, receitasDoPeriodo, tabelaCorrespondencia,
 } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
+import { CODIGOS_COMPL_SAL_MIN, complSalMinAutomatico, planoComplSalMin } from "@/lib/compl-sal-min";
+import { mesDeData } from "@/lib/lancamentos";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 
@@ -113,7 +115,7 @@ function compararMilitar(docs: DocumentoExtraido[], m: Record<string, string | n
 
 async function montarPrevia(supabase: Supabase, processoId: string, docs: DocumentoExtraido[]): Promise<Previa> {
   const [{ data: processo }, { data: rubricas }] = await Promise.all([
-    supabase.from("processo").select("id, situacao, periodo_inicio, periodo_fim, fichas_lidas, militar:militar_id(nome, cpf, prec_cp, identidade)")
+    supabase.from("processo").select("id, situacao, periodo_inicio, periodo_fim, fichas_lidas, especie_divida, complementos, militar:militar_id(nome, cpf, prec_cp, identidade)")
       .eq("id", processoId).single(),
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
   ]);
@@ -123,11 +125,19 @@ async function montarPrevia(supabase: Supabase, processoId: string, docs: Docume
   // só receitas, das rubricas escolhidas, no período da dívida (as fichas guardadas + as novas)
   const fichas = mesclarFichasLidas(fichasLidasValidas(processo.fichas_lidas), fichasLidasDosDocumentos(docs));
   const receitas = (rubricas ?? []).filter((r) => r.tipo === "Receita" && r.codigo?.trim());
-  const lancamentos = receitasDoPeriodo(fichas, rubricas ?? [], tabela, processo.periodo_inicio, processo.periodo_fim);
-  const naoUsadas = aplicarCorrespondencia(fichasDoCalculo(docs), receitas, tabela).naoUsadas;
+  const auto = complSalMinAutomatico(processo);
+  let lancamentos = receitasDoPeriodo(fichas, rubricas ?? [], tabela, processo.periodo_inicio, processo.periodo_fim);
+  let naoUsadas = aplicarCorrespondencia(fichasDoCalculo(docs), receitas, tabela).naoUsadas;
+  if (auto) {
+    // complemento de salário mínimo: AGA (posição 1) e AR0061 (à direita) no período, como em preencherReceitas
+    naoUsadas = naoUsadas.filter((l) => !CODIGOS_COMPL_SAL_MIN.has(l.codigo.trim().toUpperCase()));
+    const plano = processo.periodo_inicio && processo.periodo_fim
+      ? planoComplSalMin(fichas, mesDeData(processo.periodo_inicio), mesDeData(processo.periodo_fim)) : null;
+    lancamentos = plano ? [...plano.aga.map((v) => ({ ...v, posicao: 1 })), ...plano.gr.map((v) => ({ ...v, posicao: 2 }))] : [];
+  }
   const pendencia = !processo.periodo_inicio || !processo.periodo_fim
     ? "O período da dívida ainda não foi informado: as receitas serão preenchidas quando ele for salvo."
-    : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
+    : auto ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
   return {
     documentos: docs, resumo: docs.map(resumir), dados: dadosDoFavorecido(docs),
     divergenciasMilitar: compararMilitar(docs, (processo.militar ?? {}) as unknown as Record<string, string | null>),
@@ -209,6 +219,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     // receitas só depois de escolhidas as rubricas e informado o período (preencherReceitas)
     const { data: p, error: e2 } = await supabase.from("processo").insert({
       om_id: omId, militar_id: m.id, periodo_inicio: null, periodo_fim: null, fichas_lidas: fichasLidasDosDocumentos(docs),
+      complementos: { calculoAutomatico: true },
     }).select("id").single();
     if (e2) return { erro: e2.message };
     const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);

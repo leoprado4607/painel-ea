@@ -25,11 +25,13 @@ interface Props {
   proximaEtapa: string;
   /** só nos recebidos: valores recebidos após o período da dívida */
   posPeriodo?: RecebidoPosPeriodo[];
+  /** Observação do mês ("2022-5"), como o abatimento da gratificação de representação no complemento de salário mínimo. */
+  notas?: Record<string, string>;
 }
 
 const igual = (a: MesAno, b: MesAno) => a.ano === b.ano && a.mes === b.mes;
 
-export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas, bloqueado, proximaEtapa, posPeriodo = [] }: Props) {
+export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas, bloqueado, proximaEtapa, posPeriodo = [], notas = {} }: Props) {
   const router = useRouter();
   const [grade, setGrade] = useState(() => gradeDeLinhas(linhas));
   const [atual, setAtual] = useState<MesAno>(inicio);
@@ -157,6 +159,9 @@ export function ValoresMensais({ processoId, tipo, rubricas, inicio, fim, linhas
           )}
         </div>
 
+        {notas[`${atual.ano}-${atual.mes}`] && (
+          <div className="mb-4"><Aviso tipo="atencao">{notas[`${atual.ano}-${atual.mes}`]}</Aviso></div>
+        )}
         {ativas.length === 0 ? (
           <p className="text-sm text-suave">Nenhuma rubrica com código. Defina as rubricas na etapa anterior.</p>
         ) : (
