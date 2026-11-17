@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { salvarRubricas } from "@/lib/acoes/valores";
 import { RUBRICAS_RECEITA_ATIVA } from "@/lib/rubricas-siappes";
+import { ehRubricaGr } from "@/lib/compl-sal-min";
 
 interface R { posicao: number; codigo: string; tipo: TipoRubrica }
 
@@ -44,9 +45,12 @@ export function FormularioRubricas({ processoId, rubricas, bloqueado }: { proces
               placeholder={r.posicao <= ULTIMA_RECEITA ? "Escolha na lista (ex.: A01 - SOLDO)" : "(sem rubrica)"}
               onChange={(e) => mudar(r.posicao, "codigo", e.target.value)} />
             <label className="sr-only" htmlFor={`tipo-${r.posicao}`}>Tipo da posição {r.posicao}</label>
-            <select id={`tipo-${r.posicao}`} className="entrada" value={r.tipo} disabled={bloqueado}
+            {/* AR0061 / GRAT REPRESENT EVENTUAL é sempre Receita (sem a opção neutra) */}
+            <select id={`tipo-${r.posicao}`} className="entrada" value={ehRubricaGr(r.codigo) ? "Receita" : r.tipo}
+              disabled={bloqueado || ehRubricaGr(r.codigo)}
               onChange={(e) => mudar(r.posicao, "tipo", e.target.value)}>
-              <option>Receita</option><option>Despesa</option><option value="-">- (neutra)</option>
+              <option>Receita</option>
+              {!ehRubricaGr(r.codigo) && <><option>Despesa</option><option value="-">- (neutra)</option></>}
             </select>
           </div>
         ))}

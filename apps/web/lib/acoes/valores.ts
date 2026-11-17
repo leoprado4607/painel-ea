@@ -4,11 +4,15 @@ import { revalidatePath } from "next/cache";
 import { mesDeData } from "@/lib/lancamentos";
 import { erroPosPeriodo, recebidosPosPeriodo, type RecebidoPosPeriodo } from "@/lib/pos-periodo";
 import { preencherReceitas } from "@/lib/receitas";
+import { ehRubricaGr } from "@/lib/compl-sal-min";
 import { supabaseServidor } from "@/lib/supabase/server";
 
 export async function salvarRubricas(processoId: string, rubricas: { posicao: number; codigo: string; tipo: TipoRubrica }[]) {
   const supabase = await supabaseServidor();
-  const linhas = rubricas.map((r) => ({ processo_id: processoId, posicao: r.posicao, codigo: r.codigo.trim(), tipo: r.tipo }));
+  // AR0061 / GRAT REPRESENT EVENTUAL é sempre Receita
+  const linhas = rubricas.map((r) => ({
+    processo_id: processoId, posicao: r.posicao, codigo: r.codigo.trim(), tipo: ehRubricaGr(r.codigo) ? "Receita" as const : r.tipo,
+  }));
   const { error } = await supabase.from("processo_rubrica").upsert(linhas);
   if (error) return { erro: error.message };
   // rubricas de receita mudaram: refaz os recebidos que vêm das fichas (sem tocar nos digitados)

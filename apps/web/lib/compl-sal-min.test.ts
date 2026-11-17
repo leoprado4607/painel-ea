@@ -23,16 +23,17 @@ describe("complemento de salário mínimo automático", () => {
     ];
     const p = planoComplSalMin(fichas, "2022-03-01", "2023-01-31");
     expect(p.aga).toEqual([{ ano: 2022, mes: 3, valor: 20 }]); // jan/2022 é antes do período
-    expect(p.gr).toEqual([{ ano: 2022, mes: 3, valor: 30 }, { ano: 2022, mes: 4, valor: 80.1 }, { ano: 2022, mes: 5, valor: 100 }]);
+    expect(p.gr).toEqual([{ ano: 2022, mes: 3, valor: 30 }]); // abr e mai não computados: a AR0061 também não é lançada
     expect(p.posPeriodo).toEqual([{ ano: 2023, mes: 2, valor: 15 }, { ano: 2024, mes: 1, valor: 170.1 }]);
-    // mar: 80,10 − 30; abr e mai: gratificação igual ou maior, não computados; jun a dez: 80,10; jan/2023: 170,10
-    expect(p.devidos[0]).toEqual({ ano: 2022, mes: 3, valor: 50.1 });
+    // mar: 80,10 cheio (a AR0061, Receita, é descontada no cálculo); abr e mai: gratificação igual ou maior, não
+    // computados; jun a dez: 80,10; jan/2023: 170,10
+    expect(p.devidos[0]).toEqual({ ano: 2022, mes: 3, valor: 80.1 });
     expect(p.devidos.find((d) => d.mes === 4 && d.ano === 2022)).toBeUndefined();
     expect(p.devidos.find((d) => d.mes === 5 && d.ano === 2022)).toBeUndefined();
     expect(p.devidos.filter((d) => d.ano === 2022 && d.mes >= 6).every((d) => d.valor === 80.1)).toBe(true);
     expect(p.devidos.at(-1)).toEqual({ ano: 2023, mes: 1, valor: 170.1 });
     expect(p.devidos).toHaveLength(9);
-    expect(p.notas["2022-3"]).toContain("Abatido R$ 30,00");
+    expect(p.notas["2022-3"]).toContain("R$ 80,10 − R$ 30,00 = R$ 50,10");
     expect(p.notas["2022-4"]).toContain("Mês não computado");
     expect(p.notas["2022-6"]).toBeUndefined();
   });
@@ -45,26 +46,28 @@ describe("complemento de salário mínimo automático", () => {
   it("início e fim incompletos: proporcional aos dias do mês no calendário; a gratificação é abatida depois", () => {
     const fichas = [ficha(2022, linha("AR0061", { 2: 10 })), ficha(2023, linha("AR0061", { 2: 100 }))];
     const p = planoComplSalMin(fichas, "2022-02-15", "2023-02-14");
-    // fev/2022: 80,10 ÷ 28 × 14 = 40,05 − 10 = 30,05; fev/2023: 170,10 ÷ 28 × 14 = 85,05 ≤ 100, não computado
-    expect(p.devidos[0]).toEqual({ ano: 2022, mes: 2, valor: 30.05 });
+    // fev/2022: 80,10 ÷ 28 × 14 = 40,05 (a AR0061 de 10 é descontada no cálculo); fev/2023: 170,10 ÷ 28 × 14 = 85,05 ≤ 100,
+    // não computado (nem devido nem AR0061)
+    expect(p.devidos[0]).toEqual({ ano: 2022, mes: 2, valor: 40.05 });
+    expect(p.gr).toEqual([{ ano: 2022, mes: 2, valor: 10 }]);
     expect(p.devidos[1]).toEqual({ ano: 2022, mes: 3, valor: 80.1 });
     expect(p.devidos.at(-1)).toEqual({ ano: 2023, mes: 1, valor: 170.1 });
     expect(p.notas["2022-2"]).toBe("Valor proporcional: R$ 80,10 ÷ 28 dias × 14 dia(s) no período = R$ 40,05. "
-      + "Abatido R$ 10,00 referente à AR0061 / GRAT REPRESENT EVENTUAL: R$ 40,05 − R$ 10,00 = R$ 30,05.");
+      + "Abatida a AR0061 / GRAT REPRESENT EVENTUAL recebida (Receita): R$ 40,05 − R$ 10,00 = R$ 30,05.");
     expect(p.notas["2023-2"]).toContain("Mês não computado");
     // 31 dias: de 10/03 a 31/03 são 22 dias → 80,10 ÷ 31 × 22 = 56,845 → 56,85 (o valor do dia não é arredondado)
     expect(planoComplSalMin([], "2022-03-10", "2022-03-31").devidos).toEqual([{ ano: 2022, mes: 3, valor: 56.85 }]);
   });
 
-  it("AGA na posição 1 e AR0061 neutra à direita, só se houver gratificação", () => {
+  it("AGA na posição 1 e AR0061 (Receita) à direita, só se houver gratificação", () => {
     const vazias = Array.from({ length: 17 }, (_, i) => ({ posicao: i + 1, codigo: i >= 12 ? "Z01 - FUSEX" : "", tipo: i >= 12 ? "Despesa" : "Receita" }));
     const sem = rubricasComplSalMin(vazias, false);
     expect(sem.mudadas).toEqual([{ posicao: 1, codigo: RUBRICA_AGA, tipo: "Receita" }]);
     expect(sem.posicaoGr).toBeNull();
     const com = rubricasComplSalMin(vazias, true);
-    expect(com.mudadas).toEqual([{ posicao: 1, codigo: RUBRICA_AGA, tipo: "Receita" }, { posicao: 2, codigo: RUBRICA_GR, tipo: "-" }]);
+    expect(com.mudadas).toEqual([{ posicao: 1, codigo: RUBRICA_AGA, tipo: "Receita" }, { posicao: 2, codigo: RUBRICA_GR, tipo: "Receita" }]);
     // já escolhidas: nada muda
-    const prontas = vazias.map((r) => (r.posicao === 1 ? { ...r, codigo: RUBRICA_AGA } : r.posicao === 2 ? { ...r, codigo: RUBRICA_GR, tipo: "-" } : r));
+    const prontas = vazias.map((r) => (r.posicao === 1 ? { ...r, codigo: RUBRICA_AGA } : r.posicao === 2 ? { ...r, codigo: RUBRICA_GR } : r));
     expect(rubricasComplSalMin(prontas, true)).toEqual({ mudadas: [], posicaoAga: 1, posicaoGr: 2 });
   });
 });

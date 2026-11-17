@@ -64,11 +64,11 @@ describe("preencherReceitas no complemento de salário mínimo", () => {
     };
     await preencherReceitas(bancoFalso(t) as never, "P");
     expect(t.processo_rubrica!.slice(0, 3).map((r) => [r.codigo, r.tipo]))
-      .toEqual([["AGA - COMPL SAL MIN", "Receita"], ["AR0061 - GRAT REPRESENT EVENTUAL", "-"], ["", "Receita"]]);
+      .toEqual([["AGA - COMPL SAL MIN", "Receita"], ["AR0061 - GRAT REPRESENT EVENTUAL", "Receita"], ["", "Receita"]]);
     const de = (tipo: string) => t.lancamento!.filter((l) => l.tipo === tipo).map((l) => `${l.mes}/${l.posicao}=${l.valor}`).sort();
-    expect(de("recebido")).toEqual(["3/1=20", "3/2=30", "4/2=90"].sort());
-    // mar: 80,10 − 30; abr não computado; mai a nov: 80,10; dez: o digitado (1) fica
-    expect(de("devido")).toEqual(["3/1=50.1", ...[5, 6, 7, 8, 9, 10, 11].map((m) => `${m}/1=80.1`), "12/1=1"].sort());
+    expect(de("recebido")).toEqual(["3/1=20", "3/2=30"]); // abr (AR0061 90 ≥ 80,10) não computado
+    // mar: 80,10 cheio (a AR0061 é descontada no cálculo); abr não computado; mai a nov: 80,10; dez: o digitado (1) fica
+    expect(de("devido")).toEqual(["3/1=80.1", ...[5, 6, 7, 8, 9, 10, 11].map((m) => `${m}/1=80.1`), "12/1=1"].sort());
     expect((t.processo![0]!.complementos as Linha).recebidosPosPeriodo).toEqual([{ ano: 2023, mes: 1, posicao: 1, valor: 170.1 }]);
   });
 

@@ -4,14 +4,15 @@
  * Vale só para os processos criados a partir de 17/11/2026 (complementos.calculoAutomatico): rascunhos e emitidos
  * anteriores não mudam. Com a espécie "Complemento de salário mínimo", a partir das fichas guardadas (fichas_lidas):
  * - Códigos lançamento: "AGA - COMPL SAL MIN" (Receita) na posição 1 e, se houver Gratificação de Representação
- *   Eventual no período, "AR0061 - GRAT REPRESENT EVENTUAL" logo à direita, como neutra ("-"): ela aparece, mas já
- *   está abatida no devido do mês (como Receita seria descontada duas vezes).
+ *   Eventual no período, "AR0061 - GRAT REPRESENT EVENTUAL" logo à direita, sempre como Receita (decisão de
+ *   17/11/2026): o cálculo a desconta do mês. Em "Lançar valor devido" o campo dela não aparece (nada é devido nela).
  * - Recebidos: AGA (AR0026 no SIPPES) mês a mês no período; o recebido depois do fim do período vai para "recebido
  *   após o período" (e é descontado do total); o de antes do início é desconsiderado. A gratificação, só no período.
- * - Devidos: valor fixado do ano (R$ 80,10 em 2022 e R$ 170,10 em 2023; não há complemento nos outros anos) menos a
- *   gratificação do mês; com a gratificação igual ou maior que o valor fixado, o mês não é computado.
+ * - Devidos (AGA): valor fixado do ano, cheio (R$ 80,10 em 2022 e R$ 170,10 em 2023; não há complemento nos outros
+ *   anos); a gratificação recebida (Receita) é descontada no cálculo. Com a gratificação igual ou maior que o valor
+ *   fixado, o mês não é computado: nem o devido nem a gratificação são lançados (o mês fica zerado, sem ficar negativo).
  * - Mês de início ou de fim incompleto (ex.: dívida a partir de 15/02/2022): valor fixado ÷ dias do mês no calendário
- *   × dias do mês dentro do período; a gratificação é abatida depois da proporção.
+ *   × dias do mês dentro do período; a gratificação é comparada com esse valor proporcional.
  */
 import type { FichaLida } from "./receitas";
 
@@ -31,7 +32,7 @@ export interface ValorMes { ano: number; mes: number; valor: number }
 export interface PlanoComplSalMin {
   /** AGA recebido dentro do período. */
   aga: ValorMes[];
-  /** Gratificação de representação recebida dentro do período. */
+  /** Gratificação de representação recebida dentro do período (sem os meses não computados). */
   gr: ValorMes[];
   /** AGA recebido depois do fim do período. */
   posPeriodo: ValorMes[];
@@ -77,8 +78,9 @@ export function planoComplSalMin(fichas: FichaLida[], inicio: string, fim: strin
   const ini = k(di.ano, di.mes), fi = k(df.ano, df.mes);
   const noPeriodo = (v: ValorMes) => k(v.ano, v.mes) >= ini && k(v.ano, v.mes) <= fi;
   const todosAga = valoresDasFichas(fichas, CODIGOS_AGA);
-  const gr = valoresDasFichas(fichas, CODIGOS_GR).filter(noPeriodo);
-  const grDoMes = new Map(gr.map((v) => [k(v.ano, v.mes), v.valor]));
+  const grPeriodo = valoresDasFichas(fichas, CODIGOS_GR).filter(noPeriodo);
+  const grDoMes = new Map(grPeriodo.map((v) => [k(v.ano, v.mes), v.valor]));
+  const naoComputados = new Set<number>();
   const devidos: ValorMes[] = [];
   const notas: Record<string, string> = {};
   for (let c = ini; c <= fi; c++) {
@@ -95,26 +97,29 @@ export function planoComplSalMin(fichas: FichaLida[], inicio: string, fim: strin
     if (dias !== total) textos.push(`Valor proporcional: R$ ${reais(cheio)} ÷ ${total} dias × ${dias} dia(s) no período = R$ ${reais(fixado)}.`);
     const g = grDoMes.get(c) ?? 0;
     if (g >= fixado) {
-      textos.push(`Mês não computado: a AR0061 / GRAT REPRESENT EVENTUAL recebida (R$ ${reais(g)}) é igual ou maior que o valor ${dias !== total ? "proporcional" : "fixado"} do complemento (R$ ${reais(fixado)}).`);
+      textos.push(`Mês não computado: a AR0061 / GRAT REPRESENT EVENTUAL recebida (R$ ${reais(g)}) é igual ou maior que o valor ${dias !== total ? "proporcional" : "fixado"} do complemento (R$ ${reais(fixado)}); o devido e a AR0061 deste mês não são lançados.`);
       notas[`${ano}-${mes}`] = textos.join(" ");
+      naoComputados.add(c);
       continue;
     }
-    const valor = centavos(fixado - g);
-    if (g > 0) textos.push(`Abatido R$ ${reais(g)} referente à AR0061 / GRAT REPRESENT EVENTUAL: R$ ${reais(fixado)} − R$ ${reais(g)} = R$ ${reais(valor)}.`);
+    if (g > 0) textos.push(`Abatida a AR0061 / GRAT REPRESENT EVENTUAL recebida (Receita): R$ ${reais(fixado)} − R$ ${reais(g)} = R$ ${reais(centavos(fixado - g))}.`);
     if (textos.length) notas[`${ano}-${mes}`] = textos.join(" ");
-    devidos.push({ ano, mes, valor });
+    devidos.push({ ano, mes, valor: fixado });
   }
+  const gr = grPeriodo.filter((v) => !naoComputados.has(k(v.ano, v.mes)));
   return { aga: todosAga.filter(noPeriodo), gr, posPeriodo: todosAga.filter((v) => k(v.ano, v.mes) > fi && v.valor > 0), devidos, notas };
 }
 
 interface Rubrica { posicao: number; codigo: string; tipo: string }
 const ULTIMA_RECEITA = 12;
 const ehAga = (r: Rubrica) => r.codigo.trim().toUpperCase().startsWith("AGA ");
+/** AR0061 / GRAT REPRESENT EVENTUAL: sempre Receita e sem campo em "Lançar valor devido". */
+export const ehRubricaGr = (codigo: string | null | undefined) => (codigo ?? "").trim().toUpperCase().startsWith("AR0061");
 const ehGr = (r: Rubrica) => r.codigo.trim().toUpperCase().startsWith("AR0061");
 
 /**
  * Rubricas que precisam mudar: AGA (Receita) na posição 1 (ou na 1ª receita vazia) e, com gratificação no período,
- * AR0061 neutra logo à direita da AGA (ou na próxima vazia). Devolve as alteradas e as posições de cada uma.
+ * AR0061 (Receita) logo à direita da AGA (ou na próxima vazia). Devolve as alteradas e as posições de cada uma.
  */
 export function rubricasComplSalMin(rubricas: Rubrica[], temGr: boolean) {
   const lista = rubricas.map((r) => ({ ...r, codigo: r.codigo ?? "" }));
@@ -133,10 +138,10 @@ export function rubricasComplSalMin(rubricas: Rubrica[], temGr: boolean) {
     if (aga) marcar(aga, RUBRICA_AGA, "Receita");
   }
   let gr = lista.find(ehGr);
-  if (gr) marcar(gr, gr.codigo, "-");
+  if (gr) marcar(gr, gr.codigo, "Receita");
   else if (temGr) {
     gr = vazia(aga?.posicao ?? 0);
-    if (gr) marcar(gr, RUBRICA_GR, "-");
+    if (gr) marcar(gr, RUBRICA_GR, "Receita");
   }
   return { mudadas, posicaoAga: aga?.posicao ?? null, posicaoGr: gr?.posicao ?? null };
 }
