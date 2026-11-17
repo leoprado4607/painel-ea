@@ -2,19 +2,24 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
-import { emitirDocumentos, reabrirProcesso } from "@/lib/acoes/emissao";
+import { emitirDocumentos } from "@/lib/acoes/emissao";
 import { MSG_ADMIN_NAO_EMITE } from "@/lib/tipos";
+import { CorrigirProcesso } from "@/components/CorrigirProcesso";
 
 interface Doc { id: string; versao: number; criado_em: string; indice_ate: string | null; tamanho_bytes: number | null;
   /** quem clicou para gerar o PDF ("Cb Fulano de Tal"); pode não ser quem criou o processo */
   emitido_por_nome?: string | null }
 
-export function PainelEmissao({ processoId, situacao, documentos, somenteConsulta, ehAdmin }: {
+export function PainelEmissao({ processoId, situacao, documentos, somenteConsulta, ehAdmin, podeCorrigir, descricao }: {
   processoId: string; situacao: string; documentos: Doc[];
   /** processo de outro operador: vê a prévia e os PDFs, mas não emite nem reabre */
   somenteConsulta?: boolean;
   /** o Admin (Ordenador de Despesas) não emite: em rascunho, os botões só mostram o aviso */
   ehAdmin?: boolean;
+  /** emitido e o usuário é quem emitiu: botão "Corrigir" */
+  podeCorrigir?: boolean;
+  /** "001/2026 de 1º Sgt …" (confirmação do Corrigir) */
+  descricao?: string;
 }) {
   const router = useRouter();
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
@@ -46,14 +51,6 @@ export function PainelEmissao({ processoId, situacao, documentos, somenteConsult
       router.refresh();
     });
   };
-  const reabrir = () => {
-    if (!confirm("Reabrir o processo para correção? Os PDFs já emitidos continuam guardados.")) return;
-    iniciar(async () => {
-      const r = await reabrirProcesso(processoId);
-      if ("erro" in r && r.erro) return setMsg({ tipo: "erro", texto: r.erro });
-      router.refresh();
-    });
-  };
   const data = (s: string) => new Date(s).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
   return (
     <section className="cartao space-y-3">
@@ -71,7 +68,7 @@ export function PainelEmissao({ processoId, situacao, documentos, somenteConsult
             <button className="botao" disabled={ocupado} onClick={() => entregar("arquivos")}>{ocupado ? "Emitindo…" : "Download arquivos"}</button>
           </>
         )}
-        {!somenteConsulta && situacao !== "rascunho" && <button className="botao-sec" disabled={ocupado} onClick={reabrir}>Reabrir para correção</button>}
+        {podeCorrigir && situacao !== "rascunho" && <CorrigirProcesso id={processoId} descricao={descricao ?? ""} classe="botao-sec" />}
       </div>
       {documentos.length > 0 && (
         <ul className="divide-y divide-borda border border-borda text-sm">

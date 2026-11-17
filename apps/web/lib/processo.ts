@@ -12,39 +12,50 @@ type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
  */
 export const carregarProcesso = cache(async (id: string) => {
   const { supabase, perfil } = await sessao();
-  const [{ data: linha }, { data: rubricas }, { data: lancamentos }] = await Promise.all([
+  const [{ data: linha }, { data: rubricas }, { data: lancamentos }, { data: ultimaVersao }] = await Promise.all([
     supabase.from("processo").select("*, militar:militar_id(*), om:om_id(*)").eq("id", id)
       .maybeSingle<Processo & { militar: Militar; om: Om | null }>(),
     supabase.from("processo_rubrica").select("*").eq("processo_id", id).order("posicao").returns<RubricaProcesso[]>(),
     supabase.from("lancamento").select("processo_id, tipo, ano, mes, posicao, valor").eq("processo_id", id).returns<Lancamento[]>(),
+    // quem emitiu a última versão: só essa pessoa pode "Corrigir" (reabrir) o processo emitido
+    supabase.from("documento").select("criado_por").eq("processo_id", id).eq("tipo", "pacote_completo")
+      .order("versao", { ascending: false }).limit(1).maybeSingle<{ criado_por: string | null }>(),
   ]);
   if (!linha) notFound();
   // fichas_lidas (números das fichas) só é usado no servidor (lib/receitas): não vai para as telas
   const { militar, om, fichas_lidas: _fichas, ...processo } = linha as typeof linha & { fichas_lidas?: unknown };
-  // processo de outro operador já emitido: só consulta (o banco também barra a gravação); em rascunho, qualquer um continua
+  // em rascunho, qualquer operador altera; emitido, só consulta (quem emitiu pode "Corrigir"; o banco também barra)
   const somenteConsulta = !podeAlterarProcesso(perfil, processo);
+  const corrigir = podeCorrigirProcesso(perfil, processo, ultimaVersao?.criado_por ?? null);
   return {
     supabase, perfil, om, processo: processo as Processo, militar,
     rubricas: rubricas ?? [],
     lancamentos: (lancamentos ?? []).map((l) => ({ ...l, valor: Number(l.valor) })),
     somenteConsulta,
+    /** processo emitido e o usuário é quem emitiu a última versão: pode reabrir para correção */
+    podeCorrigir: corrigir,
     /** já houve fichas lidas dos PDFs (só o sim/não vai para a tela) */
     fichasCarregadas: Array.isArray(_fichas) && _fichas.length > 0,
     bloqueado: somenteConsulta || processo.situacao !== "rascunho",
   };
 });
 
-/** Quem criou o processo, ou o Admin: os únicos que reabrem um processo emitido e excluem (decisão de 21/10/2026). */
+/** Quem criou o processo, ou o Admin: os únicos que excluem (decisão de 21/10/2026). */
 export function ehDonoDoProcesso(perfil: Perfil | null, processo: Pick<Processo, "criado_por">) {
   return perfil?.papel === "admin" || (!!perfil && processo.criado_por === perfil.usuario_id);
 }
 
 /**
- * Alterar e emitir: em rascunho, qualquer operador (um começa o cálculo e outro termina e emite — 11/11/2026);
- * depois de emitido, só o dono (criador ou Admin).
+ * Alterar e emitir: em rascunho, qualquer operador (um começa o cálculo e outro termina e emite — 11/11/2026).
+ * Emitido, ninguém altera: quem emitiu reabre com "Corrigir" (podeCorrigirProcesso).
  */
-export function podeAlterarProcesso(perfil: Perfil | null, processo: Pick<Processo, "criado_por" | "situacao">) {
-  return ehDonoDoProcesso(perfil, processo) || (!!perfil && processo.situacao === "rascunho");
+export function podeAlterarProcesso(perfil: Perfil | null, processo: Pick<Processo, "situacao">) {
+  return !!perfil && processo.situacao === "rascunho";
+}
+
+/** "Corrigir" (volta a rascunho): só quem emitiu a última versão do processo (17/11/2026). */
+export function podeCorrigirProcesso(perfil: Perfil | null, processo: Pick<Processo, "situacao">, emissorId: string | null) {
+  return !!perfil && processo.situacao !== "rascunho" && !!emissorId && emissorId === perfil.usuario_id;
 }
 
 /** OMs que o Admin pode escolher ao criar um processo (só quando há mais de uma; o operador usa a própria). */

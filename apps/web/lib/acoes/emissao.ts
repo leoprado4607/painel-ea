@@ -14,11 +14,15 @@ export async function emitirDocumentos(processoId: string) {
   }
 }
 
-/** Volta o processo para rascunho (para corrigir e emitir nova versão). Os PDFs já emitidos ficam guardados. */
+/**
+ * "Corrigir": volta o processo para rascunho (para corrigir e emitir nova versão). Só quem emitiu a última versão
+ * (o banco barra os demais). Os PDFs já emitidos ficam guardados.
+ */
 export async function reabrirProcesso(processoId: string) {
   const supabase = await supabaseServidor();
-  const { error } = await supabase.from("processo").update({ situacao: "rascunho" }).eq("id", processoId);
+  const { data, error } = await supabase.from("processo").update({ situacao: "rascunho" }).eq("id", processoId).select("id");
   if (error) return { erro: error.message };
+  if (!data?.length) return { erro: "Só quem emitiu o cálculo pode corrigi-lo." };
   revalidatePath(`/processos/${processoId}`, "layout");
   revalidatePath("/processos");
   return { ok: true as const };

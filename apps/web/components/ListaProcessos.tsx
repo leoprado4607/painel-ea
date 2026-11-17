@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
-import { EditarProcesso } from "@/components/EditarProcesso";
+import { CorrigirProcesso } from "@/components/CorrigirProcesso";
 import { ExcluirProcesso } from "@/components/ExcluirProcesso";
 import { normalizarBusca } from "@/lib/busca";
 
@@ -16,8 +16,10 @@ export interface CardProcesso {
   situacao: "rascunho" | "emitido" | "arquivado";
   /** pode excluir e reabrir (criador ou Admin) */
   meu: boolean;
-  /** pode alterar e emitir (rascunho: qualquer operador); senão, "Só consulta" */
+  /** pode alterar e emitir (rascunho: qualquer operador) ou corrigir (emitido: quem emitiu); senão, "Só consulta" */
   editavel?: boolean;
+  /** emitido e o usuário é quem emitiu a última versão: botão "Corrigir" */
+  podeCorrigir?: boolean;
   /** "640093.005344/2026-43 de 1º Sgt …" (confirmação da exclusão) */
   descricao: string;
   /** operador que iniciou o processo (Admin: todos os cards; operador: só os rascunhos), "Cb Bruno Guilherme de Souza Bezerra" */
@@ -108,11 +110,11 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
                   </span>
                 </span>
               </Link>
-              {p.meu && (
+              {(p.meu || p.podeCorrigir) && (
                 <div className="flex flex-col items-end gap-2 pb-4 pr-5 sm:pb-0">
-                  <ExcluirProcesso id={p.id} emitido={p.situacao !== "rascunho"} descricao={p.descricao} />
-                  {/* só depois de emitido: reabre como rascunho, mantendo tudo o que foi lançado */}
-                  {p.situacao === "emitido" && <EditarProcesso id={p.id} descricao={p.descricao} />}
+                  {p.meu && <ExcluirProcesso id={p.id} emitido={p.situacao !== "rascunho"} descricao={p.descricao} />}
+                  {/* emitido: só quem emitiu volta a rascunho para corrigir tudo e emitir nova versão */}
+                  {p.podeCorrigir && <CorrigirProcesso id={p.id} descricao={p.descricao} />}
                 </div>
               )}
             </li>

@@ -10,7 +10,7 @@ import { carregarProcesso } from "@/lib/processo";
  */
 export default async function LayoutProcesso({ children, params }: { children: React.ReactNode; params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { processo, militar, bloqueado, somenteConsulta } = await carregarProcesso(id);
+  const { processo, militar, bloqueado, podeCorrigir } = await carregarProcesso(id);
   const titulo = [postoAbreviado(militar.posto_graduacao), militar.nome].filter(Boolean).join(" ");
   const subtitulo = `Processo ${processo.numero || "s/nº"}${processo.especie_divida ? ` · ${processo.especie_divida}` : ""}`;
   return (
@@ -18,9 +18,9 @@ export default async function LayoutProcesso({ children, params }: { children: R
       <RegistrarProcesso id={id} titulo={titulo} subtitulo={subtitulo} situacao={processo.situacao} />
       <AbasProcesso id={id} titulo={titulo} subtitulo={subtitulo} situacao={processo.situacao} />
       {/* no computador, o nome do processo fica na barra lateral; aqui só o aviso de processo travado */}
-      {somenteConsulta
-        ? <Aviso tipo="info">Este processo foi criado e emitido por outro operador e está somente para consulta.</Aviso>
-        : bloqueado && <Aviso tipo="info">Este processo já foi emitido e está somente para consulta.</Aviso>}
+      {bloqueado && (podeCorrigir
+        ? <Aviso tipo="info">Este processo já foi emitido. Para alterar, use “Corrigir” no card em Meus cálculos ou na aba Impressão.</Aviso>
+        : <Aviso tipo="info">Este processo já foi emitido e está somente para consulta. Só quem o emitiu pode corrigi-lo.</Aviso>)}
       {children}
     </div>
   );

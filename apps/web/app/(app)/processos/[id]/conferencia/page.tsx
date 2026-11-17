@@ -5,6 +5,7 @@ import { descreverRegra } from "@/lib/indice";
 import { montarEntrada } from "@/lib/calculo";
 import { recebidosPosPeriodo } from "@/lib/pos-periodo";
 import { formatarReais } from "@/lib/dinheiro";
+import { postoAbreviado } from "@/lib/postos";
 import { carregarProcesso } from "@/lib/processo";
 import { MESES } from "@/lib/tipos";
 
@@ -12,7 +13,7 @@ const R = (v: number) => `R$ ${formatarReais(v)}`;
 
 export default async function Conferencia({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { supabase, perfil, processo, rubricas, lancamentos, somenteConsulta } = await carregarProcesso(id);
+  const { supabase, perfil, processo, militar, rubricas, lancamentos, somenteConsulta, podeCorrigir } = await carregarProcesso(id);
   const [{ data: indices }, { data: regras }, { data: documentos }] = await Promise.all([
     supabase.from("indice_composto").select("ano, mes, percentual"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
@@ -102,7 +103,8 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
       </section>
 
       <PainelEmissao processoId={id} situacao={processo.situacao} documentos={documentos ?? []} somenteConsulta={somenteConsulta}
-        ehAdmin={perfil?.papel === "admin"} />
+        ehAdmin={perfil?.papel === "admin"} podeCorrigir={podeCorrigir}
+        descricao={`${processo.numero || "s/nº"} de ${[postoAbreviado(militar.posto_graduacao), militar.nome].filter(Boolean).join(" ")}`} />
     </div>
   );
 }

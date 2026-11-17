@@ -128,13 +128,17 @@ describe("acesso (RLS): Admin e Operador veem todos os processos", () => {
       values ('${PX}', '${OM.a}', 'pacote_completo', 'x/${PX}/v1.pdf', 'h', 1, 'Op B')`);
     expect(await como(U.operadorB, `update processo set situacao = 'emitido' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "emitido" }]);
     expect((await db.query(`select criado_por from processo where id = '${PX}'`)).rows).toEqual([{ criado_por: U.operadorA }]);
-    // emitido: o B não reabre nem altera; o A (criador) reabre
+    // emitido: só quem emitiu (B) corrige (volta a rascunho); o criador (A) e o Admin não
+    expect(await como(U.operadorA, `update processo set situacao = 'rascunho' where id = '${PX}' returning id`)).toEqual([]);
+    expect(await como(U.admin, `update processo set situacao = 'rascunho' where id = '${PX}' returning id`)).toEqual([]);
+    expect(await como(U.operadorA, `update processo set numero = 'x' where id = '${PX}' returning id`)).toEqual([]);
+    expect(await como(U.operadorB, `update processo set situacao = 'rascunho' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "rascunho" }]);
+    // corrigido, o A emite a nova versão: agora só o A corrige
+    await como(U.operadorA, `insert into documento (processo_id, om_id, tipo, caminho_storage, sha256, versao, emitido_por_nome)
+      values ('${PX}', '${OM.a}', 'pacote_completo', 'x/${PX}/v2.pdf', 'h', 2, 'Op A')`);
+    await como(U.operadorA, `update processo set situacao = 'emitido' where id = '${PX}'`);
     expect(await como(U.operadorB, `update processo set situacao = 'rascunho' where id = '${PX}' returning id`)).toEqual([]);
-    expect(await como(U.operadorB, `update militar set nome = 'mudou' where id = '${MX}' returning id`)).toEqual([]);
     expect(await como(U.operadorA, `update processo set situacao = 'rascunho' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "rascunho" }]);
-    // o Admin reabre (só não emite)
-    await como(U.operadorB, `update processo set situacao = 'emitido' where id = '${PX}'`);
-    expect(await como(U.admin, `update processo set situacao = 'rascunho' where id = '${PX}' returning situacao`)).toEqual([{ situacao: "rascunho" }]);
     // excluir continua só do criador e do admin
     expect(await como(U.operadorB, `delete from processo where id = '${PX}' returning id`)).toEqual([]);
     expect(await como(U.admin, `delete from processo where id = '${PX}' returning id`)).toEqual([{ id: PX }]);

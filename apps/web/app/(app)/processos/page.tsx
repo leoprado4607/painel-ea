@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ListaProcessos, type CardProcesso } from "@/components/ListaProcessos";
 import { normalizarBusca } from "@/lib/busca";
 import { postoAbreviado } from "@/lib/postos";
-import { ehDonoDoProcesso, podeAlterarProcesso } from "@/lib/processo";
+import { ehDonoDoProcesso, podeAlterarProcesso, podeCorrigirProcesso } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
 import { formatarReais } from "@/lib/dinheiro";
 import { omDeVinculacao, type Militar, type Processo } from "@/lib/tipos";
@@ -32,14 +32,14 @@ export default async function Processos() {
       operadores.set(op.processo_id, [postoAbreviado(op.posto), op.nome].filter(Boolean).join(" "));
   }
   // quem emitiu (e assinou) a última versão de cada processo emitido (pode não ser quem criou)
-  const emissores = new Map<string, { versao: number; nome: string | null }>();
+  const emissores = new Map<string, { versao: number; nome: string | null; id: string | null }>();
   const emitidos = processos.filter((p) => p.situacao !== "rascunho").map((p) => p.id);
   if (emitidos.length) {
-    const { data: docs } = await supabase.from("documento").select("processo_id, versao, emitido_por_nome")
+    const { data: docs } = await supabase.from("documento").select("processo_id, versao, emitido_por_nome, criado_por")
       .eq("tipo", "pacote_completo").in("processo_id", emitidos);
     for (const d of docs ?? []) {
       const atual = emissores.get(d.processo_id);
-      if (!atual || d.versao > atual.versao) emissores.set(d.processo_id, { versao: d.versao, nome: d.emitido_por_nome });
+      if (!atual || d.versao > atual.versao) emissores.set(d.processo_id, { versao: d.versao, nome: d.emitido_por_nome, id: d.criado_por });
     }
   }
   // cards prontos (o filtro da pesquisa roda no navegador, em ListaProcessos)
@@ -50,8 +50,9 @@ export default async function Processos() {
     return {
       id: p.id, nome, om, periodo: `${mesAno(p.periodo_inicio)} a ${mesAno(p.periodo_fim)}`, especie: p.especie_divida,
       valor: valor != null ? `R$ ${formatarReais(valor)}` : "R$ —", valorNumero: valor ?? null, situacao: p.situacao,
-      // excluir e reabrir: só o criador e o Admin; rascunho de outro operador pode ser continuado; emitido dele, "só consulta"
-      meu: ehDonoDoProcesso(perfil, p), editavel: podeAlterarProcesso(perfil, p), descricao: `${p.numero || "s/nº"} de ${nome}`,
+      // excluir: só o criador e o Admin; rascunho: qualquer operador continua; emitido: "Corrigir" só para quem emitiu
+      meu: ehDonoDoProcesso(perfil, p), editavel: podeAlterarProcesso(perfil, p) || podeCorrigirProcesso(perfil, p, emissores.get(p.id)?.id ?? null),
+      podeCorrigir: podeCorrigirProcesso(perfil, p, emissores.get(p.id)?.id ?? null), descricao: `${p.numero || "s/nº"} de ${nome}`,
       operador: operadores.get(p.id) ?? null,
       emitidoPor: p.situacao !== "rascunho" ? emissores.get(p.id)?.nome ?? null : null,
       // pesquisa: nome, posto (abreviado e como foi gravado), OM e espécie da dívida
