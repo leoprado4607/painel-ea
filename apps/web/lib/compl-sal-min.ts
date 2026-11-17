@@ -10,8 +10,9 @@
  *   após o período" (e é descontado do total); o de antes do início é desconsiderado. A gratificação, só no período.
  * - Devidos: valor fixado do ano (R$ 80,10 em 2022 e R$ 170,10 em 2023; não há complemento nos outros anos) menos a
  *   gratificação do mês; com a gratificação igual ou maior que o valor fixado, o mês não é computado.
+ * - Mês de início ou de fim incompleto (ex.: dívida a partir de 15/02/2022): valor fixado ÷ dias do mês no calendário
+ *   × dias do mês dentro do período; a gratificação é abatida depois da proporção.
  */
-import type { MesAno } from "./lancamentos";
 import type { FichaLida } from "./receitas";
 
 export const ESPECIE_COMPL_SAL_MIN = "Complemento de salário mínimo";
@@ -66,8 +67,14 @@ function valoresDasFichas(fichas: FichaLida[], codigos: Set<string>): ValorMes[]
   return [...soma.values()].filter((v) => v.valor !== 0).sort((a, b) => k(a.ano, a.mes) - k(b.ano, b.mes));
 }
 
-export function planoComplSalMin(fichas: FichaLida[], inicio: MesAno, fim: MesAno): PlanoComplSalMin {
-  const ini = k(inicio.ano, inicio.mes), fi = k(fim.ano, fim.mes);
+const diasDoMes = (ano: number, mes: number) => new Date(Date.UTC(ano, mes, 0)).getUTCDate();
+/** "2022-02-15" → { ano, mes, dia } */
+const lerData = (d: string) => ({ ano: Number(d.slice(0, 4)), mes: Number(d.slice(5, 7)), dia: Number(d.slice(8, 10)) || 1 });
+
+/** @param inicio e fim do período da dívida, "AAAA-MM-DD" (o dia define a proporção do 1º e do último mês) */
+export function planoComplSalMin(fichas: FichaLida[], inicio: string, fim: string): PlanoComplSalMin {
+  const di = lerData(inicio), df = lerData(fim);
+  const ini = k(di.ano, di.mes), fi = k(df.ano, df.mes);
   const noPeriodo = (v: ValorMes) => k(v.ano, v.mes) >= ini && k(v.ano, v.mes) <= fi;
   const todosAga = valoresDasFichas(fichas, CODIGOS_AGA);
   const gr = valoresDasFichas(fichas, CODIGOS_GR).filter(noPeriodo);
@@ -76,15 +83,25 @@ export function planoComplSalMin(fichas: FichaLida[], inicio: MesAno, fim: MesAn
   const notas: Record<string, string> = {};
   for (let c = ini; c <= fi; c++) {
     const ano = Math.floor((c - 1) / 12), mes = c - ano * 12;
-    const fixado = VALOR_FIXADO[ano];
-    if (fixado === undefined) continue;
+    const cheio = VALOR_FIXADO[ano];
+    if (cheio === undefined) continue;
+    // dias do mês dentro do período (início e fim incompletos ficam proporcionais)
+    const total = diasDoMes(ano, mes);
+    const primeiro = c === ini ? Math.min(di.dia, total) : 1, ultimo = c === fi ? Math.min(df.dia, total) : total;
+    const dias = ultimo - primeiro + 1;
+    if (dias <= 0) continue;
+    const fixado = dias === total ? cheio : centavos((cheio / total) * dias);
+    const textos: string[] = [];
+    if (dias !== total) textos.push(`Valor proporcional: R$ ${reais(cheio)} ÷ ${total} dias × ${dias} dia(s) no período = R$ ${reais(fixado)}.`);
     const g = grDoMes.get(c) ?? 0;
     if (g >= fixado) {
-      notas[`${ano}-${mes}`] = `Mês não computado: a AR0061 / GRAT REPRESENT EVENTUAL recebida (R$ ${reais(g)}) é igual ou maior que o valor fixado do complemento (R$ ${reais(fixado)}).`;
+      textos.push(`Mês não computado: a AR0061 / GRAT REPRESENT EVENTUAL recebida (R$ ${reais(g)}) é igual ou maior que o valor ${dias !== total ? "proporcional" : "fixado"} do complemento (R$ ${reais(fixado)}).`);
+      notas[`${ano}-${mes}`] = textos.join(" ");
       continue;
     }
     const valor = centavos(fixado - g);
-    if (g > 0) notas[`${ano}-${mes}`] = `Abatido R$ ${reais(g)} referente à AR0061 / GRAT REPRESENT EVENTUAL: R$ ${reais(fixado)} − R$ ${reais(g)} = R$ ${reais(valor)}.`;
+    if (g > 0) textos.push(`Abatido R$ ${reais(g)} referente à AR0061 / GRAT REPRESENT EVENTUAL: R$ ${reais(fixado)} − R$ ${reais(g)} = R$ ${reais(valor)}.`);
+    if (textos.length) notas[`${ano}-${mes}`] = textos.join(" ");
     devidos.push({ ano, mes, valor });
   }
   return { aga: todosAga.filter(noPeriodo), gr, posPeriodo: todosAga.filter((v) => k(v.ano, v.mes) > fi && v.valor > 0), devidos, notas };

@@ -22,7 +22,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
   let notas: Record<string, string> = {};
   if (auto && tipo === "devido") {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
-    notas = planoComplSalMin(fichasLidasValidas(data?.fichas_lidas), mesDeData(processo.periodo_inicio), mesDeData(processo.periodo_fim)).notas;
+    notas = planoComplSalMin(fichasLidasValidas(data?.fichas_lidas), processo.periodo_inicio, processo.periodo_fim).notas;
   }
   return (
     <div className="space-y-5">
@@ -32,7 +32,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
       {auto && (
         <Aviso tipo="info">
           Complemento de salário mínimo: {tipo === "devido"
-            ? `devidos preenchidos automaticamente com o valor fixado (${Object.entries(VALOR_FIXADO).map(([a, v]) => `R$ ${formatarReais(v)} em ${a}`).join(" e ")}), abatida a AR0061 / GRAT REPRESENT EVENTUAL do mês.`
+            ? `devidos preenchidos automaticamente com o valor fixado (${Object.entries(VALOR_FIXADO).map(([a, v]) => `R$ ${formatarReais(v)} em ${a}`).join(" e ")}), proporcional nos meses de início e fim incompletos e abatida a AR0061 / GRAT REPRESENT EVENTUAL do mês.`
             : "AGA – COMPL SAL MIN e AR0061 / GRAT REPRESENT EVENTUAL preenchidos pelas fichas financeiras; o AGA recebido depois do período entra em “recebido após o período”."}
           {" "}Confira mês a mês; o que você digitar não é sobrescrito.
         </Aviso>

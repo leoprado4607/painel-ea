@@ -13,7 +13,6 @@ import {
 } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { CODIGOS_COMPL_SAL_MIN, complSalMinAutomatico, planoComplSalMin } from "@/lib/compl-sal-min";
-import { mesDeData } from "@/lib/lancamentos";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 
@@ -132,7 +131,7 @@ async function montarPrevia(supabase: Supabase, processoId: string, docs: Docume
     // complemento de salário mínimo: AGA (posição 1) e AR0061 (à direita) no período, como em preencherReceitas
     naoUsadas = naoUsadas.filter((l) => !CODIGOS_COMPL_SAL_MIN.has(l.codigo.trim().toUpperCase()));
     const plano = processo.periodo_inicio && processo.periodo_fim
-      ? planoComplSalMin(fichas, mesDeData(processo.periodo_inicio), mesDeData(processo.periodo_fim)) : null;
+      ? planoComplSalMin(fichas, processo.periodo_inicio, processo.periodo_fim) : null;
     lancamentos = plano ? [...plano.aga.map((v) => ({ ...v, posicao: 1 })), ...plano.gr.map((v) => ({ ...v, posicao: 2 }))] : [];
   }
   const pendencia = !processo.periodo_inicio || !processo.periodo_fim

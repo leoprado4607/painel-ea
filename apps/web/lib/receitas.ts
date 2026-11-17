@@ -9,7 +9,6 @@
 import { aplicarCorrespondencia, type Correspondencia, type FichaFinanceira } from "@painel-ea/leitor-ficha";
 import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin } from "./compl-sal-min";
 import type { DocumentoExtraido } from "./favorecido";
-import { mesDeData } from "./lancamentos";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
 
@@ -120,7 +119,7 @@ async function preencherComplSalMin(
     supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId),
   ]);
   const plano = p.periodo_inicio && p.periodo_fim
-    ? planoComplSalMin(fichasLidasValidas(p.fichas_lidas), mesDeData(p.periodo_inicio), mesDeData(p.periodo_fim))
+    ? planoComplSalMin(fichasLidasValidas(p.fichas_lidas), p.periodo_inicio, p.periodo_fim)
     : null;
   const { mudadas, posicaoAga, posicaoGr } = rubricasComplSalMin(rubricas ?? [], !!plano?.gr.length);
   if (mudadas.length) {

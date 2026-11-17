@@ -21,7 +21,7 @@ describe("complemento de salário mínimo automático", () => {
       ficha(2023, linha("AR0026", { 2: 15 })),
       ficha(2024, linha("AGA", { 1: 170.1 })),
     ];
-    const p = planoComplSalMin(fichas, { ano: 2022, mes: 3 }, { ano: 2023, mes: 1 });
+    const p = planoComplSalMin(fichas, "2022-03-01", "2023-01-31");
     expect(p.aga).toEqual([{ ano: 2022, mes: 3, valor: 20 }]); // jan/2022 é antes do período
     expect(p.gr).toEqual([{ ano: 2022, mes: 3, valor: 30 }, { ano: 2022, mes: 4, valor: 80.1 }, { ano: 2022, mes: 5, valor: 100 }]);
     expect(p.posPeriodo).toEqual([{ ano: 2023, mes: 2, valor: 15 }, { ano: 2024, mes: 1, valor: 170.1 }]);
@@ -38,8 +38,22 @@ describe("complemento de salário mínimo automático", () => {
   });
 
   it("não há complemento fora de 2022 e 2023", () => {
-    expect(planoComplSalMin([], { ano: 2021, mes: 11 }, { ano: 2024, mes: 2 }).devidos.map((d) => d.ano))
+    expect(planoComplSalMin([], "2021-11-01", "2024-02-29").devidos.map((d) => d.ano))
       .toEqual([...Array(12).fill(2022), ...Array(12).fill(2023)]);
+  });
+
+  it("início e fim incompletos: proporcional aos dias do mês no calendário; a gratificação é abatida depois", () => {
+    const fichas = [ficha(2022, linha("AR0061", { 2: 10 })), ficha(2023, linha("AR0061", { 2: 100 }))];
+    const p = planoComplSalMin(fichas, "2022-02-15", "2023-02-14");
+    // fev/2022: 80,10 ÷ 28 × 14 = 40,05 − 10 = 30,05; fev/2023: 170,10 ÷ 28 × 14 = 85,05 ≤ 100, não computado
+    expect(p.devidos[0]).toEqual({ ano: 2022, mes: 2, valor: 30.05 });
+    expect(p.devidos[1]).toEqual({ ano: 2022, mes: 3, valor: 80.1 });
+    expect(p.devidos.at(-1)).toEqual({ ano: 2023, mes: 1, valor: 170.1 });
+    expect(p.notas["2022-2"]).toBe("Valor proporcional: R$ 80,10 ÷ 28 dias × 14 dia(s) no período = R$ 40,05. "
+      + "Abatido R$ 10,00 referente à AR0061 / GRAT REPRESENT EVENTUAL: R$ 40,05 − R$ 10,00 = R$ 30,05.");
+    expect(p.notas["2023-2"]).toContain("Mês não computado");
+    // 31 dias: de 10/03 a 31/03 são 22 dias → 80,10 ÷ 31 × 22 = 56,845 → 56,85 (o valor do dia não é arredondado)
+    expect(planoComplSalMin([], "2022-03-10", "2022-03-31").devidos).toEqual([{ ano: 2022, mes: 3, valor: 56.85 }]);
   });
 
   it("AGA na posição 1 e AR0061 neutra à direita, só se houver gratificação", () => {
