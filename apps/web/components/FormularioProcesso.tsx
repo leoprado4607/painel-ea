@@ -6,6 +6,7 @@ import { PopupPendencias, pendenciasDoFormulario, type Pendencia } from "@/compo
 import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
 import { POSTOS, postoAbreviado } from "@/lib/postos";
+import { anoDoNumeroProcesso, mascaraNumeroProcesso, PADRAO_NUMERO_PROCESSO } from "@/lib/numero-processo";
 import { salvarProcesso, type EstadoForm } from "@/lib/acoes/processo";
 import { BOLETINS_ADT, DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 import { BANCOS, bancoDaLista, ESPECIES_DIVIDA, omDeVinculacao, OMS_VINCULACAO, quantidadeMeses, SITUACOES, type Militar, type Processo } from "@/lib/tipos";
@@ -205,7 +206,16 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
             <Lista nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} opcoes={ESPECIES_DIVIDA} obrigatorio erro={c.especie_divida} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
-            <Campo nome="numero" rotulo="Nº do processo" valor={valores.numero} obrigatorio erro={c.numero} />
+            <Campo nome="numero" rotulo="Nº do processo" valor={mascaraNumeroProcesso(valores.numero)} obrigatorio erro={c.numero}
+              placeholder="00000.000000/0000-00" inputMode="numeric" maxLength={20} pattern={PADRAO_NUMERO_PROCESSO}
+              title="Use o formato 00000.000000/0000-00."
+              onChange={(e) => {
+                e.target.value = mascaraNumeroProcesso(e.target.value);
+                // completo: o ano do processo são os 4 números antes do "-00"
+                const ano = anoDoNumeroProcesso(e.target.value);
+                const campoAno = e.target.form?.elements.namedItem("ano");
+                if (ano && campoAno instanceof HTMLInputElement) campoAno.value = ano;
+              }} />
             <Campo nome="ano" rotulo="Ano do processo" tipo="number" valor={valores.ano} min={2000} max={2100} obrigatorio erro={c.ano} />
             <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} obrigatorio erro={c.data_requerimento} />
           </div>

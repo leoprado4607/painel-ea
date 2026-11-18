@@ -9,6 +9,7 @@ import { sessao } from "@/lib/sessao";
 import { LIMITE_DOCUMENTO } from "@/lib/amparo";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { BOLETINS_ADT, DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
+import { numeroProcessoValido } from "@/lib/numero-processo";
 
 /** Quadros de texto formatado de Informações que vão para o verso da Solicitação de Pagamento, com o limite de caracteres. */
 const QUADROS_VERSO = [
@@ -73,6 +74,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   if (documentoAverbacao && !(DOCUMENTOS_AVERBACAO as readonly string[]).includes(documentoAverbacao)) campos.documento_averbacao = "Escolha BI, Adt ou BAR.";
   const omAverbacao = txt(f, "om_averbacao");
   if (omAverbacao && !(OMS_AVERBACAO as readonly string[]).includes(omAverbacao)) campos.om_averbacao = "Escolha a OM na lista.";
+  const nrProcesso = txt(f, "numero");
+  if (nrProcesso && !numeroProcessoValido(nrProcesso)) campos.numero = "Use o formato 00000.000000/0000-00.";
   const nrBoletim = txt(f, "bi_numero");
   if (nrBoletim && !numeroBoletimValido(nrBoletim)) campos.bi_numero = "Use até 3 dígitos (ex.: 45).";
   const nrAdt = documentoAverbacao === "Adt" ? txt(f, "adt_numero") : null;
