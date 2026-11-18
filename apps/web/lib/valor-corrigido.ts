@@ -15,16 +15,42 @@ interface ProcessoResumo {
   complementos?: { recebidosPosPeriodo?: unknown } | null;
 }
 type Indice = { ano: number; mes: number; percentual: number | string };
+type Pagina<T> = PromiseLike<{ data: T[] | null; error: { message: string } | null }>;
+
+/** O banco devolve no máximo 1.000 linhas por consulta: busca página a página até acabar (a consulta precisa ter ordem fixa). */
+export async function buscarTodas<T>(consulta: (de: number, ate: number) => Pagina<T>, tamanho = 1000): Promise<T[]> {
+  const linhas: T[] = [];
+  for (;;) {
+    const { data, error } = await consulta(linhas.length, linhas.length + tamanho - 1);
+    if (error) throw new Error(error.message);
+    if (!data?.length) return linhas;
+    linhas.push(...data);
+  }
+}
+
+/** Processos por consulta (a lista de ids vai no endereço da requisição, que tem tamanho limitado). */
+const BLOCO_IDS = 50;
+const emBlocos = <T,>(lista: T[]) => Array.from({ length: Math.ceil(lista.length / BLOCO_IDS) }, (_, i) => lista.slice(i * BLOCO_IDS, (i + 1) * BLOCO_IDS));
 
 export async function valoresCorrigidos(supabase: Supabase, processos: ProcessoResumo[]): Promise<Map<string, number | null>> {
   const ids = processos.map((p) => p.id);
   const valores = new Map<string, number | null>();
   if (!ids.length) return valores;
-  const [{ data: rubricas }, { data: lancamentos }, { data: indices }] = await Promise.all([
-    supabase.from("processo_rubrica").select("processo_id, posicao, codigo, tipo").in("processo_id", ids),
-    supabase.from("lancamento").select("processo_id, tipo, ano, mes, posicao, valor").in("processo_id", ids),
-    supabase.from("indice_composto").select("ano, mes, percentual"),
-  ]);
+  const blocos = emBlocos(ids);
+  let rubricas, lancamentos, indices;
+  try {
+    [rubricas, lancamentos, { data: indices }] = await Promise.all([
+      Promise.all(blocos.map((bloco) => buscarTodas((de, ate) => supabase.from("processo_rubrica")
+        .select("processo_id, posicao, codigo, tipo").in("processo_id", bloco)
+        .order("processo_id").order("posicao").range(de, ate)))).then((r) => r.flat()),
+      Promise.all(blocos.map((bloco) => buscarTodas((de, ate) => supabase.from("lancamento")
+        .select("processo_id, tipo, ano, mes, posicao, valor").in("processo_id", bloco)
+        .order("processo_id").order("tipo").order("ano").order("mes").order("posicao").range(de, ate)))).then((r) => r.flat()),
+      supabase.from("indice_composto").select("ano, mes, percentual"),
+    ]);
+  } catch {
+    return valores; // sem todos os dados, o card fica sem valor ("R$ —") em vez de mostrar um valor errado
+  }
   for (const p of processos) {
     if (!p.periodo_inicio || !p.periodo_fim) { valores.set(p.id, null); continue; }
     const usados = p.situacao !== "rascunho" && p.indices_usados?.length
@@ -33,8 +59,8 @@ export async function valoresCorrigidos(supabase: Supabase, processos: ProcessoR
     if (!usados.length) { valores.set(p.id, null); continue; }
     try {
       const entrada = montarEntrada(
-        (rubricas ?? []).filter((r) => r.processo_id === p.id) as { posicao: number; codigo: string; tipo: Rubrica["tipo"] }[],
-        (lancamentos ?? []).filter((l) => l.processo_id === p.id).map((l) => ({ ...l, valor: Number(l.valor) })),
+        rubricas.filter((r) => r.processo_id === p.id) as { posicao: number; codigo: string; tipo: Rubrica["tipo"] }[],
+        lancamentos.filter((l) => l.processo_id === p.id).map((l) => ({ ...l, valor: Number(l.valor) })),
         usados, { inicio: p.periodo_inicio, fim: p.periodo_fim, posPeriodo: recebidosPosPeriodo(p.complementos) },
       );
       valores.set(p.id, calcular(entrada).cpex.importanciaBasicaTotalCorrigida);
