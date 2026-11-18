@@ -48,7 +48,7 @@ export default async function Processos() {
     const om = p.militar?.om_vinculacao ? omDeVinculacao(p.militar.om_vinculacao)?.nome ?? p.militar.om_vinculacao : null;
     const valor = corrigidos.get(p.id);
     return {
-      id: p.id, nome, om, periodo: `${mesAno(p.periodo_inicio)} a ${mesAno(p.periodo_fim)}`, especie: p.especie_divida,
+      id: p.id, nome, nomeCompleto: p.militar?.nome ?? "", om, periodo: `${mesAno(p.periodo_inicio)} a ${mesAno(p.periodo_fim)}`, especie: p.especie_divida,
       valor: valor != null ? `R$ ${formatarReais(valor)}` : "R$ —", valorNumero: valor ?? null, situacao: p.situacao,
       // excluir: só o criador e o Admin; rascunho: qualquer operador continua; emitido: "Corrigir" só para quem emitiu
       meu: ehDonoDoProcesso(perfil, p), editavel: podeAlterarProcesso(perfil, p) || podeCorrigirProcesso(perfil, p, emissores.get(p.id)?.id ?? null),

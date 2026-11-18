@@ -54,9 +54,11 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           linhas={[{ ano: 2020, mes: 11, posicao: 1, valor: 5500 }, { ano: 2020, mes: 11, posicao: 13, valor: 165 }]} />
       ) : tela === "processos" ? (
         <ListaProcessos cards={[
-          { id: "a", nome: "1º Sgt SANDRO LUIS DE LIMA GONCALVES", om: "16º BI Mtz", periodo: "06/2021 a 06/2021", especie: "Auxílio fardamento",
+          { id: "a", nome: "1º Sgt SANDRO LUIS DE LIMA GONCALVES", nomeCompleto: "SANDRO LUIS DE LIMA GONCALVES", om: "16º BI Mtz", periodo: "06/2021 a 06/2021", especie: "Auxílio fardamento",
             valor: "R$ 6.389,41", valorNumero: 6389.41, situacao: "emitido", meu: true, descricao: "001 de 1º Sgt SANDRO", operador: "Cb Bruno Guilherme de Souza Bezerra", busca: normalizarBusca("1º Sgt SANDRO LUIS DE LIMA GONCALVES PRIMEIRO SARGENTO 16º BI Mtz Auxílio fardamento") },
-          { id: "b", nome: "Cb FULANO DE TAL", om: "B Adm Gu Natal", periodo: "01/2024 a 12/2024", especie: "Adicional Habilitação",
+          { id: "c", nome: "2º Sgt SANDRO LUÍS DE LIMA GONÇALVES", nomeCompleto: "SANDRO LUÍS DE LIMA GONÇALVES", om: "16º BI Mtz", periodo: "01/2020 a 12/2020", especie: "Adicional Habilitação",
+            valor: "R$ 2.000,00", valorNumero: 2000, situacao: "rascunho", meu: false, descricao: "003 de 2º Sgt SANDRO", busca: normalizarBusca("2º Sgt SANDRO LUÍS DE LIMA GONÇALVES 16º BI Mtz Adicional Habilitação") },
+          { id: "b", nome: "Cb FULANO DE TAL", nomeCompleto: "FULANO DE TAL", om: "B Adm Gu Natal", periodo: "01/2024 a 12/2024", especie: "Adicional Habilitação",
             valor: "R$ 1.234,56", valorNumero: 1234.56, situacao: "rascunho", meu: false, descricao: "002 de Cb FULANO", busca: normalizarBusca("Cb FULANO DE TAL B Adm Gu Natal Adicional Habilitação") },
         ]} />
       ) : tela === "rubricas" ? (

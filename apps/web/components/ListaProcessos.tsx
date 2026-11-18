@@ -4,11 +4,14 @@ import { useState } from "react";
 import { CorrigirProcesso } from "@/components/CorrigirProcesso";
 import { ExcluirProcesso } from "@/components/ExcluirProcesso";
 import { normalizarBusca } from "@/lib/busca";
+import { chaveDoNome, nomesRepetidos } from "@/lib/nomes-repetidos";
 
 export interface CardProcesso {
   id: string;
   /** "1º Sgt SANDRO LUIS DE LIMA GONCALVES" */
   nome: string;
+  /** só o nome do militar, sem o posto: é o que define os cards repetidos */
+  nomeCompleto: string;
   /** linha de baixo: OM · dívida · espécie · valor */
   om: string | null; periodo: string; especie: string | null; valor: string;
   /** valor final corrigido, para ordenar (null se ainda não calculado) */
@@ -47,16 +50,21 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
   const especies = [...new Set(cards.map((c) => c.especie).filter((e): e is string => !!e))].sort((a, b) => a.localeCompare(b, "pt-BR"));
   // todas as palavras digitadas precisam aparecer (em qualquer ordem): "sgt fard" acha 1º Sgt com auxílio fardamento
   const palavras = normalizarBusca(texto).split(" ").filter(Boolean);
+  // repetidos: o mesmo nome completo em mais de um processo, contando todos os cards (mesmo os escondidos pelos outros filtros)
+  const [soRepetidos, setSoRepetidos] = useState(false);
+  const repetidos = nomesRepetidos(cards);
   const visiveis = cards
-    .filter((c) => (!filtro || c.situacao === filtro) && (!especie || c.especie === especie) && palavras.every((p) => c.busca.includes(p)))
-    .sort(ordenar);
-  const filtrando = palavras.length > 0 || filtro !== null || !!especie;
+    .filter((c) => (!filtro || c.situacao === filtro) && (!especie || c.especie === especie) && palavras.every((p) => c.busca.includes(p))
+      && (!soRepetidos || repetidos.has(chaveDoNome(c.nomeCompleto))))
+    // com o filtro de repetidos, os cards do mesmo militar ficam juntos
+    .sort((a, b) => (soRepetidos ? chaveDoNome(a.nomeCompleto).localeCompare(chaveDoNome(b.nomeCompleto), "pt-BR") : 0) || ordenar(a, b));
+  const filtrando = palavras.length > 0 || filtro !== null || !!especie || soRepetidos;
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="titulo-pagina">Meus cálculos</h1>
         <div className="flex flex-1 flex-wrap items-center justify-end gap-3">
-          <div role="group" aria-label="Filtrar por situação" className="flex gap-2">
+          <div role="group" aria-label="Filtrar por situação ou por nome repetido" className="flex flex-wrap gap-2">
             {(["emitido", "rascunho"] as const).map((s) => (
               <button key={s} type="button" aria-pressed={filtro === s} onClick={() => setFiltro(filtro === s ? null : s)}
                 className={`border px-3 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marca-600
@@ -64,6 +72,12 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
                 {SITUACAO[s]}
               </button>
             ))}
+            <button type="button" aria-pressed={soRepetidos} onClick={() => setSoRepetidos(!soRepetidos)}
+              title="Mostra só os militares com o mesmo nome completo em mais de um cálculo"
+              className={`border px-3 py-2 text-sm font-semibold transition-colors motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-marca-600
+                ${soRepetidos ? "border-marca-700 bg-marca-700 text-white" : "border-borda bg-white text-tinta hover:border-marca-600"}`}>
+              Repetidos
+            </button>
           </div>
           <label htmlFor="filtro-especie" className="sr-only">Filtrar por espécie da dívida</label>
           <select id="filtro-especie" value={especie} onChange={(e) => setEspecie(e.target.value)} className="entrada w-full sm:w-60">
@@ -83,7 +97,7 @@ export function ListaProcessos({ cards }: { cards: CardProcesso[] }) {
       )}
       {visiveis.length === 0 ? (
         <p className="cartao text-sm text-suave">
-          Nenhum processo{filtro ? ` ${SITUACAO[filtro].toLowerCase()}` : ""} encontrado{especie ? ` de ${especie}` : ""}{palavras.length ? ` para “${texto.trim()}”` : ""}.
+          Nenhum processo{filtro ? ` ${SITUACAO[filtro].toLowerCase()}` : ""}{soRepetidos ? " com nome repetido" : ""} encontrado{especie ? ` de ${especie}` : ""}{palavras.length ? ` para “${texto.trim()}”` : ""}.
         </p>
       ) : (
         <ul className="space-y-2">
