@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import { buscarTodas } from "./buscar-todas";
 import { sessao } from "./sessao";
 import type { Lancamento, Militar, Om, Perfil, Processo, RubricaProcesso } from "./tipos";
 
@@ -12,11 +13,13 @@ type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
  */
 export const carregarProcesso = cache(async (id: string) => {
   const { supabase, perfil } = await sessao();
-  const [{ data: linha }, { data: rubricas }, { data: lancamentos }, { data: ultimaVersao }] = await Promise.all([
+  const [{ data: linha }, { data: rubricas }, lancamentos, { data: ultimaVersao }] = await Promise.all([
     supabase.from("processo").select("*, militar:militar_id(*), om:om_id(*)").eq("id", id)
       .maybeSingle<Processo & { militar: Militar; om: Om | null }>(),
     supabase.from("processo_rubrica").select("*").eq("processo_id", id).order("posicao").returns<RubricaProcesso[]>(),
-    supabase.from("lancamento").select("processo_id, tipo, ano, mes, posicao, valor").eq("processo_id", id).returns<Lancamento[]>(),
+    // todos os lançamentos, mesmo acima do limite de linhas por consulta: faltar um mudaria o cálculo e os documentos
+    buscarTodas((de, ate) => supabase.from("lancamento").select("processo_id, tipo, ano, mes, posicao, valor").eq("processo_id", id)
+      .order("tipo").order("ano").order("mes").order("posicao").range(de, ate).returns<Lancamento[]>()),
     // quem emitiu a última versão: só essa pessoa pode "Corrigir" (reabrir) o processo emitido
     supabase.from("documento").select("criado_por").eq("processo_id", id).eq("tipo", "pacote_completo")
       .order("versao", { ascending: false }).limit(1).maybeSingle<{ criado_por: string | null }>(),
@@ -30,7 +33,7 @@ export const carregarProcesso = cache(async (id: string) => {
   return {
     supabase, perfil, om, processo: processo as Processo, militar,
     rubricas: rubricas ?? [],
-    lancamentos: (lancamentos ?? []).map((l) => ({ ...l, valor: Number(l.valor) })),
+    lancamentos: lancamentos.map((l) => ({ ...l, valor: Number(l.valor) })),
     somenteConsulta,
     /** processo emitido e o usuário é quem emitiu a última versão: pode reabrir para correção */
     podeCorrigir: corrigir,

@@ -7,6 +7,7 @@
  * O processo guarda só os números das linhas de receita das fichas (processo.fichas_lidas); os PDFs são descartados.
  */
 import { aplicarCorrespondencia, type Correspondencia, type FichaFinanceira } from "@painel-ea/leitor-ficha";
+import { buscarTodas } from "./buscar-todas";
 import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin } from "./compl-sal-min";
 import type { DocumentoExtraido } from "./favorecido";
 import { recebidosPosPeriodo } from "./pos-periodo";
@@ -76,25 +77,28 @@ export async function preencherReceitas(supabase: Supabase, processoId: string):
     .select("situacao, periodo_inicio, periodo_fim, fichas_lidas, especie_divida, complementos").eq("id", processoId).maybeSingle();
   if (!p || p.situacao !== "rascunho") return 0;
   if (complSalMinAutomatico(p)) return preencherComplSalMin(supabase, processoId, p);
-  const [{ data: rubricas }, { data: existentes }, tabela] = await Promise.all([
+  const [{ data: rubricas }, existentes, tabela] = await Promise.all([
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
-    supabase.from("lancamento").select("ano, mes, posicao, origem").match({ processo_id: processoId, tipo: "recebido" }),
+    // todos: um digitado que ficasse de fora da leitura seria sobrescrito pela ficha
+    buscarTodas<Existente>((de, ate) => supabase.from("lancamento").select("ano, mes, posicao, origem").match({ processo_id: processoId, tipo: "recebido" })
+      .order("ano").order("mes").order("posicao").range(de, ate)),
     tabelaCorrespondencia(supabase),
   ]);
   const novos = receitasDoPeriodo(fichasLidasValidas(p.fichas_lidas), rubricas ?? [], tabela, p.periodo_inicio, p.periodo_fim);
   // devido automático só existe no complemento de salário mínimo: se a espécie mudou, sai (os digitados ficam)
   const { error } = await supabase.from("lancamento").delete().match({ processo_id: processoId, tipo: "devido", origem: "pdf" });
   if (error) throw new Error(error.message);
-  return regravarAutomaticos(supabase, processoId, "recebido", existentes ?? [], novos);
+  return regravarAutomaticos(supabase, processoId, "recebido", existentes, novos);
 }
 
 type Valor = { ano: number; mes: number; posicao: number; valor: number };
+type Existente = { ano: number; mes: number; posicao: number; origem: string };
 const chave = (l: { ano: number; mes: number; posicao: number }) => `${l.ano}-${l.mes}-${l.posicao}`;
 
 /** Troca os lançamentos automáticos (origem "pdf") de um tipo pelos novos, sem tocar nos digitados. */
 async function regravarAutomaticos(
   supabase: Supabase, processoId: string, tipo: "recebido" | "devido",
-  existentes: { ano: number; mes: number; posicao: number; origem: string }[], valores: Valor[],
+  existentes: Existente[], valores: Valor[],
 ) {
   const digitados = new Set(existentes.filter((l) => l.origem !== "pdf").map(chave));
   const novos = valores.filter((l) => !digitados.has(chave(l)));
@@ -114,9 +118,10 @@ async function preencherComplSalMin(
   supabase: Supabase, processoId: string,
   p: { periodo_inicio: string | null; periodo_fim: string | null; fichas_lidas: unknown; complementos: unknown },
 ) {
-  const [{ data: rubricas }, { data: existentes }] = await Promise.all([
+  const [{ data: rubricas }, lanc] = await Promise.all([
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
-    supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId),
+    buscarTodas<Existente & { tipo: string }>((de, ate) => supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId)
+      .order("tipo").order("ano").order("mes").order("posicao").range(de, ate)),
   ]);
   const plano = p.periodo_inicio && p.periodo_fim
     ? planoComplSalMin(fichasLidasValidas(p.fichas_lidas), p.periodo_inicio, p.periodo_fim)
@@ -130,7 +135,6 @@ async function preencherComplSalMin(
   if (!plano || posicaoAga === null) return 0;
   const naPosicao = (lista: { ano: number; mes: number; valor: number }[], posicao: number | null): Valor[] =>
     posicao === null ? [] : lista.map((v) => ({ ...v, posicao }));
-  const lanc = existentes ?? [];
   const recebidos = [...naPosicao(plano.aga, posicaoAga), ...naPosicao(plano.gr, posicaoGr)];
   const n = await regravarAutomaticos(supabase, processoId, "recebido", lanc.filter((l) => l.tipo === "recebido"), recebidos);
   await regravarAutomaticos(supabase, processoId, "devido", lanc.filter((l) => l.tipo === "devido"), naPosicao(plano.devidos, posicaoAga));

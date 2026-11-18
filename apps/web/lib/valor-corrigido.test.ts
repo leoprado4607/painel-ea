@@ -2,7 +2,8 @@ import type { IndiceMensal } from "@painel-ea/engine";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { buscarTodas, valoresCorrigidos } from "./valor-corrigido";
+import { buscarTodas } from "./buscar-todas";
+import { valoresCorrigidos } from "./valor-corrigido";
 
 const indices = (JSON.parse(readFileSync(join(__dirname, "..", "..", "..", "packages", "engine", "test", "golden", "indices-planilha.json"), "utf-8")) as IndiceMensal[])
   .filter((i) => i.percentual !== null);

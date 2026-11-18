@@ -15,10 +15,13 @@ function bancoFalso(tabelas: Record<string, Linha[]>) {
       let filtro: Linha = {};
       let acao: "select" | "delete" | "update" = "select";
       let dados: Linha = {};
+      let de = 0, ate = Infinity;
       const q = {
         select: () => q,
         eq: (k: string, v: unknown) => ((filtro = { ...filtro, [k]: v }), q),
         match: (f: Linha) => ((filtro = { ...filtro, ...f }), q),
+        order: () => q,
+        range: (a: number, b: number) => ((de = a), (ate = b), q),
         delete: () => ((acao = "delete"), q),
         update: (d: Linha) => ((acao = "update"), (dados = d), q),
         upsert: (novas: Linha[]) => {
@@ -32,7 +35,7 @@ function bancoFalso(tabelas: Record<string, Linha[]>) {
         then: (ok: (r: unknown) => unknown) => {
           if (acao === "delete") tabelas[t] = linhas.filter((l) => !casa(l, filtro));
           if (acao === "update") linhas.filter((l) => casa(l, filtro)).forEach((l) => Object.assign(l, dados));
-          return Promise.resolve(acao === "select" ? { data: linhas.filter((l) => casa(l, filtro)) } : { error: null }).then(ok);
+          return Promise.resolve(acao === "select" ? { data: linhas.filter((l) => casa(l, filtro)).slice(de, ate + 1), error: null } : { error: null }).then(ok);
         },
       };
       return q;
@@ -78,5 +81,28 @@ describe("preencherReceitas no complemento de salário mínimo", () => {
     expect(t.processo_rubrica!.every((r) => r.codigo === "" || r.codigo === "Z01 - FUSEX")).toBe(true);
     expect(t.lancamento).toEqual([]);
     expect(t.processo![0]!.complementos).toEqual({});
+  });
+});
+
+describe("leitura dos lançamentos acima de 1.000 linhas", () => {
+  it("um valor digitado depois da milésima linha continua protegido", async () => {
+    // banco que devolve no máximo 1.000 linhas por consulta
+    const limitar = (b: ReturnType<typeof bancoFalso>) => ({
+      from: (t: string) => {
+        const q = b.from(t) as unknown as { range: (de: number, ate: number) => unknown };
+        const range = q.range;
+        q.range = (de, ate) => range(de, Math.min(ate, de + 999));
+        return q;
+      },
+    });
+    const enchimento = Array.from({ length: 1000 }, (_, i) => ({
+      processo_id: "P", tipo: "recebido", ano: 2010, mes: 1, posicao: 100 + i, valor: 1, origem: "digitado",
+    }));
+    const t: Record<string, Linha[]> = {
+      processo: [processo({ calculoAutomatico: true })], processo_rubrica: rubricas(),
+      lancamento: [...enchimento, { processo_id: "P", tipo: "recebido", ano: 2022, mes: 3, posicao: 1, valor: 7, origem: "digitado" }],
+    };
+    await preencherReceitas(limitar(bancoFalso(t)) as never, "P");
+    expect(t.lancamento!.find((l) => l.tipo === "recebido" && l.ano === 2022 && l.mes === 3 && l.posicao === 1)).toMatchObject({ valor: 7, origem: "digitado" });
   });
 });
