@@ -1,6 +1,6 @@
 "use client";
 import { formatarTextoColado, marcacaoDosTrechos, normalizarFormatado, textoSemFormatacao, type TrechoFormatado } from "@painel-ea/engine";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
 
 /** DOM do editor → trechos com estilo (b/strong, i/em, u; quebras de linha por <br> e blocos). */
 function trechosDoDom(raiz: HTMLElement): TrechoFormatado[] {
@@ -29,7 +29,7 @@ const paraHtml = (marcacao: string) => marcacao.replace(/\n/g, "<br>");
  * Caixa de texto com negrito, itálico e sublinhado, na Helvetica dos documentos. O valor vai num campo oculto
  * (nome do formulário) como marcação <b>/<i>/<u>; o limite conta só os caracteres do texto.
  */
-export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, ferramentasAEsquerda, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado, umaLinha, aoLado }: {
+export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, ferramentasAEsquerda, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado, umaLinha, aoLado, sugestoes = [] }: {
   nome: string;
   /** prefixo dos ids (rótulo, contador) quando há vários editores com o mesmo nome */
   idBase?: string;
@@ -47,11 +47,21 @@ export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, fer
   umaLinha?: boolean;
   /** botões à direita da caixa (ex.: "+" e "−" dos documentos que materializam o direito) */
   aoLado?: ReactNode;
+  /** opções para preencher a caixa (marcação): aparecem ao clicar nela e são filtradas pelo que for digitado */
+  sugestoes?: string[];
 }) {
   const editor = useRef<HTMLDivElement>(null);
   const valido = useRef("");
   const [marcacao, setMarcacao] = useState(() => normalizarFormatado(valor));
   const total = textoSemFormatacao(marcacao).length;
+  const [listaAberta, setListaAberta] = useState(false);
+  const [ativa, setAtiva] = useState(-1);
+  const digitado = textoSemFormatacao(marcacao).trim().toLocaleLowerCase("pt-BR");
+  const opcoes = bloqueado ? [] : sugestoes.filter((s) => {
+    const texto = textoSemFormatacao(s).trim().toLocaleLowerCase("pt-BR");
+    return texto.length <= limite && texto !== digitado && texto.includes(digitado);
+  });
+  const mostrarLista = listaAberta && opcoes.length > 0;
 
   useEffect(() => {
     if (!editor.current) return;
@@ -69,6 +79,27 @@ export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, fer
     if (textoSemFormatacao(m).length > limite) { el.innerHTML = valido.current; return; }
     valido.current = el.innerHTML;
     setMarcacao(normalizarFormatado(m));
+  };
+  const escolher = (opcao: string) => {
+    const el = editor.current!;
+    const m = normalizarFormatado(opcao);
+    el.innerHTML = paraHtml(m); // só b/i/u e texto escapado
+    valido.current = el.innerHTML;
+    setMarcacao(m);
+    setListaAberta(false);
+    setAtiva(-1);
+    getSelection()?.selectAllChildren(el); // cursor no fim do texto escolhido
+    getSelection()?.collapseToEnd();
+  };
+  const teclaDaLista = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!mostrarLista) {
+      if (e.key === "ArrowDown" && opcoes.length) { e.preventDefault(); setListaAberta(true); setAtiva(0); }
+      return;
+    }
+    if (e.key === "ArrowDown") { e.preventDefault(); setAtiva((i) => (i + 1) % opcoes.length); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); setAtiva((i) => (i <= 0 ? opcoes.length : i) - 1); }
+    else if (e.key === "Escape") { e.preventDefault(); setListaAberta(false); setAtiva(-1); }
+    else if (e.key === "Enter" && opcoes[ativa]) { e.preventDefault(); escolher(opcoes[ativa]!); }
   };
   const arrumar = () => {
     const el = editor.current!;
@@ -109,8 +140,13 @@ export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, fer
         <div ref={editor} contentEditable={!bloqueado} suppressContentEditableWarning role="textbox" aria-multiline={!umaLinha}
           aria-labelledby={`${idBase}-rotulo`} aria-invalid={!!erro} aria-describedby={`${idBase}-contador`} data-placeholder={placeholder}
           className={`entrada ${umaLinha ? "overflow-x-auto whitespace-nowrap [scrollbar-width:none]" : "min-h-24 whitespace-pre-wrap"} leading-snug ${justificado ? "text-justify" : ""} [font-family:Helvetica,Arial,sans-serif] empty:before:text-suave empty:before:content-[attr(data-placeholder)] ${erro ? "entrada-erro" : ""}`}
-          onInput={atualizar}
-          onKeyDown={umaLinha ? (e) => { if (e.key === "Enter") e.preventDefault(); } : undefined}
+          aria-autocomplete={sugestoes.length ? "list" : undefined} aria-controls={mostrarLista ? `${idBase}-opcoes` : undefined}
+          aria-activedescendant={mostrarLista && ativa >= 0 ? `${idBase}-opcao-${ativa}` : undefined}
+          onInput={() => { atualizar(); setListaAberta(true); setAtiva(-1); }}
+          onFocus={() => setListaAberta(true)}
+          onClick={() => setListaAberta(true)}
+          onBlur={() => { setListaAberta(false); setAtiva(-1); }}
+          onKeyDown={(e) => { teclaDaLista(e); if (umaLinha && e.key === "Enter") e.preventDefault(); }}
           // colar só o texto, sem a formatação de outro programa, e só o que couber no limite (descontado o que está selecionado)
           onPaste={(e) => {
             e.preventDefault();
@@ -119,6 +155,22 @@ export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, fer
             const colado = e.clipboardData.getData("text/plain");
             document.execCommand("insertText", false, (umaLinha ? colado.replace(/\s*\r?\n\s*/g, " ") : colado).slice(0, cabe));
           }} />
+        {mostrarLista && (
+          <div className="absolute left-0 right-0 top-full z-30 mt-1 border border-borda bg-white shadow-lg">
+            <p className="border-b border-borda px-3 py-1.5 text-xs text-suave">Últimos documentos digitados por você</p>
+            <ul id={`${idBase}-opcoes`} role="listbox" aria-label="Últimos documentos digitados">
+              {opcoes.map((o, i) => (
+                // onMouseDown: escolhe antes de a caixa perder o foco
+                <li key={o} id={`${idBase}-opcao-${i}`} role="option" aria-selected={i === ativa} title={textoSemFormatacao(o)}
+                  className={`cursor-pointer truncate px-3 py-2 text-sm [font-family:Helvetica,Arial,sans-serif] hover:bg-creme ${i === ativa ? "bg-creme" : ""}`}
+                  onMouseEnter={() => setAtiva(i)}
+                  onMouseDown={(e) => { e.preventDefault(); escolher(o); }}>
+                  {textoSemFormatacao(o)}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {/* o navegador exige o preenchimento por este campo; o valor gravado é a marcação */}
         {/* textarea (não input): o input apaga as quebras de linha do valor */}
         <textarea name={nome} value={total ? marcacao : ""} required={obrigatorio} onChange={() => {}} tabIndex={-1} aria-hidden

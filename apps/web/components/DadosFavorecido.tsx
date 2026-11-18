@@ -12,12 +12,14 @@ const CAMPOS_DOS_PDFS: (keyof DadosLidos)[] = ["posto_graduacao", "nome", "prec_
  * Aba "Informações": envie contracheques/fichas para preencher os dados (e os recebidos), ou digite no formulário.
  * Os dados lidos só vão para o formulário; o usuário confere e grava em "Salvar e continuar".
  */
-export function DadosFavorecido({ processoId, valores, rubricas, bloqueado, conferirBanco = false, fichasCarregadas = false }: {
+export function DadosFavorecido({ processoId, valores, rubricas, bloqueado, conferirBanco = false, fichasCarregadas = false, documentosRecentes = [] }: {
   processoId: string; valores: Valores; rubricas: { posicao: number; codigo: string }[]; bloqueado: boolean;
   /** processo recém-criado pelos documentos (?conferir=banco): abre o aviso dos dados bancários */
   conferirBanco?: boolean;
   /** os PDFs já foram lidos neste processo: o texto de instruções do envio some */
   fichasCarregadas?: boolean;
+  /** últimos documentos que materializam o direito digitados pelo operador */
+  documentosRecentes?: string[];
 }) {
   const [aviso, setAviso] = useState(conferirBanco);
   const fecharAviso = useCallback(() => setAviso(false), []);
@@ -48,7 +50,7 @@ export function DadosFavorecido({ processoId, valores, rubricas, bloqueado, conf
         }} />
       {aviso && <AvisoDadosBancarios aoFechar={fecharAviso} />}
       {/* a chave remonta o formulário com os dados lidos por cima do cadastro */}
-      <FormularioProcesso key={versao} processoId={processoId} valores={{ ...valores, ...lidos }} bloqueado={bloqueado} aoLimpar={limpar} />
+      <FormularioProcesso key={versao} processoId={processoId} valores={{ ...valores, ...lidos }} bloqueado={bloqueado} aoLimpar={limpar} documentosRecentes={documentosRecentes} />
     </div>
   );
 }

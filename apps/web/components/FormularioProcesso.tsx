@@ -106,7 +106,7 @@ export function EscolhaOm({ oms, id = "om_id", erro }: { oms: { id: string; nome
 }
 
 /** Documentos que materializam o direito: uma linha cada; "+" acrescenta outro, "−" tira (o primeiro é obrigatório). */
-function DocumentosDireito({ valor, erros, bloqueado }: { valor?: string | null; erros: Record<string, string>; bloqueado?: boolean }) {
+function DocumentosDireito({ valor, erros, bloqueado, recentes }: { valor?: string | null; erros: Record<string, string>; bloqueado?: boolean; recentes: string[] }) {
   const proximo = useRef(0);
   const [docs, setDocs] = useState(() => documentosDoAmparo(valor).map((texto) => ({ id: proximo.current++, texto })));
   const botao = "grid h-[38px] w-[38px] shrink-0 place-items-center border border-borda bg-white text-lg leading-none hover:border-ouro/50 hover:bg-creme disabled:opacity-50";
@@ -115,7 +115,7 @@ function DocumentosDireito({ valor, erros, bloqueado }: { valor?: string | null;
       {docs.map((d, i) => (
         <EditorFormatado key={d.id} nome="c.amparo" idBase={`c.amparo-${d.id}`} rotulo={i ? `Nº/data do documento ${i + 1}` : "Nº/data do documento"}
           rotuloOculto ferramentasAEsquerda umaLinha valor={d.texto} limite={LIMITE_DOCUMENTO} obrigatorio={i === 0}
-          erro={erros[i ? `c.amparo.${i}` : "c.amparo"]} bloqueado={bloqueado}
+          erro={erros[i ? `c.amparo.${i}` : "c.amparo"]} bloqueado={bloqueado} sugestoes={recentes}
           aoLado={!bloqueado && (
             <>
               {i > 0 && <button type="button" className={botao} aria-label={`Remover o documento ${i + 1}`} title="Remover este documento"
@@ -129,10 +129,12 @@ function DocumentosDireito({ valor, erros, bloqueado }: { valor?: string | null;
   );
 }
 
-export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = [], aoLimpar }: {
+export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = [], aoLimpar, documentosRecentes = [] }: {
   processoId: string | null; valores?: Valores; bloqueado?: boolean; oms?: { id: string; nome: string }[];
   /** "Informações": esvazia os campos preenchidos pelos PDFs (só no formulário, até salvar). */
   aoLimpar?: () => void;
+  /** últimos documentos que materializam o direito digitados pelo operador: opções de cada caixa do documento */
+  documentosRecentes?: string[];
 }) {
   const [estado, acao, enviando] = useActionState<EstadoForm | undefined, FormData>(salvarProcesso.bind(null, processoId), undefined);
   const c = estado?.campos ?? {};
@@ -231,7 +233,7 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         {/* textos do verso da Solicitação de Pagamento (colunas "Nº/Data Doc/Materializou Direito" e "Explicação…") */}
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Documento que materializa o direito</h2>
-          <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} />
+          <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} recentes={documentosRecentes} />
         </section>
         <section className="cartao">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">

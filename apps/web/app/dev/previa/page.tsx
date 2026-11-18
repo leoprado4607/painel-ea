@@ -64,7 +64,7 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           posicao: i + 1, codigo: i >= 12 ? rubricas.find((r) => r.posicao === i + 1)?.codigo ?? "" : "", tipo: i < 12 ? "Receita" as const : "Despesa" as const,
         }))} />
       ) : (
-        <FormularioProcesso processoId={null} />
+        <FormularioProcesso processoId={null} documentosRecentes={["BI Nº 045, de 10 mar 2022, do 16º BI Mtz", "<b>Aditamento</b> Nº 12 ao BI Nº 100, de 02 jun 2022", "BAR Nº 008, de 15 ago 2023", "BI Nº 201, de 30 out 2023", "Portaria Nº 77, de 05 jan 2024", "BI Nº 019, de 28 jan 2025"]} />
       )}</main>}
     </div>
   );
