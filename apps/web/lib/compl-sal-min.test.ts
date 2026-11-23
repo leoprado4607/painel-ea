@@ -43,6 +43,13 @@ describe("complemento de salário mínimo automático", () => {
       .toEqual([...Array(12).fill(2022), ...Array(12).fill(2023)]);
   });
 
+  it("gratificação em mês sem complemento (2021) não é lançada", () => {
+    const fichas = [ficha(2021, linha("AR0061", { 12: 21 }))];
+    const p = planoComplSalMin(fichas, "2021-03-01", "2022-01-14");
+    expect(p.gr).toEqual([]);
+    expect(p.devidos).toEqual([{ ano: 2022, mes: 1, valor: 36.17 }]); // 80,10 ÷ 31 × 14
+  });
+
   it("início e fim incompletos: proporcional aos dias do mês no calendário; a gratificação é abatida depois", () => {
     const fichas = [ficha(2022, linha("AR0061", { 2: 10 })), ficha(2023, linha("AR0061", { 2: 100 }))];
     const p = planoComplSalMin(fichas, "2022-02-15", "2023-02-14");

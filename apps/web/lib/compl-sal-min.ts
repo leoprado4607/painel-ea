@@ -80,7 +80,6 @@ export function planoComplSalMin(fichas: FichaLida[], inicio: string, fim: strin
   const todosAga = valoresDasFichas(fichas, CODIGOS_AGA);
   const grPeriodo = valoresDasFichas(fichas, CODIGOS_GR).filter(noPeriodo);
   const grDoMes = new Map(grPeriodo.map((v) => [k(v.ano, v.mes), v.valor]));
-  const naoComputados = new Set<number>();
   const devidos: ValorMes[] = [];
   const notas: Record<string, string> = {};
   for (let c = ini; c <= fi; c++) {
@@ -99,14 +98,16 @@ export function planoComplSalMin(fichas: FichaLida[], inicio: string, fim: strin
     if (g >= fixado) {
       textos.push(`Mês não computado: a AR0061 / GRAT REPRESENT EVENTUAL recebida (R$ ${reais(g)}) é igual ou maior que o valor ${dias !== total ? "proporcional" : "fixado"} do complemento (R$ ${reais(fixado)}); o devido e a AR0061 deste mês não são lançados.`);
       notas[`${ano}-${mes}`] = textos.join(" ");
-      naoComputados.add(c);
       continue;
     }
     if (g > 0) textos.push(`Abatida a AR0061 / GRAT REPRESENT EVENTUAL recebida (Receita): R$ ${reais(fixado)} − R$ ${reais(g)} = R$ ${reais(centavos(fixado - g))}.`);
     if (textos.length) notas[`${ano}-${mes}`] = textos.join(" ");
     devidos.push({ ano, mes, valor: fixado });
   }
-  const gr = grPeriodo.filter((v) => !naoComputados.has(k(v.ano, v.mes)));
+  // a gratificação só é lançada nos meses com complemento devido: fora de 2022/2023 (sem valor fixado) ou nos meses
+  // não computados, ela deixaria o mês negativo e reduziria o total
+  const comDevido = new Set(devidos.map((d) => k(d.ano, d.mes)));
+  const gr = grPeriodo.filter((v) => comDevido.has(k(v.ano, v.mes)));
   return { aga: todosAga.filter(noPeriodo), gr, posPeriodo: todosAga.filter((v) => k(v.ano, v.mes) > fi && v.valor > 0), devidos, notas };
 }
 
