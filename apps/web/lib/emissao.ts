@@ -5,7 +5,7 @@ import { caminhoDoZip, nomeDoPacote } from "./pacote";
 import { createHash } from "node:crypto";
 import { montarEntrada } from "./calculo";
 import { recebidosPosPeriodo } from "./pos-periodo";
-import { dataPorExtenso, descreverRegra } from "./indice";
+import { dataPorExtenso, indicesDoProcesso } from "./indice";
 import { textoBoletim } from "./averbacao";
 import { carregarProcesso } from "./processo";
 import { nomeNaAssinatura, postoAbreviado } from "./postos";
@@ -24,11 +24,9 @@ export async function montarDocumentos(
   // nome da OM e CODOM nos documentos: os da OM de vinculação do militar (o resto vem dos Dados da OM do operador)
   const omVinculacao = omDeVinculacao(militar.om_vinculacao);
   if (!omVinculacao) throw new Error("Escolha a OM de vinculação do militar em Informações.");
-  const [{ data: indices }, { data: regras }] = await Promise.all([
-    supabase.from("indice_composto").select("ano, mes, percentual"),
-    supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),
-  ]);
-  if (!indices?.length) throw new Error("Índices de correção indisponíveis.");
+  // série do processo: IPCA-E puro no Auxílio-fardamento automático; nos demais, a composta
+  const { indices, descricao: descricaoIndice } = await indicesDoProcesso(supabase, processo);
+  if (!indices.length) throw new Error("Índices de correção indisponíveis.");
   const entrada = montarEntrada(rubricas, lancamentos, indices, {
     inicio: processo.periodo_inicio, fim: processo.periodo_fim, posPeriodo: recebidosPosPeriodo(processo.complementos),
   });
@@ -61,7 +59,7 @@ export async function montarDocumentos(
     complementos: processo.complementos ?? {},
     rubricas: rubricas.map(({ posicao, codigo, tipo }) => ({ posicao, codigo, tipo })),
     resultado,
-    descricaoIndice: descreverRegra(regras ?? []),
+    descricaoIndice,
     indiceAte: `${MESES[ate.mes - 1]}/${ate.ano}`,
     valorUfir: VALOR_UFIR,
     rodape: opcoes.rascunho

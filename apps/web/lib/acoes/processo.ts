@@ -120,7 +120,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
   }
   const { data: m, error: e1 } = await supabase.from("militar").insert({ ...militar, om_id: omId }).select("id").single();
   if (e1) return { erro: e1.message };
-  const { data: p, error: e2 } = await supabase.from("processo").insert({ ...processo, complementos: { ...quadros, calculoAutomatico: true, calculoAutomaticoGratRep: true }, om_id: omId, militar_id: m.id }).select("id").single();
+  const { data: p, error: e2 } = await supabase.from("processo").insert({ ...processo, complementos: { ...quadros, calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true }, om_id: omId, militar_id: m.id }).select("id").single();
   if (e2) return { erro: e2.message };
   const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
   if (e3) return { erro: e3.message };

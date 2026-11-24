@@ -1,0 +1,320 @@
+/**
+ * Cálculo automático da diferença de "Auxílio fardamento" (decisão de 24/11/2026), no molde da Gratificação de
+ * Representação (lib/grat-rep). Vale só para os processos criados a partir dessa data (complementos.calculoAutomaticoAuxFard).
+ *
+ * Base: MP 2.215-10/2001 (Tabela II do Anexo IV); art. 61 do Decreto 4.307/2002, revogado pelo Decreto 12.645/2025 (DOU
+ * 02/10/2025); Parecer 645/2025/CONJUR-EB (reconhecimento administrativo; prescrição contada do 2º fato gerador);
+ * Parecer 250/2026/CONJUR-EB e DIEx 2750-APG 8/SEF (triênio e promoção na mesma data: dois auxílios, com bases distintas);
+ * DIEx 1677-S1/10º CGCFEx (CFO: matrícula e nomeação, 1,5 soldo cada); DIEx 757-ASSE1/SEF (reintegrado sem expediente).
+ *
+ * Dois casos:
+ * - art61: o 2º fato ocorreu em menos de 1 ano do 1º recebimento e foi pago só pela diferença.
+ *   Devido = multiplicador do 2º fato × soldo do posto na data do 2º fato.
+ * - mesma_data: triênio e promoção na mesma data, e só um (ou a diferença) foi pago.
+ *   Devido = triênio × soldo do posto em que completou os 3 anos + promoção × soldo do novo posto.
+ * Recebido = os pagamentos das fichas ligados ao 2º fato (o operador confirma); a diferença e a correção ficam com o motor.
+ * Tudo no mês da competência (o mês em que o 2º fato foi pago), na A56 (1 soldo) ou A57 (1,5 soldo).
+ * Os alertas não bloqueiam a emissão.
+ */
+import type { FichaLida } from "./receitas";
+import { categoriaSoldo, soldoNaData } from "./soldos";
+
+export const ESPECIE_AUX_FARD = "Auxílio fardamento";
+export const RUBRICA_AUX_FARD_1 = "A56 - AUX FARD 1 SOLDO";
+export const RUBRICA_AUX_FARD_15 = "A57 - AUX FARD 1.5 SLD";
+/** Auxílio-fardamento nas fichas: SIPPES (NR/AR/ER 0056 e 0057) e SIAPPES (A56, A57, A26 atrasado, AEG exercício anterior). */
+export const CODIGOS_AUX_FARD = new Set(["NR0056", "NR0057", "AR0056", "AR0057", "ER0056", "ER0057", "A56", "A57", "A26", "AEG"]);
+const CODIGOS_SOLDO = new Set(["NR0001", "A01"]);
+/** Publicação do Decreto 12.645/2025, que revogou o art. 61. */
+export const REVOGACAO_ART61 = "2025-10-02";
+
+export type TipoFato = "aspirante" | "nomeacao" | "matricula_cfo" | "promocao" | "trienio" | "outro";
+export const TIPOS_FATO: { id: TipoFato; nome: string; multiplicador: number | null }[] = [
+  { id: "aspirante", nome: "Declaração de aspirante / promoção a 3º Sgt (alínea b)", multiplicador: 1.5 },
+  { id: "nomeacao", nome: "Nomeação de oficial ou sargento (alínea c)", multiplicador: 1.5 },
+  { id: "matricula_cfo", nome: "Matrícula em escola de formação / CFO (alínea c)", multiplicador: 1.5 },
+  { id: "promocao", nome: "Promoção (alínea g) – 1 soldo do novo posto", multiplicador: 1 },
+  { id: "trienio", nome: "Três anos no mesmo posto ou graduação (alínea h)", multiplicador: 1 },
+  { id: "outro", nome: "Outra alínea (multiplicador informado)", multiplicador: null },
+];
+
+export interface FatoGerador {
+  tipo?: TipoFato;
+  /** "AAAA-MM-DD" (pelo BI do ato) */
+  data?: string;
+  /** Posto/graduação (id de lib/soldos): no triênio, o posto em que completou os 3 anos; na promoção, o novo. */
+  categoria?: string;
+  /** Só para "outro" (no 1º fato, se vazio, vem do valor pago ÷ soldo). */
+  multiplicador?: number | null;
+}
+
+/** O que o operador informa no quadro (complementos.auxFard). */
+export interface DadosAuxFard {
+  caso?: "art61" | "mesma_data";
+  fato1?: FatoGerador;
+  fato2?: FatoGerador;
+  /** BI do ato do 2º fato gerador (nº e data). */
+  ato2?: string;
+  /** Pagamento das fichas → fato (1 ou 2): "2021-7-NR0056" → 1. Vazio: o sugerido. */
+  vinculos?: Record<string, 1 | 2 | 0>;
+  declaracaoSemAcao?: boolean;
+  reconhecimento?: boolean;
+  semControversia?: boolean;
+  prescricaoInterrompida?: boolean;
+  reintegradoSemExpediente?: boolean;
+  ordemJudicial?: boolean;
+  anexosConferidos?: boolean;
+  /** Outros processos de auxílio-fardamento do militar (NUP e objeto). */
+  relacionados?: string;
+}
+
+export interface Pagamento { ano: number; mes: number; codigo: string; descricao: string; valor: number; chave: string; fato: 0 | 1 | 2; sugerido: boolean }
+export interface Alerta { codigo: string; descricao: string }
+export interface PlanoAuxFard {
+  caso: "art61" | "mesma_data";
+  pagamentos: Pagamento[];
+  multiplicador1: number | null;
+  multiplicador2: number | null;
+  soldo1: number | null;
+  soldo2: number | null;
+  /** Auxílio integral devido pelo(s) fato(s) cobrado(s). */
+  devido: number | null;
+  recebido: number;
+  diferenca: number | null;
+  competencia: { ano: number; mes: number } | null;
+  /** "A56 - AUX FARD 1 SOLDO" ou "A57 - AUX FARD 1.5 SLD" */
+  rubrica: string;
+  prescricao: { limite: string; referencia: string } | null;
+  devidos: { ano: number; mes: number; valor: number }[];
+  recebidos: { ano: number; mes: number; valor: number }[];
+  notas: Record<string, string>;
+  alertas: Alerta[];
+  pendencias: string[];
+  textos: { explicacao: string | null; documentos: string[] };
+}
+
+const k = (ano: number, mes: number) => ano * 12 + mes;
+const centavos = (v: number) => Math.round(v * 100) / 100;
+const reais = (v: number) => v.toLocaleString("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const br = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
+const mm = (ano: number, mes: number) => `${String(mes).padStart(2, "0")}/${ano}`;
+const dataValida = (d: string | undefined): d is string => !!d && /^\d{4}-\d{2}-\d{2}$/.test(d);
+const somarAnos = (d: string, n: number) => `${Number(d.slice(0, 4)) + n}${d.slice(4, 10)}`;
+const diasEntre = (a: string, b: string) => Math.round((Date.UTC(+b.slice(0, 4), +b.slice(5, 7) - 1, +b.slice(8, 10)) - Date.UTC(+a.slice(0, 4), +a.slice(5, 7) - 1, +a.slice(8, 10))) / 86_400_000);
+const multiplicadorDoTipo = (f: FatoGerador | undefined) =>
+  f?.tipo === "outro" ? (f.multiplicador ?? null) : TIPOS_FATO.find((t) => t.id === f?.tipo)?.multiplicador ?? null;
+const PELO: Record<TipoFato, string> = {
+  aspirante: "pela declaração de aspirante (ou promoção a 3º Sgt)", nomeacao: "pela nomeação", matricula_cfo: "pela matrícula em escola de formação",
+  promocao: "pela promoção", trienio: "pelos 3 anos no mesmo posto ou graduação", outro: "pelo fato gerador",
+};
+const peloFato = (t: TipoFato | undefined) => (t ? PELO[t] : "pelo fato gerador");
+
+/** O processo segue a automação: criado depois da mudança e com a espécie do auxílio-fardamento. */
+export function auxFardAutomatico(p: { especie_divida?: string | null; complementos?: unknown }): boolean {
+  const c = p.complementos as { calculoAutomaticoAuxFard?: unknown } | null | undefined;
+  return p.especie_divida === ESPECIE_AUX_FARD && c?.calculoAutomaticoAuxFard === true;
+}
+
+export function dadosAuxFard(complementos: unknown): DadosAuxFard {
+  const d = (complementos as { auxFard?: unknown } | null | undefined)?.auxFard;
+  return d && typeof d === "object" ? (d as DadosAuxFard) : {};
+}
+
+/** Teto do art. 19 da Port C Ex 1.746/2022: 4 soldos de Capitão vigentes na data. */
+export const tetoArt19 = (data: string) => {
+  const s = soldoNaData("cap", data);
+  return s === null ? null : 4 * s;
+};
+
+function linhas(fichas: FichaLida[], codigos: Set<string>) {
+  const lista: { ano: number; mes: number; codigo: string; descricao: string; valor: number }[] = [];
+  for (const f of fichas)
+    for (const l of f.linhas) {
+      const codigo = l.codigo.trim().toUpperCase();
+      if (!codigos.has(codigo)) continue;
+      l.meses.forEach((v, i) => {
+        if (!v) return;
+        const atual = lista.find((x) => x.ano === f.ano && x.mes === i + 1 && x.codigo === codigo);
+        if (atual) atual.valor = centavos(atual.valor + v);
+        else lista.push({ ano: f.ano, mes: i + 1, codigo, descricao: l.descricao, valor: centavos(v) });
+      });
+    }
+  return lista.sort((a, b) => k(a.ano, a.mes) - k(b.ano, b.mes) || a.codigo.localeCompare(b.codigo));
+}
+
+/**
+ * @param periodoInicio início do período da dívida ("AAAA-MM-DD"): deve ser o mês da competência
+ * @param averbacao texto do BI de averbação (documento que materializou o direito)
+ * @param hoje "AAAA-MM-DD" (data da análise)
+ */
+export function planoAuxFard(entrada: {
+  fichas: FichaLida[]; dados: DadosAuxFard; dataRequerimento?: string | null; periodoInicio?: string | null;
+  averbacao?: string | null; hoje: string;
+}): PlanoAuxFard {
+  const { fichas, dados, hoje } = entrada;
+  const caso = dados.caso === "mesma_data" ? "mesma_data" : "art61";
+  const f1 = dados.fato1 ?? {}, f2 = dados.fato2 ?? {};
+  const alertas: Alerta[] = [];
+  const pendencias: string[] = [];
+  const soldoFicha = linhas(fichas, CODIGOS_SOLDO);
+  const soldoNoMes = (ano: number, mes: number) => soldoFicha.filter((l) => l.ano === ano && l.mes === mes).reduce((s, l) => centavos(s + l.valor), 0) || null;
+
+  // pagamentos das fichas e a qual fato cada um se liga (o operador confirma; sem resposta, a sugestão)
+  const brutos = linhas(fichas, CODIGOS_AUX_FARD);
+  const vinculos = dados.vinculos ?? {};
+  const temVinculo = Object.keys(vinculos).length > 0;
+  const meses = [...new Set(brutos.map((p) => k(p.ano, p.mes)))];
+  const pagamentos: Pagamento[] = brutos.map((p) => {
+    const chave = `${p.ano}-${p.mes}-${p.codigo}`;
+    // sugestão: no art. 61, o 1º mês com auxílio é o 1º fato e o seguinte, o 2º; na mesma data, o 1º mês é o do 2º fato
+    const ordem = meses.indexOf(k(p.ano, p.mes));
+    const sugerido: 0 | 1 | 2 = caso === "mesma_data" ? (ordem === 0 ? 2 : 0) : ordem === 0 ? 1 : ordem === 1 ? 2 : 0;
+    const fato = temVinculo ? (vinculos[chave] ?? 0) : sugerido;
+    return { ...p, chave, fato, sugerido: !temVinculo && fato !== 0 };
+  });
+  if (!temVinculo && pagamentos.some((p) => p.fato)) pendencias.push("Confirme a qual fato gerador se refere cada pagamento de auxílio-fardamento das fichas (a ligação foi sugerida).");
+  const pagos1 = pagamentos.filter((p) => p.fato === 1), pagos2 = pagamentos.filter((p) => p.fato === 2);
+  const valorPago1 = centavos(pagos1.reduce((s, p) => s + p.valor, 0));
+  const recebido = centavos(pagos2.reduce((s, p) => s + p.valor, 0));
+
+  // datas e postos
+  if (!dataValida(f2.data)) pendencias.push("Informe a data do 2º fato gerador (pelo BI do ato).");
+  if (!dataValida(f1.data)) pendencias.push("Informe a data do 1º fato gerador.");
+  if (!f2.tipo) pendencias.push("Informe o tipo do 2º fato gerador.");
+  if (!categoriaSoldo(f2.categoria)) pendencias.push(caso === "mesma_data" ? "Informe o novo posto/graduação (promoção)." : "Informe o posto/graduação do 2º fato gerador.");
+  if (caso === "mesma_data" && !categoriaSoldo(f1.categoria)) pendencias.push("Informe o posto/graduação em que completou os 3 anos (triênio).");
+  if (!dados.ato2?.trim()) alertas.push({ codigo: "ATO_FATO_GERADOR_AUSENTE", descricao: "Informe o BI do ato do 2º fato gerador (promoção, nomeação, matrícula ou triênio)." });
+  // no caso de mesma data, o triênio e a promoção são na mesma data (a do 2º fato)
+  const data2 = dataValida(f2.data) ? f2.data : null;
+  const data1 = caso === "mesma_data" ? data2 : dataValida(f1.data) ? f1.data : null;
+
+  // multiplicadores e soldos
+  let multiplicador1: number | null = caso === "mesma_data" ? 1 : multiplicadorDoTipo(f1);
+  let soldo1: number | null = null;
+  if (caso === "art61" && pagos1.length) {
+    const p = pagos1[0]!;
+    const base = soldoNoMes(p.ano, p.mes) ?? (data1 && categoriaSoldo(f1.categoria) ? soldoNaData(f1.categoria, data1) : null);
+    if (base) {
+      const m = Math.round((valorPago1 / base) * 100) / 100;
+      soldo1 = base;
+      if (m === 1 || m === 1.5) multiplicador1 = m;
+      else alertas.push({ codigo: "MULTIPLICADOR_INDEFINIDO", descricao: `O auxílio do 1º fato (R$ ${reais(valorPago1)}) dividido pelo soldo do mês (R$ ${reais(base)}) dá ${m.toLocaleString("pt-BR")}, nem 1 nem 1,5 soldo.` });
+    }
+  } else if (caso === "mesma_data" && data2) soldo1 = soldoNaData(f1.categoria, data2);
+  const multiplicador2 = multiplicadorDoTipo(f2);
+  if (f2.tipo === "outro" && multiplicador2 === null) alertas.push({ codigo: "MULTIPLICADOR_INDEFINIDO", descricao: "Informe o multiplicador do 2º fato gerador (1 ou 1,5 soldo)." });
+  const soldo2 = data2 ? soldoNaData(f2.categoria, data2) : null;
+  if (data2 && categoriaSoldo(f2.categoria) && soldo2 === null) pendencias.push(`Não há soldo na tabela para ${br(data2)} (a tabela começa em 2018).`);
+
+  // competência: o mês em que o 2º fato foi pago (ou, sem pagamento, o mês do 2º fato)
+  const competencia = pagos2.length ? { ano: pagos2[0]!.ano, mes: pagos2[0]!.mes } : data2 ? { ano: +data2.slice(0, 4), mes: +data2.slice(5, 7) } : null;
+  if (soldo2 !== null && competencia) {
+    const fichaComp = soldoNoMes(competencia.ano, competencia.mes), fichaFato = data2 ? soldoNoMes(+data2.slice(0, 4), +data2.slice(5, 7)) : null;
+    const confere = [fichaComp, fichaFato].some((v) => v === soldo2);
+    if (!confere && (fichaComp ?? fichaFato) !== null) {
+      alertas.push({ codigo: "SOLDO_DIVERGENTE", descricao: `O soldo da tabela para ${categoriaSoldo(f2.categoria)!.nome} em ${br(data2!)} é R$ ${reais(soldo2)}; a NR0001 da ficha traz R$ ${reais((fichaComp ?? fichaFato)!)} (pode ser proporcional ou de outro posto): confira.` });
+    }
+  }
+
+  // devido integral
+  let devido: number | null = null;
+  if (caso === "mesma_data") {
+    devido = soldo1 !== null && soldo2 !== null && multiplicador2 !== null ? centavos(1 * soldo1 + multiplicador2 * soldo2) : null;
+  } else if (soldo2 !== null && multiplicador2 !== null) devido = centavos(multiplicador2 * soldo2);
+  const diferenca = devido !== null ? centavos(devido - recebido) : null;
+  if (diferenca !== null && diferenca <= 0) alertas.push({ codigo: "SEM_DIFERENCA", descricao: `O recebido pelo 2º fato (R$ ${reais(recebido)}) cobre o devido (R$ ${reais(devido!)}): não há diferença.` });
+
+  // enquadramento
+  if (caso === "art61") {
+    if (data2 && (pagos1.length || data1)) {
+      // 1 ano contado do 1º recebimento (Parecer 645, item 8): pelo mês do pagamento na ficha; sem ele, pela data do 1º fato
+      const inicio = pagos1.length ? `${pagos1[0]!.ano}-${String(pagos1[0]!.mes).padStart(2, "0")}-01` : data1!;
+      const dias = diasEntre(inicio, data2);
+      if (dias >= 365 + 31) alertas.push({ codigo: "FORA_DA_TESE", descricao: `O 2º fato (${br(data2)}) é mais de 1 ano depois do 1º recebimento (${pagos1.length ? mm(pagos1[0]!.ano, pagos1[0]!.mes) : br(data1!)}): o art. 61 não se aplicava.` });
+      else if (dias >= 365 - 31) pendencias.push(`O 2º fato (${br(data2)}) está perto de 1 ano do 1º recebimento (${pagos1.length ? mm(pagos1[0]!.ano, pagos1[0]!.mes) : br(data1!)}): confira o dia exato do pagamento.`);
+      if (dias < 0) alertas.push({ codigo: "FORA_DA_TESE", descricao: "O 2º fato é anterior ao 1º recebimento: confira a ligação dos pagamentos." });
+    }
+    // valor pago pelo 2º fato = auxílio do 2º − auxílio do 1º
+    if (devido !== null && pagos1.length && Math.abs(recebido - centavos(devido - valorPago1)) > 0.01) {
+      alertas.push({ codigo: "FORA_DA_TESE", descricao: `O pago pelo 2º fato (R$ ${reais(recebido)}) não é a diferença entre os auxílios (R$ ${reais(devido)} − R$ ${reais(valorPago1)} = R$ ${reais(centavos(devido - valorPago1))}).` });
+    }
+    if (diferenca !== null && multiplicador1 !== null && multiplicador1 === multiplicador2 && pagos1.length && Math.abs(diferenca - valorPago1) > 0.01) {
+      alertas.push({ codigo: "CONFERENCIA_DIFERENCA", descricao: `Com o mesmo multiplicador nos dois fatos, a diferença (R$ ${reais(diferenca)}) deveria ser igual ao 1º auxílio (R$ ${reais(valorPago1)}).` });
+    }
+    if ((data2 && data2 >= REVOGACAO_ART61) || (data1 && data1 >= REVOGACAO_ART61)) {
+      alertas.push({ codigo: "NAO_E_DEA", descricao: `Fato gerador a partir de ${br(REVOGACAO_ART61)} (revogação do art. 61): não é DEA desta tese; o pagamento é corrente.` });
+    }
+  }
+  if (competencia && competencia.ano >= +hoje.slice(0, 4)) {
+    alertas.push({ codigo: "NAO_E_DEA", descricao: `A competência (${mm(competencia.ano, competencia.mes)}) é do exercício corrente: o pagamento é em folha, não por DEA.` });
+  }
+  if (entrada.periodoInicio && competencia && (+entrada.periodoInicio.slice(0, 4) !== competencia.ano || +entrada.periodoInicio.slice(5, 7) !== competencia.mes)) {
+    alertas.push({ codigo: "DIVERGENCIA_COMPETENCIA", descricao: `O período da dívida (Informações) começa em ${mm(+entrada.periodoInicio.slice(0, 4), +entrada.periodoInicio.slice(5, 7))}, mas a competência pela ficha é ${mm(competencia.ano, competencia.mes)}. A ficha prevalece: ajuste o período.` });
+  }
+
+  // prescrição: 5 anos do 2º fato (Parecer 645, item 70.3), até o requerimento
+  let prescricao: PlanoAuxFard["prescricao"] = null;
+  if (data2) {
+    const limite = somarAnos(data2, 5);
+    const referencia = dataValida(entrada.dataRequerimento ?? undefined) ? entrada.dataRequerimento! : hoje;
+    prescricao = { limite, referencia };
+    if (referencia > limite) {
+      if (dados.prescricaoInterrompida) pendencias.push(`Pedido depois do limite da prescrição (${br(limite)}), com interrupção ou suspensão do prazo informada: confira o ato que interrompeu.`);
+      else alertas.push({ codigo: "PRESCRITO", descricao: `O pedido (${br(referencia)}) é posterior ao limite da prescrição (${br(limite)}, 5 anos do 2º fato): sugere-se indeferir.` });
+    } else if (!dataValida(entrada.dataRequerimento ?? undefined) && diasEntre(hoje, limite) < 60) {
+      alertas.push({ codigo: "PRAZO_PRESCRICIONAL_PROXIMO", descricao: `Faltam menos de 60 dias para o limite da prescrição (${br(limite)}).` });
+    }
+  }
+
+  // duplicidade: pagamento na ficha do ano corrente (o CPEx paga parte dos casos automaticamente)
+  const anoAtual = +hoje.slice(0, 4);
+  if (!fichas.some((f) => f.ano === anoAtual)) alertas.push({ codigo: "FICHA_AUSENTE", descricao: `Falta a ficha financeira de ${anoAtual} (ano corrente), para conferir se o CPEx já pagou a diferença.` });
+  else for (const p of pagamentos.filter((x) => x.ano === anoAtual && x.fato === 0)) {
+    alertas.push({ codigo: "POSSIVEL_DUPLICIDADE", descricao: `${p.codigo} de R$ ${reais(p.valor)} em ${mm(p.ano, p.mes)} (ano corrente): pode ser o pagamento desta diferença pelo CPEx.` });
+  }
+  if (competencia && !fichas.some((f) => f.ano === competencia.ano)) alertas.push({ codigo: "FICHA_AUSENTE", descricao: `Falta a ficha financeira de ${competencia.ano} (ano do 2º fato).` });
+
+  // conferências do Parecer 645 (item 67) e elegibilidade
+  if (!dados.declaracaoSemAcao) alertas.push({ codigo: "DECLARACAO_AUSENTE", descricao: "Falta a declaração de inexistência de ação judicial (ou de desistência homologada)." });
+  if (!dados.reconhecimento) alertas.push({ codigo: "RECONHECIMENTO_AUSENTE", descricao: "Falta o Adt/BI de reconhecimento da dívida (arts. 16 e 17 da Port C Ex 1.746/2022)." });
+  if (!dados.semControversia) pendencias.push("Confirme que não há controvérsia jurídica específica no caso (Parecer 645, item 67).");
+  if (!dados.anexosConferidos) pendencias.push("Confira se todos os anexos anunciados no DIEx de encaminhamento estão no processo.");
+  if (dados.reintegradoSemExpediente && !dados.ordemJudicial) alertas.push({ codigo: "INELEGIVEL", descricao: "Reintegrado judicial que não responde a expediente não tem direito ao auxílio-fardamento, salvo ordem judicial expressa (DIEx 757-ASSE1/SEF)." });
+  if (dados.relacionados?.trim()) alertas.push({ codigo: "PROCESSO_RELACIONADO", descricao: `Outro processo de auxílio-fardamento do militar: ${dados.relacionados.trim()}. Confirme que não trata do mesmo fato gerador.` });
+
+  const rubrica = multiplicador2 === 1.5 ? RUBRICA_AUX_FARD_15 : RUBRICA_AUX_FARD_1;
+  const devidos = devido !== null && competencia ? [{ ...competencia, valor: devido }] : [];
+  const recebidos = competencia && recebido > 0 ? [{ ...competencia, valor: recebido }] : [];
+  const notas: Record<string, string> = {};
+  if (devido !== null && competencia) {
+    notas[`${competencia.ano}-${competencia.mes}`] = caso === "mesma_data"
+      ? `Auxílio-fardamento (triênio e promoção em ${br(data2!)}, Parecer 250/2026/CONJUR-EB): triênio 1 × R$ ${reais(soldo1!)} (${categoriaSoldo(f1.categoria)!.nome}) + promoção ${multiplicador2!.toLocaleString("pt-BR")} × R$ ${reais(soldo2!)} (${categoriaSoldo(f2.categoria)!.nome}) = R$ ${reais(devido)}; recebido R$ ${reais(recebido)}; diferença R$ ${reais(diferenca!)}.`
+      : `Auxílio-fardamento (art. 61 do Dec 4.307/2002, revogado) ${peloFato(f2.tipo)} em ${br(data2!)}, ${multiplicador2!.toLocaleString("pt-BR")} × R$ ${reais(soldo2!)} (${categoriaSoldo(f2.categoria)!.nome}) = R$ ${reais(devido)}; recebido R$ ${reais(recebido)}; diferença R$ ${reais(diferenca!)}${pagos1.length ? ` (1º auxílio: R$ ${reais(valorPago1)})` : ""}.`;
+  }
+
+  let explicacao: string | null = null;
+  if (data2) {
+    explicacao = caso === "mesma_data"
+      ? `O militar completou 3 anos no mesmo posto e foi promovido em ${br(data2)}, mas recebeu só um auxílio-fardamento. O Parecer nº 00250/2026/CONJUR-EB/CGU/AGU reconheceu os dois fatos geradores como autônomos (DIEx 2750-APG 8/SEF), e a diferença, devida a exercício anterior, é paga como DEA.`
+      : `O auxílio-fardamento devido ${peloFato(f2.tipo)} em ${br(data2)} foi pago só pela diferença, com a limitação do art. 61 do Decreto nº 4.307/2002, revogado pelo Decreto nº 12.645/2025. O pagamento retroativo foi reconhecido administrativamente (Parecer nº 00645/2025/CONJUR-EB/CGU/AGU), sendo a diferença paga como DEA.`;
+  }
+  const documentos = [entrada.averbacao, dados.ato2].map((d) => (d ?? "").trim()).filter(Boolean).map((d) => d.slice(0, 100));
+
+  return {
+    caso, pagamentos, multiplicador1, multiplicador2, soldo1, soldo2, devido, recebido, diferenca, competencia, rubrica, prescricao,
+    devidos, recebidos, notas, alertas, pendencias, textos: { explicacao, documentos },
+  };
+}
+
+interface Rubrica { posicao: number; codigo: string; tipo: string }
+const ULTIMA_RECEITA = 12;
+
+/** A56 ou A57 (Receita): a que já houver, a posição 1 vazia ou a 1ª receita vazia. */
+export function rubricasAuxFard(rubricas: Rubrica[], codigo: string) {
+  const lista = rubricas.map((r) => ({ ...r, codigo: r.codigo ?? "" }));
+  const prefixo = codigo.slice(0, 4);
+  const existente = lista.find((r) => r.codigo.trim().toUpperCase().startsWith(prefixo));
+  if (existente) return { mudadas: existente.tipo === "Receita" ? [] : [{ ...existente, tipo: "Receita" }], posicao: existente.posicao };
+  const vazia = lista.find((r) => r.posicao === 1 && !r.codigo.trim()) ?? lista.find((r) => r.posicao <= ULTIMA_RECEITA && !r.codigo.trim());
+  return vazia ? { mudadas: [{ ...vazia, codigo, tipo: "Receita" }], posicao: vazia.posicao } : { mudadas: [], posicao: null };
+}

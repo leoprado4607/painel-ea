@@ -36,6 +36,13 @@ export interface Complementos {
   calculoAutomaticoGratRep?: boolean;
   /** Dados do quadro da Gratificação de Representação (apps/web/lib/grat-rep, DadosGratRep). */
   gratRep?: Record<string, unknown>;
+  /**
+   * Processo criado a partir de 24/11/2026: segue o cálculo automático da diferença de Auxílio-fardamento
+   * (apps/web/lib/aux-fard), corrigido pelo IPCA-E puro. Os anteriores não têm a marca e não mudam.
+   */
+  calculoAutomaticoAuxFard?: boolean;
+  /** Dados do quadro do Auxílio-fardamento (apps/web/lib/aux-fard, DadosAuxFard). */
+  auxFard?: Record<string, unknown>;
 }
 
 export interface RecebidoPosPeriodo { ano: number; mes: number; posicao: number; valor: number }

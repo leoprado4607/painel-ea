@@ -13,6 +13,7 @@ import {
 } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { CODIGOS_COMPL_SAL_MIN, complSalMinAutomatico, planoComplSalMin } from "@/lib/compl-sal-min";
+import { auxFardAutomatico, CODIGOS_AUX_FARD, dadosAuxFard, planoAuxFard, rubricasAuxFard } from "@/lib/aux-fard";
 import { CODIGOS_GRAT_REP, dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "@/lib/grat-rep";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
@@ -145,9 +146,17 @@ async function montarPrevia(supabase: Supabase, processoId: string, docs: Docume
       : null;
     lancamentos = plano ? plano.recebidos.map((v) => ({ ...v, posicao })) : [];
   }
+  const autoAf = auxFardAutomatico(processo);
+  if (autoAf) {
+    // Auxílio-fardamento: o recebido é o pagamento ligado ao 2º fato, no quadro de "Lançar valor devido"
+    naoUsadas = naoUsadas.filter((l) => !CODIGOS_AUX_FARD.has(l.codigo.trim().toUpperCase()));
+    const plano = planoAuxFard({ fichas, dados: dadosAuxFard(processo.complementos), dataRequerimento: processo.data_requerimento, periodoInicio: processo.periodo_inicio, hoje: new Date().toISOString().slice(0, 10) });
+    const posicao = rubricasAuxFard(rubricas ?? [], plano.rubrica).posicao ?? 1;
+    lancamentos = plano.recebidos.map((v) => ({ ...v, posicao }));
+  }
   const pendencia = !processo.periodo_inicio || !processo.periodo_fim
     ? "O período da dívida ainda não foi informado: as receitas serão preenchidas quando ele for salvo."
-    : auto || autoGr ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
+    : auto || autoGr || autoAf ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
   return {
     documentos: docs, resumo: docs.map(resumir), dados: dadosDoFavorecido(docs),
     divergenciasMilitar: compararMilitar(docs, (processo.militar ?? {}) as unknown as Record<string, string | null>),
@@ -229,7 +238,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     // receitas só depois de escolhidas as rubricas e informado o período (preencherReceitas)
     const { data: p, error: e2 } = await supabase.from("processo").insert({
       om_id: omId, militar_id: m.id, periodo_inicio: null, periodo_fim: null, fichas_lidas: fichasLidasDosDocumentos(docs),
-      complementos: { calculoAutomatico: true, calculoAutomaticoGratRep: true },
+      complementos: { calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true },
     }).select("id").single();
     if (e2) return { erro: e2.message };
     const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);

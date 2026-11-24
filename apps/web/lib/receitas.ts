@@ -11,6 +11,7 @@ import { buscarTodas } from "./buscar-todas";
 import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin } from "./compl-sal-min";
 import type { DocumentoExtraido } from "./favorecido";
 import { dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "./grat-rep";
+import { auxFardAutomatico, dadosAuxFard, planoAuxFard, rubricasAuxFard } from "./aux-fard";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
 
@@ -79,6 +80,7 @@ export async function preencherReceitas(supabase: Supabase, processoId: string):
   if (!p || p.situacao !== "rascunho") return 0;
   if (complSalMinAutomatico(p)) return preencherComplSalMin(supabase, processoId, p);
   if (gratRepAutomatico(p)) return preencherGratRep(supabase, processoId, p);
+  if (auxFardAutomatico(p)) return preencherAuxFard(supabase, processoId, p);
   const [{ data: rubricas }, existentes, tabela] = await Promise.all([
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
     // todos: um digitado que ficasse de fora da leitura seria sobrescrito pela ficha
@@ -195,5 +197,35 @@ async function preencherGratRep(
       if (error) throw new Error(error.message);
     }
   }
+  return n;
+}
+
+/**
+ * Auxílio-fardamento (lib/aux-fard): rubrica A56/A57, devido integral e recebido pelo 2º fato no mês da competência.
+ * Os recebidos de outras rubricas vindos das fichas saem; os digitados ficam.
+ */
+async function preencherAuxFard(
+  supabase: Supabase, processoId: string,
+  p: { periodo_inicio: string | null; fichas_lidas: unknown; complementos: unknown; data_requerimento: string | null },
+) {
+  const [{ data: rubricas }, lanc] = await Promise.all([
+    supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
+    buscarTodas<Existente & { tipo: string }>((de, ate) => supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId)
+      .order("tipo").order("ano").order("mes").order("posicao").range(de, ate)),
+  ]);
+  const plano = planoAuxFard({
+    fichas: fichasLidasValidas(p.fichas_lidas), dados: dadosAuxFard(p.complementos), dataRequerimento: p.data_requerimento,
+    periodoInicio: p.periodo_inicio, hoje: hoje(),
+  });
+  const { mudadas, posicao } = rubricasAuxFard(rubricas ?? [], plano.rubrica);
+  if (mudadas.length) {
+    const { error } = await supabase.from("processo_rubrica")
+      .upsert(mudadas.map((r) => ({ processo_id: processoId, posicao: r.posicao, codigo: r.codigo, tipo: r.tipo })));
+    if (error) throw new Error(error.message);
+  }
+  const naPosicao = (lista: { ano: number; mes: number; valor: number }[]): Valor[] =>
+    posicao === null ? [] : lista.map((v) => ({ ...v, posicao }));
+  const n = await regravarAutomaticos(supabase, processoId, "recebido", lanc.filter((l) => l.tipo === "recebido"), naPosicao(plano.recebidos));
+  await regravarAutomaticos(supabase, processoId, "devido", lanc.filter((l) => l.tipo === "devido"), naPosicao(plano.devidos));
   return n;
 }

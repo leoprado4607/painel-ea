@@ -7,6 +7,9 @@ import { carregarProcesso } from "@/lib/processo";
 import { complSalMinAutomatico, ehRubricaGr, planoComplSalMin, VALOR_FIXADO } from "@/lib/compl-sal-min";
 import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
 import { PainelGratRep } from "@/components/PainelGratRep";
+import { PainelAuxFard } from "@/components/PainelAuxFard";
+import { auxFardAutomatico, dadosAuxFard, planoAuxFard } from "@/lib/aux-fard";
+import { textoBoletim } from "@/lib/averbacao";
 import { fichasLidasValidas } from "@/lib/receitas";
 import { supabaseServidor } from "@/lib/supabase/server";
 import { formatarReais } from "@/lib/dinheiro";
@@ -40,6 +43,18 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
     });
     notas = planoGr.notas;
   }
+  // Auxílio-fardamento automático: quadro dos fatos geradores e cálculo em "Lançar valor devido"
+  const autoAf = auxFardAutomatico(processo);
+  const dadosAf = dadosAuxFard(processo.complementos);
+  let planoAf = null;
+  if (autoAf && tipo === "devido") {
+    const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
+    planoAf = planoAuxFard({
+      fichas: fichasLidasValidas(data?.fichas_lidas), dados: dadosAf, dataRequerimento: processo.data_requerimento,
+      periodoInicio: processo.periodo_inicio, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
+    });
+    notas = planoAf.notas;
+  }
   return (
     <div className="space-y-5">
       {importado && (
@@ -59,11 +74,18 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
           no quadro de <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>. Confira mês a mês; o que você digitar não é sobrescrito.
         </Aviso>
       )}
+      {autoAf && tipo === "recebido" && (
+        <Aviso tipo="info">
+          Auxílio-fardamento: o recebido é o pagamento das fichas ligado ao 2º fato gerador, no quadro de{" "}
+          <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>. Confira; o que você digitar não é sobrescrito.
+        </Aviso>
+      )}
+      {planoAf && <PainelAuxFard processoId={id} dados={dadosAf} plano={planoAf} bloqueado={bloqueado} />}
       {planoGr && (
         <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
       )}
       {/* o envio de contracheque e fichas fica só em "Informações" (pedido do usuário) */}
-      <ValoresMensais key={autoGr ? processo.atualizado_em : undefined}
+      <ValoresMensais key={autoGr || autoAf ? processo.atualizado_em : undefined}
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}
         linhas={lancamentos.filter((l) => l.tipo === tipo).map(({ ano, mes, posicao, valor }) => ({ ano, mes, posicao, valor }))}

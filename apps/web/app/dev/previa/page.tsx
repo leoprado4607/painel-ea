@@ -10,6 +10,8 @@ import { normalizarBusca } from "@/lib/busca";
 import { ValoresMensais } from "@/components/ValoresMensais";
 import { PainelGratRep } from "@/components/PainelGratRep";
 import { planoGratRep, type DadosGratRep } from "@/lib/grat-rep";
+import { PainelAuxFard } from "@/components/PainelAuxFard";
+import { planoAuxFard, type DadosAuxFard } from "@/lib/aux-fard";
 
 /** Prévia das telas com dados fictícios, para conferir o visual sem banco. Só existe em desenvolvimento. */
 export default async function Previa({ searchParams }: { searchParams: Promise<{ tela?: string; tema?: string }> }) {
@@ -44,7 +46,19 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           </main>
         </div>
         </ProvedorProcesso>
-      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "grat-rep" ? (
+      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "aux-fard" ? (
+        // caso de teste 1 do prompt do Auxílio-fardamento (NUP 64241.005879/2026-73)
+        (() => {
+          const meses = (m: Record<number, number>) => Array.from({ length: 12 }, (_, i) => m[i + 1] ?? 0);
+          const fichas = [
+            { ano: 2021, sistema: "sippes" as const, linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: meses({ 7: 7315, 12: 7315 }) }, { codigo: "NR0056", descricao: "AUXILIO FARDAMENTO 1 SOLDO", meses: meses({ 7: 7315 }) }] },
+            { ano: 2022, sistema: "sippes" as const, linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: meses({ 1: 7490 }) }, { codigo: "NR0056", descricao: "AUXILIO FARDAMENTO 1 SOLDO", meses: meses({ 1: 175 }) }] },
+          ];
+          const dados: DadosAuxFard = { fato1: { tipo: "aspirante", data: "2021-07-12", categoria: "asp" }, fato2: { tipo: "promocao", data: "2021-12-25", categoria: "2-ten" } };
+          return <PainelAuxFard processoId="previa" dados={dados} bloqueado={false}
+            plano={planoAuxFard({ fichas, dados, dataRequerimento: "2026-09-28", periodoInicio: "2021-12-01", averbacao: "BI 210 - HGuJP, de 05/10/2026", hoje: "2026-11-24" })} />;
+        })()
+      ) : tela === "grat-rep" ? (
         // caso 1 do prompt da Grat Rep (NUP 64552.003413/2025-49)
         (() => {
           const meses = (m: Record<number, number>) => Array.from({ length: 12 }, (_, i) => m[i + 1] ?? 0);

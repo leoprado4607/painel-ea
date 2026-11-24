@@ -5,6 +5,7 @@
 import { calcular } from "@painel-ea/engine";
 import { buscarTodas } from "./buscar-todas";
 import { montarEntrada } from "./calculo";
+import { usaIpcaEPuro } from "./indice";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
 import type { Rubrica } from "@painel-ea/engine";
@@ -14,6 +15,8 @@ interface ProcessoResumo {
   id: string; situacao: string; periodo_inicio: string | null; periodo_fim: string | null;
   indices_usados?: { ano: number; mes: number; percentual: number | string | null }[] | null;
   complementos?: { recebidosPosPeriodo?: unknown } | null;
+  /** Auxílio-fardamento automático: rascunho corrigido pelo IPCA-E puro (lib/indice). */
+  especie_divida?: string | null;
 }
 type Indice = { ano: number; mes: number; percentual: number | string };
 
@@ -26,9 +29,11 @@ export async function valoresCorrigidos(supabase: Supabase, processos: ProcessoR
   const valores = new Map<string, number | null>();
   if (!ids.length) return valores;
   const blocos = emBlocos(ids);
-  let rubricas, lancamentos, indices;
+  let rubricas, lancamentos, indices, ipcaE;
+  // IPCA-E puro só se houver rascunho do Auxílio-fardamento automático (emitidos usam os índices guardados)
+  const precisaIpcaE = processos.some((p) => p.situacao === "rascunho" && usaIpcaEPuro(p));
   try {
-    [rubricas, lancamentos, { data: indices }] = await Promise.all([
+    [rubricas, lancamentos, { data: indices }, { data: ipcaE }] = await Promise.all([
       Promise.all(blocos.map((bloco) => buscarTodas((de, ate) => supabase.from("processo_rubrica")
         .select("processo_id, posicao, codigo, tipo").in("processo_id", bloco)
         .order("processo_id").order("posicao").range(de, ate)))).then((r) => r.flat()),
@@ -36,6 +41,7 @@ export async function valoresCorrigidos(supabase: Supabase, processos: ProcessoR
         .select("processo_id, tipo, ano, mes, posicao, valor").in("processo_id", bloco)
         .order("processo_id").order("tipo").order("ano").order("mes").order("posicao").range(de, ate)))).then((r) => r.flat()),
       supabase.from("indice_composto").select("ano, mes, percentual"),
+      precisaIpcaE ? supabase.from("indice_mensal").select("ano, mes, percentual").eq("serie", "IPCA-E") : Promise.resolve({ data: [] }),
     ]);
   } catch {
     return valores; // sem todos os dados, o card fica sem valor ("R$ —") em vez de mostrar um valor errado
@@ -44,7 +50,7 @@ export async function valoresCorrigidos(supabase: Supabase, processos: ProcessoR
     if (!p.periodo_inicio || !p.periodo_fim) { valores.set(p.id, null); continue; }
     const usados = p.situacao !== "rascunho" && p.indices_usados?.length
       ? p.indices_usados.filter((i): i is Indice => i.percentual !== null)
-      : (indices ?? []) as Indice[];
+      : ((usaIpcaEPuro(p) ? ipcaE : indices) ?? []) as Indice[];
     if (!usados.length) { valores.set(p.id, null); continue; }
     try {
       const entrada = montarEntrada(
