@@ -8,6 +8,9 @@ import { formatarReais } from "@/lib/dinheiro";
 import { postoAbreviado } from "@/lib/postos";
 import { carregarProcesso } from "@/lib/processo";
 import { MESES } from "@/lib/tipos";
+import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
+import { fichasLidasValidas } from "@/lib/receitas";
+import Link from "next/link";
 
 const R = (v: number) => `R$ ${formatarReais(v)}`;
 
@@ -32,6 +35,16 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
   const ativas = rubricas.filter((x) => x.codigo);
   const descricaoIndice = descreverRegra(regras ?? []);
   const semLancamentos = lancamentos.length === 0;
+  // Gratificação de Representação automática: alertas e pendências do quadro de "Lançar valor devido" (não bloqueiam)
+  let avisosGr: string[] = [];
+  if (gratRepAutomatico(processo) && processo.periodo_inicio && processo.periodo_fim) {
+    const { data } = await supabase.from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
+    const p = planoGratRep({
+      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim,
+      dados: dadosGratRep(processo.complementos), dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+    });
+    avisosGr = [...p.alertas.map((a) => `${a.codigo}: ${a.descricao}`), ...p.pendencias];
+  }
   const anosAntigos = r.anos.some((a) => a.ano < 2008 && (a.verso.total.devido !== 0 || a.verso.total.recebido !== 0));
 
   return (
@@ -40,6 +53,13 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
         Corrigido pela série {descricaoIndice}{ate ? `, atualizada até ${MESES[ate.mes - 1]}/${ate.ano}` : ""}.
       </p>
       {semLancamentos && <Aviso tipo="atencao">Ainda não há valores lançados neste processo.</Aviso>}
+      {avisosGr.length > 0 && (
+        <Aviso tipo="atencao">
+          <p className="font-semibold">Gratificação de Representação: confira antes de emitir</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5">{avisosGr.map((a, i) => <li key={i}>{a}</li>)}</ul>
+          <p className="mt-1">Detalhes em <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>.</p>
+        </Aviso>
+      )}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="cartao">

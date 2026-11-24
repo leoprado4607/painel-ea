@@ -8,6 +8,8 @@ import { FormularioRubricas } from "@/components/FormularioRubricas";
 import { ListaProcessos } from "@/components/ListaProcessos";
 import { normalizarBusca } from "@/lib/busca";
 import { ValoresMensais } from "@/components/ValoresMensais";
+import { PainelGratRep } from "@/components/PainelGratRep";
+import { planoGratRep, type DadosGratRep } from "@/lib/grat-rep";
 
 /** Prévia das telas com dados fictícios, para conferir o visual sem banco. Só existe em desenvolvimento. */
 export default async function Previa({ searchParams }: { searchParams: Promise<{ tela?: string; tema?: string }> }) {
@@ -42,7 +44,19 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           </main>
         </div>
         </ProvedorProcesso>
-      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "aviso" ? (
+      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "grat-rep" ? (
+        // caso 1 do prompt da Grat Rep (NUP 64552.003413/2025-49)
+        (() => {
+          const meses = (m: Record<number, number>) => Array.from({ length: 12 }, (_, i) => m[i + 1] ?? 0);
+          const fichas = [
+            { ano: 2023, sistema: "sippes" as const, linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: meses({ 8: 2627, 9: 2627 }) }, { codigo: "AR0061", descricao: "GRAT REPRESENT EVENTUAL", meses: meses({ 12: 420.32 }) }] },
+            { ano: 2025, sistema: "sippes" as const, linhas: [{ codigo: "AR0061", descricao: "GRAT REPRESENT EVENTUAL", meses: meses({ 1: 472.86 }) }] },
+          ];
+          const dados: DadosGratRep = { horaSaida: "12:00", horaRetorno: "09:00", autorizacao: { documento: "Adt Nr 12 ao BI Nr 61 do CMNE, de 05/03/2024", publicacao: "2024-03-05", dias: 8, valor: 420.32 } };
+          return <PainelGratRep processoId="previa" dados={dados} inicio="2023-08-26" fim="2023-09-03" bloqueado={false}
+            plano={planoGratRep({ fichas, inicio: "2023-08-26", fim: "2023-09-03", dados, hoje: "2026-11-23" })} />;
+        })()
+      ) : tela === "aviso" ? (
         <DadosFavorecido processoId="previa" valores={{}} rubricas={[]} bloqueado={false} conferirBanco />
       ) : tela === "recebidos" ? (
         <ValoresMensais processoId="previa" tipo="recebido" proximaEtapa="devidos" bloqueado={false} rubricas={rubricas}

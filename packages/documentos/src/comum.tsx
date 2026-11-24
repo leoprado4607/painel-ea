@@ -29,6 +29,13 @@ export interface Complementos {
    * apps/web/lib/compl-sal-min). Os anteriores não têm a marca e não mudam.
    */
   calculoAutomatico?: boolean;
+  /**
+   * Processo criado a partir de 23/11/2026: segue o cálculo automático da Gratificação de Representação
+   * (apps/web/lib/grat-rep). Os anteriores não têm a marca e não mudam.
+   */
+  calculoAutomaticoGratRep?: boolean;
+  /** Dados do quadro da Gratificação de Representação (apps/web/lib/grat-rep, DadosGratRep). */
+  gratRep?: Record<string, unknown>;
 }
 
 export interface RecebidoPosPeriodo { ano: number; mes: number; posicao: number; valor: number }

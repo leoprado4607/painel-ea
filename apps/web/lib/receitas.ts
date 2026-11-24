@@ -10,6 +10,7 @@ import { aplicarCorrespondencia, type Correspondencia, type FichaFinanceira } fr
 import { buscarTodas } from "./buscar-todas";
 import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin } from "./compl-sal-min";
 import type { DocumentoExtraido } from "./favorecido";
+import { dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "./grat-rep";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
 
@@ -74,9 +75,10 @@ export async function tabelaCorrespondencia(supabase: Supabase): Promise<Corresp
  */
 export async function preencherReceitas(supabase: Supabase, processoId: string): Promise<number> {
   const { data: p } = await supabase.from("processo")
-    .select("situacao, periodo_inicio, periodo_fim, fichas_lidas, especie_divida, complementos").eq("id", processoId).maybeSingle();
+    .select("situacao, periodo_inicio, periodo_fim, fichas_lidas, especie_divida, complementos, data_requerimento").eq("id", processoId).maybeSingle();
   if (!p || p.situacao !== "rascunho") return 0;
   if (complSalMinAutomatico(p)) return preencherComplSalMin(supabase, processoId, p);
+  if (gratRepAutomatico(p)) return preencherGratRep(supabase, processoId, p);
   const [{ data: rubricas }, existentes, tabela] = await Promise.all([
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
     // todos: um digitado que ficasse de fora da leitura seria sobrescrito pela ficha
@@ -143,6 +145,49 @@ async function preencherComplSalMin(
     const atuais = recebidosPosPeriodo(p.complementos as { recebidosPosPeriodo?: unknown });
     const novos = naPosicao(plano.posPeriodo, posicaoAga);
     const lista = [...atuais.filter((a) => !novos.some((x) => chave(x) === chave(a))), ...novos]
+      .sort((a, b) => a.ano * 12 + a.mes - (b.ano * 12 + b.mes) || a.posicao - b.posicao);
+    if (JSON.stringify(lista) !== JSON.stringify(atuais)) {
+      const { error } = await supabase.from("processo")
+        .update({ complementos: { ...((p.complementos as object) ?? {}), recebidosPosPeriodo: lista } }).eq("id", processoId);
+      if (error) throw new Error(error.message);
+    }
+  }
+  return n;
+}
+
+/** "AAAA-MM-DD" de hoje (prescrição sem data de requerimento). */
+const hoje = () => new Date().toISOString().slice(0, 10);
+
+/**
+ * Gratificação de Representação (lib/grat-rep): rubrica A62, devido no mês de início e recebidos só os lançamentos das
+ * fichas marcados pelo operador (no período, no mês; depois do fim, em "recebido após o período").
+ */
+async function preencherGratRep(
+  supabase: Supabase, processoId: string,
+  p: { periodo_inicio: string | null; periodo_fim: string | null; fichas_lidas: unknown; complementos: unknown; data_requerimento: string | null },
+) {
+  const [{ data: rubricas }, lanc] = await Promise.all([
+    supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
+    buscarTodas<Existente & { tipo: string }>((de, ate) => supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId)
+      .order("tipo").order("ano").order("mes").order("posicao").range(de, ate)),
+  ]);
+  const { mudadas, posicao } = rubricasGratRep(rubricas ?? []);
+  if (mudadas.length) {
+    const { error } = await supabase.from("processo_rubrica")
+      .upsert(mudadas.map((r) => ({ processo_id: processoId, posicao: r.posicao, codigo: r.codigo, tipo: r.tipo })));
+    if (error) throw new Error(error.message);
+  }
+  const plano = p.periodo_inicio && p.periodo_fim
+    ? planoGratRep({ fichas: fichasLidasValidas(p.fichas_lidas), inicio: p.periodo_inicio, fim: p.periodo_fim, dados: dadosGratRep(p.complementos), dataRequerimento: p.data_requerimento, hoje: hoje() })
+    : null;
+  const naPosicao = (lista: { ano: number; mes: number; valor: number }[]): Valor[] =>
+    posicao === null ? [] : lista.map((v) => ({ ...v, posicao }));
+  const n = await regravarAutomaticos(supabase, processoId, "recebido", lanc.filter((l) => l.tipo === "recebido"), naPosicao(plano?.recebidos ?? []));
+  await regravarAutomaticos(supabase, processoId, "devido", lanc.filter((l) => l.tipo === "devido"), naPosicao(plano?.devidos ?? []));
+  // recebido após o período: os da A62 são os marcados (desmarcar tira); os de outras rubricas, digitados, ficam
+  if (posicao !== null) {
+    const atuais = recebidosPosPeriodo(p.complementos as { recebidosPosPeriodo?: unknown });
+    const lista = [...atuais.filter((a) => a.posicao !== posicao), ...naPosicao(plano?.posPeriodo ?? [])]
       .sort((a, b) => a.ano * 12 + a.mes - (b.ano * 12 + b.mes) || a.posicao - b.posicao);
     if (JSON.stringify(lista) !== JSON.stringify(atuais)) {
       const { error } = await supabase.from("processo")
