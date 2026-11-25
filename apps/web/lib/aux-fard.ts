@@ -13,7 +13,9 @@
  * - mesma_data: triênio e promoção na mesma data, e só um (ou a diferença) foi pago.
  *   Devido = triênio × soldo do posto em que completou os 3 anos + promoção × soldo do novo posto.
  * Recebido = os pagamentos das fichas ligados ao 2º fato (o operador confirma); a diferença e a correção ficam com o motor.
- * Tudo no mês da competência (o mês em que o 2º fato foi pago), na A56 (1 soldo) ou A57 (1,5 soldo).
+ * Tudo no mês da competência (o mês do 2º fato, mesmo que pago depois), na A56 (1 soldo) ou A57 (1,5 soldo), corrigido
+ * pela série composta, como os processos pagos conferidos em 25/11/2026 (64552.001271/2026-66, .000474/2026-35,
+ * .001265/2026-17, 64360.000907/2026-18 e 64592.001115/2026-29).
  * Os alertas não bloqueiam a emissão.
  */
 import type { FichaLida } from "./receitas";
@@ -108,6 +110,18 @@ const PELO: Record<TipoFato, string> = {
   promocao: "pela promoção", trienio: "pelos 3 anos no mesmo posto ou graduação", outro: "pelo fato gerador",
 };
 const peloFato = (t: TipoFato | undefined) => (t ? PELO[t] : "pelo fato gerador");
+const FOI: Record<TipoFato, string> = {
+  aspirante: "foi declarado aspirante (ou promovido a 3º Sgt)", nomeacao: "foi nomeado", matricula_cfo: "foi matriculado em escola de formação",
+  promocao: "foi promovido", trienio: "completou 3 anos no mesmo posto ou graduação", outro: "teve o fato gerador",
+};
+const OFICIAIS = new Set(["gen-ex", "gen-div", "gen-bda", "cel", "ten-cel", "maj", "cap", "1-ten", "2-ten", "asp"]);
+const AO_POSTO = (id: string) => (OFICIAIS.has(id) ? "ao posto de" : "à graduação de");
+const NA_GRADUACAO = (id: string) => (OFICIAIS.has(id) ? "no posto de" : "na graduação de");
+const MESES_CURTOS = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+/** "25 DEZ 22", como nos processos. */
+const dataCurta = (d: string) => `${d.slice(8, 10)} ${MESES_CURTOS[+d.slice(5, 7) - 1]} ${d.slice(2, 4)}`;
+/** Documento que materializou o direito nos processos pagos (até 100 caracteres: lib/amparo). */
+export const DOCUMENTO_DIREITO = "DIEx nº 995-APG 8/APG SubCh/APG Ch/Ch SEF - Circular, de 05 MAR 26 (Parecer da SEF)";
 
 /** O processo segue a automação: criado depois da mudança e com a espécie do auxílio-fardamento. */
 export function auxFardAutomatico(p: { especie_divida?: string | null; complementos?: unknown }): boolean {
@@ -144,7 +158,7 @@ function linhas(fichas: FichaLida[], codigos: Set<string>) {
 
 /**
  * @param periodoInicio início do período da dívida ("AAAA-MM-DD"): deve ser o mês da competência
- * @param averbacao texto do BI de averbação (documento que materializou o direito)
+ * @param averbacao texto do BI de averbação (não entra nos textos: o verso tem a coluna "Boletim que Averbou")
  * @param hoje "AAAA-MM-DD" (data da análise)
  */
 export function planoAuxFard(entrada: {
@@ -206,11 +220,14 @@ export function planoAuxFard(entrada: {
   const soldo2 = data2 ? soldoNaData(f2.categoria, data2) : null;
   if (data2 && categoriaSoldo(f2.categoria) && soldo2 === null) pendencias.push(`Não há soldo na tabela para ${br(data2)} (a tabela começa em 2018).`);
 
-  // competência: o mês em que o 2º fato foi pago (ou, sem pagamento, o mês do 2º fato)
-  const competencia = pagos2.length ? { ano: pagos2[0]!.ano, mes: pagos2[0]!.mes } : data2 ? { ano: +data2.slice(0, 4), mes: +data2.slice(5, 7) } : null;
+  // competência: o mês do 2º fato, mesmo que o pagamento tenha saído depois (processo 64552.000474/2026-35: promoção em
+  // ago/2022, paga 1 ano depois, competência ago/2022); sem a data, o mês do pagamento
+  const competencia = data2 ? { ano: +data2.slice(0, 4), mes: +data2.slice(5, 7) } : pagos2.length ? { ano: pagos2[0]!.ano, mes: pagos2[0]!.mes } : null;
   if (soldo2 !== null && competencia) {
     const fichaComp = soldoNoMes(competencia.ano, competencia.mes), fichaFato = data2 ? soldoNoMes(+data2.slice(0, 4), +data2.slice(5, 7)) : null;
-    const confere = [fichaComp, fichaFato].some((v) => v === soldo2);
+    // o soldo novo pode só entrar no mês seguinte ao fato ou no do pagamento (promoção em 25 DEZ, soldo em JAN)
+    const seguinte = competencia.mes === 12 ? soldoNoMes(competencia.ano + 1, 1) : soldoNoMes(competencia.ano, competencia.mes + 1);
+    const confere = [fichaComp, fichaFato, seguinte, ...pagos2.map((p) => soldoNoMes(p.ano, p.mes))].some((v) => v === soldo2);
     if (!confere && (fichaComp ?? fichaFato) !== null) {
       alertas.push({ codigo: "SOLDO_DIVERGENTE", descricao: `O soldo da tabela para ${categoriaSoldo(f2.categoria)!.nome} em ${br(data2!)} é R$ ${reais(soldo2)}; a NR0001 da ficha traz R$ ${reais((fichaComp ?? fichaFato)!)} (pode ser proporcional ou de outro posto): confira.` });
     }
@@ -249,7 +266,7 @@ export function planoAuxFard(entrada: {
     alertas.push({ codigo: "NAO_E_DEA", descricao: `A competência (${mm(competencia.ano, competencia.mes)}) é do exercício corrente: o pagamento é em folha, não por DEA.` });
   }
   if (entrada.periodoInicio && competencia && (+entrada.periodoInicio.slice(0, 4) !== competencia.ano || +entrada.periodoInicio.slice(5, 7) !== competencia.mes)) {
-    alertas.push({ codigo: "DIVERGENCIA_COMPETENCIA", descricao: `O período da dívida (Informações) começa em ${mm(+entrada.periodoInicio.slice(0, 4), +entrada.periodoInicio.slice(5, 7))}, mas a competência pela ficha é ${mm(competencia.ano, competencia.mes)}. A ficha prevalece: ajuste o período.` });
+    alertas.push({ codigo: "DIVERGENCIA_COMPETENCIA", descricao: `O período da dívida (Informações) começa em ${mm(+entrada.periodoInicio.slice(0, 4), +entrada.periodoInicio.slice(5, 7))}, mas a competência (mês do 2º fato) é ${mm(competencia.ano, competencia.mes)}: ajuste o período.` });
   }
 
   // prescrição: 5 anos do 2º fato (Parecer 645, item 70.3), até o requerimento
@@ -294,11 +311,15 @@ export function planoAuxFard(entrada: {
 
   let explicacao: string | null = null;
   if (data2) {
+    // no modelo dos processos pagos (verso da Solicitação de Pagamento)
+    const novo = categoriaSoldo(f2.categoria)?.nome;
+    const posto = novo ? ` ${AO_POSTO(f2.categoria!)} ${novo}` : "";
     explicacao = caso === "mesma_data"
-      ? `O militar completou 3 anos no mesmo posto e foi promovido em ${br(data2)}, mas recebeu só um auxílio-fardamento. O Parecer nº 00250/2026/CONJUR-EB/CGU/AGU reconheceu os dois fatos geradores como autônomos (DIEx 2750-APG 8/SEF), e a diferença, devida a exercício anterior, é paga como DEA.`
-      : `O auxílio-fardamento devido ${peloFato(f2.tipo)} em ${br(data2)} foi pago só pela diferença, com a limitação do art. 61 do Decreto nº 4.307/2002, revogado pelo Decreto nº 12.645/2025. O pagamento retroativo foi reconhecido administrativamente (Parecer nº 00645/2025/CONJUR-EB/CGU/AGU), sendo a diferença paga como DEA.`;
+      ? `O militar completou 3 anos ${categoriaSoldo(f1.categoria) ? `${NA_GRADUACAO(f1.categoria!)} ${categoriaSoldo(f1.categoria)!.nome} ` : "no mesmo posto ou graduação "}e foi promovido na mesma data (${dataCurta(data2)})${posto}; na época, só recebeu o auxílio-fardamento da promoção, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
+      : `O militar ${f2.tipo === "promocao" || !f2.tipo ? "foi promovido" : FOI[f2.tipo]} em ${dataCurta(data2)}${f2.tipo === "promocao" || !f2.tipo ? posto : ""}; na época, só recebeu a diferença do auxílio-fardamento, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`;
   }
-  const documentos = [entrada.averbacao, dados.ato2].map((d) => (d ?? "").trim()).filter(Boolean).map((d) => d.slice(0, 100));
+  // documento que materializou o direito: o dos processos pagos (o BI de averbação tem coluna própria no verso)
+  const documentos = [DOCUMENTO_DIREITO];
 
   return {
     caso, pagamentos, multiplicador1, multiplicador2, soldo1, soldo2, devido, recebido, diferenca, competencia, rubrica, prescricao,

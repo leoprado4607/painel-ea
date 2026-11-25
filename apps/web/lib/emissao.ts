@@ -24,7 +24,7 @@ export async function montarDocumentos(
   // nome da OM e CODOM nos documentos: os da OM de vinculação do militar (o resto vem dos Dados da OM do operador)
   const omVinculacao = omDeVinculacao(militar.om_vinculacao);
   if (!omVinculacao) throw new Error("Escolha a OM de vinculação do militar em Informações.");
-  // série do processo: IPCA-E puro no Auxílio-fardamento automático; nos demais, a composta
+  // série composta (IPCA até ago/2025 e IPCA-E depois), em todas as espécies
   const { indices, descricao: descricaoIndice } = await indicesDoProcesso(supabase, processo);
   if (!indices.length) throw new Error("Índices de correção indisponíveis.");
   const entrada = montarEntrada(rubricas, lancamentos, indices, {

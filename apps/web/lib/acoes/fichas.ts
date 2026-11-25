@@ -5,6 +5,7 @@
  */
 import { aplicarCorrespondencia, lerDocumentosPdf, PdfSemTexto, type FichaFinanceira } from "@painel-ea/leitor-ficha";
 import { cardNovoCalculo } from "@/lib/novo-calculo";
+import { lerProcesso, type Peca, type TipoPeca } from "@/lib/processo-completo";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { dadosDoFavorecido, fichaValida, periodoDosDocumentos, type DadosLidos, type DocumentoExtraido } from "@/lib/favorecido";
@@ -219,15 +220,39 @@ export async function gravarRecebidos(processoId: string, docs: DocumentoExtraid
   }
 }
 
+/** "AAAA-MM" → último dia do mês ("AAAA-MM-DD"). */
+const fimDoMes = (am: string) => {
+  const [a, m] = am.split("-").map(Number) as [number, number];
+  return `${am}-${String(new Date(Date.UTC(a, m, 0)).getUTCDate()).padStart(2, "0")}`;
+};
+
+/** Peças de texto do processo completo (campo "processo", JSON vindo do navegador), validadas e lidas. */
+function lerProcessoDoFormulario(form: FormData) {
+  const bruto = form.get("processo");
+  if (typeof bruto !== "string" || !bruto) return null;
+  let lista: unknown;
+  try { lista = JSON.parse(bruto); } catch { throw new Error("Não foi possível ler as peças do processo."); }
+  if (!Array.isArray(lista) || lista.length > 300) throw new Error("Não foi possível ler as peças do processo.");
+  const tipos = new Set<TipoPeca>(["ficha", "contracheque", "texto", "imagem", "grande", "ignorada"]);
+  const pecas: Peca[] = lista.filter((x): x is Peca => !!x && typeof x === "object" && typeof (x as Peca).nome === "string" && tipos.has((x as Peca).tipo))
+    .map((x) => ({ nome: x.nome.slice(0, 300), tipo: x.tipo, texto: typeof x.texto === "string" ? x.texto.slice(0, 30_000) : undefined }));
+  return pecas.length ? lerProcesso(pecas) : null;
+}
+
 /** Novo processo pelos documentos: cria militar e processo com os dados lidos e guarda os números das fichas. */
 export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined, form: FormData): Promise<{ erro?: string }> {
   let destino: string;
   try {
     const { supabase, perfil } = await sessao();
     const omId = await omParaNovoProcesso(supabase, perfil, String(form.get("om_id") ?? "") || null);
+    const card = cardNovoCalculo(String(form.get("especie") ?? ""));
+    // processo completo (só no Auxílio-fardamento): as peças de texto lidas no navegador, para pré-preencher
+    const leitura = card?.id === "aux-fard" ? lerProcessoDoFormulario(form) : null;
     const docs = await lerArquivos(form);
-    // o período da dívida fica em branco: o operador preenche (obrigatório) em Informações
-    if (!docs.some((d) => d.tipo === "ficha")) return { erro: "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
+    if (!docs.some((d) => d.tipo === "ficha")) {
+      return { erro: leitura ? "O processo não tem ficha financeira com texto (as digitalizadas não são lidas): envie também as fichas baixadas do SIPPES ou do SIAPPES." : "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
+    }
+    // contracheque obrigatório também no processo completo (enviado junto, no campo próprio)
     if (!docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
     if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
@@ -241,12 +266,23 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const { data: p, error: e2 } = await supabase.from("processo").insert({
       om_id: omId, militar_id: m.id, periodo_inicio: null, periodo_fim: null, fichas_lidas: fichasLidasDosDocumentos(docs),
       // card escolhido em "Novo cálculo": espécie já definida (em "Demais assuntos", o operador escolhe em Informações)
-      especie_divida: cardNovoCalculo(String(form.get("especie") ?? ""))?.especie ?? null,
-      complementos: { calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true },
+      especie_divida: card?.especie ?? null,
+      complementos: {
+        calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true,
+        ...(leitura ? { auxFard: leitura.auxFard, leituraProcesso: { pecas: leitura.pecas, avisos: leitura.avisos } } : {}),
+      },
+      // o que o processo completo trouxe (o operador confere em Informações)
+      ...(leitura ? {
+        numero: leitura.nup, ano: leitura.ano, data_requerimento: leitura.dataRequerimento,
+        periodo_inicio: leitura.competencia ? `${leitura.competencia}-01` : null, periodo_fim: leitura.competencia ? fimDoMes(leitura.competencia) : null,
+        ...(leitura.averbacao ? { documento_averbacao: leitura.averbacao.documento, bi_numero: leitura.averbacao.numero, bi_data: leitura.averbacao.data } : {}),
+      } : {}),
     }).select("id").single();
     if (e2) return { erro: e2.message };
     const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
     if (e3) return { erro: e3.message };
+    // com o período (mês do 2º fato) já lido, a A56/A57 e os valores do quadro entram de uma vez
+    if (leitura?.competencia) await preencherReceitas(supabase, p.id);
     // ?conferir=banco: a aba Informações abre o aviso para conferir os dados bancários com o Requerimento
     destino = `/processos/${p.id}/dados?conferir=banco`;
   } catch (e) {

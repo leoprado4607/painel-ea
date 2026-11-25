@@ -1,22 +1,15 @@
-import { auxFardAutomatico } from "./aux-fard";
 import type { sessao } from "./sessao";
 import { MESES } from "./tipos";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 export type IndiceDoMes = { ano: number; mes: number; percentual: number | string };
 
-/** IPCA-E puro (sem a regra composta): Auxílio-fardamento automático (Port Normativa 40/MD/2004; decisão de 24/11/2026). */
-export const usaIpcaEPuro = (p: { especie_divida?: string | null; complementos?: unknown }) => auxFardAutomatico(p);
-
 /**
- * Índices de correção do processo e o texto da série para os documentos: no Auxílio-fardamento automático, o IPCA-E
- * puro (indice_mensal); nos demais, a série composta pela regra de vigência (view indice_composto).
+ * Índices de correção do processo e o texto da série para os documentos: a série composta pela regra de vigência
+ * (view indice_composto), em todas as espécies. O Auxílio-fardamento também: os processos pagos conferidos em
+ * 25/11/2026 batem com a composta (IPCA até ago/2025 e IPCA-E depois), não com o IPCA-E puro.
  */
-export async function indicesDoProcesso(supabase: Supabase, p: { especie_divida?: string | null; complementos?: unknown }) {
-  if (usaIpcaEPuro(p)) {
-    const { data } = await supabase.from("indice_mensal").select("ano, mes, percentual").eq("serie", "IPCA-E");
-    return { indices: (data ?? []) as IndiceDoMes[], descricao: "IPCA-E" };
-  }
+export async function indicesDoProcesso(supabase: Supabase, _p?: { especie_divida?: string | null; complementos?: unknown }) {
   const [{ data: indices }, { data: regras }] = await Promise.all([
     supabase.from("indice_composto").select("ano, mes, percentual"),
     supabase.from("regra_indice").select("vigencia_inicio, serie").order("vigencia_inicio"),

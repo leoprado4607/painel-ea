@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { auxFardAutomatico, planoAuxFard, rubricasAuxFard, RUBRICA_AUX_FARD_1, tetoArt19 } from "./aux-fard";
+import { auxFardAutomatico, DOCUMENTO_DIREITO, planoAuxFard, rubricasAuxFard, RUBRICA_AUX_FARD_1, tetoArt19 } from "./aux-fard";
 import type { FichaLida } from "./receitas";
 
 const linha = (codigo: string, meses: Record<number, number>) =>
@@ -28,18 +28,20 @@ describe("Auxílio-fardamento automático", () => {
     expect(p.devido).toBe(7490);
     expect(p.recebido).toBe(175);
     expect(p.diferenca).toBe(7315);
-    expect(p.competencia).toEqual({ ano: 2022, mes: 1 });
+    // competência: mês do 2º fato (dez/2021), não o do pagamento (jan/2022), como nos processos pagos
+    expect(p.competencia).toEqual({ ano: 2021, mes: 12 });
     expect(p.prescricao).toEqual({ limite: "2026-12-25", referencia: "2026-09-28" });
-    expect(p.devidos).toEqual([{ ano: 2022, mes: 1, valor: 7490 }]);
-    expect(p.recebidos).toEqual([{ ano: 2022, mes: 1, valor: 175 }]);
+    expect(p.devidos).toEqual([{ ano: 2021, mes: 12, valor: 7490 }]);
+    expect(p.recebidos).toEqual([{ ano: 2021, mes: 12, valor: 175 }]);
     expect(p.rubrica).toBe(RUBRICA_AUX_FARD_1);
-    expect(codigos(p)).toEqual(expect.arrayContaining(["ATO_FATO_GERADOR_AUSENTE", "DIVERGENCIA_COMPETENCIA", "FICHA_AUSENTE"]));
+    expect(codigos(p)).toEqual(expect.arrayContaining(["ATO_FATO_GERADOR_AUSENTE", "FICHA_AUSENTE"]));
+    expect(codigos(p)).not.toContain("DIVERGENCIA_COMPETENCIA");
     expect(codigos(p)).not.toContain("FORA_DA_TESE");
     expect(codigos(p)).not.toContain("PRESCRITO");
     expect(codigos(p)).not.toContain("CONFERENCIA_DIFERENCA");
-    // correção (IPCA-15 de 01/2022 a 10/2026 = 26,2655%): 7.315,00 × 1,262655
-    expect(Math.round(7315 * 1.262655 * 100) / 100).toBe(9236.32);
-    expect(9236.32).toBeLessThan(tetoArt19(hoje)!);
+    expect(p.textos.documentos).toEqual([DOCUMENTO_DIREITO]);
+    expect(p.textos.explicacao).toContain("foi promovido em 25 DEZ 21 ao posto de Segundo-Tenente");
+    expect(p.diferenca!).toBeLessThan(tetoArt19(hoje)!);
   });
 
   it("triênio e promoção na mesma data: bases distintas (DIEx 2750-APG 8/SEF)", () => {
@@ -82,6 +84,32 @@ describe("Auxílio-fardamento automático", () => {
     const q = planoAuxFard({ fichas, hoje, dataRequerimento: "2026-08-01", dados: { ...dados, prescricaoInterrompida: true, ordemJudicial: true } });
     expect(codigos(q)).not.toContain("PRESCRITO");
     expect(codigos(q)).not.toContain("INELEGIVEL");
+  });
+
+  it("processos pagos (conferidos em 25/11/2026): devido, recebido, diferença e competência", () => {
+    // 64552.000474/2026-35 (TC Robson): triênio de Maj pago em mai/2022; promoção a TC em 31 AGO 22, diferença paga 1 ano depois
+    const robson = planoAuxFard({
+      fichas: [ficha(2022, linha("A01", { 5: 11088, 8: 11250 }), linha("A56", { 5: 11088 })), ficha(2023, linha("A56", { 8: 172 }))], hoje,
+      dados: { fato1: { tipo: "trienio", data: "2022-05-01", categoria: "maj" }, fato2: { tipo: "promocao", data: "2022-08-31", categoria: "ten-cel" },
+        vinculos: { "2022-5-A56": 1, "2023-8-A56": 2 } },
+    });
+    expect([robson.devido, robson.recebido, robson.diferenca]).toEqual([11250, 172, 11078]);
+    expect(robson.competencia).toEqual({ ano: 2022, mes: 8 });
+    // 64552.001265/2026-17 (Cap Theophilo): triênio de 1º Ten em jan/2021, promoção a Cap em 25 DEZ 21
+    const theophilo = planoAuxFard({
+      fichas: [ficha(2021, linha("A01", { 1: 8245, 12: 9135 }), linha("A56", { 1: 8245, 12: 890 }))], hoje,
+      dados: { fato1: { tipo: "trienio", data: "2021-01-01", categoria: "1-ten" }, fato2: { tipo: "promocao", data: "2021-12-25", categoria: "cap" } },
+    });
+    expect([theophilo.devido, theophilo.recebido, theophilo.diferenca]).toEqual([9135, 890, 8245]);
+    expect(theophilo.competencia).toEqual({ ano: 2021, mes: 12 });
+    // 64360.000907/2026-18 (1º Sgt Alan): 3 anos de 2º Sgt e promoção a 1º Sgt na mesma data, 1º JUN 24
+    const alan = planoAuxFard({
+      fichas: [ficha(2024, linha("NR0001", { 6: 5483 }), linha("NR0056", { 6: 5483 }))], hoje,
+      dados: { caso: "mesma_data", fato1: { tipo: "trienio", categoria: "2-sgt" }, fato2: { tipo: "promocao", data: "2024-06-01", categoria: "1-sgt" }, vinculos: { "2024-6-NR0056": 2 } },
+    });
+    expect([alan.devido, alan.recebido, alan.diferenca]).toEqual([10253, 5483, 4770]);
+    expect(alan.competencia).toEqual({ ano: 2024, mes: 6 });
+    expect(alan.textos.explicacao).toContain("na graduação de Segundo-Sargento");
   });
 
   it("A56/A57 na posição 1 vazia ou na 1ª receita vazia", () => {

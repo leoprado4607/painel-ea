@@ -8,6 +8,7 @@ import { complSalMinAutomatico, ehRubricaGr, planoComplSalMin, VALOR_FIXADO } fr
 import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
 import { PainelGratRep } from "@/components/PainelGratRep";
 import { PainelAuxFard } from "@/components/PainelAuxFard";
+import { leituraGuardada } from "@/lib/processo-completo";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard } from "@/lib/aux-fard";
 import { textoBoletim } from "@/lib/averbacao";
 import { fichasLidasValidas } from "@/lib/receitas";
@@ -80,7 +81,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
           <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>. Confira; o que você digitar não é sobrescrito.
         </Aviso>
       )}
-      {planoAf && <PainelAuxFard processoId={id} dados={dadosAf} plano={planoAf} bloqueado={bloqueado} />}
+      {planoAf && <PainelAuxFard processoId={id} dados={dadosAf} plano={planoAf} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />}
       {planoGr && (
         <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
       )}

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { CardsNovoCalculo } from "@/components/CardsNovoCalculo";
 import { NovoPorFichas } from "@/components/NovoPorFichas";
+import { NovoPorProcesso } from "@/components/NovoPorProcesso";
 import { cardNovoCalculo } from "@/lib/novo-calculo";
 import { omsParaEscolha } from "@/lib/processo";
 import { sessao } from "@/lib/sessao";
@@ -24,6 +25,9 @@ export default async function NovoProcesso({ searchParams }: { searchParams: Pro
     <div className="space-y-4">
       <Link href="/processos/novo" className="text-sm text-marca-700 hover:underline">← Escolher outro assunto</Link>
       <h1 className="titulo-pagina">Novo cálculo: {card.titulo}</h1>
+      {/* Auxílio-fardamento: também pelo processo completo do SPED (decisão de 25/11/2026) */}
+      {card.id === "aux-fard" && <NovoPorProcesso oms={oms} especie={card.id} />}
+      {card.id === "aux-fard" && <p className="text-sm font-semibold text-suave">Ou, como antes, só as fichas financeiras e o contracheque:</p>}
       <NovoPorFichas oms={oms} especie={card.id} />
     </div>
   );

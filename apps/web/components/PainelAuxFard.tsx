@@ -1,4 +1,5 @@
 "use client";
+import type { LeituraGuardada } from "@/lib/processo-completo";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
@@ -15,8 +16,10 @@ const R = (v: number | null) => (v === null ? "—" : `R$ ${formatarReais(v)}`);
  * "Lançar valor devido" do Auxílio-fardamento automático (lib/aux-fard): caso (art. 61 ou triênio + promoção na mesma
  * data), fatos geradores, ligação dos pagamentos das fichas, conferências do Parecer 645, cálculo, alertas e textos.
  */
-export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
+export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: {
   processoId: string; dados: DadosAuxFard; plano: PlanoAuxFard; bloqueado: boolean;
+  /** O que veio do processo completo (lib/processo-completo), quando o cálculo começou por ele. */
+  leitura?: LeituraGuardada | null;
 }) {
   const router = useRouter();
   const [d, setD] = useState<DadosAuxFard>({ ...dados, caso: plano.caso });
@@ -84,10 +87,22 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
       <div>
         <h2 id="aux-fard-titulo" className="text-lg font-semibold">Auxílio-fardamento: cálculo automático da diferença</h2>
         <p className="ajuda mt-1">
-          Devido integral pelo soldo da tabela (MP 2.215-10/2001, Tabela II do Anexo IV) menos o recebido pelo 2º fato, no mês em que ele foi
-          pago (competência), corrigido pelo IPCA-E. Informe os fatos geradores e confira a ligação dos pagamentos das fichas.
+          Devido integral pelo soldo da tabela (MP 2.215-10/2001, Tabela II do Anexo IV) menos o recebido pelo 2º fato, no mês do 2º fato
+          (competência), corrigido como as demais espécies (IPCA até ago/2025 e IPCA-E depois). Informe os fatos geradores e confira a ligação dos pagamentos das fichas.
         </p>
       </div>
+
+      {leitura && (
+        <details className="border border-borda p-3 text-sm" open={leitura.avisos.length > 0}>
+          <summary className="cursor-pointer font-semibold">Lido do processo completo ({leitura.pecas.length} peças){leitura.avisos.length ? `: ${leitura.avisos.length} aviso(s)` : ""}</summary>
+          {leitura.avisos.length > 0 && <ul className="mt-2 list-disc space-y-1 pl-5 text-amber-800">{leitura.avisos.map((a, i) => <li key={i}>{a}</li>)}</ul>}
+          <table className="mt-2 w-full text-left text-xs">
+            <thead><tr className="text-suave"><th className="py-1 pr-2 font-normal">Peça</th><th className="py-1 font-normal">O que foi aproveitado</th></tr></thead>
+            <tbody>{leitura.pecas.map((p, i) => <tr key={i} className="border-t border-borda"><td className="py-1 pr-2">{p.nome}</td><td className="py-1">{p.uso}</td></tr>)}</tbody>
+          </table>
+          <p className="ajuda mt-2">Os dados lidos são sugestões: confira as Informações e este quadro antes de salvar.</p>
+        </details>
+      )}
 
       <div className="grid gap-5 lg:grid-cols-2">
         <div>
