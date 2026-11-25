@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { PainelGratMensal } from "@/components/PainelGratMensal";
+import { ESPECIE_GLE, planoGratMensal } from "@/lib/grat-mensal";
 import { CardsNovoCalculo } from "@/components/CardsNovoCalculo";
 import { NovoPorFichas } from "@/components/NovoPorFichas";
 import { NovoPorProcesso } from "@/components/NovoPorProcesso";
@@ -53,6 +55,10 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo</h1><p className="text-sm text-suave">Escolha o assunto do cálculo.</p><CardsNovoCalculo /></div>
       ) : tela === "novo-envio" ? (
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo: Auxílio-fardamento</h1><NovoPorProcesso especie="aux-fard" /><NovoPorFichas especie="aux-fard" /></div>
+      ) : tela === "grat-mensal" ? (
+        <PainelGratMensal processoId="previa" especie={ESPECIE_GLE} dados={{ local: "Boa Vista-RR", documento: "Adt nº 198 do EM Cj da Op CATRIMANI II, de 01/01/2026" }} inicio="2025-12-20" fim="2025-12-31" bloqueado={false}
+          plano={planoGratMensal({ fichas: [{ ano: 2025, sistema: "sippes", linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: [6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447] }] }],
+            especie: ESPECIE_GLE, inicio: "2025-12-20", fim: "2025-12-31", hoje: "2026-11-25", dados: { local: "Boa Vista-RR", documento: "Adt nº 198 do EM Cj da Op CATRIMANI II, de 01/01/2026" } })} />
       ) : tela === "aux-fard" ? (
         // caso de teste 1 do prompt do Auxílio-fardamento (NUP 64241.005879/2026-73)
         (() => {

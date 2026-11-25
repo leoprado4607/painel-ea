@@ -11,6 +11,7 @@ import { buscarTodas } from "./buscar-todas";
 import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin } from "./compl-sal-min";
 import type { DocumentoExtraido } from "./favorecido";
 import { dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "./grat-rep";
+import { dadosGratMensal, gratMensalAutomatico, planoGratMensal, rubricasGratMensal } from "./grat-mensal";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard, rubricasAuxFard } from "./aux-fard";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
@@ -80,6 +81,7 @@ export async function preencherReceitas(supabase: Supabase, processoId: string):
   if (!p || p.situacao !== "rascunho") return 0;
   if (complSalMinAutomatico(p)) return preencherComplSalMin(supabase, processoId, p);
   if (gratRepAutomatico(p)) return preencherGratRep(supabase, processoId, p);
+  if (gratMensalAutomatico(p)) return preencherGratMensal(supabase, processoId, p);
   if (auxFardAutomatico(p)) return preencherAuxFard(supabase, processoId, p);
   const [{ data: rubricas }, existentes, tabela] = await Promise.all([
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
@@ -187,6 +189,49 @@ async function preencherGratRep(
   const n = await regravarAutomaticos(supabase, processoId, "recebido", lanc.filter((l) => l.tipo === "recebido"), naPosicao(plano?.recebidos ?? []));
   await regravarAutomaticos(supabase, processoId, "devido", lanc.filter((l) => l.tipo === "devido"), naPosicao(plano?.devidos ?? []));
   // recebido após o período: os da A62 são os marcados (desmarcar tira); os de outras rubricas, digitados, ficam
+  if (posicao !== null) {
+    const atuais = recebidosPosPeriodo(p.complementos as { recebidosPosPeriodo?: unknown });
+    const lista = [...atuais.filter((a) => a.posicao !== posicao), ...naPosicao(plano?.posPeriodo ?? [])]
+      .sort((a, b) => a.ano * 12 + a.mes - (b.ano * 12 + b.mes) || a.posicao - b.posicao);
+    if (JSON.stringify(lista) !== JSON.stringify(atuais)) {
+      const { error } = await supabase.from("processo")
+        .update({ complementos: { ...((p.complementos as object) ?? {}), recebidosPosPeriodo: lista } }).eq("id", processoId);
+      if (error) throw new Error(error.message);
+    }
+  }
+  return n;
+}
+
+/**
+ * Gratificações mensais (lib/grat-mensal: localidade especial A07/A08 e comando A16): devido mês a mês no período e
+ * recebidos só os lançamentos das fichas marcados pelo operador (depois do fim, em "recebido após o período").
+ */
+async function preencherGratMensal(
+  supabase: Supabase, processoId: string,
+  p: { especie_divida: string | null; periodo_inicio: string | null; periodo_fim: string | null; fichas_lidas: unknown; complementos: unknown; data_requerimento: string | null },
+) {
+  const [{ data: rubricas }, lanc] = await Promise.all([
+    supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
+    buscarTodas<Existente & { tipo: string }>((de, ate) => supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId)
+      .order("tipo").order("ano").order("mes").order("posicao").range(de, ate)),
+  ]);
+  const plano = p.periodo_inicio && p.periodo_fim
+    ? planoGratMensal({ fichas: fichasLidasValidas(p.fichas_lidas), especie: p.especie_divida, inicio: p.periodo_inicio, fim: p.periodo_fim, dados: dadosGratMensal(p.complementos), dataRequerimento: p.data_requerimento, hoje: hoje() })
+    : null;
+  let posicao: number | null = null;
+  if (plano?.rubrica) {
+    const r = rubricasGratMensal(rubricas ?? [], plano.rubrica);
+    posicao = r.posicao;
+    if (r.mudadas.length) {
+      const { error } = await supabase.from("processo_rubrica")
+        .upsert(r.mudadas.map((x) => ({ processo_id: processoId, posicao: x.posicao, codigo: x.codigo, tipo: x.tipo })));
+      if (error) throw new Error(error.message);
+    }
+  }
+  const naPosicao = (lista: { ano: number; mes: number; valor: number }[]): Valor[] =>
+    posicao === null ? [] : lista.map((v) => ({ ...v, posicao }));
+  const n = await regravarAutomaticos(supabase, processoId, "recebido", lanc.filter((l) => l.tipo === "recebido"), naPosicao(plano?.recebidos ?? []));
+  await regravarAutomaticos(supabase, processoId, "devido", lanc.filter((l) => l.tipo === "devido"), naPosicao(plano?.devidos ?? []));
   if (posicao !== null) {
     const atuais = recebidosPosPeriodo(p.complementos as { recebidosPosPeriodo?: unknown });
     const lista = [...atuais.filter((a) => a.posicao !== posicao), ...naPosicao(plano?.posPeriodo ?? [])]

@@ -5,7 +5,10 @@
  * - Soldo base: tabela de soldos (lib/soldos) do posto/graduação NA DATA DO FATO, na vigência do dia de início.
  *   A NR0001 (SOLDO) da ficha no mês do fato só confere (e sugere a graduação); nunca é usada no lugar da tabela.
  * - Valor diário = soldo × 2%, arredondado a centavos. Dias = corridos do início ao fim do período, inclusive os dois
- *   (Port 927-Cmt Ex/2016: o dia de saída conta se a saída foi até 16h00; o de retorno, se o retorno foi às 08h00 ou depois).
+ *   (Decreto 11.002/2022, art. 4º, § 1º: "período igual ou superior a oito horas" é um dia; o dia de saída conta se a saída foi
+ *   até 16h00; o de retorno, se o retorno foi às 08h00 ou depois. A Port 927-Cmt Ex/2016 foi revogada pela Port C Ex 1.887/2022).
+ * - Só a gratificação EVENTUAL (2% do soldo por dia, Anexo IV da Lei 13.954/2019). A de comando, direção ou chefia (10% do
+ *   soldo por mês, art. 4º, § 2º, do Decreto) é outra hipótese e não é calculada aqui.
  * - Devido = dias × valor diário, todo no mês de início (competência), na rubrica "A62 - GRAT REP 2%" (Receita).
  * - Recebidos: os lançamentos de Grat Rep das fichas (AR0061, ER0061, NR0061; A62 e B26 no SIAPPES) NUNCA são abatidos
  *   sozinhos: o operador marca os que são do mesmo evento. Marcado no período, entra como recebido do mês; depois do
@@ -143,9 +146,12 @@ export function planoGratRep(entrada: {
   const alertas: Alerta[] = [];
   const pendencias: string[] = [];
 
-  // soldo da ficha no mês do fato: confere a tabela e sugere a graduação
-  const soldoFicha = linhasDasFichas(fichas, CODIGOS_SOLDO).filter((l) => k(l.ano, l.mes) === ini)
-    .reduce((s, l) => centavos(s + l.valor), 0) || null;
+  // soldo da ficha no mês do fato: confere a tabela e sugere a graduação. No mês da incorporação ou da promoção a
+  // NR0001 pode ser proporcional: valem também os 2 meses seguintes (o 1º deles com soldo de alguma graduação)
+  const soldos = linhasDasFichas(fichas, CODIGOS_SOLDO);
+  const soldoDoMes = (km: number) => soldos.filter((l) => k(l.ano, l.mes) === km).reduce((s, l) => centavos(s + l.valor), 0) || null;
+  const soldosFicha = [ini, ini + 1, ini + 2].map(soldoDoMes).filter((v): v is number => v !== null);
+  const soldoFicha = soldosFicha.find((v) => categoriasComSoldo(v, inicio).length) ?? soldosFicha[0] ?? null;
   let categoria = categoriaSoldo(dados.categoria)?.id ?? null;
   let categoriaSugerida = false;
   if (!categoria && soldoFicha) {
@@ -160,12 +166,12 @@ export function planoGratRep(entrada: {
 
   const soldo = categoria ? soldoNaData(categoria, inicio) : null;
   if (categoria && soldo === null) pendencias.push(`Não há soldo na tabela para ${br(inicio)} (a tabela começa em 2018).`);
-  if (soldo !== null && soldoFicha !== null && soldoFicha !== soldo) {
+  if (soldo !== null && soldoFicha !== null && !soldosFicha.includes(soldo)) {
     alertas.push({ codigo: "SOLDO_FICHA", descricao: `O soldo da ficha em ${String(competencia.mes).padStart(2, "0")}/${competencia.ano} (NR0001: R$ ${reais(soldoFicha)}) é diferente do soldo da tabela para ${categoriaSoldo(categoria)!.nome} (R$ ${reais(soldo)}). A ficha pode trazer o soldo proporcional ou outra graduação: confira.` });
   }
 
   const { corridos, dias, motivos } = diasDoEvento(inicio, fim, dados.horaSaida, dados.horaRetorno);
-  if (!hora(dados.horaSaida) || !hora(dados.horaRetorno)) pendencias.push("Informe a hora de saída e a hora de retorno (regra das 8 horas da Port 927-Cmt Ex/2016).");
+  if (!hora(dados.horaSaida) || !hora(dados.horaRetorno)) pendencias.push("Informe a hora de saída e a hora de retorno (regra das 8 horas do Decreto 11.002/2022, art. 4º, § 1º).");
   const valorDiario = soldo !== null ? centavos(soldo * PERCENTUAL_DIARIO) : null;
   const devido = valorDiario !== null && dias > 0 ? centavos(dias * valorDiario) : null;
 
@@ -223,6 +229,12 @@ export function planoGratRep(entrada: {
     const anos = Number(aut.publicacao.slice(0, 4)) - competencia.ano;
     const quando = anos === 1 ? "no exercício seguinte ao fato gerador" : anos > 1 ? `${anos} anos após o fato gerador` : "no mesmo exercício do fato gerador";
     explicacao = `A autorização para pagamento foi publicada em ${br(aut.publicacao)}${aut.documento ? ` (${aut.documento.trim()})` : ""}, ${quando} (${br(inicio)} a ${br(fim)}), transformando o pagamento em DEA.`;
+  }
+  // no modelo dos processos pagos (64552.003413/2025-49 e .004696/2025-46): a atividade, o local e o período
+  const natureza = dados.evento?.natureza?.trim();
+  if (natureza) {
+    const local = dados.evento?.local?.trim();
+    explicacao = `O militar requer o pagamento da Gratificação de Representação por ter participado da atividade “${natureza}”${local ? `, em ${local}` : ""}, no período de ${br(inicio)} a ${br(fim)}, deixando de recebê-la à época dos fatos.${explicacao ? ` ${explicacao}` : ""}`;
   }
   const documentos = [aut.documento, aut.transcricao].map((d) => (d ?? "").trim()).filter(Boolean);
 

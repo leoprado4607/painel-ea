@@ -1,10 +1,11 @@
 /**
- * "Processo completo" do Auxílio-fardamento (decisão de 25/11/2026): o operador envia o processo baixado do SPED (ZIP
+ * "Processo completo" do Auxílio-fardamento e da Gratificação de Representação (decisões de 25/11/2026): o operador envia o processo baixado do SPED (ZIP
  * com as peças em PDF, ou as peças soltas). Fichas e contracheque com texto seguem a leitura de sempre (lib/acoes/fichas);
  * das demais peças, só o texto vem para cá, para pré-preencher Informações e o quadro do auxílio. Tudo é sugestão: o
  * operador confere. Peças digitalizadas (só imagem) não são lidas e ficam listadas.
  */
 import type { DadosAuxFard } from "./aux-fard";
+import type { DadosGratRep } from "./grat-rep";
 import { mascaraNumeroProcesso } from "./numero-processo";
 
 export type TipoPeca = "ficha" | "contracheque" | "texto" | "imagem" | "grande" | "ignorada";
@@ -16,9 +17,13 @@ export interface LeituraProcesso {
   ano: number | null;
   dataRequerimento: string | null;
   averbacao: { documento: "BI"; numero: string; data: string | null } | null;
-  /** Mês do 2º fato ("AAAA-MM"): vira o período da dívida (a competência). */
-  competencia: string | null;
+  /**
+   * Período da dívida ("AAAA-MM-DD"): no Auxílio-fardamento, o mês do 2º fato (a competência); na Gratificação de
+   * Representação, os dias do evento do militar.
+   */
+  periodo: { inicio: string; fim: string } | null;
   auxFard: DadosAuxFard;
+  gratRep?: DadosGratRep;
   /** O que foi lido de cada peça (para a tela). */
   pecas: { nome: string; tipo: TipoPeca; uso: string }[];
   avisos: string[];
@@ -41,7 +46,7 @@ const dd = (n: number) => String(n).padStart(2, "0");
 const anoCompleto = (a: string) => (a.length === 2 ? 2000 + Number(a) : Number(a));
 
 /** Datas no texto normalizado: "25 DE DEZEMBRO DE 2021", "1O DE JUNHO DE 2024", "25 DEZ 21", "01JUN25", "24/12/2021". */
-const DATA = String.raw`(\d{1,2})O? DE (${MESES.join("|")}) DE (\d{4})|(\d{1,2}) ?(${MESES_CURTOS.join("|")}) ?(\d{4}|\d{2})\b|(\d{1,2})/(\d{1,2})/(\d{4})`;
+const DATA = String.raw`(\d{1,2})O? D[EC] (${MESES.join("|")}) D[EC] (\d{4})|(\d{1,2}) ?(${MESES_CURTOS.join("|")}) ?(\d{4}|\d{2})\b|(\d{1,2})/(\d{1,2})/(\d{4})`;
 function lerData(m: RegExpExecArray | RegExpMatchArray): string | null {
   let d: number, mes: number, ano: number;
   if (m[1]) [d, mes, ano] = [+m[1], MESES.indexOf(m[2]!) + 1, +m[3]!];
@@ -84,7 +89,7 @@ const ehRequerimento = (p: Peca) => !ehInformacao(p) && (/^\d+\. ?REQUERIMENTO/.
  * Lê as peças de texto do processo. A Informação de Requerimento (analisada pela OM) vem antes do requerimento e do
  * DIEx de encaminhamento para a data e o posto da promoção.
  */
-export function lerProcesso(pecas: Peca[]): LeituraProcesso {
+export function lerProcesso(pecas: Peca[], especie: "aux-fard" | "grat-rep" = "aux-fard"): LeituraProcesso {
   const avisos: string[] = [];
   const usos = new Map<Peca, string[]>();
   const usar = (p: Peca, u: string) => usos.set(p, [...(usos.get(p) ?? []), u]);
@@ -136,7 +141,7 @@ export function lerProcesso(pecas: Peca[]): LeituraProcesso {
   // 2º fato (promoção): data e posto, perto da palavra "promoção"
   const auxFard: DadosAuxFard = { caso: "art61", fato1: {}, fato2: {} };
   const fontes = [...infos, ...comTexto.filter((p) => p === req), ...comTexto.filter((p) => !infos.includes(p) && p !== req && !/CAPA/.test(nomeNormal(p)))];
-  for (const p of fontes) {
+  if (especie === "aux-fard") for (const p of fontes) {
     const t = T(p);
     for (const m of t.matchAll(/PROMO(?:CAO|VID[AO])/g)) {
       const depois = t.slice(m.index!, m.index! + 220), antes = t.slice(Math.max(0, m.index! - 120), m.index!);
@@ -152,7 +157,7 @@ export function lerProcesso(pecas: Peca[]): LeituraProcesso {
     if (auxFard.fato2?.data) break;
   }
   // triênio na mesma data: "completou na mesma data ... 3 (três) anos na mesma graduação de 2º Sgt"
-  for (const p of fontes) {
+  if (especie === "aux-fard") for (const p of fontes) {
     const m = /MESMA DATA[^.]{0,120}?3 \(TRES\) ANOS NA MESMA (?:GRADUACAO|POSTO)(?: DE)? ([^.,;]{2,30})/.exec(T(p));
     if (m) {
       auxFard.caso = "mesma_data";
@@ -162,17 +167,20 @@ export function lerProcesso(pecas: Peca[]): LeituraProcesso {
     }
   }
   // ato do 2º fato: "conforme BI Nr 239, de 24 DEZ 21, do HGuJP"
-  for (const p of fontes) {
+  if (especie === "aux-fard") for (const p of fontes) {
     const original = (p.texto ?? "").replace(/\s+/g, " ");
     const m = /conforme (BI|Adt|Aditamento|Boletim)\b[^.;]{3,80}/i.exec(original);
     if (m) { auxFard.ato2 = m[0].replace(/^conforme /i, "").trim().slice(0, 100); usar(p, "BI do ato da promoção"); break; }
   }
 
   // peças que confirmam as conferências (pelo nome, porque costumam vir digitalizadas)
-  const declaracao = pecas.find((p) => /DECLARA/.test(nomeNormal(p)));
+  const declaracao = pecas.find((p) => /DECLARA/.test(nomeNormal(p)) || (p.tipo === "texto" && /^.{0,300}DECLARACAO N/.test(T(p))));
   if (declaracao) { auxFard.declaracaoSemAcao = true; usar(declaracao, "declaração (sem ação judicial)"); }
   const reconhecimento = pecas.find((p) => /RECONHECIMENTO DE D\S{2,5}DA\b/.test(nomeNormal(p)) || (p.tipo === "texto" && /RECONHECIMENTO DE DIVIDA/.test(T(p)) && /ADITAMENTO|BOLETIM/.test(T(p).slice(0, 400))));
   if (reconhecimento) { auxFard.reconhecimento = true; usar(reconhecimento, "reconhecimento da dívida"); }
+
+  // Gratificação de Representação: autorização (Adt/BI do Cmdo Mil A), item do militar, evento e datas
+  const gr = especie === "grat-rep" ? lerGratRep(comTexto, pecas, infos, req, usar) : null;
 
   // avisos
   const pagos = pecas.filter((p) => /PROTOCOLO CPEX|FOLHA CPEX|SOLICITACAO|VALORES DEVIDOS|VALORES RECEBIDOS/.test(nomeNormal(p)));
@@ -186,11 +194,17 @@ export function lerProcesso(pecas: Peca[]): LeituraProcesso {
   if (!nup) avisos.push("Não encontrei o NUP na capa do processo: preencha o Nº do processo em Informações.");
   if (!dataRequerimento) avisos.push("Não encontrei a data do requerimento: preencha em Informações.");
   if (!averbacao) avisos.push("Não encontrei o BI de averbação do requerimento: preencha em Informações.");
-  if (!auxFard.fato2?.data) avisos.push("Não encontrei a data da promoção (2º fato): preencha no quadro do Auxílio-fardamento.");
+  if (especie === "aux-fard" && !auxFard.fato2?.data) avisos.push("Não encontrei a data da promoção (2º fato): preencha no quadro do Auxílio-fardamento.");
+  if (gr) avisos.push(...gr.avisos);
 
-  const competencia = auxFard.fato2?.data ? auxFard.fato2.data.slice(0, 7) : null;
+  let periodo: LeituraProcesso["periodo"] = null;
+  if (especie === "aux-fard" && auxFard.fato2?.data) {
+    const [a, m] = auxFard.fato2.data.split("-").map(Number) as [number, number];
+    periodo = { inicio: `${auxFard.fato2.data.slice(0, 7)}-01`, fim: `${auxFard.fato2.data.slice(0, 7)}-${dd(new Date(Date.UTC(a, m, 0)).getUTCDate())}` };
+  } else if (gr?.periodo) periodo = gr.periodo;
   return {
-    nup: nup ? mascaraNumeroProcesso(nup) : null, ano, dataRequerimento, averbacao, competencia, auxFard,
+    nup: nup ? mascaraNumeroProcesso(nup) : null, ano, dataRequerimento, averbacao, periodo, auxFard,
+    ...(gr ? { gratRep: gr.dados } : {}),
     pecas: pecas.map((p) => ({
       nome: p.nome, tipo: p.tipo,
       uso: usos.get(p)?.join("; ") ?? (p.tipo === "ficha" ? "ficha financeira (valores recebidos e dados do militar)"
@@ -199,4 +213,94 @@ export function lerProcesso(pecas: Peca[]): LeituraProcesso {
     })),
     avisos,
   };
+}
+
+const MES_CURTO = String.raw`(${MESES_CURTOS.join("|")})`;
+const br = (d: string) => d.split("-").reverse().join("/");
+/** "271200 SET 25" (dia, hora, minuto, mês, ano): data e hora. */
+function dataHora(m: string[]): { data: string; hora: string } | null {
+  const [dia, hh, mm, mes, aa] = m as [string, string, string, string, string];
+  if (!(+hh <= 23 && +mm <= 59 && MESES_CURTOS.includes(mes))) return null;
+  return { data: `${anoCompleto(aa)}-${dd(MESES_CURTOS.indexOf(mes) + 1)}-${dia}`, hora: `${hh}:${mm}` };
+}
+const limpar = (s: string) => s.replace(/\s+/g, " ").replace(/[;.,\s]+$/, "").trim();
+
+/**
+ * Gratificação de Representação: a autorização (Adt/BI do Cmdo Mil A com "PERIODO TOTAL" por item), o item do militar
+ * (o número citado no requerimento; sem ele, o único item), a transcrição no BI da OM e as datas do militar (a Informação
+ * traz "Dt Deslocamento" e "Dt Término"; sem elas, o período total do item). As horas só vêm quando o dia do militar é o
+ * do período total.
+ */
+function lerGratRep(comTexto: Peca[], pecas: Peca[], infos: Peca[], req: Peca | undefined, usar: (p: Peca, u: string) => void) {
+  const T = (p: Peca) => normalizar(p.texto ?? "");
+  const avisos: string[] = [];
+  const dados: DadosGratRep = { autorizacao: {}, evento: {} };
+  const pedido = [req, ...infos].filter((p): p is Peca => !!p).map((p) => /\bITEM (\d{1,3})\b/.exec(T(p))?.[1]).find(Boolean);
+  const aut = comTexto.find((p) => /PERIODO TOTAL/.test(T(p)) && /GRATIFICA\S* DE REPRESENTA/.test(T(p)) && /DOCUMENTO\(S\) DE REFER/.test(T(p)));
+  let total: { inicio: { data: string; hora: string }; fim: { data: string; hora: string } } | null = null;
+  if (aut) {
+    const t = T(aut);
+    const cab = /(?:ADITAMENTO|ADT) N\S* ?(\d+\/\d{4}) AO BI (\S+) N\S* ?(\d+)/.exec(t);
+    const publicacao = primeiraData(t.slice(0, 800));
+    if (cab) dados.autorizacao!.documento = `Adt nº ${cab[1]} ao BI ${cab[2]} nº ${cab[3]}${publicacao ? `, de ${br(publicacao)}` : ""}`;
+    if (publicacao) dados.autorizacao!.publicacao = publicacao;
+    // itens: "12. DOCUMENTO(S) DE REFERENCIA: ... PERIODO TOTAL: 271200 SET 25 a 041400 OUT 25."
+    const original = (aut.texto ?? "").replace(/\s+/g, " ");
+    const itens = [...original.matchAll(/(?:^|\s)(\d{1,3})\. ?DOCUMENTO\(S\) DE REFER/gi)].map((m, i, l) => ({
+      numero: m[1]!, texto: original.slice(m.index!, l[i + 1]?.index ?? original.length),
+    }));
+    const item = (pedido && itens.find((x) => x.numero === pedido)) || (itens.length === 1 ? itens[0] : undefined);
+    if (item) {
+      const campo = (nome: string) => {
+        const m = new RegExp(`${nome}:\\s*(.+?)(?:;\\s*[A-Z][A-Z\\s()]{1,40}:|$)`).exec(item.texto);
+        return m ? limpar(m[1]!) : undefined;
+      };
+      dados.evento = { natureza: campo("NATUREZA DA ATIVIDADE"), local: campo("LOCAL DE REALIZA\\S{1,4}O"), amparo: campo("AMPARO LEGAL")?.slice(0, 200) };
+      const mp = new RegExp(String.raw`PERIODO TOTAL: ?(\d{2})(\d{2})(\d{2}) ?${MES_CURTO} ?(\d{2}) A (\d{2})(\d{2})(\d{2}) ?${MES_CURTO} ?(\d{2})`).exec(normalizar(item.texto));
+      const ini = mp && dataHora(mp.slice(1, 6)), fim = mp && dataHora(mp.slice(6, 11));
+      if (ini && fim) total = { inicio: ini, fim };
+      usar(aut, `autorização (item ${item.numero}): ${[dados.evento.natureza, dados.evento.local].filter(Boolean).join(", ")}`);
+    } else {
+      usar(aut, "autorização");
+      avisos.push(pedido ? `Não encontrei o item ${pedido} na autorização: preencha o evento e o período.` : "A autorização tem vários itens e o requerimento não diz qual é o do militar: preencha o evento e o período.");
+    }
+  } else avisos.push("Não encontrei a autorização de pagamento com texto (Adt/BI do Cmdo Mil A): preencha a autorização no quadro da Gratificação de Representação.");
+
+  // transcrição no BI da OM: "BI nº 174/B Adm Gu Natal, transcrição da autorização"
+  for (const p of [req, ...infos, ...comTexto].filter((x): x is Peca => !!x)) {
+    const m = /\b((?:BI|Bol Int|Boletim Interno)\s*n?[º°o]?\s*(\d{1,3})[^;,.]{0,40}?),?\s*\(?\s*transcri/i.exec((p.texto ?? "").replace(/\s+/g, " "));
+    if (m) {
+      // a data, pelo nome da peça do BI ("BI 174 20260916")
+      const d = pecas.map((x) => new RegExp(`BI ${m[2]} (\\d{4})(\\d{2})(\\d{2})`).exec(nomeNormal(x))).find(Boolean);
+      dados.autorizacao!.transcricao = `${limpar(m[1]!)}${d ? `, de ${d[3]}/${d[2]}/${d[1]}` : ""}`;
+      usar(p, "transcrição da autorização");
+      break;
+    }
+  }
+
+  // datas do militar
+  let periodo: { inicio: string; fim: string } | null = null;
+  for (const p of [...infos, ...(req ? [req] : [])]) {
+    const t = T(p);
+    const ida = new RegExp(String.raw`DESLOCAMENTO[^:]{0,40}: ?(?:${DATA})`).exec(t);
+    const volta = new RegExp(String.raw`(?:TERMINO|RETORNO)[^:]{0,40}: ?(?:${DATA})`).exec(t);
+    const i = ida && primeiraData(ida[0].slice(ida[0].indexOf(":") + 1)), f = volta && primeiraData(volta[0].slice(volta[0].indexOf(":") + 1));
+    if (i && f) { periodo = { inicio: i, fim: f }; usar(p, "datas de deslocamento e término do militar"); break; }
+    const mp = new RegExp(String.raw`NO PERIODO DE (?:${DATA}) A (?:${DATA})`).exec(t);
+    if (mp) {
+      const datas = [...mp[0].matchAll(new RegExp(DATA, "g"))].map(lerData).filter((x): x is string => !!x);
+      if (datas.length === 2) { periodo = { inicio: datas[0]!, fim: datas[1]! }; usar(p, "período do evento"); break; }
+    }
+  }
+  const tot = total as typeof total;
+  if (!periodo && tot) periodo = { inicio: tot.inicio.data, fim: tot.fim.data };
+  if (tot && periodo) {
+    if (periodo.inicio === tot.inicio.data) dados.horaSaida = tot.inicio.hora;
+    if (periodo.fim === tot.fim.data) dados.horaRetorno = tot.fim.hora;
+  }
+  if (!periodo) avisos.push("Não encontrei o período do evento: preencha em Informações.");
+  else if (tot && (periodo.inicio !== tot.inicio.data || periodo.fim !== tot.fim.data)) {
+    avisos.push(`As datas do militar (${br(periodo.inicio)} a ${br(periodo.fim)}) diferem do período total da autorização (${br(tot.inicio.data)} a ${br(tot.fim.data)}): confira nos BI de ida e de retorno, e as horas.`);
+  }
+  return { dados, periodo, avisos };
 }

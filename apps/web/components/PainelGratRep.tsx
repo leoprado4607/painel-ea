@@ -1,4 +1,6 @@
 "use client";
+import type { LeituraGuardada } from "@/lib/processo-completo";
+import { LeituraDoProcesso } from "@/components/LeituraDoProcesso";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
@@ -14,8 +16,10 @@ const br = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
  * "Lançar valor devido" da Gratificação de Representação automática (lib/grat-rep): dados do evento e da autorização,
  * lançamentos de Grat Rep das fichas (o operador marca os que são deste evento), cálculo, alertas e textos do verso.
  */
-export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado }: {
+export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado, leitura }: {
   processoId: string; dados: DadosGratRep; plano: PlanoGratRep; inicio: string; fim: string; bloqueado: boolean;
+  /** O que veio do processo completo, quando o cálculo começou por ele. */
+  leitura?: LeituraGuardada | null;
 }) {
   const router = useRouter();
   const [d, setD] = useState<DadosGratRep>(dados);
@@ -56,6 +60,8 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
           Os dados vêm do período da dívida (Informações) e das fichas financeiras; complete abaixo o que não está nelas.
         </p>
       </div>
+
+      {leitura && <LeituraDoProcesso leitura={leitura} />}
 
       <div className="grid gap-5 lg:grid-cols-2">
         <div>

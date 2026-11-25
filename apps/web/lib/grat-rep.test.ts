@@ -19,6 +19,26 @@ describe("Gratificação de Representação automática", () => {
     expect(gratRepAutomatico({ especie_divida: "Auxílio Transporte", complementos: { calculoAutomaticoGratRep: true } })).toBe(false);
   });
 
+  it("pago (NUP 64552.004696/2025-46): Sd EV, Op Guararapes II de 14 a 23 AGO 22, 10 dias, verso no modelo do pago", () => {
+    const p = planoGratRep({
+      fichas: [ficha(2022, linha("NR0001", { 8: 1078 }))], inicio: "2022-08-14", fim: "2022-08-23", hoje,
+      dados: { horaSaida: "08:00", horaRetorno: "17:00", evento: { natureza: "Operação Guararapes II", local: "Recife-PE" } },
+    });
+    expect([p.categoria, p.valorDiario, p.dias, p.devido]).toEqual(["sd-ev", 21.56, 10, 215.6]);
+    expect(p.devidos).toEqual([{ ano: 2022, mes: 8, valor: 215.6 }]);
+    expect(corrigir(p.devido!, 17.2122)).toBe(252.71); // série composta até mar/2026, como no pago
+    expect(p.textos.explicacao).toContain("por ter participado da atividade “Operação Guararapes II”, em Recife-PE, no período de 14/08/2022 a 23/08/2022");
+  });
+
+  it("soldo proporcional no mês do fato: confere pelos meses seguintes, sem alerta", () => {
+    const p = planoGratRep({
+      fichas: [ficha(2025, linha("NR0001", { 9: 1500.13, 10: 3997 }))], inicio: "2025-09-27", fim: "2025-10-03", hoje,
+      dados: { horaSaida: "12:00", horaRetorno: "14:00" },
+    });
+    expect(p.categoria).toBe("3-sgt");
+    expect(p.alertas.map((a) => a.codigo)).not.toContain("SOLDO_FICHA");
+  });
+
   it("caso 1 (NUP 64552.003413/2025-49): Cb Ef Profl, 9 dias, divergência e possível duplicidade", () => {
     const fichas = [
       ficha(2023, linha("NR0001", { 8: 2627, 9: 2627 }), linha("AR0061", { 12: 420.32 })),

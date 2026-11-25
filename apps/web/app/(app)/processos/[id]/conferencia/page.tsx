@@ -9,6 +9,7 @@ import { postoAbreviado } from "@/lib/postos";
 import { carregarProcesso } from "@/lib/processo";
 import { MESES } from "@/lib/tipos";
 import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
+import { dadosGratMensal, gratMensalAutomatico, planoGratMensal } from "@/lib/grat-mensal";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard, tetoArt19 } from "@/lib/aux-fard";
 import { fichasLidasValidas } from "@/lib/receitas";
 import Link from "next/link";
@@ -44,6 +45,15 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
     });
     avisosGr = [...p.alertas.map((a) => `${a.codigo}: ${a.descricao}`), ...p.pendencias];
   }
+  // gratificações mensais automáticas (localidade especial e comando): alertas e pendências do quadro
+  if (gratMensalAutomatico(processo) && processo.periodo_inicio && processo.periodo_fim) {
+    const { data } = await supabase.from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
+    const p = planoGratMensal({
+      fichas: fichasLidasValidas(data?.fichas_lidas), especie: processo.especie_divida, inicio: processo.periodo_inicio, fim: processo.periodo_fim,
+      dados: dadosGratMensal(processo.complementos), dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+    });
+    avisosGr = [...p.alertas.map((a) => `${a.codigo}: ${a.descricao}`), ...p.pendencias];
+  }
   // Auxílio-fardamento automático: alertas do quadro e teto do art. 19 (4 soldos de Capitão vigentes)
   let avisosAf: string[] = [];
   if (auxFardAutomatico(processo)) {
@@ -76,7 +86,7 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
       )}
       {avisosGr.length > 0 && (
         <Aviso tipo="atencao">
-          <p className="font-semibold">Gratificação de Representação: confira antes de emitir</p>
+          <p className="font-semibold">{processo.especie_divida}: confira antes de emitir</p>
           <ul className="mt-1 list-disc space-y-1 pl-5">{avisosGr.map((a, i) => <li key={i}>{a}</li>)}</ul>
           <p className="mt-1">Detalhes em <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>.</p>
         </Aviso>

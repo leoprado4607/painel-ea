@@ -8,6 +8,8 @@ import { complSalMinAutomatico, ehRubricaGr, planoComplSalMin, VALOR_FIXADO } fr
 import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
 import { PainelGratRep } from "@/components/PainelGratRep";
 import { PainelAuxFard } from "@/components/PainelAuxFard";
+import { PainelGratMensal } from "@/components/PainelGratMensal";
+import { dadosGratMensal, gratMensalAutomatico, planoGratMensal } from "@/lib/grat-mensal";
 import { leituraGuardada } from "@/lib/processo-completo";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard } from "@/lib/aux-fard";
 import { textoBoletim } from "@/lib/averbacao";
@@ -56,6 +58,18 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
     });
     notas = planoAf.notas;
   }
+  // gratificações mensais automáticas (localidade especial e comando): quadro e cálculo em "Lançar valor devido"
+  const autoGm = gratMensalAutomatico(processo);
+  const dadosGm = dadosGratMensal(processo.complementos);
+  let planoGm = null;
+  if (autoGm && tipo === "devido") {
+    const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
+    planoGm = planoGratMensal({
+      fichas: fichasLidasValidas(data?.fichas_lidas), especie: processo.especie_divida, inicio: processo.periodo_inicio, fim: processo.periodo_fim,
+      dados: dadosGm, dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+    });
+    notas = planoGm.notas;
+  }
   return (
     <div className="space-y-5">
       {importado && (
@@ -83,10 +97,19 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
       )}
       {planoAf && <PainelAuxFard processoId={id} dados={dadosAf} plano={planoAf} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />}
       {planoGr && (
-        <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
+        <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />
+      )}
+      {planoGm && (
+        <PainelGratMensal processoId={id} especie={processo.especie_divida ?? ""} dados={dadosGm} plano={planoGm} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
+      )}
+      {autoGm && tipo === "recebido" && (
+        <Aviso tipo="info">
+          Os recebidos desta gratificação são os lançamentos das fichas marcados no quadro de{" "}
+          <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>. Confira; o que você digitar não é sobrescrito.
+        </Aviso>
       )}
       {/* o envio de contracheque e fichas fica só em "Informações" (pedido do usuário) */}
-      <ValoresMensais key={autoGr || autoAf ? processo.atualizado_em : undefined}
+      <ValoresMensais key={autoGr || autoAf || autoGm ? processo.atualizado_em : undefined}
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}
         linhas={lancamentos.filter((l) => l.tipo === tipo).map(({ ano, mes, posicao, valor }) => ({ ano, mes, posicao, valor }))}

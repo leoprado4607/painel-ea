@@ -11,7 +11,7 @@ export function NovoPorFichas({ oms = [], especie }: { oms?: { id: string; nome:
     <section className="cartao space-y-3 border-marca-600">
       <h2 className="font-semibold">Envie as fichas financeiras e o contracheque</h2>
       <p className="text-sm text-suave">
-        Selecione os PDFs: as fichas financeiras (SIPPES ou SIAPPES, que pode trazer vários anos) e o contracheque (do CPEx ou a 2ª via do SIPPES). {especie === "aux-fard" ? "As fichas são obrigatórias; o contracheque, não (sem ele, preencha os dados bancários em Informações)." : "Os dois são obrigatórios."}
+        Selecione os PDFs: as fichas financeiras (SIPPES ou SIAPPES, que pode trazer vários anos) e o contracheque (do CPEx ou a 2ª via do SIPPES). {especie === "aux-fard" ? "As fichas são obrigatórias; o contracheque, não (sem ele, preencha os dados bancários em Informações)." : "Os dois são obrigatórios."}{" "}
         Das fichas vêm nome, Prec-CP, identidade, CPF, P/G, OM de vinculação e os valores recebidos; do contracheque, só banco, agência e conta. O período da dívida fica em branco para você informar. Os arquivos são lidos e descartados: nenhum PDF fica guardado.
       </p>
       {estado?.erro && <Aviso tipo="erro">{estado.erro}</Aviso>}

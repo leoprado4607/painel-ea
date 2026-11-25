@@ -43,6 +43,13 @@ export interface Complementos {
   calculoAutomaticoAuxFard?: boolean;
   /** Dados do quadro do Auxílio-fardamento (apps/web/lib/aux-fard, DadosAuxFard). */
   auxFard?: Record<string, unknown>;
+  /**
+   * Processo criado a partir de 25/11/2026: segue o cálculo automático das gratificações mensais (localidade especial
+   * e Grat Rep de comando, apps/web/lib/grat-mensal). Os anteriores não têm a marca e não mudam.
+   */
+  calculoAutomaticoGratMensal?: boolean;
+  /** Dados do quadro das gratificações mensais (apps/web/lib/grat-mensal, DadosGratMensal). */
+  gratMensal?: Record<string, unknown>;
 }
 
 export interface RecebidoPosPeriodo { ano: number; mes: number; posicao: number; valor: number }

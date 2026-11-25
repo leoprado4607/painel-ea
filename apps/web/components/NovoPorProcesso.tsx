@@ -85,8 +85,9 @@ export function NovoPorProcesso({ oms = [], especie }: { oms?: { id: string; nom
       <h2 className="font-semibold">Envie o processo completo</h2>
       <p className="text-sm text-suave">
         Selecione o ZIP do processo baixado do SPED (ou as peças em PDF), sem os cálculos e o protocolo do CPEx. O sistema lê as fichas financeiras e, das demais
-        peças, o NUP, a data do requerimento, o BI de averbação, a data e o posto da promoção, a declaração e o reconhecimento da dívida. Peças digitalizadas
-        (só imagem) não são lidas. O contracheque não é obrigatório no Auxílio-fardamento: se tiver, selecione-o no campo “Contracheque” (dá os dados
+        peças, o NUP, a data do requerimento, o BI de averbação, a declaração e o reconhecimento da dívida, e ainda {especie === "grat-rep"
+          ? "a autorização de pagamento (o item do militar: atividade, local, amparo e período), a transcrição no BI e as datas de ida e de retorno"
+          : "a data e o posto da promoção"}. Peças digitalizadas (só imagem) não são lidas. O contracheque não é obrigatório neste envio: se tiver, selecione-o no campo “Contracheque” (dá os dados
         bancários); sem ele, preencha banco, agência e conta em Informações. Se as fichas do processo forem digitalizadas, acrescente no mesmo campo as fichas baixadas do SIPPES ou do SIAPPES.
         Os arquivos são lidos e descartados.
       </p>

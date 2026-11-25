@@ -93,7 +93,8 @@ export const ESPECIES_DIVIDA = [
   "Adicional Habilitação", "Adicional Natalino", "Adicional Permanência", "Auxílio fardamento", "Auxílio Funeral",
   "Auxílio Natalidade", "Auxílio pré-escolar", "Auxílio Transporte", "Compensação Orgânica", "Complemento de salário mínimo",
   "Diferença de soldo",
-  "Férias / Indenização de férias", "Gratificação de Representação",
+  "Férias / Indenização de férias", "Gratificação de Localidade Especial", "Gratificação de Representação",
+  "Gratificação de Representação de Comando",
 ].sort((a, b) => a.localeCompare(b, "pt-BR"));
 export const SITUACOES = ["Ativa", "Reintegrado", "Ex-Militar", "Veterano", "Reformado", "Pensionista"];
 export const MESES = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];

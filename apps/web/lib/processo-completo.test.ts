@@ -22,7 +22,7 @@ describe("processo completo do Auxílio-fardamento", () => {
     expect(l.dataRequerimento).toBe("2026-09-28");
     // a Informação (analisada pela OM) prevalece sobre o requerimento (24 DEZ)
     expect(l.auxFard.fato2).toEqual({ tipo: "promocao", data: "2021-12-25", categoria: "2-ten" });
-    expect(l.competencia).toBe("2021-12");
+    expect(l.periodo).toEqual({ inicio: "2021-12-01", fim: "2021-12-31" });
     expect(l.auxFard.ato2).toBe("BI Nr 239, de 24 DEZ 21, do HGuJP");
     expect(l.auxFard.declaracaoSemAcao).toBe(true);
     expect(l.auxFard.reconhecimento).toBe(true);
@@ -61,5 +61,36 @@ describe("processo completo do Auxílio-fardamento", () => {
 
   it("normaliza acentos e ordinais", () => {
     expect(normalizar("Promoção  a 1º Sgt")).toBe("PROMOCAO A 1O SGT");
+  });
+
+  it("Grat Rep (Sgt Estevam, 64241.005793/2026-41): autorização, item 12, evento, transcrição e datas do militar", () => {
+    const l = lerProcesso([
+      { nome: "1. Requerimento-84-Seç Pes_B Adm Gu Natal.pdf", tipo: "texto",
+        texto: `Requerimento nº 84-Seç Pes/B Adm Gu Natal
+Natal, RN, 24 de setembro de 2026.
+2. ... autorização para pagamento de Grat Rep, publicada no Item 12, do n° 2 da 3ª parte do Aditamento n° 51/2025 ao BI CMNE n° 232, de 18 DEZ 25.
+3. Anexos: c. BI n° 174/B Adm Gu Natal, transcrição da autorização para pagamento.` },
+      { nome: "5. Documento de Formalização de Demanda-Adt 51.pdf", tipo: "texto",
+        texto: `Quartel em RECIFE-PE, 18 de dezembro dc 2025
+ADITAMENTO N° 51/2025 ao BI CMNE n° 232
+GRATIFICACAO DE REPRESENTACAO - Autorizagao
+11. DOCUMENTO(S) DE REFERENCIA: DIEx n° 1; NATUREZA DA ATIVIDADE: Outra; LOCAL DE REALIZACAO: Recife-PE; PERIODO TOTAL: 010800 JAN 26 a 021700 JAN 26.
+12. DOCUMENTO(S) DE REFERENCIA: DIEx n° 5788-El0/7a DE, de 5 DEZ 25; NATUREZA DA ATIVIDADE: Estagio Basico do Combatente de Caatinga (EBCC-2025); AMPARO DA ATIVIDADE: Ordem de Instrugao n° 14; AMPARO LEGAL: Inciso II do Art 5°, do Decreto n° 11.002, de 17 de margo de 2022 (Viagem de Instrugao); OM: B Adm Gu N (Natal-RN); LOCAL DE REALIZACAO: Campina
+Grande-PB; MONTANTE A SER PAGO: R$ 1.416,94; EFETIVO TOTAL: 5 e PERIODO TOTAL:
+271200 SET 25 a 041400 OUT 25.` },
+      { nome: "6. Documento de Formalização de Demanda-BI 174 20260916 qua.pdf", tipo: "imagem" },
+      { nome: "9. Informação de Requerimento-194-Seç Pes_B Adm Gu Natal.pdf", tipo: "texto",
+        texto: `Inf. de Requerimento nº 194
+-Dt Deslocamento para o EBCC/25: 27 SET 25
+-Dt Término do EBCC/25: 03 OUT 25` },
+    ], "grat-rep");
+    expect(l.dataRequerimento).toBe("2026-09-24");
+    expect(l.periodo).toEqual({ inicio: "2025-09-27", fim: "2025-10-03" });
+    expect(l.gratRep).toEqual({
+      autorizacao: { documento: "Adt nº 51/2025 ao BI CMNE nº 232, de 18/12/2025", publicacao: "2025-12-18", transcricao: "BI n° 174/B Adm Gu Natal, de 16/09/2026" },
+      evento: { natureza: "Estagio Basico do Combatente de Caatinga (EBCC-2025)", local: "Campina Grande-PB", amparo: "Inciso II do Art 5°, do Decreto n° 11.002, de 17 de margo de 2022 (Viagem de Instrugao)" },
+      horaSaida: "12:00",
+    });
+    expect(l.avisos.join(" ")).toMatch(/diferem do período total da autorização/);
   });
 });

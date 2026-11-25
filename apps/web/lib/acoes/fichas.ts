@@ -17,6 +17,7 @@ import { sessao } from "@/lib/sessao";
 import { CODIGOS_COMPL_SAL_MIN, complSalMinAutomatico, planoComplSalMin } from "@/lib/compl-sal-min";
 import { auxFardAutomatico, CODIGOS_AUX_FARD, dadosAuxFard, planoAuxFard, rubricasAuxFard } from "@/lib/aux-fard";
 import { CODIGOS_GRAT_REP, dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "@/lib/grat-rep";
+import { CODIGOS_GLE, CODIGOS_GR_CMDO, dadosGratMensal, gratMensalAutomatico, planoGratMensal, rubricasGratMensal } from "@/lib/grat-mensal";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 
@@ -156,9 +157,19 @@ async function montarPrevia(supabase: Supabase, processoId: string, docs: Docume
     const posicao = rubricasAuxFard(rubricas ?? [], plano.rubrica).posicao ?? 1;
     lancamentos = plano.recebidos.map((v) => ({ ...v, posicao }));
   }
+  const autoGm = gratMensalAutomatico(processo);
+  if (autoGm) {
+    // localidade especial e comando: os lançamentos das fichas só entram quando marcados no quadro de "Lançar valor devido"
+    naoUsadas = naoUsadas.filter((l) => !CODIGOS_GLE.has(l.codigo.trim().toUpperCase()) && !CODIGOS_GR_CMDO.has(l.codigo.trim().toUpperCase()));
+    const plano = processo.periodo_inicio && processo.periodo_fim
+      ? planoGratMensal({ fichas, especie: processo.especie_divida, inicio: processo.periodo_inicio, fim: processo.periodo_fim, dados: dadosGratMensal(processo.complementos), dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10) })
+      : null;
+    const posicao = plano?.rubrica ? rubricasGratMensal(rubricas ?? [], plano.rubrica).posicao ?? 1 : 1;
+    lancamentos = plano ? plano.recebidos.map((v) => ({ ...v, posicao })) : [];
+  }
   const pendencia = !processo.periodo_inicio || !processo.periodo_fim
     ? "O período da dívida ainda não foi informado: as receitas serão preenchidas quando ele for salvo."
-    : auto || autoGr || autoAf ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
+    : auto || autoGr || autoAf || autoGm ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
   return {
     documentos: docs, resumo: docs.map(resumir), dados: dadosDoFavorecido(docs),
     divergenciasMilitar: compararMilitar(docs, (processo.militar ?? {}) as unknown as Record<string, string | null>),
@@ -220,14 +231,8 @@ export async function gravarRecebidos(processoId: string, docs: DocumentoExtraid
   }
 }
 
-/** "AAAA-MM" → último dia do mês ("AAAA-MM-DD"). */
-const fimDoMes = (am: string) => {
-  const [a, m] = am.split("-").map(Number) as [number, number];
-  return `${am}-${String(new Date(Date.UTC(a, m, 0)).getUTCDate()).padStart(2, "0")}`;
-};
-
 /** Peças de texto do processo completo (campo "processo", JSON vindo do navegador), validadas e lidas. */
-function lerProcessoDoFormulario(form: FormData) {
+function lerProcessoDoFormulario(form: FormData, especie: "aux-fard" | "grat-rep") {
   const bruto = form.get("processo");
   if (typeof bruto !== "string" || !bruto) return null;
   let lista: unknown;
@@ -236,7 +241,7 @@ function lerProcessoDoFormulario(form: FormData) {
   const tipos = new Set<TipoPeca>(["ficha", "contracheque", "texto", "imagem", "grande", "ignorada"]);
   const pecas: Peca[] = lista.filter((x): x is Peca => !!x && typeof x === "object" && typeof (x as Peca).nome === "string" && tipos.has((x as Peca).tipo))
     .map((x) => ({ nome: x.nome.slice(0, 300), tipo: x.tipo, texto: typeof x.texto === "string" ? x.texto.slice(0, 30_000) : undefined }));
-  return pecas.length ? lerProcesso(pecas) : null;
+  return pecas.length ? lerProcesso(pecas, especie) : null;
 }
 
 /** Novo processo pelos documentos: cria militar e processo com os dados lidos e guarda os números das fichas. */
@@ -246,14 +251,16 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const { supabase, perfil } = await sessao();
     const omId = await omParaNovoProcesso(supabase, perfil, String(form.get("om_id") ?? "") || null);
     const card = cardNovoCalculo(String(form.get("especie") ?? ""));
-    // processo completo (só no Auxílio-fardamento): as peças de texto lidas no navegador, para pré-preencher
-    const leitura = card?.id === "aux-fard" ? lerProcessoDoFormulario(form) : null;
+    // processo completo (Auxílio-fardamento e Gratificação de Representação): as peças lidas no navegador, para pré-preencher
+    const leitura = card?.id === "aux-fard" || card?.id === "grat-rep" ? lerProcessoDoFormulario(form, card.id) : null;
     const docs = await lerArquivos(form);
     if (!docs.some((d) => d.tipo === "ficha")) {
       return { erro: leitura ? "O processo não tem ficha financeira com texto (as digitalizadas não são lidas): envie também as fichas baixadas do SIPPES ou do SIAPPES." : "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
     }
-    // contracheque obrigatório, salvo no Auxílio-fardamento (decisão de 25/11/2026: os dados bancários ficam para Informações)
-    if (card?.id !== "aux-fard" && !docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
+    // contracheque obrigatório, salvo no Auxílio-fardamento e na Grat Rep pelo processo completo (decisões de 25/11/2026:
+    // os dados bancários ficam para Informações)
+    const contrachequeOpcional = card?.id === "aux-fard" || (card?.id === "grat-rep" && !!leitura);
+    if (!contrachequeOpcional && !docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
     if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
     const { data: m, error: e1 } = await supabase.from("militar").insert({
@@ -268,13 +275,15 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
       // card escolhido em "Novo cálculo": espécie já definida (em "Demais assuntos", o operador escolhe em Informações)
       especie_divida: card?.especie ?? null,
       complementos: {
-        calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true,
-        ...(leitura ? { auxFard: leitura.auxFard, leituraProcesso: { pecas: leitura.pecas, avisos: leitura.avisos } } : {}),
+        calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true, calculoAutomaticoGratMensal: true,
+        ...(leitura ? { leituraProcesso: { pecas: leitura.pecas, avisos: leitura.avisos } } : {}),
+        ...(leitura && card?.id === "aux-fard" ? { auxFard: leitura.auxFard } : {}),
+        ...(leitura?.gratRep ? { gratRep: leitura.gratRep } : {}),
       },
       // o que o processo completo trouxe (o operador confere em Informações)
       ...(leitura ? {
         numero: leitura.nup, ano: leitura.ano, data_requerimento: leitura.dataRequerimento,
-        periodo_inicio: leitura.competencia ? `${leitura.competencia}-01` : null, periodo_fim: leitura.competencia ? fimDoMes(leitura.competencia) : null,
+        periodo_inicio: leitura.periodo?.inicio ?? null, periodo_fim: leitura.periodo?.fim ?? null,
         ...(leitura.averbacao ? { documento_averbacao: leitura.averbacao.documento, bi_numero: leitura.averbacao.numero, bi_data: leitura.averbacao.data } : {}),
       } : {}),
     }).select("id").single();
@@ -282,7 +291,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
     if (e3) return { erro: e3.message };
     // com o período (mês do 2º fato) já lido, a A56/A57 e os valores do quadro entram de uma vez
-    if (leitura?.competencia) await preencherReceitas(supabase, p.id);
+    if (leitura?.periodo) await preencherReceitas(supabase, p.id);
     // ?conferir=banco: a aba Informações abre o aviso para conferir os dados bancários com o Requerimento
     destino = `/processos/${p.id}/dados?conferir=banco`;
   } catch (e) {
