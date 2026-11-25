@@ -9,6 +9,8 @@ import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
 import { PainelGratRep } from "@/components/PainelGratRep";
 import { PainelAuxFard } from "@/components/PainelAuxFard";
 import { PainelGratMensal } from "@/components/PainelGratMensal";
+import { PainelAdicHab } from "@/components/PainelAdicHab";
+import { adicHabAutomatico, dadosAdicHab, planoAdicHab } from "@/lib/adic-hab";
 import { dadosGratMensal, gratMensalAutomatico, planoGratMensal } from "@/lib/grat-mensal";
 import { leituraGuardada } from "@/lib/processo-completo";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard } from "@/lib/aux-fard";
@@ -70,6 +72,18 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
     });
     notas = planoGm.notas;
   }
+  // Adicional de Habilitação automático: quadro e cálculo em "Lançar valor devido"
+  const autoAh = adicHabAutomatico(processo);
+  const dadosAh = dadosAdicHab(processo.complementos);
+  let planoAh = null;
+  if (autoAh && tipo === "devido") {
+    const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
+    planoAh = planoAdicHab({
+      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim, dados: dadosAh,
+      dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
+    });
+    notas = planoAh.notas;
+  }
   return (
     <div className="space-y-5">
       {importado && (
@@ -99,6 +113,15 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
       {planoGr && (
         <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />
       )}
+      {planoAh && (
+        <PainelAdicHab processoId={id} dados={dadosAh} plano={planoAh} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
+      )}
+      {autoAh && tipo === "recebido" && (
+        <Aviso tipo="info">
+          Adicional de Habilitação: o recebido é o adicional pago nas fichas (NR0003/A03), lido sozinho; o cálculo está em{" "}
+          <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>. O que você digitar não é sobrescrito.
+        </Aviso>
+      )}
       {planoGm && (
         <PainelGratMensal processoId={id} especie={processo.especie_divida ?? ""} dados={dadosGm} plano={planoGm} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
       )}
@@ -109,7 +132,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
         </Aviso>
       )}
       {/* o envio de contracheque e fichas fica só em "Informações" (pedido do usuário) */}
-      <ValoresMensais key={autoGr || autoAf || autoGm ? processo.atualizado_em : undefined}
+      <ValoresMensais key={autoGr || autoAf || autoGm || autoAh ? processo.atualizado_em : undefined}
         processoId={id} tipo={tipo} proximaEtapa={proximaEtapa} bloqueado={bloqueado} rubricas={rub}
         inicio={mesDeData(processo.periodo_inicio)} fim={mesDeData(processo.periodo_fim)}
         linhas={lancamentos.filter((l) => l.tipo === tipo).map(({ ano, mes, posicao, valor }) => ({ ano, mes, posicao, valor }))}

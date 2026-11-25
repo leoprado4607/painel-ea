@@ -6,6 +6,7 @@
  */
 import type { DadosAuxFard } from "./aux-fard";
 import type { DadosGratRep } from "./grat-rep";
+import { tipoPeloPercentual, type DadosAdicHab } from "./adic-hab";
 import { mascaraNumeroProcesso } from "./numero-processo";
 
 export type TipoPeca = "ficha" | "contracheque" | "texto" | "imagem" | "grande" | "ignorada";
@@ -24,6 +25,7 @@ export interface LeituraProcesso {
   periodo: { inicio: string; fim: string } | null;
   auxFard: DadosAuxFard;
   gratRep?: DadosGratRep;
+  adicHab?: DadosAdicHab;
   /** O que foi lido de cada peça (para a tela). */
   pecas: { nome: string; tipo: TipoPeca; uso: string }[];
   avisos: string[];
@@ -46,7 +48,7 @@ const dd = (n: number) => String(n).padStart(2, "0");
 const anoCompleto = (a: string) => (a.length === 2 ? 2000 + Number(a) : Number(a));
 
 /** Datas no texto normalizado: "25 DE DEZEMBRO DE 2021", "1O DE JUNHO DE 2024", "25 DEZ 21", "01JUN25", "24/12/2021". */
-const DATA = String.raw`(\d{1,2})O? D[EC] (${MESES.join("|")}) D[EC] (\d{4})|(\d{1,2}) ?(${MESES_CURTOS.join("|")}) ?(\d{4}|\d{2})\b|(\d{1,2})/(\d{1,2})/(\d{4})`;
+const DATA = String.raw`(\d{1,2})O? D[EC] (${MESES.join("|")}) D[EC] (\d{4})|(\d{1,2}) ?(${MESES_CURTOS.join("|")})[A-Z]{0,6}\.? ?(\d{4}|\d{2})\b|(\d{1,2})/(\d{1,2})/(\d{4})`;
 function lerData(m: RegExpExecArray | RegExpMatchArray): string | null {
   let d: number, mes: number, ano: number;
   if (m[1]) [d, mes, ano] = [+m[1], MESES.indexOf(m[2]!) + 1, +m[3]!];
@@ -65,11 +67,11 @@ const POSTOS: [RegExp, string][] = [
   [/GEN(ERAL)? DE EXERCITO/, "gen-ex"], [/GEN(ERAL)? DE DIVISAO/, "gen-div"], [/GEN(ERAL)? DE BRIGADA/, "gen-bda"],
   [/TEN(ENTE)?[ -]?CEL|TENENTE[ -]CORONEL|TEN CEL/, "ten-cel"], [/\bCEL\b|CORONEL/, "cel"], [/\bMAJ(OR)?\b/, "maj"], [/\bCAP(ITAO)?\b/, "cap"],
   [/\b1O TEN(ENTE)?\b|PRIMEIRO[ -]TENENTE/, "1-ten"], [/\b2O TEN(ENTE)?\b|SEGUNDO[ -]TENENTE/, "2-ten"], [/ASPIRANTE|\bASP\b/, "asp"],
-  [/SUB ?TENENTE|\bS ?TEN\b/, "s-ten"], [/\b1O SGT\b|PRIMEIRO[ -]SARGENTO/, "1-sgt"], [/\b2O SGT\b|SEGUNDO[ -]SARGENTO/, "2-sgt"],
-  [/\b3O SGT\b|TERCEIRO[ -]SARGENTO/, "3-sgt"], [/\bCABO\b|\bCB\b/, "cb-eng"],
+  [/SUB ?TENENTE|\bS ?TEN\b/, "s-ten"], [/\b1O (?:SGT|SARGENTO)\b|PRIMEIRO[ -]SARGENTO/, "1-sgt"], [/\b2O (?:SGT|SARGENTO)\b|SEGUNDO[ -]SARGENTO/, "2-sgt"],
+  [/\b3O (?:SGT|SARGENTO)\b|TERCEIRO[ -]SARGENTO/, "3-sgt"], [/\bCABO\b|\bCB\b/, "cb-eng"],
 ];
 const postoDe = (t: string) => POSTOS.find(([r]) => r.test(t))?.[1] ?? null;
-const POSTO_TEXTO = String.raw`(?:GEN(?:ERAL)? DE \w+|TEN(?:ENTE)?[ -]?C(?:E|O)[LR]\w*|CORONEL|CEL|MAJ(?:OR)?|CAP(?:ITAO)?|[123]O TEN(?:ENTE)?|ASPIRANTE|SUB ?TENENTE|S ?TEN|[123]O SGT|(?:PRIMEIRO|SEGUNDO|TERCEIRO)[ -](?:SARGENTO|TENENTE)|CABO)\b`;
+const POSTO_TEXTO = String.raw`(?:GEN(?:ERAL)? DE \w+|TEN(?:ENTE)?[ -]?C(?:E|O)[LR]\w*|CORONEL|CEL|MAJ(?:OR)?|CAP(?:ITAO)?|[123]O TEN(?:ENTE)?|ASPIRANTE|SUB ?TENENTE|S ?TEN|[123]O (?:SGT|SARGENTO)|(?:PRIMEIRO|SEGUNDO|TERCEIRO)[ -](?:SARGENTO|TENENTE)|CABO)\b`;
 
 /** O posto de destino da promoção: "a 2º Tenente", "ao posto de Capitão", "à graduação de Subtenente". */
 function postoDaPromocao(trecho: string): string | null {
@@ -83,13 +85,13 @@ function postoDaPromocao(trecho: string): string | null {
 
 const nomeNormal = (p: Peca) => normalizar(p.nome);
 const ehInformacao = (p: Peca) => /INFORMACAO DE REQUERIMENTO|INF\. DE REQUERIMENTO/.test(nomeNormal(p)) || /^.{0,300}INF\. DE REQUERIMENTO/.test(normalizar(p.texto ?? ""));
-const ehRequerimento = (p: Peca) => !ehInformacao(p) && (/^\d+\. ?REQUERIMENTO/.test(nomeNormal(p)) || /^.{0,300}\bREQUERIMENTO NO \d/.test(normalizar(p.texto ?? "")));
+const ehRequerimento = (p: Peca) => !ehInformacao(p) && (/^\d+\. ?REQUERIMENTO/.test(nomeNormal(p)) || (/REQUERIMENTO/.test(nomeNormal(p)) && !/INFORMACAO|ENTRADA|AVERBA/.test(nomeNormal(p))) || /^.{0,300}\bREQUERIMENTO NO \d/.test(normalizar(p.texto ?? "")));
 
 /**
  * Lê as peças de texto do processo. A Informação de Requerimento (analisada pela OM) vem antes do requerimento e do
  * DIEx de encaminhamento para a data e o posto da promoção.
  */
-export function lerProcesso(pecas: Peca[], especie: "aux-fard" | "grat-rep" = "aux-fard"): LeituraProcesso {
+export function lerProcesso(pecas: Peca[], especie: "aux-fard" | "grat-rep" | "adic-hab" = "aux-fard"): LeituraProcesso {
   const avisos: string[] = [];
   const usos = new Map<Peca, string[]>();
   const usar = (p: Peca, u: string) => usos.set(p, [...(usos.get(p) ?? []), u]);
@@ -181,6 +183,8 @@ export function lerProcesso(pecas: Peca[], especie: "aux-fard" | "grat-rep" = "a
 
   // Gratificação de Representação: autorização (Adt/BI do Cmdo Mil A), item do militar, evento e datas
   const gr = especie === "grat-rep" ? lerGratRep(comTexto, pecas, infos, req, usar) : null;
+  // Adicional de Habilitação: conclusão do curso, período, percentuais, curso, ato e promoções
+  const ah = especie === "adic-hab" ? lerAdicHab([...infos, ...(req ? [req] : []), ...comTexto.filter((p) => !infos.includes(p) && p !== req)], usar) : null;
 
   // avisos
   const pagos = pecas.filter((p) => /PROTOCOLO CPEX|FOLHA CPEX|SOLICITACAO|VALORES DEVIDOS|VALORES RECEBIDOS/.test(nomeNormal(p)));
@@ -196,15 +200,18 @@ export function lerProcesso(pecas: Peca[], especie: "aux-fard" | "grat-rep" = "a
   if (!averbacao) avisos.push("Não encontrei o BI de averbação do requerimento: preencha em Informações.");
   if (especie === "aux-fard" && !auxFard.fato2?.data) avisos.push("Não encontrei a data da promoção (2º fato): preencha no quadro do Auxílio-fardamento.");
   if (gr) avisos.push(...gr.avisos);
+  if (ah) avisos.push(...ah.avisos);
 
   let periodo: LeituraProcesso["periodo"] = null;
   if (especie === "aux-fard" && auxFard.fato2?.data) {
     const [a, m] = auxFard.fato2.data.split("-").map(Number) as [number, number];
     periodo = { inicio: `${auxFard.fato2.data.slice(0, 7)}-01`, fim: `${auxFard.fato2.data.slice(0, 7)}-${dd(new Date(Date.UTC(a, m, 0)).getUTCDate())}` };
   } else if (gr?.periodo) periodo = gr.periodo;
+  else if (ah?.periodo) periodo = ah.periodo;
   return {
     nup: nup ? mascaraNumeroProcesso(nup) : null, ano, dataRequerimento, averbacao, periodo, auxFard,
     ...(gr ? { gratRep: gr.dados } : {}),
+    ...(ah ? { adicHab: ah.dados } : {}),
     pecas: pecas.map((p) => ({
       nome: p.nome, tipo: p.tipo,
       uso: usos.get(p)?.join("; ") ?? (p.tipo === "ficha" ? "ficha financeira (valores recebidos e dados do militar)"
@@ -303,4 +310,65 @@ function lerGratRep(comTexto: Peca[], pecas: Peca[], infos: Peca[], req: Peca | 
     avisos.push(`As datas do militar (${br(periodo.inicio)} a ${br(periodo.fim)}) diferem do período total da autorização (${br(tot.inicio.data)} a ${br(tot.fim.data)}): confira nos BI de ida e de retorno, e as horas.`);
   }
   return { dados, periodo, avisos };
+}
+
+const ultimoDia = (d: string) => { const [a, m] = d.split("-").map(Number) as [number, number]; return `${d.slice(0, 7)}-${dd(new Date(Date.UTC(a, m, 0)).getUTCDate())}`; };
+
+/**
+ * Adicional de Habilitação: a data de conclusão do curso ("concluiu em 12 DEZ 25", "a contar de 12 de dezembro de 2025",
+ * "conclusão do estágio (23 de abril de 2021)"), o período ("período de 03 AGO 23 a 31 DEZ 23", "até 31 de dezembro de
+ * 2025"), os percentuais ("de 45% para 68%"), o curso, o ato que materializa o direito e as promoções ("soldo de 2º
+ * Sargento, a partir da data de sua promoção (1º de junho de 2024)"). A Informação vem antes do requerimento.
+ */
+function lerAdicHab(fontes: Peca[], usar: (p: Peca, u: string) => void) {
+  const T = (p: Peca) => normalizar(p.texto ?? "");
+  const avisos: string[] = [];
+  const dados: DadosAdicHab = {};
+  let inicio: string | null = null, fim: string | null = null;
+  for (const p of fontes) {
+    const t = T(p);
+    const per = new RegExp(String.raw`PERIODO (?:COMPREENDIDO )?(?:DE|ENTRE) (?:${DATA}) A (?:${DATA})`).exec(t);
+    if (per && !inicio) {
+      const datas = [...per[0].matchAll(new RegExp(DATA, "g"))].map(lerData).filter((x): x is string => !!x);
+      if (datas.length === 2) { inicio = datas[0]!; fim = datas[1]!; usar(p, "período da dívida"); }
+    }
+    if (!inicio) {
+      const m = new RegExp(String.raw`A CONTAR DE (?:${DATA})|CONCLU[IS]\w*[^.]{0,160}?\bEM (?:${DATA})|CONCLUSAO[^.()]{0,80}\((?:${DATA})\)`).exec(t);
+      const d = m && primeiraData(m[0].slice(Math.max(0, m[0].search(/\d/))));
+      if (d) { inicio = d; usar(p, "data de conclusão do curso"); }
+    }
+    if (!fim) {
+      const m = new RegExp(String.raw`\bATE (?:${DATA})`).exec(t);
+      const d = m && primeiraData(m[0].slice(4));
+      if (d && (!inicio || d > inicio)) { fim = d; usar(p, "fim do período"); }
+    }
+    if (dados.percentualPedido == null) {
+      const m = /\bDE (\d{1,2}) ?% (?:\([^)]*\) )?PARA (\d{1,2}) ?%/.exec(t);
+      if (m) { dados.percentualPedido = +m[2]!; usar(p, `percentual pedido (${m[1]}% para ${m[2]}%)`); }
+    }
+    const original = (p.texto ?? "").replace(/\s+/g, " ");
+    if (!dados.curso) {
+      const m = /aproveitamento,? (?:o|a) ((?:Curso|Est[áa]gio|Programa|Resid[eê]ncia|Mestrado|Doutorado|P[óo]s)[^;.]{3,120}?)(?:,| na | no | em | realizad| que |\.)/i.exec(original);
+      if (m) { dados.curso = m[1]!.trim(); usar(p, "curso"); }
+    }
+    if (!dados.documento) {
+      const m = /materializad[oa] (?:nos seguintes documentos:\s*(?:a\.|a\))?\s*|no |na |nos |em )(.{5,100}?)(?:;| e no | e na | e b\.|\.\s|$)/i.exec(original);
+      if (m) { dados.documento = m[1]!.trim(); usar(p, "ato que materializa o direito"); }
+    }
+    if (!dados.postos?.length) {
+      const postos = [...t.matchAll(new RegExp(String.raw`SOLDO DE (${POSTO_TEXTO})[^.;]{0,140}?\((?:${DATA})\)`, "g"))]
+        .map((m) => ({ categoria: postoDe(m[1]!), desde: primeiraData(m[0].slice(m[0].lastIndexOf("("))) }))
+        .filter((x): x is { categoria: string; desde: string } => !!x.categoria && !!x.desde);
+      if (postos.length) { dados.postos = postos; usar(p, "posto/graduação e promoções"); }
+    }
+  }
+  if (inicio && dados.percentualPedido) dados.tipo = tipoPeloPercentual(dados.percentualPedido, inicio) ?? undefined;
+  if (dados.postos?.length && inicio && dados.postos[0]!.desde > inicio) dados.postos[0]!.desde = inicio;
+  if (inicio && !fim) {
+    fim = ultimoDia(inicio);
+    avisos.push(`Não encontrei o fim do período: usei o último dia do mês da conclusão (${fim.split("-").reverse().join("/")}). Confira em Informações.`);
+  }
+  if (!inicio) avisos.push("Não encontrei a data de conclusão do curso: preencha o período em Informações.");
+  if (!dados.tipo) avisos.push("Não identifiquei o tipo do curso pelo percentual pedido: escolha no quadro do Adicional de Habilitação.");
+  return { dados, periodo: inicio && fim ? { inicio, fim } : null, avisos };
 }

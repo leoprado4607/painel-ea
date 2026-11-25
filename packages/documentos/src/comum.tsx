@@ -50,6 +50,13 @@ export interface Complementos {
   calculoAutomaticoGratMensal?: boolean;
   /** Dados do quadro das gratificações mensais (apps/web/lib/grat-mensal, DadosGratMensal). */
   gratMensal?: Record<string, unknown>;
+  /**
+   * Processo criado a partir de 25/11/2026: segue o cálculo automático do Adicional de Habilitação (apps/web/lib/adic-hab).
+   * Os anteriores não têm a marca e não mudam.
+   */
+  calculoAutomaticoAdicHab?: boolean;
+  /** Dados do quadro do Adicional de Habilitação (apps/web/lib/adic-hab, DadosAdicHab). */
+  adicHab?: Record<string, unknown>;
 }
 
 export interface RecebidoPosPeriodo { ano: number; mes: number; posicao: number; valor: number }

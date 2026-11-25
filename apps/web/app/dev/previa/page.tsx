@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { PainelAdicHab } from "@/components/PainelAdicHab";
+import { planoAdicHab } from "@/lib/adic-hab";
 import { PainelGratMensal } from "@/components/PainelGratMensal";
 import { ESPECIE_GLE, planoGratMensal } from "@/lib/grat-mensal";
 import { CardsNovoCalculo } from "@/components/CardsNovoCalculo";
@@ -55,6 +57,15 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo</h1><p className="text-sm text-suave">Escolha o assunto do cálculo.</p><CardsNovoCalculo /></div>
       ) : tela === "novo-envio" ? (
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo: Auxílio-fardamento</h1><NovoPorProcesso especie="aux-fard" /><NovoPorFichas especie="aux-fard" /></div>
+      ) : tela === "adic-hab" ? (
+        <PainelAdicHab processoId="previa" dados={{ tipo: "altos2", percentualPedido: 68, curso: "Curso de Gestão e Assessoramento de Estado-Maior – 3º Turno - 2025", documento: "Adt DCEM 4A ao Bol DGP nº 146, de 22 DEZ 25", mesesFerias: ["2025-12"] }}
+          inicio="2025-12-12" fim="2025-12-31" bloqueado={false}
+          plano={planoAdicHab({ fichas: [{ ano: 2025, sistema: "sippes", linhas: [
+            { codigo: "NR0001", descricao: "SOLDO", meses: [11088, 11088, 11088, 11587, 11587, 11587, 11587, 11587, 11587, 11587, 11587, 11587] },
+            { codigo: "NR0003", descricao: "ADICIONAL DE HABILITACAO", meses: [4989.6, 4989.6, 4989.6, 5214.15, 5214.15, 5214.15, 5214.15, 5214.15, 5214.15, 5214.15, 5214.15, 5214.15] },
+            { codigo: "NR0092", descricao: "ADICIONAL DE FERIAS", meses: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7911.19, 0] }] }],
+            inicio: "2025-12-12", fim: "2025-12-31", hoje: "2026-11-25", dataRequerimento: "2026-02-19", averbacao: "BI 59 - Cmdo 7ª Bda Inf Mtz, de 31/03/2026",
+            dados: { tipo: "altos2", percentualPedido: 68, curso: "Curso de Gestão e Assessoramento de Estado-Maior – 3º Turno - 2025", documento: "Adt DCEM 4A ao Bol DGP nº 146, de 22 DEZ 25", mesesFerias: ["2025-12"] } })} />
       ) : tela === "grat-mensal" ? (
         <PainelGratMensal processoId="previa" especie={ESPECIE_GLE} dados={{ local: "Boa Vista-RR", documento: "Adt nº 198 do EM Cj da Op CATRIMANI II, de 01/01/2026" }} inicio="2025-12-20" fim="2025-12-31" bloqueado={false}
           plano={planoGratMensal({ fichas: [{ ano: 2025, sistema: "sippes", linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: [6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447, 6447] }] }],

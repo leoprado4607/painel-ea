@@ -10,6 +10,7 @@ import { carregarProcesso } from "@/lib/processo";
 import { MESES } from "@/lib/tipos";
 import { dadosGratRep, gratRepAutomatico, planoGratRep } from "@/lib/grat-rep";
 import { dadosGratMensal, gratMensalAutomatico, planoGratMensal } from "@/lib/grat-mensal";
+import { adicHabAutomatico, dadosAdicHab, planoAdicHab } from "@/lib/adic-hab";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard, tetoArt19 } from "@/lib/aux-fard";
 import { fichasLidasValidas } from "@/lib/receitas";
 import Link from "next/link";
@@ -51,6 +52,15 @@ export default async function Conferencia({ params }: { params: Promise<{ id: st
     const p = planoGratMensal({
       fichas: fichasLidasValidas(data?.fichas_lidas), especie: processo.especie_divida, inicio: processo.periodo_inicio, fim: processo.periodo_fim,
       dados: dadosGratMensal(processo.complementos), dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+    });
+    avisosGr = [...p.alertas.map((a) => `${a.codigo}: ${a.descricao}`), ...p.pendencias];
+  }
+  // Adicional de Habilitação automático: alertas e pendências do quadro
+  if (adicHabAutomatico(processo) && processo.periodo_inicio && processo.periodo_fim) {
+    const { data } = await supabase.from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
+    const p = planoAdicHab({
+      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim,
+      dados: dadosAdicHab(processo.complementos), dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
     });
     avisosGr = [...p.alertas.map((a) => `${a.codigo}: ${a.descricao}`), ...p.pendencias];
   }

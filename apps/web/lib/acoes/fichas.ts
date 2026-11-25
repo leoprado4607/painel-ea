@@ -18,6 +18,7 @@ import { CODIGOS_COMPL_SAL_MIN, complSalMinAutomatico, planoComplSalMin } from "
 import { auxFardAutomatico, CODIGOS_AUX_FARD, dadosAuxFard, planoAuxFard, rubricasAuxFard } from "@/lib/aux-fard";
 import { CODIGOS_GRAT_REP, dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "@/lib/grat-rep";
 import { CODIGOS_GLE, CODIGOS_GR_CMDO, dadosGratMensal, gratMensalAutomatico, planoGratMensal, rubricasGratMensal } from "@/lib/grat-mensal";
+import { adicHabAutomatico, CODIGOS_ADIC_HAB, dadosAdicHab, planoAdicHab, RUBRICA_ADIC_HAB, rubricasAdicHab } from "@/lib/adic-hab";
 
 type Supabase = Awaited<ReturnType<typeof sessao>>["supabase"];
 
@@ -167,9 +168,19 @@ async function montarPrevia(supabase: Supabase, processoId: string, docs: Docume
     const posicao = plano?.rubrica ? rubricasGratMensal(rubricas ?? [], plano.rubrica).posicao ?? 1 : 1;
     lancamentos = plano ? plano.recebidos.map((v) => ({ ...v, posicao })) : [];
   }
+  const autoAh = adicHabAutomatico(processo);
+  if (autoAh) {
+    // Adicional de Habilitação: o recebido (A03) é o adicional pago na ficha, no período
+    naoUsadas = naoUsadas.filter((l) => !CODIGOS_ADIC_HAB.has(l.codigo.trim().toUpperCase()));
+    const plano = processo.periodo_inicio && processo.periodo_fim
+      ? planoAdicHab({ fichas, inicio: processo.periodo_inicio, fim: processo.periodo_fim, dados: dadosAdicHab(processo.complementos), dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10) })
+      : null;
+    const posicao = rubricasAdicHab((rubricas ?? []).map((r) => ({ posicao: r.posicao, codigo: r.codigo ?? "", tipo: r.tipo ?? "" })), [RUBRICA_ADIC_HAB]).posicoes[RUBRICA_ADIC_HAB] ?? 1;
+    lancamentos = plano ? (plano.recebidos[RUBRICA_ADIC_HAB] ?? []).map((v) => ({ ...v, posicao })) : [];
+  }
   const pendencia = !processo.periodo_inicio || !processo.periodo_fim
     ? "O período da dívida ainda não foi informado: as receitas serão preenchidas quando ele for salvo."
-    : auto || autoGr || autoAf || autoGm ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
+    : auto || autoGr || autoAf || autoGm || autoAh ? undefined : !receitas.length ? "Nenhuma rubrica de receita escolhida em Códigos lançamento: as receitas serão preenchidas quando elas forem salvas." : undefined;
   return {
     documentos: docs, resumo: docs.map(resumir), dados: dadosDoFavorecido(docs),
     divergenciasMilitar: compararMilitar(docs, (processo.militar ?? {}) as unknown as Record<string, string | null>),
@@ -232,7 +243,7 @@ export async function gravarRecebidos(processoId: string, docs: DocumentoExtraid
 }
 
 /** Peças de texto do processo completo (campo "processo", JSON vindo do navegador), validadas e lidas. */
-function lerProcessoDoFormulario(form: FormData, especie: "aux-fard" | "grat-rep") {
+function lerProcessoDoFormulario(form: FormData, especie: "aux-fard" | "grat-rep" | "adic-hab") {
   const bruto = form.get("processo");
   if (typeof bruto !== "string" || !bruto) return null;
   let lista: unknown;
@@ -252,14 +263,14 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const omId = await omParaNovoProcesso(supabase, perfil, String(form.get("om_id") ?? "") || null);
     const card = cardNovoCalculo(String(form.get("especie") ?? ""));
     // processo completo (Auxílio-fardamento e Gratificação de Representação): as peças lidas no navegador, para pré-preencher
-    const leitura = card?.id === "aux-fard" || card?.id === "grat-rep" ? lerProcessoDoFormulario(form, card.id) : null;
+    const leitura = card?.id === "aux-fard" || card?.id === "grat-rep" || card?.id === "adic-hab" ? lerProcessoDoFormulario(form, card.id) : null;
     const docs = await lerArquivos(form);
     if (!docs.some((d) => d.tipo === "ficha")) {
       return { erro: leitura ? "O processo não tem ficha financeira com texto (as digitalizadas não são lidas): envie também as fichas baixadas do SIPPES ou do SIAPPES." : "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
     }
     // contracheque obrigatório, salvo no Auxílio-fardamento e na Grat Rep pelo processo completo (decisões de 25/11/2026:
     // os dados bancários ficam para Informações)
-    const contrachequeOpcional = card?.id === "aux-fard" || (card?.id === "grat-rep" && !!leitura);
+    const contrachequeOpcional = card?.id === "aux-fard" || ((card?.id === "grat-rep" || card?.id === "adic-hab") && !!leitura);
     if (!contrachequeOpcional && !docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
     if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
@@ -275,10 +286,11 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
       // card escolhido em "Novo cálculo": espécie já definida (em "Demais assuntos", o operador escolhe em Informações)
       especie_divida: card?.especie ?? null,
       complementos: {
-        calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true, calculoAutomaticoGratMensal: true,
+        calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true, calculoAutomaticoGratMensal: true, calculoAutomaticoAdicHab: true,
         ...(leitura ? { leituraProcesso: { pecas: leitura.pecas, avisos: leitura.avisos } } : {}),
         ...(leitura && card?.id === "aux-fard" ? { auxFard: leitura.auxFard } : {}),
         ...(leitura?.gratRep ? { gratRep: leitura.gratRep } : {}),
+        ...(leitura?.adicHab ? { adicHab: leitura.adicHab } : {}),
       },
       // o que o processo completo trouxe (o operador confere em Informações)
       ...(leitura ? {

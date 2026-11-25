@@ -12,6 +12,7 @@ import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin } from "./
 import type { DocumentoExtraido } from "./favorecido";
 import { dadosGratRep, gratRepAutomatico, planoGratRep, rubricasGratRep } from "./grat-rep";
 import { dadosGratMensal, gratMensalAutomatico, planoGratMensal, rubricasGratMensal } from "./grat-mensal";
+import { adicHabAutomatico, dadosAdicHab, planoAdicHab, RUBRICA_ADIC_HAB, rubricasAdicHab } from "./adic-hab";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard, rubricasAuxFard } from "./aux-fard";
 import { recebidosPosPeriodo } from "./pos-periodo";
 import type { sessao } from "./sessao";
@@ -82,6 +83,7 @@ export async function preencherReceitas(supabase: Supabase, processoId: string):
   if (complSalMinAutomatico(p)) return preencherComplSalMin(supabase, processoId, p);
   if (gratRepAutomatico(p)) return preencherGratRep(supabase, processoId, p);
   if (gratMensalAutomatico(p)) return preencherGratMensal(supabase, processoId, p);
+  if (adicHabAutomatico(p)) return preencherAdicHab(supabase, processoId, p);
   if (auxFardAutomatico(p)) return preencherAuxFard(supabase, processoId, p);
   const [{ data: rubricas }, existentes, tabela] = await Promise.all([
     supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
@@ -199,6 +201,36 @@ async function preencherGratRep(
       if (error) throw new Error(error.message);
     }
   }
+  return n;
+}
+
+/**
+ * Adicional de Habilitação (lib/adic-hab): A03 devido (percentual da lei) e recebido (o da ficha) mês a mês; reflexos
+ * (A85 natalino, AD2 férias) e descontos (Z01, Z02, ZM7) como devidos. Os digitados ficam.
+ */
+async function preencherAdicHab(
+  supabase: Supabase, processoId: string,
+  p: { periodo_inicio: string | null; periodo_fim: string | null; fichas_lidas: unknown; complementos: unknown; data_requerimento: string | null },
+) {
+  const [{ data: rubricas }, lanc] = await Promise.all([
+    supabase.from("processo_rubrica").select("posicao, codigo, tipo").eq("processo_id", processoId),
+    buscarTodas<Existente & { tipo: string }>((de, ate) => supabase.from("lancamento").select("tipo, ano, mes, posicao, origem").eq("processo_id", processoId)
+      .order("tipo").order("ano").order("mes").order("posicao").range(de, ate)),
+  ]);
+  const plano = p.periodo_inicio && p.periodo_fim
+    ? planoAdicHab({ fichas: fichasLidasValidas(p.fichas_lidas), inicio: p.periodo_inicio, fim: p.periodo_fim, dados: dadosAdicHab(p.complementos), dataRequerimento: p.data_requerimento, hoje: hoje() })
+    : null;
+  const codigos = plano ? [...new Set([RUBRICA_ADIC_HAB, ...Object.keys(plano.devidos).filter((c) => plano.devidos[c]!.length)])] : [RUBRICA_ADIC_HAB];
+  const { mudadas, posicoes } = rubricasAdicHab((rubricas ?? []).map((r) => ({ posicao: r.posicao, codigo: r.codigo ?? "", tipo: r.tipo ?? "" })), codigos);
+  if (mudadas.length) {
+    const { error } = await supabase.from("processo_rubrica")
+      .upsert(mudadas.map((x) => ({ processo_id: processoId, posicao: x.posicao, codigo: x.codigo, tipo: x.tipo })));
+    if (error) throw new Error(error.message);
+  }
+  const naPosicao = (porRubrica: Record<string, { ano: number; mes: number; valor: number }[]>): Valor[] =>
+    Object.entries(porRubrica).flatMap(([c, l]) => (posicoes[c] === undefined ? [] : l.map((v) => ({ ...v, posicao: posicoes[c]! }))));
+  const n = await regravarAutomaticos(supabase, processoId, "recebido", lanc.filter((l) => l.tipo === "recebido"), naPosicao(plano?.recebidos ?? {}));
+  await regravarAutomaticos(supabase, processoId, "devido", lanc.filter((l) => l.tipo === "devido"), naPosicao(plano?.devidos ?? {}));
   return n;
 }
 

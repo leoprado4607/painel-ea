@@ -1,3 +1,4 @@
+import { ESPECIE_ADIC_HAB } from "@/lib/adic-hab";
 import { ESPECIE_AUX_FARD } from "@/lib/aux-fard";
 import { ESPECIE_COMPL_SAL_MIN } from "@/lib/compl-sal-min";
 import { ESPECIE_GLE, ESPECIE_GR_CMDO } from "@/lib/grat-mensal";
@@ -11,6 +12,8 @@ export const CARDS_NOVO_CALCULO = [
     resumo: "2% do soldo por dia de evento não pago na época." },
   { id: "aux-fard", titulo: "Auxílio-fardamento", especie: ESPECIE_AUX_FARD, automatico: true,
     resumo: "Diferença devida pelo 2º fato gerador (art. 61 ou mesma data)." },
+  { id: "adic-hab", titulo: "Adicional de Habilitação", especie: ESPECIE_ADIC_HAB, automatico: true,
+    resumo: "Diferença do percentual pela conclusão de curso (tabela da Lei 13.954)." },
   { id: "grat-loc", titulo: "Gratificação de Localidade Especial", especie: ESPECIE_GLE, automatico: true,
     resumo: "20% (A) ou 10% (B) do soldo por mês na localidade especial." },
   { id: "grat-cmdo", titulo: "Gratificação de Representação de Comando", especie: ESPECIE_GR_CMDO, automatico: true,
