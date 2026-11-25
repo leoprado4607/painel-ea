@@ -65,10 +65,6 @@ export function NovoPorProcesso({ oms = [], especie }: { oms?: { id: string; nom
         if (r.tipo === "ficha" || r.tipo === "contracheque") documentos.push(arquivo);
       }
       setProgresso(null);
-      // o contracheque é obrigatório (dados bancários): no processo ou no campo ao lado
-      if (!lidas.some((p) => p.tipo === "contracheque")) {
-        throw new Error("Não encontrei contracheque com os dados bancários no processo. Selecione o contracheque (PDF do CPEx ou a 2ª via do SIPPES) no campo “Contracheque” e envie de novo.");
-      }
       const fd = new FormData();
       fd.append("especie", especie);
       if (omId) fd.append("om_id", omId);
@@ -90,8 +86,8 @@ export function NovoPorProcesso({ oms = [], especie }: { oms?: { id: string; nom
       <p className="text-sm text-suave">
         Selecione o ZIP do processo baixado do SPED (ou as peças em PDF), sem os cálculos e o protocolo do CPEx. O sistema lê as fichas financeiras e, das demais
         peças, o NUP, a data do requerimento, o BI de averbação, a data e o posto da promoção, a declaração e o reconhecimento da dívida. Peças digitalizadas
-        (só imagem) não são lidas. Como o processo costuma vir sem contracheque, selecione-o no campo “Contracheque” (obrigatório, para os dados
-        bancários); se as fichas do processo forem digitalizadas, acrescente no mesmo campo as fichas baixadas do SIPPES ou do SIAPPES.
+        (só imagem) não são lidas. O contracheque não é obrigatório no Auxílio-fardamento: se tiver, selecione-o no campo “Contracheque” (dá os dados
+        bancários); sem ele, preencha banco, agência e conta em Informações. Se as fichas do processo forem digitalizadas, acrescente no mesmo campo as fichas baixadas do SIPPES ou do SIAPPES.
         Os arquivos são lidos e descartados.
       </p>
       {erro && <Aviso tipo="erro">{erro}</Aviso>}
@@ -104,7 +100,7 @@ export function NovoPorProcesso({ oms = [], especie }: { oms?: { id: string; nom
             className="text-sm file:mr-3 file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
         </div>
         <div>
-          <label htmlFor="processo-avulsos" className="rotulo">Contracheque (obrigatório, se não estiver no processo) e fichas do SIPPES/SIAPPES</label>
+          <label htmlFor="processo-avulsos" className="rotulo">Contracheque (opcional) e fichas do SIPPES/SIAPPES</label>
           <input id="processo-avulsos" name="processo-avulsos" type="file" accept="application/pdf,.pdf" multiple disabled={ocupado}
             className="text-sm file:mr-3 file:border file:border-borda file:bg-white file:px-3 file:py-1.5 file:text-sm" />
         </div>

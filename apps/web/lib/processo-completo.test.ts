@@ -28,6 +28,7 @@ describe("processo completo do Auxílio-fardamento", () => {
     expect(l.auxFard.reconhecimento).toBe(true);
     expect(l.averbacao).toBeNull();
     expect(l.avisos.join(" ")).toMatch(/grandes demais.*Parecer da CONJUR/);
+    expect(l.avisos.join(" ")).toMatch(/Sem contracheque/);
     expect(l.avisos.join(" ")).toMatch(/BI de averbação/);
   });
 

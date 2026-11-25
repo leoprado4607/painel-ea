@@ -182,6 +182,7 @@ export function lerProcesso(pecas: Peca[]): LeituraProcesso {
   const grandes = pecas.filter((p) => p.tipo === "grande");
   if (grandes.length) avisos.push(`Peças grandes demais para ler (mais de 4 MB), conferidas só pelo nome: ${grandes.map((p) => p.nome).join("; ")}.`);
   if (!pecas.some((p) => p.tipo === "ficha")) avisos.push("Nenhuma ficha financeira com texto no processo: envie as fichas baixadas do SIPPES ou do SIAPPES.");
+  if (!pecas.some((p) => p.tipo === "contracheque")) avisos.push("Sem contracheque: preencha banco, agência e conta em Informações.");
   if (!nup) avisos.push("Não encontrei o NUP na capa do processo: preencha o Nº do processo em Informações.");
   if (!dataRequerimento) avisos.push("Não encontrei a data do requerimento: preencha em Informações.");
   if (!averbacao) avisos.push("Não encontrei o BI de averbação do requerimento: preencha em Informações.");

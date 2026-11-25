@@ -252,8 +252,8 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     if (!docs.some((d) => d.tipo === "ficha")) {
       return { erro: leitura ? "O processo não tem ficha financeira com texto (as digitalizadas não são lidas): envie também as fichas baixadas do SIPPES ou do SIAPPES." : "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
     }
-    // contracheque obrigatório também no processo completo (enviado junto, no campo próprio)
-    if (!docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
+    // contracheque obrigatório, salvo no Auxílio-fardamento (decisão de 25/11/2026: os dados bancários ficam para Informações)
+    if (card?.id !== "aux-fard" && !docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
     if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
     const { data: m, error: e1 } = await supabase.from("militar").insert({

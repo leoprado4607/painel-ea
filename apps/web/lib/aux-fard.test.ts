@@ -17,7 +17,8 @@ describe("Auxílio-fardamento automático", () => {
 
   it("caso de teste 1 (NUP 64241.005879/2026-73): Aspirante → 2º Ten em menos de 1 ano, art. 61", () => {
     const fichas = [
-      ficha(2021, linha("NR0001", { 7: 7315, 12: 7315 }), linha("NR0056", { 7: 7315 })),
+      // jul/2021: soldo proporcional (praça em 12 JUL); o cheio aparece em ago
+      ficha(2021, linha("NR0001", { 7: 4954.84, 8: 7315, 12: 7315 }), linha("NR0056", { 7: 7315 })),
       ficha(2022, linha("NR0001", { 1: 7490 }), linha("NR0056", { 1: 175 })),
     ];
     const p = planoAuxFard({

@@ -207,7 +207,10 @@ export function planoAuxFard(entrada: {
   let soldo1: number | null = null;
   if (caso === "art61" && pagos1.length) {
     const p = pagos1[0]!;
-    const base = soldoNoMes(p.ano, p.mes) ?? (data1 && categoriaSoldo(f1.categoria) ? soldoNaData(f1.categoria, data1) : null);
+    // soldo cheio: no mês da incorporação ou do fato, a NR0001 pode ser proporcional (Laurence: praça em 12 JUL 21);
+    // vale o maior entre o mês do pagamento e os 2 seguintes
+    const meses3 = [0, 1, 2].map((d) => soldoNoMes(p.ano + Math.floor((p.mes - 1 + d) / 12), ((p.mes - 1 + d) % 12) + 1)).filter((v): v is number => v !== null);
+    const base = (meses3.length ? Math.max(...meses3) : null) ?? (data1 && categoriaSoldo(f1.categoria) ? soldoNaData(f1.categoria, data1) : null);
     if (base) {
       const m = Math.round((valorPago1 / base) * 100) / 100;
       soldo1 = base;
