@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+import { CardsNovoCalculo } from "@/components/CardsNovoCalculo";
+import { NovoPorFichas } from "@/components/NovoPorFichas";
 import { AbaDocumento } from "@/components/AbaDocumento";
 import { AbasProcesso } from "@/components/AbasProcesso";
 import { DadosFavorecido } from "@/components/DadosFavorecido";
@@ -46,7 +48,11 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           </main>
         </div>
         </ProvedorProcesso>
-      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "aux-fard" ? (
+      ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "novo" ? (
+        <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo</h1><p className="text-sm text-suave">Escolha o assunto do cálculo.</p><CardsNovoCalculo /></div>
+      ) : tela === "novo-envio" ? (
+        <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo: Auxílio-fardamento</h1><NovoPorFichas especie="aux-fard" /></div>
+      ) : tela === "aux-fard" ? (
         // caso de teste 1 do prompt do Auxílio-fardamento (NUP 64241.005879/2026-73)
         (() => {
           const meses = (m: Record<number, number>) => Array.from({ length: 12 }, (_, i) => m[i + 1] ?? 0);

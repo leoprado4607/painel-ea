@@ -4,6 +4,7 @@
  * vão para a tela de revisão e, depois de confirmados, para o banco (decisão de 19/10/2026: nada de guardar os PDFs).
  */
 import { aplicarCorrespondencia, lerDocumentosPdf, PdfSemTexto, type FichaFinanceira } from "@painel-ea/leitor-ficha";
+import { cardNovoCalculo } from "@/lib/novo-calculo";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { dadosDoFavorecido, fichaValida, periodoDosDocumentos, type DadosLidos, type DocumentoExtraido } from "@/lib/favorecido";
@@ -227,6 +228,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const docs = await lerArquivos(form);
     // o período da dívida fica em branco: o operador preenche (obrigatório) em Informações
     if (!docs.some((d) => d.tipo === "ficha")) return { erro: "Envie pelo menos uma ficha financeira: o contracheque só traz os dados bancários." };
+    if (!docs.some((d) => d.tipo === "contracheque")) return { erro: "Envie também o contracheque: ele é obrigatório e traz os dados bancários." };
     if (!periodoDosDocumentos(docs)) return { erro: "As fichas financeiras enviadas não têm valores." };
     const dados = dadosDoFavorecido(docs);
     const { data: m, error: e1 } = await supabase.from("militar").insert({
@@ -238,6 +240,8 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     // receitas só depois de escolhidas as rubricas e informado o período (preencherReceitas)
     const { data: p, error: e2 } = await supabase.from("processo").insert({
       om_id: omId, militar_id: m.id, periodo_inicio: null, periodo_fim: null, fichas_lidas: fichasLidasDosDocumentos(docs),
+      // card escolhido em "Novo cálculo": espécie já definida (em "Demais assuntos", o operador escolhe em Informações)
+      especie_divida: cardNovoCalculo(String(form.get("especie") ?? ""))?.especie ?? null,
       complementos: { calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true },
     }).select("id").single();
     if (e2) return { erro: e2.message };

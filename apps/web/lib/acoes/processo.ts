@@ -2,7 +2,7 @@
 import { cpfValido, normalizarFormatado, precCpValido, textoSemFormatacao } from "@painel-ea/engine";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { ehDonoDoProcesso, inserirRubricasIniciais, omParaNovoProcesso } from "@/lib/processo";
+import { ehDonoDoProcesso } from "@/lib/processo";
 import { postoAbreviado } from "@/lib/postos";
 import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
@@ -34,7 +34,7 @@ const txt = (f: FormData, k: string) => {
 const dataPeriodo = (v: string | null) => (!v ? null : /^\d{4}-\d{2}$/.test(v) ? `${v}-01` : /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
 
 export async function salvarProcesso(processoId: string | null, _: EstadoForm | undefined, f: FormData): Promise<EstadoForm> {
-  const { supabase, perfil } = await sessao();
+  const { supabase } = await sessao();
   const campos: Record<string, string> = {};
   // todos os campos são obrigatórios (decisão de 21/10/2026); o Nr Adt e o BI/BAR do Adt, só quando o documento é "Adt"
   for (const k of [...OBRIGATORIOS, ...(txt(f, "documento_averbacao") === "Adt" ? ["adt_numero", "adt_boletim"] : [])]) {
@@ -112,21 +112,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     redirect(`/processos/${processoId}/rubricas`);
   }
 
-  let omId: string;
-  try {
-    omId = await omParaNovoProcesso(supabase, perfil, txt(f, "om_id"));
-  } catch (e) {
-    return { erro: (e as Error).message, campos: { om_id: (e as Error).message } };
-  }
-  const { data: m, error: e1 } = await supabase.from("militar").insert({ ...militar, om_id: omId }).select("id").single();
-  if (e1) return { erro: e1.message };
-  const { data: p, error: e2 } = await supabase.from("processo").insert({ ...processo, complementos: { ...quadros, calculoAutomatico: true, calculoAutomaticoGratRep: true, calculoAutomaticoAuxFard: true }, om_id: omId, militar_id: m.id }).select("id").single();
-  if (e2) return { erro: e2.message };
-  const { error: e3 } = await inserirRubricasIniciais(supabase, p.id);
-  if (e3) return { erro: e3.message };
-  // complemento de salário mínimo: já escolhe a rubrica AGA em Códigos lançamento
-  try { await preencherReceitas(supabase, p.id); } catch (e) { return { erro: (e as Error).message }; }
-  redirect(`/processos/${p.id}/rubricas`);
+  // processo novo só pelos documentos (fichas financeiras e contracheque obrigatórios): ver criarProcessoDeDocumentos
+  return { erro: "Para criar um cálculo, use “Novo cálculo” e envie as fichas financeiras e o contracheque." };
 }
 
 /**
