@@ -70,21 +70,6 @@ export function PainelGratMensal({ processoId, especie, dados, plano, inicio, fi
           <p className="ajuda">Posto/graduação: {plano.categoria ? `${categoriaSoldo(plano.categoria)!.nome}${plano.categoriaSugerida ? " (sugerido)" : ""}` : "—"}
             {!comando && ` · Categoria: ${plano.localidade ?? "—"}${plano.localidade && !d.localidade ? " (sugerida)" : ""}`}</p>
         </div>
-        <div className="space-y-3">
-          {plano.alertas.length > 0 && (
-            <Aviso tipo="atencao">
-              <p className="font-semibold">Alertas</p>
-              <ul className="mt-1 list-disc space-y-1 pl-5">{plano.alertas.map((a, i) => <li key={i}><b>{a.codigo}</b>: {a.descricao}</li>)}</ul>
-            </Aviso>
-          )}
-          {plano.pendencias.length > 0 && (
-            <Aviso tipo="info">
-              <p className="font-semibold">Pendências</p>
-              <ul className="mt-1 list-disc space-y-1 pl-5">{plano.pendencias.map((p, i) => <li key={i}>{p}</li>)}</ul>
-            </Aviso>
-          )}
-          {!plano.alertas.length && !plano.pendencias.length && <Aviso tipo="ok">Sem alertas nem pendências.</Aviso>}
-        </div>
       </div>
 
       <fieldset disabled={bloqueado} className="space-y-5">

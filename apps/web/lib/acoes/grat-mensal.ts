@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { LIMITE_DOCUMENTO } from "@/lib/amparo";
+import { textoBoletim } from "@/lib/averbacao";
 import { gratMensalAutomatico, planoGratMensal, type DadosGratMensal } from "@/lib/grat-mensal";
 import { fichasLidasValidas, preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
@@ -26,7 +27,7 @@ export async function salvarGratMensal(processoId: string, dados: DadosGratMensa
   try {
     const { supabase } = await sessao();
     const { data: p } = await supabase.from("processo")
-      .select("situacao, especie_divida, complementos, periodo_inicio, periodo_fim, fichas_lidas, data_requerimento").eq("id", processoId).maybeSingle();
+      .select("situacao, especie_divida, complementos, periodo_inicio, periodo_fim, fichas_lidas, data_requerimento, documento_averbacao, adt_numero, adt_boletim, bi_numero, bi_data, om_averbacao").eq("id", processoId).maybeSingle();
     if (!p) return { erro: "Processo não encontrado." };
     if (p.situacao !== "rascunho") return { erro: "Processo já emitido. Use “Corrigir” na aba Impressão para alterar." };
     if (!gratMensalAutomatico(p)) return { erro: "Este processo não usa o cálculo automático desta gratificação." };
@@ -35,7 +36,7 @@ export async function salvarGratMensal(processoId: string, dados: DadosGratMensa
     if (usarTextos && p.periodo_inicio && p.periodo_fim) {
       const plano = planoGratMensal({
         fichas: fichasLidasValidas(p.fichas_lidas), especie: p.especie_divida, inicio: p.periodo_inicio, fim: p.periodo_fim, dados: gratMensal,
-        dataRequerimento: p.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+        dataRequerimento: p.data_requerimento, averbacao: textoBoletim(p), hoje: new Date().toISOString().slice(0, 10),
       });
       if (plano.textos.explicacao) complementos.explicacao = plano.textos.explicacao;
       if (plano.textos.documentos.length) complementos.amparo = plano.textos.documentos.join("\n");

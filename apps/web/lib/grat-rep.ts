@@ -139,6 +139,8 @@ const somarPorMes = (lista: { ano: number; mes: number; valor: number }[]): Valo
 export function planoGratRep(entrada: {
   fichas: FichaLida[]; inicio: string; fim: string; dados: DadosGratRep;
   dataRequerimento?: string | null; hoje: string;
+  /** texto do documento de averbação (entra no documento que materializou o direito) */
+  averbacao?: string | null;
 }): PlanoGratRep {
   const { fichas, inicio, fim, dados } = entrada;
   const competencia = { ano: Number(inicio.slice(0, 4)), mes: Number(inicio.slice(5, 7)) };
@@ -236,7 +238,7 @@ export function planoGratRep(entrada: {
     const local = dados.evento?.local?.trim();
     explicacao = `O militar requer o pagamento da Gratificação de Representação por ter participado da atividade “${natureza}”${local ? `, em ${local}` : ""}, no período de ${br(inicio)} a ${br(fim)}, deixando de recebê-la à época dos fatos.${explicacao ? ` ${explicacao}` : ""}`;
   }
-  const documentos = [aut.documento, aut.transcricao].map((d) => (d ?? "").trim()).filter(Boolean);
+  const documentos = [aut.documento, aut.transcricao, entrada.averbacao?.slice(0, 100)].map((d) => (d ?? "").trim()).filter(Boolean);
 
   return {
     categoria, categoriaSugerida, soldo, soldoFicha, valorDiario, dias, devido, competencia, lancamentosGr, recebidos, posPeriodo,

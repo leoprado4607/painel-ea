@@ -1,6 +1,5 @@
 "use client";
 import type { LeituraGuardada } from "@/lib/processo-completo";
-import { LeituraDoProcesso } from "@/components/LeituraDoProcesso";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
@@ -17,7 +16,7 @@ const R = (v: number | null) => (v === null ? "—" : `R$ ${formatarReais(v)}`);
  * "Lançar valor devido" do Auxílio-fardamento automático (lib/aux-fard): caso (art. 61 ou triênio + promoção na mesma
  * data), fatos geradores, ligação dos pagamentos das fichas, conferências do Parecer 645, cálculo, alertas e textos.
  */
-export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: {
+export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
   processoId: string; dados: DadosAuxFard; plano: PlanoAuxFard; bloqueado: boolean;
   /** O que veio do processo completo (lib/processo-completo), quando o cálculo começou por ele. */
   leitura?: LeituraGuardada | null;
@@ -30,7 +29,6 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: 
   const [salvando, iniciar] = useTransition();
   const mesmaData = d.caso === "mesma_data";
   const mudarFato = (n: "fato1" | "fato2", campo: Partial<FatoGerador>) => setD((x) => ({ ...x, [n]: { ...x[n], ...campo } }));
-  const marcar = (campo: keyof DadosAuxFard) => (e: React.ChangeEvent<HTMLInputElement>) => setD((x) => ({ ...x, [campo]: e.target.checked }));
 
   const salvar = () => iniciar(async () => {
     const envio: DadosAuxFard = mesmaData
@@ -76,12 +74,6 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: 
       </select>
     </div>
   );
-  const caixa = (campo: keyof DadosAuxFard, texto: string) => (
-    <label className="flex items-start gap-2 text-sm">
-      <input type="checkbox" className="mt-1" checked={!!d[campo]} onChange={marcar(campo)} />
-      <span>{texto}</span>
-    </label>
-  );
 
   return (
     <section className="cartao space-y-5" aria-labelledby="aux-fard-titulo">
@@ -92,8 +84,6 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: 
           (competência), corrigido como as demais espécies (IPCA até ago/2025 e IPCA-E depois). Informe os fatos geradores e confira a ligação dos pagamentos das fichas.
         </p>
       </div>
-
-      {leitura && <LeituraDoProcesso leitura={leitura} />}
 
       <div className="grid gap-5 lg:grid-cols-2">
         <div>
@@ -109,21 +99,6 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: 
           {linha("Competência", plano.competencia ? `${MESES_CURTOS[plano.competencia.mes - 1]}/${plano.competencia.ano}` : "—")}
           {linha("Rubrica", plano.rubrica)}
           {plano.prescricao && linha("Limite da prescrição (5 anos do 2º fato)", br(plano.prescricao.limite))}
-        </div>
-        <div className="space-y-3">
-          {plano.alertas.length > 0 && (
-            <Aviso tipo="atencao">
-              <p className="font-semibold">Alertas</p>
-              <ul className="mt-1 list-disc space-y-1 pl-5">{plano.alertas.map((a, i) => <li key={i}><b>{a.codigo}</b>: {a.descricao}</li>)}</ul>
-            </Aviso>
-          )}
-          {plano.pendencias.length > 0 && (
-            <Aviso tipo="info">
-              <p className="font-semibold">Pendências</p>
-              <ul className="mt-1 list-disc space-y-1 pl-5">{plano.pendencias.map((p, i) => <li key={i}>{p}</li>)}</ul>
-            </Aviso>
-          )}
-          {!plano.alertas.length && !plano.pendencias.length && <Aviso tipo="ok">Sem alertas nem pendências.</Aviso>}
         </div>
       </div>
 
@@ -203,22 +178,6 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado, leitura }: 
               ))}
             </ul>
           )}
-        </div>
-
-        <div className="space-y-2">
-          <h3 className="rotulo-secao">Conferências</h3>
-          {caixa("declaracaoSemAcao", "Declaração de inexistência de ação judicial (ou de desistência homologada) anexada.")}
-          {caixa("reconhecimento", "Adt/BI de reconhecimento da dívida (arts. 16 e 17 da Port C Ex 1.746/2022) anexado.")}
-          {caixa("semControversia", "Não há controvérsia jurídica específica no caso, nem pagamento anterior judicial ou administrativo (Parecer 645, item 67).")}
-          {caixa("anexosConferidos", "Todos os anexos anunciados no DIEx de encaminhamento estão no processo.")}
-          {caixa("prescricaoInterrompida", "Houve interrupção ou suspensão do prazo prescricional (Parecer 645, item 66).")}
-          {caixa("reintegradoSemExpediente", "Reintegrado judicial que não responde a expediente.")}
-          {d.reintegradoSemExpediente && caixa("ordemJudicial", "A decisão judicial manda pagar o auxílio-fardamento.")}
-          <div>
-            <label htmlFor="af-relacionados" className="rotulo">Outros processos de auxílio-fardamento do militar (NUP e objeto)</label>
-            <input id="af-relacionados" className="entrada" value={d.relacionados ?? ""} placeholder="Ex.: 64241.005869/2026-38 – triênio de 25/12/2024"
-              onChange={(e) => setD((x) => ({ ...x, relacionados: e.target.value }))} />
-          </div>
         </div>
 
         {(plano.textos.explicacao || plano.textos.documentos.length > 0) && (

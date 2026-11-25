@@ -121,6 +121,8 @@ const somarPorMes = (lista: { ano: number; mes: number; valor: number }[]): Valo
 export function planoGratMensal(entrada: {
   fichas: FichaLida[]; especie: string | null | undefined; inicio: string; fim: string; dados: DadosGratMensal;
   dataRequerimento?: string | null; hoje: string;
+  /** texto do documento de averbação (entra no documento que materializou o direito) */
+  averbacao?: string | null;
 }): PlanoGratMensal {
   const { fichas, inicio, fim, dados, hoje } = entrada;
   const alertas: Alerta[] = [];
@@ -204,7 +206,7 @@ export function planoGratMensal(entrada: {
   const explicacao = entrada.especie === ESPECIE_GR_CMDO
     ? `O militar requer o pagamento da Gratificação de Representação (10% do soldo) pelo exercício de cargo de comando, direção ou chefia${local ? ` (${local})` : ""}, no período de ${br(inicio)} a ${br(fim)}, deixando de recebê-la à época dos fatos.`
     : `O militar requer o pagamento da Gratificação de Localidade Especial (categoria ${localidade ?? "?"}) por ter permanecido${local ? ` em ${local}` : " em localidade especial"}, no período de ${br(inicio)} a ${br(fim)}, deixando de recebê-la à época dos fatos.`;
-  const documentos = dados.documento?.trim() ? [dados.documento.trim().slice(0, 100)] : [];
+  const documentos = [dados.documento?.trim().slice(0, 100), entrada.averbacao?.trim().slice(0, 100)].filter((d): d is string => !!d);
   return { tipo, localidade, sugestao, rubrica, categoria, categoriaSugerida, meses, devidos, recebidos, posPeriodo, lancamentos, notas, alertas, pendencias, textos: { explicacao, documentos } };
 }
 

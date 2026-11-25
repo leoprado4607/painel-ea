@@ -1,6 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { LIMITE_DOCUMENTO } from "@/lib/amparo";
+import { textoBoletim } from "@/lib/averbacao";
 import { gratRepAutomatico, planoGratRep, type DadosGratRep } from "@/lib/grat-rep";
 import { fichasLidasValidas, preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
@@ -35,7 +36,7 @@ export async function salvarGratRep(processoId: string, dados: DadosGratRep, usa
   try {
     const { supabase } = await sessao();
     const { data: p } = await supabase.from("processo")
-      .select("situacao, especie_divida, complementos, periodo_inicio, periodo_fim, fichas_lidas, data_requerimento").eq("id", processoId).maybeSingle();
+      .select("situacao, especie_divida, complementos, periodo_inicio, periodo_fim, fichas_lidas, data_requerimento, documento_averbacao, adt_numero, adt_boletim, bi_numero, bi_data, om_averbacao").eq("id", processoId).maybeSingle();
     if (!p) return { erro: "Processo não encontrado." };
     if (p.situacao !== "rascunho") return { erro: "Processo já emitido. Use “Corrigir” na aba Impressão para alterar." };
     if (!gratRepAutomatico(p)) return { erro: "Este processo não usa o cálculo automático da Gratificação de Representação." };
@@ -44,7 +45,7 @@ export async function salvarGratRep(processoId: string, dados: DadosGratRep, usa
     if (usarTextos && p.periodo_inicio && p.periodo_fim) {
       const plano = planoGratRep({
         fichas: fichasLidasValidas(p.fichas_lidas), inicio: p.periodo_inicio, fim: p.periodo_fim, dados: gratRep,
-        dataRequerimento: p.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+        dataRequerimento: p.data_requerimento, averbacao: textoBoletim(p), hoje: new Date().toISOString().slice(0, 10),
       });
       if (plano.textos.explicacao) complementos.explicacao = plano.textos.explicacao;
       if (plano.textos.documentos.length) complementos.amparo = plano.textos.documentos.join("\n");

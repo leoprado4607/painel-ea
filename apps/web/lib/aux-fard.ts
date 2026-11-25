@@ -158,7 +158,7 @@ function linhas(fichas: FichaLida[], codigos: Set<string>) {
 
 /**
  * @param periodoInicio início do período da dívida ("AAAA-MM-DD"): deve ser o mês da competência
- * @param averbacao texto do BI de averbação (não entra nos textos: o verso tem a coluna "Boletim que Averbou")
+ * @param averbacao texto do documento de averbação (entra também no documento que materializou o direito)
  * @param hoje "AAAA-MM-DD" (data da análise)
  */
 export function planoAuxFard(entrada: {
@@ -295,10 +295,6 @@ export function planoAuxFard(entrada: {
   if (competencia && !fichas.some((f) => f.ano === competencia.ano)) alertas.push({ codigo: "FICHA_AUSENTE", descricao: `Falta a ficha financeira de ${competencia.ano} (ano do 2º fato).` });
 
   // conferências do Parecer 645 (item 67) e elegibilidade
-  if (!dados.declaracaoSemAcao) alertas.push({ codigo: "DECLARACAO_AUSENTE", descricao: "Falta a declaração de inexistência de ação judicial (ou de desistência homologada)." });
-  if (!dados.reconhecimento) alertas.push({ codigo: "RECONHECIMENTO_AUSENTE", descricao: "Falta o Adt/BI de reconhecimento da dívida (arts. 16 e 17 da Port C Ex 1.746/2022)." });
-  if (!dados.semControversia) pendencias.push("Confirme que não há controvérsia jurídica específica no caso (Parecer 645, item 67).");
-  if (!dados.anexosConferidos) pendencias.push("Confira se todos os anexos anunciados no DIEx de encaminhamento estão no processo.");
   if (dados.reintegradoSemExpediente && !dados.ordemJudicial) alertas.push({ codigo: "INELEGIVEL", descricao: "Reintegrado judicial que não responde a expediente não tem direito ao auxílio-fardamento, salvo ordem judicial expressa (DIEx 757-ASSE1/SEF)." });
   if (dados.relacionados?.trim()) alertas.push({ codigo: "PROCESSO_RELACIONADO", descricao: `Outro processo de auxílio-fardamento do militar: ${dados.relacionados.trim()}. Confirme que não trata do mesmo fato gerador.` });
 
@@ -321,8 +317,8 @@ export function planoAuxFard(entrada: {
       ? `O militar completou 3 anos ${categoriaSoldo(f1.categoria) ? `${NA_GRADUACAO(f1.categoria!)} ${categoriaSoldo(f1.categoria)!.nome} ` : "no mesmo posto ou graduação "}e foi promovido na mesma data (${dataCurta(data2)})${posto}; na época, só recebeu o auxílio-fardamento da promoção, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
       : `O militar ${f2.tipo === "promocao" || !f2.tipo ? "foi promovido" : FOI[f2.tipo]} em ${dataCurta(data2)}${f2.tipo === "promocao" || !f2.tipo ? posto : ""}; na época, só recebeu a diferença do auxílio-fardamento, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`;
   }
-  // documento que materializou o direito: o dos processos pagos (o BI de averbação tem coluna própria no verso)
-  const documentos = [DOCUMENTO_DIREITO];
+  // documento que materializou o direito: o dos processos pagos e o documento de averbação
+  const documentos = [DOCUMENTO_DIREITO, ...(entrada.averbacao?.trim() ? [entrada.averbacao.trim().slice(0, 100)] : [])];
 
   return {
     caso, pagamentos, multiplicador1, multiplicador2, soldo1, soldo2, devido, recebido, diferenca, competencia, rubrica, prescricao,

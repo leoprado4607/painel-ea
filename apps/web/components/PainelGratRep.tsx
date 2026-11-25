@@ -1,6 +1,5 @@
 "use client";
 import type { LeituraGuardada } from "@/lib/processo-completo";
-import { LeituraDoProcesso } from "@/components/LeituraDoProcesso";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
@@ -16,7 +15,7 @@ const br = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
  * "Lançar valor devido" da Gratificação de Representação automática (lib/grat-rep): dados do evento e da autorização,
  * lançamentos de Grat Rep das fichas (o operador marca os que são deste evento), cálculo, alertas e textos do verso.
  */
-export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado, leitura }: {
+export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado }: {
   processoId: string; dados: DadosGratRep; plano: PlanoGratRep; inicio: string; fim: string; bloqueado: boolean;
   /** O que veio do processo completo, quando o cálculo começou por ele. */
   leitura?: LeituraGuardada | null;
@@ -61,7 +60,6 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
         </p>
       </div>
 
-      {leitura && <LeituraDoProcesso leitura={leitura} />}
 
       <div className="grid gap-5 lg:grid-cols-2">
         <div>
@@ -73,21 +71,6 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
           {linha("Dias", String(plano.dias))}
           {linha("Devido", plano.devido !== null ? `R$ ${formatarReais(plano.devido)}` : "—")}
           {linha("Competência", `${MESES_CURTOS[plano.competencia.mes - 1]}/${plano.competencia.ano}`)}
-        </div>
-        <div className="space-y-3">
-          {plano.alertas.length > 0 && (
-            <Aviso tipo="atencao">
-              <p className="font-semibold">Alertas</p>
-              <ul className="mt-1 list-disc space-y-1 pl-5">{plano.alertas.map((a, i) => <li key={i}><b>{a.codigo}</b>: {a.descricao}</li>)}</ul>
-            </Aviso>
-          )}
-          {plano.pendencias.length > 0 && (
-            <Aviso tipo="info">
-              <p className="font-semibold">Pendências</p>
-              <ul className="mt-1 list-disc space-y-1 pl-5">{plano.pendencias.map((p, i) => <li key={i}>{p}</li>)}</ul>
-            </Aviso>
-          )}
-          {!plano.alertas.length && !plano.pendencias.length && <Aviso tipo="ok">Sem alertas nem pendências.</Aviso>}
         </div>
       </div>
 

@@ -42,7 +42,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
     planoGr = planoGratRep({
       fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim, dados: dadosGr,
-      dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+      dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
     });
     notas = planoGr.notas;
   }
@@ -66,7 +66,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
     planoGm = planoGratMensal({
       fichas: fichasLidasValidas(data?.fichas_lidas), especie: processo.especie_divida, inicio: processo.periodo_inicio, fim: processo.periodo_fim,
-      dados: dadosGm, dataRequerimento: processo.data_requerimento, hoje: new Date().toISOString().slice(0, 10),
+      dados: dadosGm, dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
     });
     notas = planoGm.notas;
   }
