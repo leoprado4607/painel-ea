@@ -140,8 +140,8 @@ const OFICIAIS = new Set(["gen-ex", "gen-div", "gen-bda", "cel", "ten-cel", "maj
 const AO_POSTO = (id: string) => (OFICIAIS.has(id) ? "ao posto de" : "à graduação de");
 const NA_GRADUACAO = (id: string) => (OFICIAIS.has(id) ? "no posto de" : "na graduação de");
 const MESES_CURTOS = ["JAN", "FEV", "MAR", "ABR", "MAI", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
-/** "25 DEZ 22", como nos processos. */
-const dataCurta = (d: string) => `${d.slice(8, 10)} ${MESES_CURTOS[+d.slice(5, 7) - 1]} ${d.slice(2, 4)}`;
+/** "25 DEZ 22", como nos processos; o dia primeiro sai "1º JUN 25". */
+export const dataCurta = (d: string) => `${d.slice(8, 10) === "01" ? "1º" : d.slice(8, 10)} ${MESES_CURTOS[+d.slice(5, 7) - 1]} ${d.slice(2, 4)}`;
 /** Documento que materializou o direito nos processos pagos (até 100 caracteres: lib/amparo). */
 export const DOCUMENTO_DIREITO = "DIEx nº 995-APG 8/APG SubCh/APG Ch/Ch SEF - Circular, de 05 MAR 26 (Parecer da SEF)";
 
@@ -397,7 +397,7 @@ export function planoAuxFard(entrada: {
       : caso === "trienio"
       ? `O militar completou 3 anos ${cat2 ? `${NA_GRADUACAO(f2.categoria!)} ${cat2.nome}` : "no mesmo posto ou graduação"} em ${dataCurta(data2)}; na época, ${naEpoca}, pois já havia recebido outro em um intervalo de 1 ano. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
       : caso === "mesma_data"
-      ? `O militar completou 3 anos ${categoriaSoldo(f1.categoria) ? `${NA_GRADUACAO(f1.categoria!)} ${categoriaSoldo(f1.categoria)!.nome} ` : "no mesmo posto ou graduação "}e foi promovido na mesma data (${dataCurta(data2)})${posto}; na época, só recebeu o auxílio-fardamento da promoção, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
+      ? `O militar completou 3 anos ${!categoriaSoldo(f1.categoria) ? "no mesmo posto ou graduação" : OFICIAIS.has(f1.categoria!) ? "no mesmo posto" : "na mesma graduação"} em ${dataCurta(data2)} e foi promovido na mesma data${posto}; na época, só recebeu o auxílio-fardamento da promoção, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
       : `O militar ${f2.tipo === "promocao" || !f2.tipo ? "foi promovido" : FOI[f2.tipo]} em ${dataCurta(data2)}${f2.tipo === "promocao" || !f2.tipo ? posto : ""}; na época, só recebeu a diferença do auxílio-fardamento, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`;
   }
   // documento que materializou o direito: o dos processos pagos e o documento de averbação

@@ -110,7 +110,7 @@ describe("Auxílio-fardamento automático", () => {
     });
     expect([alan.devido, alan.recebido, alan.diferenca]).toEqual([10253, 5483, 4770]);
     expect(alan.competencia).toEqual({ ano: 2024, mes: 6 });
-    expect(alan.textos.explicacao).toContain("na graduação de Segundo-Sargento");
+    expect(alan.textos.explicacao).toContain("O militar completou 3 anos na mesma graduação em 1º JUN 24 e foi promovido na mesma data à graduação de Primeiro-Sargento;");
   });
 
   it("somente promoção: o auxílio anterior e o recebido são achados nas fichas pela data", () => {
@@ -166,5 +166,13 @@ describe("Auxílio-fardamento automático", () => {
   it("A56/A57 na posição 1 vazia ou na 1ª receita vazia", () => {
     const vazias = Array.from({ length: 17 }, (_, i) => ({ posicao: i + 1, codigo: i === 0 ? "A01 - SOLDO" : "", tipo: i >= 12 ? "Despesa" : "Receita" }));
     expect(rubricasAuxFard(vazias, RUBRICA_AUX_FARD_1)).toEqual({ mudadas: [{ posicao: 2, codigo: RUBRICA_AUX_FARD_1, tipo: "Receita" }], posicao: 2 });
+  });
+});
+
+describe("texto da explicação (26/11/2026)", () => {
+  it("dia primeiro sai 1º", async () => {
+    const { dataCurta } = await import("./aux-fard");
+    expect(dataCurta("2025-06-01")).toBe("1º JUN 25");
+    expect(dataCurta("2025-06-10")).toBe("10 JUN 25");
   });
 });
