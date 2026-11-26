@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { textoBoletim } from "@/lib/averbacao";
-import { auxFardAutomatico, planoAuxFard, TIPOS_FATO, type DadosAuxFard, type FatoGerador } from "@/lib/aux-fard";
+import { auxFardAutomatico, casoAuxFard, planoAuxFard, TIPOS_FATO, type DadosAuxFard, type FatoGerador } from "@/lib/aux-fard";
 import { fichasLidasValidas, preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { categoriaSoldo } from "@/lib/soldos";
@@ -19,7 +19,7 @@ function limpar(d: DadosAuxFard): DadosAuxFard {
   const vinculos = Object.fromEntries(Object.entries(d.vinculos ?? {})
     .filter(([k, v]) => /^\d{4}-\d{1,2}-[A-Z0-9]+$/.test(k) && (v === 0 || v === 1 || v === 2)));
   return {
-    caso: d.caso === "mesma_data" ? "mesma_data" : "art61",
+    caso: casoAuxFard(d.caso),
     fato1: fato(d.fato1), fato2: fato(d.fato2),
     ato2: typeof d.ato2 === "string" ? d.ato2.trim().slice(0, 100) : "",
     vinculos,

@@ -7,6 +7,7 @@ import { postoAbreviado } from "@/lib/postos";
 import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { LIMITE_DOCUMENTO } from "@/lib/amparo";
+import { auxFardAutomatico } from "@/lib/aux-fard";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { BOLETINS_ADT, DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 import { numeroProcessoValido } from "@/lib/numero-processo";
@@ -36,12 +37,19 @@ const dataPeriodo = (v: string | null) => (!v ? null : /^\d{4}-\d{2}$/.test(v) ?
 export async function salvarProcesso(processoId: string | null, _: EstadoForm | undefined, f: FormData): Promise<EstadoForm> {
   const { supabase } = await sessao();
   const campos: Record<string, string> = {};
+  // Auxílio-fardamento automático: documento e explicação ficam ocultos em Informações (o sistema os propõe em
+  // "Lançar valor devido"); aqui não são exigidos nem gravados, para não apagar o que já foi preenchido lá
+  const atualVerso = processoId
+    ? (await supabase.from("processo").select("especie_divida, complementos").eq("id", processoId).single()).data
+    : null;
+  const versoOculto = !!atualVerso && auxFardAutomatico(atualVerso);
   // todos os campos são obrigatórios (decisão de 21/10/2026); o Nr Adt e o BI/BAR do Adt, só quando o documento é "Adt"
   for (const k of [...OBRIGATORIOS, ...(txt(f, "documento_averbacao") === "Adt" ? ["adt_numero", "adt_boletim"] : [])]) {
     if (!txt(f, k)) campos[k] = "Preencha este campo.";
   }
   // quadros do verso: marcação limpa (só b/i/u), obrigatórios e com limite de caracteres do texto
   const quadros: Record<string, string> = {};
+  if (!versoOculto) {
   for (const { chave, limite } of QUADROS_VERSO) {
     const m = normalizarFormatado(String(f.get(`c.${chave}`) ?? ""));
     const n = textoSemFormatacao(m).trim().length;
@@ -58,6 +66,7 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     else if (n > LIMITE_DOCUMENTO) campos[chave] = `Use no máximo ${LIMITE_DOCUMENTO} caracteres (tem ${n}).`;
   });
   quadros.amparo = documentos.filter((m) => textoSemFormatacao(m).trim()).join("\n");
+  }
   const nome = txt(f, "nome");
   const prec = txt(f, "prec_cp");
   if (prec && !precCpValido(prec)) campos.prec_cp = "Prec-CP com dígito verificador inválido.";

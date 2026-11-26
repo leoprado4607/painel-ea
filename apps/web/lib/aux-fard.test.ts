@@ -113,6 +113,42 @@ describe("Auxílio-fardamento automático", () => {
     expect(alan.textos.explicacao).toContain("na graduação de Segundo-Sargento");
   });
 
+  it("somente promoção: o auxílio anterior e o recebido são achados nas fichas pela data", () => {
+    // auxílio anterior em mar/2021 (outro fato); promoção a 2º Sgt em 25 DEZ 21, não paga
+    const fichas = [
+      ficha(2020, linha("NR0056", { 2: 3000 })),
+      ficha(2021, linha("NR0001", { 3: 3825, 12: 4770 }), linha("NR0056", { 3: 3825 })),
+      ficha(2022, linha("NR0001", { 1: 4770 })),
+    ];
+    const p = planoAuxFard({ fichas, hoje, dataRequerimento: "2026-09-01", dados: { caso: "promocao", fato2: { data: "2021-12-25", categoria: "2-sgt" }, ato2: "BI 239" } });
+    expect(p.pagamentos.map((x) => [x.chave, x.fato])).toEqual([["2020-2-NR0056", 0], ["2021-3-NR0056", 1]]);
+    expect([p.devido, p.recebido, p.diferenca]).toEqual([4770, 0, 4770]);
+    expect(p.competencia).toEqual({ ano: 2021, mes: 12 });
+    expect(p.rubrica).toBe(RUBRICA_AUX_FARD_1);
+    expect(codigos(p)).not.toContain("SEM_AUXILIO_ANTERIOR");
+    expect(codigos(p)).not.toContain("FORA_DA_TESE");
+    expect(p.textos.explicacao).toContain("foi promovido em 25 DEZ 21 à graduação de Segundo-Sargento; na época, não recebeu o auxílio-fardamento da promoção");
+    expect(p.notas["2021-12"]).toContain("auxílio anterior: R$ 3.825,00 em 03/2021");
+  });
+
+  it("somente 3 anos: recebido em parte, sem auxílio anterior e pago depois sem ligação", () => {
+    const fichas = [
+      ficha(2022, linha("NR0056", { 1: 3825 })),
+      ficha(2023, linha("NR0001", { 5: 4770 }), linha("NR0056", { 6: 1000 })),
+      ficha(2025, linha("NR0056", { 2: 500 })),
+    ];
+    const p = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" } } });
+    expect(p.pagamentos.find((x) => x.chave === "2023-6-NR0056")!.fato).toBe(2);
+    expect([p.devido, p.recebido, p.diferenca]).toEqual([4770, 1000, 3770]);
+    // jan/2022 está a mais de 12 meses do fato: não é sugerido como anterior
+    expect(codigos(p)).toEqual(expect.arrayContaining(["SEM_AUXILIO_ANTERIOR", "AUX_FARD_NAS_FICHAS"]));
+    expect(p.textos.explicacao).toContain("completou 3 anos na graduação de Segundo-Sargento em 10 MAI 23; na época, só recebeu a diferença");
+    // o operador liga jan/2022 como anterior: mais de 1 ano antes, fora da tese
+    const q = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" }, vinculos: { "2022-1-NR0056": 1, "2023-6-NR0056": 2 } } });
+    expect(codigos(q)).toContain("FORA_DA_TESE");
+    expect(codigos(q)).not.toContain("SEM_AUXILIO_ANTERIOR");
+  });
+
   it("A56/A57 na posição 1 vazia ou na 1ª receita vazia", () => {
     const vazias = Array.from({ length: 17 }, (_, i) => ({ posicao: i + 1, codigo: i === 0 ? "A01 - SOLDO" : "", tipo: i >= 12 ? "Despesa" : "Receita" }));
     expect(rubricasAuxFard(vazias, RUBRICA_AUX_FARD_1)).toEqual({ mudadas: [{ posicao: 2, codigo: RUBRICA_AUX_FARD_1, tipo: "Receita" }], posicao: 2 });

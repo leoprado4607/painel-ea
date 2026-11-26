@@ -18,12 +18,12 @@ import { ValoresMensais } from "@/components/ValoresMensais";
 import { PainelGratRep } from "@/components/PainelGratRep";
 import { planoGratRep, type DadosGratRep } from "@/lib/grat-rep";
 import { PainelAuxFard } from "@/components/PainelAuxFard";
-import { planoAuxFard, type DadosAuxFard } from "@/lib/aux-fard";
+import { casoAuxFard, planoAuxFard, type DadosAuxFard } from "@/lib/aux-fard";
 
 /** Prévia das telas com dados fictícios, para conferir o visual sem banco. Só existe em desenvolvimento. */
-export default async function Previa({ searchParams }: { searchParams: Promise<{ tela?: string; tema?: string }> }) {
+export default async function Previa({ searchParams }: { searchParams: Promise<{ tela?: string; tema?: string; caso?: string }> }) {
   if (process.env.NODE_ENV === "production") notFound();
-  const { tela, tema } = await searchParams;
+  const { tela, tema, caso } = await searchParams;
   // ?tema=admin: tema escuro rústico do perfil Admin
   const rubricas = [
     { posicao: 1, codigo: "A01 - SOLDO", tipo: "Receita" as const },
@@ -78,7 +78,8 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
             { ano: 2021, sistema: "sippes" as const, linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: meses({ 7: 7315, 12: 7315 }) }, { codigo: "NR0056", descricao: "AUXILIO FARDAMENTO 1 SOLDO", meses: meses({ 7: 7315 }) }] },
             { ano: 2022, sistema: "sippes" as const, linhas: [{ codigo: "NR0001", descricao: "SOLDO", meses: meses({ 1: 7490 }) }, { codigo: "NR0056", descricao: "AUXILIO FARDAMENTO 1 SOLDO", meses: meses({ 1: 175 }) }] },
           ];
-          const dados: DadosAuxFard = { fato1: { tipo: "aspirante", data: "2021-07-12", categoria: "asp" }, fato2: { tipo: "promocao", data: "2021-12-25", categoria: "2-ten" } };
+          // ?caso=promocao | trienio | mesma_data: os outros casos com as mesmas fichas
+          const dados: DadosAuxFard = { caso: casoAuxFard(caso), fato1: { tipo: "aspirante", data: "2021-07-12", categoria: "asp" }, fato2: { tipo: "promocao", data: "2021-12-25", categoria: "2-ten" } };
           return <PainelAuxFard processoId="previa" dados={dados} bloqueado={false}
             plano={planoAuxFard({ fichas, dados, dataRequerimento: "2026-09-28", periodoInicio: "2021-12-01", averbacao: "BI 210 - HGuJP, de 05/10/2026", hoje: "2026-11-24" })} />;
         })()

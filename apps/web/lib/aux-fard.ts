@@ -7,12 +7,17 @@
  * Parecer 250/2026/CONJUR-EB e DIEx 2750-APG 8/SEF (triênio e promoção na mesma data: dois auxílios, com bases distintas);
  * DIEx 1677-S1/10º CGCFEx (CFO: matrícula e nomeação, 1,5 soldo cada); DIEx 757-ASSE1/SEF (reintegrado sem expediente).
  *
- * Dois casos:
- * - art61: o 2º fato ocorreu em menos de 1 ano do 1º recebimento e foi pago só pela diferença.
- *   Devido = multiplicador do 2º fato × soldo do posto na data do 2º fato.
+ * Quatro casos (26/11/2026: "somente promoção" e "somente 3 anos" a pedido do usuário):
+ * - promocao: só a promoção, não paga (ou paga em parte) por já ter recebido outro auxílio em menos de 1 ano.
+ *   Devido = 1 × soldo do novo posto na data da promoção.
+ * - trienio: só os 3 anos no mesmo posto ou graduação, idem. Devido = 1 × soldo do posto em que completou os 3 anos.
  * - mesma_data: triênio e promoção na mesma data, e só um (ou a diferença) foi pago.
  *   Devido = triênio × soldo do posto em que completou os 3 anos + promoção × soldo do novo posto.
- * Recebido = os pagamentos das fichas ligados ao 2º fato (o operador confirma); a diferença e a correção ficam com o motor.
+ * - art61: o 2º fato ocorreu em menos de 1 ano do 1º recebimento e foi pago só pela diferença.
+ *   Devido = multiplicador do 2º fato × soldo do posto na data do 2º fato.
+ * Em todos, o auxílio-fardamento já recebido é procurado nas fichas e ligado pela data: o pago no mês do fato ou nos
+ * 12 seguintes é o recebido por ele; o pago nos 12 meses antes é o auxílio anterior (o 1º fato, no art. 61).
+ * Recebido = os pagamentos das fichas ligados ao fato cobrado (o operador confirma); a diferença e a correção ficam com o motor.
  * Tudo no mês da competência (o mês do 2º fato, mesmo que pago depois), na A56 (1 soldo) ou A57 (1,5 soldo), corrigido
  * pela série composta, como os processos pagos conferidos em 25/11/2026 (64552.001271/2026-66, .000474/2026-35,
  * .001265/2026-17, 64360.000907/2026-18 e 64592.001115/2026-29).
@@ -50,14 +55,29 @@ export interface FatoGerador {
   multiplicador?: number | null;
 }
 
+export type CasoAuxFard = "promocao" | "trienio" | "mesma_data" | "art61";
+/** Opções do quadro, na ordem da tela. */
+export const CASOS_AUX_FARD: { id: CasoAuxFard; nome: string }[] = [
+  { id: "promocao", nome: "Somente promoção" },
+  { id: "trienio", nome: "Somente 3 anos no mesmo posto ou graduação" },
+  { id: "mesma_data", nome: "Promoção e 3 anos na mesma data, pago só um auxílio" },
+  { id: "art61", nome: "Dois fatos em menos de 1 ano, o 2º pago só pela diferença (art. 61)" },
+];
+export const casoAuxFard = (v: unknown): CasoAuxFard => CASOS_AUX_FARD.find((c) => c.id === v)?.id ?? "art61";
+/** Casos de um fato só (promoção ou triênio). */
+export const casoUnico = (c: CasoAuxFard): c is "promocao" | "trienio" => c === "promocao" || c === "trienio";
+
 /** O que o operador informa no quadro (complementos.auxFard). */
 export interface DadosAuxFard {
-  caso?: "art61" | "mesma_data";
+  caso?: CasoAuxFard;
   fato1?: FatoGerador;
   fato2?: FatoGerador;
   /** BI do ato do 2º fato gerador (nº e data). */
   ato2?: string;
-  /** Pagamento das fichas → fato (1 ou 2): "2021-7-NR0056" → 1. Vazio: o sugerido. */
+  /**
+   * Pagamento das fichas → fato: "2021-7-NR0056" → 1. Vazio: o sugerido. 2 = recebido pelo fato cobrado;
+   * 1 = 1º fato (art. 61) ou auxílio anterior (somente promoção / somente 3 anos); 0 = não é deste pedido.
+   */
   vinculos?: Record<string, 1 | 2 | 0>;
   declaracaoSemAcao?: boolean;
   reconhecimento?: boolean;
@@ -73,7 +93,7 @@ export interface DadosAuxFard {
 export interface Pagamento { ano: number; mes: number; codigo: string; descricao: string; valor: number; chave: string; fato: 0 | 1 | 2; sugerido: boolean }
 export interface Alerta { codigo: string; descricao: string }
 export interface PlanoAuxFard {
-  caso: "art61" | "mesma_data";
+  caso: CasoAuxFard;
   pagamentos: Pagamento[];
   multiplicador1: number | null;
   multiplicador2: number | null;
@@ -166,41 +186,58 @@ export function planoAuxFard(entrada: {
   averbacao?: string | null; hoje: string;
 }): PlanoAuxFard {
   const { fichas, dados, hoje } = entrada;
-  const caso = dados.caso === "mesma_data" ? "mesma_data" : "art61";
-  const f1 = dados.fato1 ?? {}, f2 = dados.fato2 ?? {};
+  const caso = casoAuxFard(dados.caso);
+  const unico = casoUnico(caso);
+  // somente promoção / somente 3 anos: o fato cobrado é o "2º" (fato2), com o tipo do caso; não há 1º fato informado
+  const f1 = unico ? {} : dados.fato1 ?? {};
+  const f2: FatoGerador = unico ? { ...dados.fato2, tipo: caso, multiplicador: null } : dados.fato2 ?? {};
   const alertas: Alerta[] = [];
   const pendencias: string[] = [];
   const soldoFicha = linhas(fichas, CODIGOS_SOLDO);
   const soldoNoMes = (ano: number, mes: number) => soldoFicha.filter((l) => l.ano === ano && l.mes === mes).reduce((s, l) => centavos(s + l.valor), 0) || null;
 
-  // pagamentos das fichas e a qual fato cada um se liga (o operador confirma; sem resposta, a sugestão)
+  // datas e postos
+  const fatoCobrado = unico ? (caso === "promocao" ? "da promoção" : "dos 3 anos") : "do 2º fato gerador";
+  if (!dataValida(f2.data)) pendencias.push(`Informe a data ${fatoCobrado} (pelo BI do ato).`);
+  if (caso === "art61" && !dataValida(f1.data)) pendencias.push("Informe a data do 1º fato gerador.");
+  if (!f2.tipo) pendencias.push("Informe o tipo do 2º fato gerador.");
+  if (!categoriaSoldo(f2.categoria)) pendencias.push(
+    caso === "mesma_data" || caso === "promocao" ? "Informe o novo posto/graduação (promoção)."
+      : caso === "trienio" ? "Informe o posto/graduação em que completou os 3 anos." : "Informe o posto/graduação do 2º fato gerador.");
+  if (caso === "mesma_data" && !categoriaSoldo(f1.categoria)) pendencias.push("Informe o posto/graduação em que completou os 3 anos (triênio).");
+  if (!dados.ato2?.trim()) alertas.push({ codigo: "ATO_FATO_GERADOR_AUSENTE", descricao: `Informe o BI do ato ${unico ? fatoCobrado : "do 2º fato gerador (promoção, nomeação, matrícula ou triênio)"}.` });
+  // no caso de mesma data, o triênio e a promoção são na mesma data (a do 2º fato)
+  const data2 = dataValida(f2.data) ? f2.data : null;
+  const dataInformada1 = caso === "mesma_data" ? data2 : caso === "art61" && dataValida(f1.data) ? f1.data : null;
+
+  // auxílio-fardamento já recebido, nas fichas, e a qual fato cada pagamento se liga (o operador confirma; sem resposta, a sugestão)
   const brutos = linhas(fichas, CODIGOS_AUX_FARD);
   const vinculos = dados.vinculos ?? {};
   const temVinculo = Object.keys(vinculos).length > 0;
-  const meses = [...new Set(brutos.map((p) => k(p.ano, p.mes)))];
+  const meses = [...new Set(brutos.map((p) => k(p.ano, p.mes)))].sort((a, b) => a - b);
+  const mesDe = (d: string) => k(+d.slice(0, 4), +d.slice(5, 7));
+  let mesRecebido: number | undefined, mesAnterior: number | undefined;
+  if (data2) {
+    // pela data: o pago no mês do fato ou nos 12 seguintes é o recebido por ele (o soldo novo e o auxílio podem sair depois);
+    // o anterior: no art. 61, o 1º pago a partir do 1º fato; nos demais, o último pago nos 12 meses antes do fato
+    const m2 = mesDe(data2);
+    mesRecebido = meses.find((m) => m >= m2 && m <= m2 + 12);
+    if (caso === "art61" && dataInformada1) mesAnterior = meses.find((m) => m >= mesDe(dataInformada1) && m < m2);
+    else if (caso !== "mesma_data") mesAnterior = [...meses].reverse().find((m) => m < m2 && m >= m2 - 12);
+  } else if (caso === "art61") [mesAnterior, mesRecebido] = meses;
+  else mesRecebido = meses[0];
   const pagamentos: Pagamento[] = brutos.map((p) => {
     const chave = `${p.ano}-${p.mes}-${p.codigo}`;
-    // sugestão: no art. 61, o 1º mês com auxílio é o 1º fato e o seguinte, o 2º; na mesma data, o 1º mês é o do 2º fato
-    const ordem = meses.indexOf(k(p.ano, p.mes));
-    const sugerido: 0 | 1 | 2 = caso === "mesma_data" ? (ordem === 0 ? 2 : 0) : ordem === 0 ? 1 : ordem === 1 ? 2 : 0;
+    const m = k(p.ano, p.mes);
+    const sugerido: 0 | 1 | 2 = m === mesRecebido ? 2 : m === mesAnterior ? 1 : 0;
     const fato = temVinculo ? (vinculos[chave] ?? 0) : sugerido;
-    return { ...p, chave, fato, sugerido: !temVinculo && fato !== 0 };
+    return { ...p, chave, fato: caso === "mesma_data" && fato === 1 ? 0 : fato, sugerido: !temVinculo && fato !== 0 };
   });
-  if (!temVinculo && pagamentos.some((p) => p.fato)) pendencias.push("Confirme a qual fato gerador se refere cada pagamento de auxílio-fardamento das fichas (a ligação foi sugerida).");
+  if (!temVinculo && pagamentos.some((p) => p.fato)) pendencias.push("Confirme a qual fato gerador se refere cada pagamento de auxílio-fardamento das fichas (a ligação foi sugerida pelas datas).");
   const pagos1 = pagamentos.filter((p) => p.fato === 1), pagos2 = pagamentos.filter((p) => p.fato === 2);
   const valorPago1 = centavos(pagos1.reduce((s, p) => s + p.valor, 0));
   const recebido = centavos(pagos2.reduce((s, p) => s + p.valor, 0));
-
-  // datas e postos
-  if (!dataValida(f2.data)) pendencias.push("Informe a data do 2º fato gerador (pelo BI do ato).");
-  if (!dataValida(f1.data)) pendencias.push("Informe a data do 1º fato gerador.");
-  if (!f2.tipo) pendencias.push("Informe o tipo do 2º fato gerador.");
-  if (!categoriaSoldo(f2.categoria)) pendencias.push(caso === "mesma_data" ? "Informe o novo posto/graduação (promoção)." : "Informe o posto/graduação do 2º fato gerador.");
-  if (caso === "mesma_data" && !categoriaSoldo(f1.categoria)) pendencias.push("Informe o posto/graduação em que completou os 3 anos (triênio).");
-  if (!dados.ato2?.trim()) alertas.push({ codigo: "ATO_FATO_GERADOR_AUSENTE", descricao: "Informe o BI do ato do 2º fato gerador (promoção, nomeação, matrícula ou triênio)." });
-  // no caso de mesma data, o triênio e a promoção são na mesma data (a do 2º fato)
-  const data2 = dataValida(f2.data) ? f2.data : null;
-  const data1 = caso === "mesma_data" ? data2 : dataValida(f1.data) ? f1.data : null;
+  const data1 = dataInformada1;
 
   // multiplicadores e soldos
   let multiplicador1: number | null = caso === "mesma_data" ? 1 : multiplicadorDoTipo(f1);
@@ -242,7 +279,7 @@ export function planoAuxFard(entrada: {
     devido = soldo1 !== null && soldo2 !== null && multiplicador2 !== null ? centavos(1 * soldo1 + multiplicador2 * soldo2) : null;
   } else if (soldo2 !== null && multiplicador2 !== null) devido = centavos(multiplicador2 * soldo2);
   const diferenca = devido !== null ? centavos(devido - recebido) : null;
-  if (diferenca !== null && diferenca <= 0) alertas.push({ codigo: "SEM_DIFERENCA", descricao: `O recebido pelo 2º fato (R$ ${reais(recebido)}) cobre o devido (R$ ${reais(devido!)}): não há diferença.` });
+  if (diferenca !== null && diferenca <= 0) alertas.push({ codigo: "SEM_DIFERENCA", descricao: `O recebido ${unico ? "por este fato" : "pelo 2º fato"} (R$ ${reais(recebido)}) cobre o devido (R$ ${reais(devido!)}): não há diferença.` });
 
   // enquadramento
   if (caso === "art61") {
@@ -264,6 +301,18 @@ export function planoAuxFard(entrada: {
     if ((data2 && data2 >= REVOGACAO_ART61) || (data1 && data1 >= REVOGACAO_ART61)) {
       alertas.push({ codigo: "NAO_E_DEA", descricao: `Fato gerador a partir de ${br(REVOGACAO_ART61)} (revogação do art. 61): não é DEA desta tese; o pagamento é corrente.` });
     }
+  }
+  if (unico && data2) {
+    // a tese: não pago (ou pago em parte) por já ter recebido outro auxílio em menos de 1 ano (art. 61, revogado)
+    const anterior = pagos1.at(-1);
+    if (anterior) {
+      const dias = diasEntre(`${anterior.ano}-${String(anterior.mes).padStart(2, "0")}-01`, data2);
+      if (dias >= 365 + 31) alertas.push({ codigo: "FORA_DA_TESE", descricao: `O auxílio anterior (${mm(anterior.ano, anterior.mes)}) é de mais de 1 ano antes de ${br(data2)}: a restrição do art. 61 não se aplicava.` });
+      else if (dias < 0) alertas.push({ codigo: "FORA_DA_TESE", descricao: "O auxílio anterior é posterior ao fato: confira a ligação dos pagamentos." });
+    } else {
+      alertas.push({ codigo: "SEM_AUXILIO_ANTERIOR", descricao: `Nenhum auxílio-fardamento nas fichas nos 12 meses antes de ${br(data2)}: confira por que o auxílio ${fatoCobrado} não foi pago à época (a tese é a restrição de 1 ano do art. 61) e se a ficha do ano anterior foi enviada.` });
+    }
+    if (data2 >= REVOGACAO_ART61) alertas.push({ codigo: "NAO_E_DEA", descricao: `Fato gerador a partir de ${br(REVOGACAO_ART61)} (revogação do art. 61): não é DEA desta tese; o pagamento é corrente.` });
   }
   if (competencia && competencia.ano >= +hoje.slice(0, 4)) {
     alertas.push({ codigo: "NAO_E_DEA", descricao: `A competência (${mm(competencia.ano, competencia.mes)}) é do exercício corrente: o pagamento é em folha, não por DEA.` });
@@ -292,6 +341,11 @@ export function planoAuxFard(entrada: {
   else for (const p of pagamentos.filter((x) => x.ano === anoAtual && x.fato === 0)) {
     alertas.push({ codigo: "POSSIVEL_DUPLICIDADE", descricao: `${p.codigo} de R$ ${reais(p.valor)} em ${mm(p.ano, p.mes)} (ano corrente): pode ser o pagamento desta diferença pelo CPEx.` });
   }
+  // auxílio-fardamento pago depois do fato e não ligado a este pedido (fora do ano corrente, já visto acima): pode ser o
+  // próprio pagamento deste fato; os anteriores ao fato são de outros fatos geradores
+  for (const p of pagamentos.filter((x) => x.ano !== anoAtual && x.fato === 0 && (!data2 || k(x.ano, x.mes) >= mesDe(data2)))) {
+    alertas.push({ codigo: "AUX_FARD_NAS_FICHAS", descricao: `${p.codigo} de R$ ${reais(p.valor)} em ${mm(p.ano, p.mes)} não foi ligado a este pedido: confira se não é o pagamento deste fato.` });
+  }
   if (competencia && !fichas.some((f) => f.ano === competencia.ano)) alertas.push({ codigo: "FICHA_AUSENTE", descricao: `Falta a ficha financeira de ${competencia.ano} (ano do 2º fato).` });
 
   // conferências do Parecer 645 (item 67) e elegibilidade
@@ -303,7 +357,10 @@ export function planoAuxFard(entrada: {
   const recebidos = competencia && recebido > 0 ? [{ ...competencia, valor: recebido }] : [];
   const notas: Record<string, string> = {};
   if (devido !== null && competencia) {
-    notas[`${competencia.ano}-${competencia.mes}`] = caso === "mesma_data"
+    const anterior = pagos1.at(-1);
+    notas[`${competencia.ano}-${competencia.mes}`] = unico
+      ? `Auxílio-fardamento ${peloFato(f2.tipo)} em ${br(data2!)} (restrição de 1 ano do art. 61 do Dec 4.307/2002, revogado), 1 × R$ ${reais(soldo2!)} (${categoriaSoldo(f2.categoria)!.nome}) = R$ ${reais(devido)}; recebido R$ ${reais(recebido)}; diferença R$ ${reais(diferenca!)}${anterior ? ` (auxílio anterior: R$ ${reais(valorPago1)} em ${mm(anterior.ano, anterior.mes)})` : ""}.`
+      : caso === "mesma_data"
       ? `Auxílio-fardamento (triênio e promoção em ${br(data2!)}, Parecer 250/2026/CONJUR-EB): triênio 1 × R$ ${reais(soldo1!)} (${categoriaSoldo(f1.categoria)!.nome}) + promoção ${multiplicador2!.toLocaleString("pt-BR")} × R$ ${reais(soldo2!)} (${categoriaSoldo(f2.categoria)!.nome}) = R$ ${reais(devido)}; recebido R$ ${reais(recebido)}; diferença R$ ${reais(diferenca!)}.`
       : `Auxílio-fardamento (art. 61 do Dec 4.307/2002, revogado) ${peloFato(f2.tipo)} em ${br(data2!)}, ${multiplicador2!.toLocaleString("pt-BR")} × R$ ${reais(soldo2!)} (${categoriaSoldo(f2.categoria)!.nome}) = R$ ${reais(devido)}; recebido R$ ${reais(recebido)}; diferença R$ ${reais(diferenca!)}${pagos1.length ? ` (1º auxílio: R$ ${reais(valorPago1)})` : ""}.`;
   }
@@ -313,7 +370,13 @@ export function planoAuxFard(entrada: {
     // no modelo dos processos pagos (verso da Solicitação de Pagamento)
     const novo = categoriaSoldo(f2.categoria)?.nome;
     const posto = novo ? ` ${AO_POSTO(f2.categoria!)} ${novo}` : "";
-    explicacao = caso === "mesma_data"
+    const naEpoca = recebido > 0 ? "só recebeu a diferença do auxílio-fardamento" : `não recebeu o auxílio-fardamento ${caso === "trienio" ? "dos 3 anos" : "da promoção"}`;
+    const cat2 = categoriaSoldo(f2.categoria);
+    explicacao = caso === "promocao"
+      ? `O militar foi promovido em ${dataCurta(data2)}${posto}; na época, ${naEpoca}, pois já havia recebido outro em um intervalo de 1 ano. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
+      : caso === "trienio"
+      ? `O militar completou 3 anos ${cat2 ? `${NA_GRADUACAO(f2.categoria!)} ${cat2.nome}` : "no mesmo posto ou graduação"} em ${dataCurta(data2)}; na época, ${naEpoca}, pois já havia recebido outro em um intervalo de 1 ano. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
+      : caso === "mesma_data"
       ? `O militar completou 3 anos ${categoriaSoldo(f1.categoria) ? `${NA_GRADUACAO(f1.categoria!)} ${categoriaSoldo(f1.categoria)!.nome} ` : "no mesmo posto ou graduação "}e foi promovido na mesma data (${dataCurta(data2)})${posto}; na época, só recebeu o auxílio-fardamento da promoção, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`
       : `O militar ${f2.tipo === "promocao" || !f2.tipo ? "foi promovido" : FOI[f2.tipo]} em ${dataCurta(data2)}${f2.tipo === "promocao" || !f2.tipo ? posto : ""}; na época, só recebeu a diferença do auxílio-fardamento, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`;
   }

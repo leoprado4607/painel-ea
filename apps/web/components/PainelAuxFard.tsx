@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { salvarAuxFard } from "@/lib/acoes/aux-fard";
-import { TIPOS_FATO, type DadosAuxFard, type FatoGerador, type PlanoAuxFard, type TipoFato } from "@/lib/aux-fard";
+import { CASOS_AUX_FARD, casoAuxFard, casoUnico, TIPOS_FATO, type CasoAuxFard, type DadosAuxFard, type FatoGerador, type PlanoAuxFard, type TipoFato } from "@/lib/aux-fard";
 import { formatarReais } from "@/lib/dinheiro";
 import { SOLDOS } from "@/lib/soldos";
 import { MESES_CURTOS } from "@/lib/tipos";
@@ -27,12 +27,16 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
   const [usarTextos, setUsarTextos] = useState(false);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
-  const mesmaData = d.caso === "mesma_data";
+  const caso = casoAuxFard(d.caso);
+  const mesmaData = caso === "mesma_data";
+  const unico = casoUnico(caso);
   const mudarFato = (n: "fato1" | "fato2", campo: Partial<FatoGerador>) => setD((x) => ({ ...x, [n]: { ...x[n], ...campo } }));
+  const mudarCaso = (c: CasoAuxFard) => setD((x) => ({ ...x, caso: c }));
 
   const salvar = () => iniciar(async () => {
     const envio: DadosAuxFard = mesmaData
       ? { ...d, vinculos, fato1: { ...d.fato1, tipo: "trienio", data: d.fato2?.data }, fato2: { ...d.fato2, tipo: "promocao" } }
+      : unico ? { ...d, vinculos, fato1: {}, fato2: { ...d.fato2, tipo: caso } }
       : { ...d, vinculos };
     const r = await salvarAuxFard(processoId, envio, usarTextos);
     if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
@@ -80,41 +84,51 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
       <div>
         <h2 id="aux-fard-titulo" className="text-lg font-semibold">Auxílio-fardamento: cálculo automático da diferença</h2>
         <p className="ajuda mt-1">
-          Devido integral pelo soldo da tabela (MP 2.215-10/2001, Tabela II do Anexo IV) menos o recebido pelo 2º fato, no mês do 2º fato
-          (competência), corrigido como as demais espécies (IPCA até ago/2025 e IPCA-E depois). Informe os fatos geradores e confira a ligação dos pagamentos das fichas.
+          Devido integral pelo soldo da tabela (MP 2.215-10/2001, Tabela II do Anexo IV) menos o já recebido pelo fato cobrado, no mês do fato
+          (competência), corrigido como as demais espécies (IPCA até ago/2025 e IPCA-E depois). Escolha o caso, informe o(s) fato(s) gerador(es)
+          e confira a ligação dos auxílios encontrados nas fichas.
         </p>
       </div>
 
       <div className="grid gap-5 lg:grid-cols-2">
         <div>
           <h3 className="rotulo-secao">Cálculo</h3>
-          {linha("Caso", mesmaData ? "Triênio e promoção na mesma data (Parecer 250/2026)" : "Art. 61 do Dec 4.307/2002 (Parecer 645/2025)")}
-          {!mesmaData && linha("1º auxílio (multiplicador pelo valor pago)", plano.multiplicador1 !== null ? `${plano.multiplicador1.toLocaleString("pt-BR")} soldo` : "—")}
-          {mesmaData && linha("Triênio (1 soldo do posto anterior)", R(plano.soldo1))}
-          {linha(mesmaData ? "Promoção (soldo do novo posto)" : "Soldo do 2º fato", R(plano.soldo2))}
-          {linha("Multiplicador do 2º fato", plano.multiplicador2 !== null ? `${plano.multiplicador2.toLocaleString("pt-BR")} soldo` : "—")}
+          {linha("Caso", CASOS_AUX_FARD.find((c) => c.id === plano.caso)!.nome)}
+          {linha("Auxílio já recebido nas fichas", plano.pagamentos.length
+            ? `${R(plano.pagamentos.reduce((s, p) => s + p.valor, 0))} (${plano.pagamentos.length} ${plano.pagamentos.length === 1 ? "pagamento" : "pagamentos"})`
+            : "nenhum")}
+          {plano.caso === "art61" && linha("1º auxílio (multiplicador pelo valor pago)", plano.multiplicador1 !== null ? `${plano.multiplicador1.toLocaleString("pt-BR")} soldo` : "—")}
+          {plano.caso === "mesma_data" && linha("Triênio (1 soldo do posto anterior)", R(plano.soldo1))}
+          {linha(plano.caso === "mesma_data" || plano.caso === "promocao" ? "Promoção (soldo do novo posto)" : plano.caso === "trienio" ? "Soldo do posto dos 3 anos" : "Soldo do 2º fato", R(plano.soldo2))}
+          {linha(casoUnico(plano.caso) ? "Multiplicador" : "Multiplicador do 2º fato", plano.multiplicador2 !== null ? `${plano.multiplicador2.toLocaleString("pt-BR")} soldo` : "—")}
           {linha("Devido integral", R(plano.devido))}
-          {linha("Recebido pelo 2º fato", R(plano.recebido))}
+          {linha(casoUnico(plano.caso) ? "Recebido por este fato" : "Recebido pelo 2º fato", R(plano.recebido))}
           {linha("Diferença (sem correção)", R(plano.diferenca))}
           {linha("Competência", plano.competencia ? `${MESES_CURTOS[plano.competencia.mes - 1]}/${plano.competencia.ano}` : "—")}
           {linha("Rubrica", plano.rubrica)}
-          {plano.prescricao && linha("Limite da prescrição (5 anos do 2º fato)", br(plano.prescricao.limite))}
+          {plano.prescricao && linha(casoUnico(plano.caso) ? "Limite da prescrição (5 anos do fato)" : "Limite da prescrição (5 anos do 2º fato)", br(plano.prescricao.limite))}
         </div>
       </div>
 
       <fieldset disabled={bloqueado} className="space-y-5">
-        <div className="flex flex-wrap gap-4 text-sm" role="radiogroup" aria-label="Caso">
-          <label className="flex items-center gap-2">
-            <input type="radio" name="caso" checked={!mesmaData} onChange={() => setD((x) => ({ ...x, caso: "art61" }))} />
-            2º fato em menos de 1 ano do 1º recebimento, pago só pela diferença (art. 61)
-          </label>
-          <label className="flex items-center gap-2">
-            <input type="radio" name="caso" checked={mesmaData} onChange={() => setD((x) => ({ ...x, caso: "mesma_data" }))} />
-            Triênio e promoção na mesma data, pago só um auxílio
-          </label>
+        <div className="grid gap-x-6 gap-y-2 text-sm sm:grid-cols-2" role="radiogroup" aria-label="Caso">
+          {CASOS_AUX_FARD.map((c) => (
+            <label key={c.id} className="flex items-center gap-2">
+              <input type="radio" name="caso" checked={caso === c.id} onChange={() => mudarCaso(c.id)} />
+              {c.nome}
+            </label>
+          ))}
         </div>
 
-        {mesmaData ? (
+        {unico ? (
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div>
+              <label htmlFor="af-data2" className="rotulo">{caso === "promocao" ? "Data da promoção (BI do ato)" : "Data em que completou os 3 anos"}</label>
+              <input id="af-data2" type="date" className="entrada" value={d.fato2?.data ?? ""} onChange={(e) => mudarFato("fato2", { data: e.target.value })} />
+            </div>
+            {seletorPosto("af-cat2", caso === "promocao" ? "Novo posto/graduação" : "Posto/graduação em que completou os 3 anos", "fato2")}
+          </div>
+        ) : mesmaData ? (
           <div className="grid gap-3 sm:grid-cols-3">
             <div>
               <label htmlFor="af-data2" className="rotulo">Data da promoção e do triênio</label>
@@ -153,7 +167,7 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
           </>
         )}
         <div>
-          <label htmlFor="af-ato2" className="rotulo">BI do ato do 2º fato gerador (nº e data)</label>
+          <label htmlFor="af-ato2" className="rotulo">{caso === "promocao" ? "BI do ato da promoção (nº e data)" : caso === "trienio" ? "BI do ato dos 3 anos (nº e data)" : "BI do ato do 2º fato gerador (nº e data)"}</label>
           <input id="af-ato2" className="entrada" maxLength={100} value={d.ato2 ?? ""} placeholder="Ex.: BI Nr 239 do HGuJP, de 24/12/2021" onChange={(e) => setD((x) => ({ ...x, ato2: e.target.value }))} />
         </div>
 
@@ -171,8 +185,8 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
                   <select id={`af-${p.chave}`} className="entrada w-auto py-1" value={vinculos[p.chave] ?? 0}
                     onChange={(e) => setVinculos((v) => ({ ...v, [p.chave]: Number(e.target.value) as 0 | 1 | 2 }))}>
                     <option value={0}>Não é deste pedido</option>
-                    {!mesmaData && <option value={1}>1º fato</option>}
-                    <option value={2}>2º fato (recebido)</option>
+                    {!mesmaData && <option value={1}>{unico ? "Auxílio anterior (menos de 1 ano)" : "1º fato"}</option>}
+                    <option value={2}>{unico || mesmaData ? "Recebido por este fato" : "2º fato (recebido)"}</option>
                   </select>
                 </li>
               ))}

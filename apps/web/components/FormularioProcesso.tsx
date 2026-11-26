@@ -2,6 +2,7 @@
 import { cpfValido, identidadeValida, precCpValido } from "@painel-ea/engine";
 import { useActionState, useRef, useState } from "react";
 import { documentosDoAmparo, LIMITE_DOCUMENTO } from "@/lib/amparo";
+import { auxFardAutomatico } from "@/lib/aux-fard";
 import { PopupPendencias, pendenciasDoFormulario, type Pendencia } from "@/components/PopupPendencias";
 import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
@@ -141,6 +142,7 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
   const [inicio, setInicio] = useState(valores.periodo_inicio ?? "");
   const [fim, setFim] = useState(valores.periodo_fim ?? "");
   const qtdeMeses = quantidadeMeses(inicio, fim);
+  const ocultarVerso = auxFardAutomatico(valores);
   // ao salvar com campo obrigatório vazio: pop-up com as pendências (no lugar do balão do navegador)
   const [pendentes, setPendentes] = useState<{ pendencias: Pendencia[]; primeiro: HTMLElement | null } | null>(null);
   return (
@@ -230,7 +232,9 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
           </div>
         </section>
 
-        {/* textos do verso da Solicitação de Pagamento (colunas "Nº/Data Doc/Materializou Direito" e "Explicação…") */}
+        {/* textos do verso da Solicitação de Pagamento (colunas "Nº/Data Doc/Materializou Direito" e "Explicação…");
+            no Auxílio-fardamento automático o sistema propõe os dois mais à frente (Lançar valor devido), por isso ficam ocultos aqui */}
+        {!ocultarVerso && <>
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Documento que materializa o direito</h2>
           <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} recentes={documentosRecentes} />
@@ -254,6 +258,7 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
             arrumarColado justificado obrigatorio erro={c["c.explicacao"]} bloqueado={bloqueado}
             placeholder="Ex.: O militar fazia jus a … no período de … e não recebeu à época porque …" />
         </section>
+        </>}
       </fieldset>
       {!bloqueado && (
         <div className="flex justify-end">
