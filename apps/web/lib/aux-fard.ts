@@ -74,6 +74,8 @@ export interface DadosAuxFard {
   fato2?: FatoGerador;
   /** BI do ato do 2º fato gerador (nº e data). */
   ato2?: string;
+  /** Somente 3 anos: data da última promoção informada no requerimento; os 3 anos se completam 3 anos depois. */
+  ultimaPromocao?: string;
   /**
    * Pagamento das fichas → fato: "2021-7-NR0056" → 1. Vazio: o sugerido. 2 = recebido pelo fato cobrado;
    * 1 = 1º fato (art. 61) ou auxílio anterior (somente promoção / somente 3 anos); 0 = não é deste pedido.
@@ -143,6 +145,21 @@ const dataCurta = (d: string) => `${d.slice(8, 10)} ${MESES_CURTOS[+d.slice(5, 7
 /** Documento que materializou o direito nos processos pagos (até 100 caracteres: lib/amparo). */
 export const DOCUMENTO_DIREITO = "DIEx nº 995-APG 8/APG SubCh/APG Ch/Ch SEF - Circular, de 05 MAR 26 (Parecer da SEF)";
 
+/** Data em que completa 3 anos no posto: a da promoção + 3 anos (29 FEV → 28 FEV). */
+export function tresAnosDepois(d: string): string {
+  const ano = +d.slice(0, 4) + 3, mes = +d.slice(5, 7);
+  const ultimo = new Date(Date.UTC(ano, mes, 0)).getUTCDate();
+  return `${ano}-${d.slice(5, 7)}-${String(Math.min(+d.slice(8, 10), ultimo)).padStart(2, "0")}`;
+}
+
+/** Data do fato cobrado: no "somente 3 anos", contada da última promoção do requerimento; nos demais, a informada. */
+export function dataDoFato(dados: DadosAuxFard): string | undefined {
+  if (casoAuxFard(dados.caso) !== "trienio") return dados.fato2?.data;
+  // sem a última promoção, a promoção lida do processo (fato2 com tipo "promocao") é a do requerimento
+  const promocao = dados.ultimaPromocao || (dados.fato2?.tipo === "promocao" ? dados.fato2.data : undefined);
+  return dataValida(promocao) ? tresAnosDepois(promocao) : dados.fato2?.tipo === "promocao" ? undefined : dados.fato2?.data;
+}
+
 /** O processo segue a automação: criado depois da mudança e com a espécie do auxílio-fardamento. */
 export function auxFardAutomatico(p: { especie_divida?: string | null; complementos?: unknown }): boolean {
   const c = p.complementos as { calculoAutomaticoAuxFard?: unknown } | null | undefined;
@@ -190,7 +207,7 @@ export function planoAuxFard(entrada: {
   const unico = casoUnico(caso);
   // somente promoção / somente 3 anos: o fato cobrado é o "2º" (fato2), com o tipo do caso; não há 1º fato informado
   const f1 = unico ? {} : dados.fato1 ?? {};
-  const f2: FatoGerador = unico ? { ...dados.fato2, tipo: caso, multiplicador: null } : dados.fato2 ?? {};
+  const f2: FatoGerador = unico ? { ...dados.fato2, tipo: caso, multiplicador: null, data: dataDoFato(dados) } : dados.fato2 ?? {};
   const alertas: Alerta[] = [];
   const pendencias: string[] = [];
   const soldoFicha = linhas(fichas, CODIGOS_SOLDO);
@@ -198,14 +215,17 @@ export function planoAuxFard(entrada: {
 
   // datas e postos
   const fatoCobrado = unico ? (caso === "promocao" ? "da promoção" : "dos 3 anos") : "do 2º fato gerador";
-  if (!dataValida(f2.data)) pendencias.push(`Informe a data ${fatoCobrado} (pelo BI do ato).`);
+  if (!dataValida(f2.data)) pendencias.push(caso === "trienio" ? "Informe a data da última promoção (do requerimento): os 3 anos contam dela." : `Informe a data ${fatoCobrado} (pelo BI do ato).`);
   if (caso === "art61" && !dataValida(f1.data)) pendencias.push("Informe a data do 1º fato gerador.");
   if (!f2.tipo) pendencias.push("Informe o tipo do 2º fato gerador.");
   if (!categoriaSoldo(f2.categoria)) pendencias.push(
     caso === "mesma_data" || caso === "promocao" ? "Informe o novo posto/graduação (promoção)."
       : caso === "trienio" ? "Informe o posto/graduação em que completou os 3 anos." : "Informe o posto/graduação do 2º fato gerador.");
   if (caso === "mesma_data" && !categoriaSoldo(f1.categoria)) pendencias.push("Informe o posto/graduação em que completou os 3 anos (triênio).");
-  if (!dados.ato2?.trim()) alertas.push({ codigo: "ATO_FATO_GERADOR_AUSENTE", descricao: `Informe o BI do ato ${unico ? fatoCobrado : "do 2º fato gerador (promoção, nomeação, matrícula ou triênio)"}.` });
+  // os 3 anos no posto não têm BI próprio: o documento que os ampara é o da última promoção
+  if (!dados.ato2?.trim()) alertas.push({ codigo: "ATO_FATO_GERADOR_AUSENTE", descricao: caso === "trienio"
+    ? "Informe o BI da última promoção (o documento que ampara os 3 anos no posto ou graduação)."
+    : `Informe o BI do ato ${unico ? fatoCobrado : "do 2º fato gerador (promoção, nomeação, matrícula ou triênio)"}.` });
   // no caso de mesma data, o triênio e a promoção são na mesma data (a do 2º fato)
   const data2 = dataValida(f2.data) ? f2.data : null;
   const dataInformada1 = caso === "mesma_data" ? data2 : caso === "art61" && dataValida(f1.data) ? f1.data : null;

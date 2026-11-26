@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { auxFardAutomatico, DOCUMENTO_DIREITO, planoAuxFard, rubricasAuxFard, RUBRICA_AUX_FARD_1, tetoArt19 } from "./aux-fard";
+import { auxFardAutomatico, dataDoFato, DOCUMENTO_DIREITO, tresAnosDepois, planoAuxFard, rubricasAuxFard, RUBRICA_AUX_FARD_1, tetoArt19 } from "./aux-fard";
 import type { FichaLida } from "./receitas";
 
 const linha = (codigo: string, meses: Record<number, number>) =>
@@ -140,6 +140,8 @@ describe("Auxílio-fardamento automático", () => {
     const p = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" } } });
     expect(p.pagamentos.find((x) => x.chave === "2023-6-NR0056")!.fato).toBe(2);
     expect([p.devido, p.recebido, p.diferenca]).toEqual([4770, 1000, 3770]);
+    // sem o BI da última promoção (o que ampara os 3 anos): alerta
+    expect(p.alertas.find((a) => a.codigo === "ATO_FATO_GERADOR_AUSENTE")!.descricao).toContain("BI da última promoção");
     // jan/2022 está a mais de 12 meses do fato: não é sugerido como anterior
     expect(codigos(p)).toEqual(expect.arrayContaining(["SEM_AUXILIO_ANTERIOR", "AUX_FARD_NAS_FICHAS"]));
     expect(p.textos.explicacao).toContain("completou 3 anos na graduação de Segundo-Sargento em 10 MAI 23; na época, só recebeu a diferença");
@@ -147,6 +149,18 @@ describe("Auxílio-fardamento automático", () => {
     const q = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" }, vinculos: { "2022-1-NR0056": 1, "2023-6-NR0056": 2 } } });
     expect(codigos(q)).toContain("FORA_DA_TESE");
     expect(codigos(q)).not.toContain("SEM_AUXILIO_ANTERIOR");
+  });
+
+  it("somente 3 anos: contados da última promoção do requerimento", () => {
+    expect(tresAnosDepois("2020-05-10")).toBe("2023-05-10");
+    expect(tresAnosDepois("2020-02-29")).toBe("2023-02-28");
+    const fichas = [ficha(2023, linha("NR0001", { 5: 4770 }))];
+    const p = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", ultimaPromocao: "2020-05-10", fato2: { categoria: "2-sgt" } } });
+    expect(p.competencia).toEqual({ ano: 2023, mes: 5 });
+    expect(p.devido).toBe(4770);
+    // a promoção lida do processo vale como a última promoção
+    expect(dataDoFato({ caso: "trienio", fato2: { tipo: "promocao", data: "2020-05-10" } })).toBe("2023-05-10");
+    expect(dataDoFato({ caso: "promocao", ultimaPromocao: "2019-01-01", fato2: { data: "2020-05-10" } })).toBe("2020-05-10");
   });
 
   it("A56/A57 na posição 1 vazia ou na 1ª receita vazia", () => {

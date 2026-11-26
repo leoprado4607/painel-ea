@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
 import { textoBoletim } from "@/lib/averbacao";
-import { auxFardAutomatico, casoAuxFard, planoAuxFard, TIPOS_FATO, type DadosAuxFard, type FatoGerador } from "@/lib/aux-fard";
+import { auxFardAutomatico, casoAuxFard, dataDoFato, planoAuxFard, TIPOS_FATO, type DadosAuxFard, type FatoGerador } from "@/lib/aux-fard";
 import { fichasLidasValidas, preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { categoriaSoldo } from "@/lib/soldos";
@@ -14,6 +14,12 @@ const fato = (f: FatoGerador | undefined): FatoGerador => ({
   multiplicador: f?.multiplicador === 1 || f?.multiplicador === 1.5 ? f.multiplicador : null,
 });
 
+/** Mês inteiro da data: "2023-05-10" → 01/05/2023 a 31/05/2023. */
+const periodoDoMes = (d: string) => {
+  const ano = +d.slice(0, 4), mes = +d.slice(5, 7);
+  return { periodo_inicio: `${d.slice(0, 7)}-01`, periodo_fim: `${d.slice(0, 7)}-${String(new Date(Date.UTC(ano, mes, 0)).getUTCDate()).padStart(2, "0")}` };
+};
+
 /** Limpa o que vem da tela (só os campos conhecidos, com a forma certa). */
 function limpar(d: DadosAuxFard): DadosAuxFard {
   const vinculos = Object.fromEntries(Object.entries(d.vinculos ?? {})
@@ -22,6 +28,7 @@ function limpar(d: DadosAuxFard): DadosAuxFard {
     caso: casoAuxFard(d.caso),
     fato1: fato(d.fato1), fato2: fato(d.fato2),
     ato2: typeof d.ato2 === "string" ? d.ato2.trim().slice(0, 100) : "",
+    ultimaPromocao: data(d.ultimaPromocao),
     vinculos,
     declaracaoSemAcao: d.declaracaoSemAcao === true, reconhecimento: d.reconhecimento === true, semControversia: d.semControversia === true,
     prescricaoInterrompida: d.prescricaoInterrompida === true, reintegradoSemExpediente: d.reintegradoSemExpediente === true,
@@ -44,6 +51,8 @@ export async function salvarAuxFard(processoId: string, dados: DadosAuxFard, usa
     if (p.situacao !== "rascunho") return { erro: "Processo já emitido. Use “Corrigir” na aba Impressão para alterar." };
     if (!auxFardAutomatico(p)) return { erro: "Este processo não usa o cálculo automático do Auxílio-fardamento." };
     const auxFard = limpar(dados);
+    // somente 3 anos: a data dos 3 anos é contada da última promoção do requerimento
+    if (auxFard.caso === "trienio") auxFard.fato2 = { ...auxFard.fato2, tipo: "trienio", data: dataDoFato(auxFard) ?? "" };
     const complementos: Record<string, unknown> = { ...((p.complementos as object) ?? {}), auxFard };
     if (usarTextos) {
       const plano = planoAuxFard({
@@ -53,7 +62,9 @@ export async function salvarAuxFard(processoId: string, dados: DadosAuxFard, usa
       if (plano.textos.explicacao) complementos.explicacao = plano.textos.explicacao;
       if (plano.textos.documentos.length) complementos.amparo = plano.textos.documentos.join("\n");
     }
-    const { error } = await supabase.from("processo").update({ complementos }).eq("id", processoId);
+    // somente 3 anos: o mês em que completou os 3 anos (última promoção + 3 anos) é o de referência da dívida (Informações), no lugar do identificado
+    const periodo = auxFard.caso === "trienio" && auxFard.fato2?.data ? periodoDoMes(auxFard.fato2.data) : null;
+    const { error } = await supabase.from("processo").update({ complementos, ...(periodo ?? {}) }).eq("id", processoId);
     if (error) return { erro: error.message };
     await preencherReceitas(supabase, processoId);
     revalidatePath(`/processos/${processoId}`, "layout");

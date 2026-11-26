@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { salvarAuxFard } from "@/lib/acoes/aux-fard";
-import { CASOS_AUX_FARD, casoAuxFard, casoUnico, TIPOS_FATO, type CasoAuxFard, type DadosAuxFard, type FatoGerador, type PlanoAuxFard, type TipoFato } from "@/lib/aux-fard";
+import { CASOS_AUX_FARD, casoAuxFard, casoUnico, TIPOS_FATO, tresAnosDepois, type CasoAuxFard, type DadosAuxFard, type FatoGerador, type PlanoAuxFard, type TipoFato } from "@/lib/aux-fard";
 import { formatarReais } from "@/lib/dinheiro";
 import { SOLDOS } from "@/lib/soldos";
 import { MESES_CURTOS } from "@/lib/tipos";
@@ -32,11 +32,13 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
   const unico = casoUnico(caso);
   const mudarFato = (n: "fato1" | "fato2", campo: Partial<FatoGerador>) => setD((x) => ({ ...x, [n]: { ...x[n], ...campo } }));
   const mudarCaso = (c: CasoAuxFard) => setD((x) => ({ ...x, caso: c }));
+  // somente 3 anos: a última promoção do requerimento (lida do processo); sem ela, a promoção informada antes
+  const ultimaPromocao = d.ultimaPromocao ?? (d.fato2?.tipo === "promocao" ? d.fato2.data ?? "" : "");
 
   const salvar = () => iniciar(async () => {
     const envio: DadosAuxFard = mesmaData
       ? { ...d, vinculos, fato1: { ...d.fato1, tipo: "trienio", data: d.fato2?.data }, fato2: { ...d.fato2, tipo: "promocao" } }
-      : unico ? { ...d, vinculos, fato1: {}, fato2: { ...d.fato2, tipo: caso } }
+      : unico ? { ...d, vinculos, fato1: {}, fato2: { ...d.fato2, tipo: caso }, ...(caso === "trienio" ? { ultimaPromocao } : {}) }
       : { ...d, vinculos };
     const r = await salvarAuxFard(processoId, envio, usarTextos);
     if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
@@ -122,10 +124,25 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
 
         {unico ? (
           <div className="grid gap-3 sm:grid-cols-3">
-            <div>
-              <label htmlFor="af-data2" className="rotulo">{caso === "promocao" ? "Data da promoção (BI do ato)" : "Data em que completou os 3 anos"}</label>
-              <input id="af-data2" type="date" className="entrada" value={d.fato2?.data ?? ""} onChange={(e) => mudarFato("fato2", { data: e.target.value })} />
-            </div>
+            {caso === "promocao" ? (
+              <div>
+                <label htmlFor="af-data2" className="rotulo">Data da promoção (BI do ato)</label>
+                <input id="af-data2" type="date" className="entrada" value={d.fato2?.data ?? ""} onChange={(e) => mudarFato("fato2", { data: e.target.value })} />
+              </div>
+            ) : (
+              <>
+                {/* os 3 anos contam da última promoção informada no requerimento */}
+                <div>
+                  <label htmlFor="af-ultpromo" className="rotulo">Data da última promoção (requerimento)</label>
+                  <input id="af-ultpromo" type="date" className="entrada" value={ultimaPromocao}
+                    onChange={(e) => setD((x) => ({ ...x, ultimaPromocao: e.target.value }))} />
+                </div>
+                <div>
+                  <span className="rotulo">Completou os 3 anos em</span>
+                  <output htmlFor="af-ultpromo" className="entrada block bg-gray-50 tabular-nums">{/^\d{4}-\d{2}-\d{2}$/.test(ultimaPromocao) ? br(tresAnosDepois(ultimaPromocao)) : "–"}</output>
+                </div>
+              </>
+            )}
             {seletorPosto("af-cat2", caso === "promocao" ? "Novo posto/graduação" : "Posto/graduação em que completou os 3 anos", "fato2")}
           </div>
         ) : mesmaData ? (
@@ -166,10 +183,13 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
             </div>
           </>
         )}
+        {/* os 3 anos no posto não têm BI próprio: o documento que os ampara é o da última promoção */}
         <div>
-          <label htmlFor="af-ato2" className="rotulo">{caso === "promocao" ? "BI do ato da promoção (nº e data)" : caso === "trienio" ? "BI do ato dos 3 anos (nº e data)" : "BI do ato do 2º fato gerador (nº e data)"}</label>
+          <label htmlFor="af-ato2" className="rotulo">{caso === "promocao" ? "BI do ato da promoção (nº e data)"
+            : caso === "trienio" ? "BI da última promoção, que ampara os 3 anos (nº e data)" : "BI do ato do 2º fato gerador (nº e data)"}</label>
           <input id="af-ato2" className="entrada" maxLength={100} value={d.ato2 ?? ""} placeholder="Ex.: BI Nr 239 do HGuJP, de 24/12/2021" onChange={(e) => setD((x) => ({ ...x, ato2: e.target.value }))} />
         </div>
+        {caso === "trienio" && <p className="ajuda">Os 3 anos contam da última promoção informada no requerimento. Ao salvar, o início e o fim da dívida (Informações) passam ao mês em que completou os 3 anos.</p>}
 
         <div>
           <h3 className="rotulo-secao">Auxílio-fardamento nas fichas financeiras</h3>

@@ -153,6 +153,8 @@ export function lerProcesso(pecas: Peca[], especie: "aux-fard" | "grat-rep" | "a
       // sem o posto junto da data ("promovido à graduação atual, em 1º de junho"), o de outra menção à promoção
       const outra = [...t.matchAll(/PROMO(?:CAO|VID[AO])/g)].map((x) => postoDaPromocao(t.slice(x.index!, x.index! + 60))).find(Boolean);
       auxFard.fato2 = { tipo: "promocao", data, categoria: postoDaPromocao(depois.slice(0, mData!.index)) ?? postoDaPromocao(antes) ?? outra ?? undefined };
+      // a mesma promoção é a "última promoção" do requerimento, de onde contam os 3 anos (caso "somente 3 anos")
+      auxFard.ultimaPromocao = data;
       usar(p, "data e posto da promoção (2º fato)");
       break;
     }
