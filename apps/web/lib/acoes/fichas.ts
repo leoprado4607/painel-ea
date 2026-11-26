@@ -276,7 +276,9 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     const dados = dadosDoFavorecido(docs);
     const { data: m, error: e1 } = await supabase.from("militar").insert({
       om_id: omId, nome: dados.nome ?? "(nome não lido)", posto_graduacao: dados.posto_graduacao ?? null, prec_cp: dados.prec_cp ?? null,
-      identidade: dados.identidade ?? null, cpf: dados.cpf ?? null, om_vinculacao: dados.om_vinculacao ?? null,
+      // processo completo: a OMV fica em branco para o operador escolher na lista (como a Situação); o nome nas peças
+      // pode diferir do cadastrado (decisão de 26/11/2026)
+      identidade: dados.identidade ?? null, cpf: dados.cpf ?? null, om_vinculacao: leitura ? null : dados.om_vinculacao ?? null,
       banco: dados.banco ?? null, agencia: dados.agencia ?? null, conta: dados.conta ?? null,
     }).select("id").single();
     if (e1) return { erro: e1.message };
