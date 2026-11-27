@@ -39,49 +39,53 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
   // Gratificação de Representação automática: quadro do evento e cálculo em "Lançar valor devido"
   const autoGr = gratRepAutomatico(processo);
   const dadosGr = dadosGratRep(processo.complementos);
-  let planoGr = null;
+  let planoGr = null, entradaGr = null;
   if (autoGr && tipo === "devido") {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
-    planoGr = planoGratRep({
-      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim, dados: dadosGr,
+    entradaGr = {
+      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim,
       dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
-    });
+    };
+    planoGr = planoGratRep({ ...entradaGr, dados: dadosGr });
     notas = planoGr.notas;
   }
   // Auxílio-fardamento automático: quadro dos fatos geradores e cálculo em "Lançar valor devido"
   const autoAf = auxFardAutomatico(processo);
   const dadosAf = dadosAuxFard(processo.complementos);
-  let planoAf = null;
+  let planoAf = null, entradaAf = null;
   if (autoAf && tipo === "devido") {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
-    planoAf = planoAuxFard({
-      fichas: fichasLidasValidas(data?.fichas_lidas), dados: dadosAf, dataRequerimento: processo.data_requerimento,
+    entradaAf = {
+      fichas: fichasLidasValidas(data?.fichas_lidas), dataRequerimento: processo.data_requerimento,
       periodoInicio: processo.periodo_inicio, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
-    });
+    };
+    planoAf = planoAuxFard({ ...entradaAf, dados: dadosAf });
     notas = planoAf.notas;
   }
   // gratificações mensais automáticas (localidade especial e comando): quadro e cálculo em "Lançar valor devido"
   const autoGm = gratMensalAutomatico(processo);
   const dadosGm = dadosGratMensal(processo.complementos);
-  let planoGm = null;
+  let planoGm = null, entradaGm = null;
   if (autoGm && tipo === "devido") {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
-    planoGm = planoGratMensal({
+    entradaGm = {
       fichas: fichasLidasValidas(data?.fichas_lidas), especie: processo.especie_divida, inicio: processo.periodo_inicio, fim: processo.periodo_fim,
-      dados: dadosGm, dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
-    });
+      dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
+    };
+    planoGm = planoGratMensal({ ...entradaGm, dados: dadosGm });
     notas = planoGm.notas;
   }
   // Adicional de Habilitação automático: quadro e cálculo em "Lançar valor devido"
   const autoAh = adicHabAutomatico(processo);
   const dadosAh = dadosAdicHab(processo.complementos);
-  let planoAh = null;
+  let planoAh = null, entradaAh = null;
   if (autoAh && tipo === "devido") {
     const { data } = await (await supabaseServidor()).from("processo").select("fichas_lidas").eq("id", id).maybeSingle();
-    planoAh = planoAdicHab({
-      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim, dados: dadosAh,
+    entradaAh = {
+      fichas: fichasLidasValidas(data?.fichas_lidas), inicio: processo.periodo_inicio, fim: processo.periodo_fim,
       dataRequerimento: processo.data_requerimento, averbacao: textoBoletim(processo), hoje: new Date().toISOString().slice(0, 10),
-    });
+    };
+    planoAh = planoAdicHab({ ...entradaAh, dados: dadosAh });
     notas = planoAh.notas;
   }
   return (
@@ -109,12 +113,12 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
           <Link href={`/processos/${id}/devidos`} className="underline">Lançar valor devido</Link>. Confira; o que você digitar não é sobrescrito.
         </Aviso>
       )}
-      {planoAf && <PainelAuxFard processoId={id} dados={dadosAf} plano={planoAf} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />}
+      {planoAf && <PainelAuxFard processoId={id} dados={dadosAf} plano={planoAf} entrada={entradaAf} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />}
       {planoGr && (
-        <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />
+        <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} entrada={entradaGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />
       )}
       {planoAh && (
-        <PainelAdicHab processoId={id} dados={dadosAh} plano={planoAh} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
+        <PainelAdicHab processoId={id} dados={dadosAh} plano={planoAh} entrada={entradaAh} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
       )}
       {autoAh && tipo === "recebido" && (
         <Aviso tipo="info">
@@ -123,7 +127,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
         </Aviso>
       )}
       {planoGm && (
-        <PainelGratMensal processoId={id} especie={processo.especie_divida ?? ""} dados={dadosGm} plano={planoGm} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
+        <PainelGratMensal processoId={id} especie={processo.especie_divida ?? ""} dados={dadosGm} plano={planoGm} entrada={entradaGm} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
       )}
       {autoGm && tipo === "recebido" && (
         <Aviso tipo="info">

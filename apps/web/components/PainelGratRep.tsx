@@ -1,13 +1,13 @@
 "use client";
 import type { LeituraGuardada } from "@/lib/processo-completo";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { QuadroTextosVerso } from "@/components/QuadroTextosVerso";
 import { textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { salvarGratRep } from "@/lib/acoes/grat-rep";
 import { formatarReais, lerReais } from "@/lib/dinheiro";
-import type { DadosGratRep, PlanoGratRep } from "@/lib/grat-rep";
+import { planoGratRep, type DadosGratRep, type PlanoGratRep } from "@/lib/grat-rep";
 import { categoriaSoldo, SOLDOS } from "@/lib/soldos";
 import { MESES_CURTOS } from "@/lib/tipos";
 
@@ -17,8 +17,10 @@ const br = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
  * "Lançar valor devido" da Gratificação de Representação automática (lib/grat-rep): dados do evento e da autorização,
  * lançamentos de Grat Rep das fichas (o operador marca os que são deste evento), cálculo, alertas e textos do verso.
  */
-export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado }: {
+export function PainelGratRep({ processoId, dados, plano, entrada, inicio, fim, bloqueado }: {
   processoId: string; dados: DadosGratRep; plano: PlanoGratRep; inicio: string; fim: string; bloqueado: boolean;
+  /** O que o cálculo usa além do quadro (fichas, período…): os textos do verso são refeitos na tela, antes de salvar. */
+  entrada?: Omit<Parameters<typeof planoGratRep>[0], "dados"> | null;
   /** O que veio do processo completo, quando o cálculo começou por ele. */
   leitura?: LeituraGuardada | null;
 }) {
@@ -27,7 +29,12 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
   const [valorAut, setValorAut] = useState(dados.autorizacao?.valor != null ? formatarReais(dados.autorizacao.valor) : "");
   const [usarTextos, setUsarTextos] = useState(false);
   const [textosEditados, setTextosEditados] = useState<TextosVerso | null>(dados.textosVerso ?? null);
-  const sugeridos = textosSugeridos(plano.textos);
+  const textosAoVivo = useMemo(() => {
+    if (!entrada) return plano.textos;
+    const valor = lerReais(valorAut);
+    return planoGratRep({ ...entrada, dados: { ...d, autorizacao: { ...d.autorizacao, valor: Number.isNaN(valor) ? d.autorizacao?.valor : valor } } }).textos;
+  }, [entrada, plano.textos, d, valorAut]);
+  const sugeridos = textosSugeridos(textosAoVivo);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
   const aut = d.autorizacao ?? {};

@@ -1,11 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { QuadroTextosVerso } from "@/components/QuadroTextosVerso";
 import { textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { salvarAdicHab } from "@/lib/acoes/adic-hab";
-import { TABELA_AH, TIPOS_CURSO, type DadosAdicHab, type PlanoAdicHab, type TipoCurso } from "@/lib/adic-hab";
+import { planoAdicHab, TABELA_AH, TIPOS_CURSO, type DadosAdicHab, type PlanoAdicHab, type TipoCurso } from "@/lib/adic-hab";
 import { formatarReais } from "@/lib/dinheiro";
 import { categoriaSoldo, SOLDOS } from "@/lib/soldos";
 import { MESES_CURTOS } from "@/lib/tipos";
@@ -17,15 +17,18 @@ const R = (v: number) => `R$ ${formatarReais(v)}`;
  * "Lançar valor devido" do Adicional de Habilitação automático (lib/adic-hab): tipo do curso, postos e promoções,
  * reflexos (natalino e férias) e descontos (Fusex e Pensão Militar), cálculo mês a mês, alertas e textos do verso.
  */
-export function PainelAdicHab({ processoId, dados, plano, inicio, fim, bloqueado }: {
+export function PainelAdicHab({ processoId, dados, plano, entrada, inicio, fim, bloqueado }: {
   processoId: string; dados: DadosAdicHab; plano: PlanoAdicHab; inicio: string; fim: string; bloqueado: boolean;
+  /** O que o cálculo usa além do quadro (fichas, período…): os textos do verso são refeitos na tela, antes de salvar. */
+  entrada?: Omit<Parameters<typeof planoAdicHab>[0], "dados"> | null;
 }) {
   const router = useRouter();
   const [d, setD] = useState<DadosAdicHab>(dados);
   const [novoMes, setNovoMes] = useState("");
   const [usarTextos, setUsarTextos] = useState(false);
   const [textosEditados, setTextosEditados] = useState<TextosVerso | null>(dados.textosVerso ?? null);
-  const sugeridos = textosSugeridos(plano.textos);
+  const textosAoVivo = useMemo(() => (entrada ? planoAdicHab({ ...entrada, dados: d }).textos : plano.textos), [entrada, plano.textos, d]);
+  const sugeridos = textosSugeridos(textosAoVivo);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
   const postos = d.postos ?? [];

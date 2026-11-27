@@ -1,12 +1,12 @@
 "use client";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { QuadroTextosVerso } from "@/components/QuadroTextosVerso";
 import { textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { salvarGratMensal } from "@/lib/acoes/grat-mensal";
 import { formatarReais } from "@/lib/dinheiro";
-import { ESPECIE_GR_CMDO, PERCENTUAL, type DadosGratMensal, type PlanoGratMensal } from "@/lib/grat-mensal";
+import { ESPECIE_GR_CMDO, PERCENTUAL, planoGratMensal, type DadosGratMensal, type PlanoGratMensal } from "@/lib/grat-mensal";
 import { categoriaSoldo, SOLDOS } from "@/lib/soldos";
 import { MESES_CURTOS } from "@/lib/tipos";
 
@@ -17,14 +17,17 @@ const br = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
  * de comando. Posto/graduação, localidade, ato, lançamentos das fichas (o operador marca os desta dívida), cálculo
  * mês a mês, alertas e textos do verso.
  */
-export function PainelGratMensal({ processoId, especie, dados, plano, inicio, fim, bloqueado }: {
+export function PainelGratMensal({ processoId, especie, dados, plano, entrada, inicio, fim, bloqueado }: {
   processoId: string; especie: string; dados: DadosGratMensal; plano: PlanoGratMensal; inicio: string; fim: string; bloqueado: boolean;
+  /** O que o cálculo usa além do quadro (fichas, período…): os textos do verso são refeitos na tela, antes de salvar. */
+  entrada?: Omit<Parameters<typeof planoGratMensal>[0], "dados"> | null;
 }) {
   const router = useRouter();
   const [d, setD] = useState<DadosGratMensal>(dados);
   const [usarTextos, setUsarTextos] = useState(false);
   const [textosEditados, setTextosEditados] = useState<TextosVerso | null>(dados.textosVerso ?? null);
-  const sugeridos = textosSugeridos(plano.textos);
+  const textosAoVivo = useMemo(() => (entrada ? planoGratMensal({ ...entrada, dados: d }).textos : plano.textos), [entrada, plano.textos, d]);
+  const sugeridos = textosSugeridos(textosAoVivo);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
   const comando = especie === ESPECIE_GR_CMDO;

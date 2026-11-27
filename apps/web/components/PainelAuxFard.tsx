@@ -1,12 +1,12 @@
 "use client";
 import type { LeituraGuardada } from "@/lib/processo-completo";
 import { useRouter } from "next/navigation";
-import { useState, useTransition } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
 import { QuadroTextosVerso } from "@/components/QuadroTextosVerso";
 import { textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { salvarAuxFard } from "@/lib/acoes/aux-fard";
-import { CASOS_AUX_FARD, casoAuxFard, casoUnico, TIPOS_FATO, tresAnosDepois, type CasoAuxFard, type DadosAuxFard, type FatoGerador, type PlanoAuxFard, type TipoFato } from "@/lib/aux-fard";
+import { CASOS_AUX_FARD, casoAuxFard, casoUnico, planoAuxFard, TIPOS_FATO, tresAnosDepois, type CasoAuxFard, type DadosAuxFard, type FatoGerador, type PlanoAuxFard, type TipoFato, type VinculoPagamento } from "@/lib/aux-fard";
 import { formatarReais } from "@/lib/dinheiro";
 import { SOLDOS } from "@/lib/soldos";
 import { MESES_CURTOS } from "@/lib/tipos";
@@ -18,17 +18,19 @@ const R = (v: number | null) => (v === null ? "—" : `R$ ${formatarReais(v)}`);
  * "Lançar valor devido" do Auxílio-fardamento automático (lib/aux-fard): caso (art. 61 ou triênio + promoção na mesma
  * data), fatos geradores, ligação dos pagamentos das fichas, conferências do Parecer 645, cálculo, alertas e textos.
  */
-export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
+export function PainelAuxFard({ processoId, dados, plano, entrada, bloqueado }: {
   processoId: string; dados: DadosAuxFard; plano: PlanoAuxFard; bloqueado: boolean;
+  /** O que o cálculo usa além do quadro (fichas, requerimento…): os textos do verso são refeitos na tela, antes de salvar. */
+  entrada?: Omit<Parameters<typeof planoAuxFard>[0], "dados"> | null;
   /** O que veio do processo completo (lib/processo-completo), quando o cálculo começou por ele. */
   leitura?: LeituraGuardada | null;
 }) {
   const router = useRouter();
   const [d, setD] = useState<DadosAuxFard>({ ...dados, caso: plano.caso });
-  const [vinculos, setVinculos] = useState<Record<string, 0 | 1 | 2>>(Object.fromEntries(plano.pagamentos.map((p) => [p.chave, p.fato])));
+  const [vinculos, setVinculos] = useState<Record<string, VinculoPagamento>>(Object.fromEntries(plano.pagamentos.map((p) => [p.chave, p.fato])));
   const [usarTextos, setUsarTextos] = useState(false);
   const [textosEditados, setTextosEditados] = useState<TextosVerso | null>(dados.textosVerso ?? null);
-  const sugeridos = textosSugeridos(plano.textos);
+
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
   const caso = casoAuxFard(d.caso);
@@ -39,11 +41,17 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
   // somente 3 anos: a última promoção do requerimento (lida do processo); sem ela, a promoção informada antes
   const ultimaPromocao = d.ultimaPromocao ?? (d.fato2?.tipo === "promocao" ? d.fato2.data ?? "" : "");
 
+  const envio: DadosAuxFard = mesmaData
+    ? { ...d, vinculos, fato1: { ...d.fato1, tipo: "trienio", data: d.fato2?.data }, fato2: { ...d.fato2, tipo: "promocao" } }
+    : unico ? { ...d, vinculos, fato1: {}, fato2: { ...d.fato2, tipo: caso }, ...(caso === "trienio" ? { ultimaPromocao } : {}) }
+    : { ...d, vinculos };
+  // textos do verso refeitos a cada mudança do quadro (sem esperar o salvar)
+  const textosAoVivo = useMemo(() => (entrada ? planoAuxFard({ ...entrada, dados: envio }).textos : plano.textos),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [entrada, plano.textos, JSON.stringify(envio)]);
+  const sugeridos = textosSugeridos(textosAoVivo);
+
   const salvar = () => iniciar(async () => {
-    const envio: DadosAuxFard = mesmaData
-      ? { ...d, vinculos, fato1: { ...d.fato1, tipo: "trienio", data: d.fato2?.data }, fato2: { ...d.fato2, tipo: "promocao" } }
-      : unico ? { ...d, vinculos, fato1: {}, fato2: { ...d.fato2, tipo: caso }, ...(caso === "trienio" ? { ultimaPromocao } : {}) }
-      : { ...d, vinculos };
     const r = await salvarAuxFard(processoId, envio, usarTextos, textosEditados);
     if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
     setMsg({ tipo: "ok", texto: "Dados salvos e cálculo refeito." });
@@ -207,10 +215,11 @@ export function PainelAuxFard({ processoId, dados, plano, bloqueado }: {
                   <span className="tabular-nums">R$ {formatarReais(p.valor)}</span>
                   <label className="sr-only" htmlFor={`af-${p.chave}`}>Fato gerador do pagamento de {MESES_CURTOS[p.mes - 1]}/{p.ano}</label>
                   <select id={`af-${p.chave}`} className="entrada w-auto py-1" value={vinculos[p.chave] ?? 0}
-                    onChange={(e) => setVinculos((v) => ({ ...v, [p.chave]: Number(e.target.value) as 0 | 1 | 2 }))}>
+                    onChange={(e) => setVinculos((v) => ({ ...v, [p.chave]: Number(e.target.value) as VinculoPagamento }))}>
                     <option value={0}>Não é deste pedido</option>
                     {!mesmaData && <option value={1}>{unico ? "Auxílio anterior (menos de 1 ano)" : "1º fato"}</option>}
                     <option value={2}>{unico || mesmaData ? "Recebido por este fato" : "2º fato (recebido)"}</option>
+                    <option value={3}>Recebido posterior (outro fato)</option>
                   </select>
                 </li>
               ))}

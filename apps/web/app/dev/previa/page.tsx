@@ -80,8 +80,8 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
           ];
           // ?caso=promocao | trienio | mesma_data: os outros casos com as mesmas fichas
           const dados: DadosAuxFard = { caso: casoAuxFard(caso), fato1: { tipo: "aspirante", data: "2021-07-12", categoria: "asp" }, fato2: { tipo: "promocao", data: "2021-12-25", categoria: "2-ten" } };
-          return <PainelAuxFard processoId="previa" dados={dados} bloqueado={false}
-            plano={planoAuxFard({ fichas, dados, dataRequerimento: "2026-09-28", periodoInicio: "2021-12-01", averbacao: "BI 210 - HGuJP, de 05/10/2026", hoje: "2026-11-24" })} />;
+          const entrada = { fichas, dataRequerimento: "2026-09-28", periodoInicio: "2021-12-01", averbacao: "BI 210 - HGuJP, de 05/10/2026", hoje: "2026-11-24" };
+          return <PainelAuxFard processoId="previa" dados={dados} bloqueado={false} entrada={entrada} plano={planoAuxFard({ ...entrada, dados })} />;
         })()
       ) : tela === "grat-rep" ? (
         // caso 1 do prompt da Grat Rep (NUP 64552.003413/2025-49)

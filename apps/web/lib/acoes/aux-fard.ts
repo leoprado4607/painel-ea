@@ -24,7 +24,7 @@ const periodoDoMes = (d: string) => {
 /** Limpa o que vem da tela (só os campos conhecidos, com a forma certa). */
 function limpar(d: DadosAuxFard): DadosAuxFard {
   const vinculos = Object.fromEntries(Object.entries(d.vinculos ?? {})
-    .filter(([k, v]) => /^\d{4}-\d{1,2}-[A-Z0-9]+$/.test(k) && (v === 0 || v === 1 || v === 2)));
+    .filter(([k, v]) => /^\d{4}-\d{1,2}-[A-Z0-9]+$/.test(k) && (v === 0 || v === 1 || v === 2 || v === 3)));
   return {
     caso: casoAuxFard(d.caso),
     fato1: fato(d.fato1), fato2: fato(d.fato2),

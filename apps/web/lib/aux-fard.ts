@@ -81,9 +81,10 @@ export interface DadosAuxFard {
   ultimaPromocao?: string;
   /**
    * Pagamento das fichas → fato: "2021-7-NR0056" → 1. Vazio: o sugerido. 2 = recebido pelo fato cobrado;
-   * 1 = 1º fato (art. 61) ou auxílio anterior (somente promoção / somente 3 anos); 0 = não é deste pedido.
+   * 1 = 1º fato (art. 61) ou auxílio anterior (somente promoção / somente 3 anos); 0 = não é deste pedido;
+   * 3 = recebido posterior, de outro fato gerador (não entra no cálculo nem gera o alerta de auxílio não ligado).
    */
-  vinculos?: Record<string, 1 | 2 | 0>;
+  vinculos?: Record<string, VinculoPagamento>;
   declaracaoSemAcao?: boolean;
   reconhecimento?: boolean;
   semControversia?: boolean;
@@ -95,7 +96,8 @@ export interface DadosAuxFard {
   relacionados?: string;
 }
 
-export interface Pagamento { ano: number; mes: number; codigo: string; descricao: string; valor: number; chave: string; fato: 0 | 1 | 2; sugerido: boolean }
+export type VinculoPagamento = 0 | 1 | 2 | 3;
+export interface Pagamento { ano: number; mes: number; codigo: string; descricao: string; valor: number; chave: string; fato: VinculoPagamento; sugerido: boolean }
 export interface Alerta { codigo: string; descricao: string }
 export interface PlanoAuxFard {
   caso: CasoAuxFard;
@@ -256,6 +258,9 @@ export function planoAuxFard(entrada: {
     const fato = temVinculo ? (vinculos[chave] ?? 0) : sugerido;
     return { ...p, chave, fato: caso === "mesma_data" && fato === 1 ? 0 : fato, sugerido: !temVinculo && fato !== 0 };
   });
+  for (const p of pagamentos.filter((x) => x.fato === 3 && data2 && k(x.ano, x.mes) < mesDe(data2))) {
+    alertas.push({ codigo: "VINCULO_INCOERENTE", descricao: `${p.codigo} de R$ ${reais(p.valor)} em ${mm(p.ano, p.mes)} foi marcado como recebido posterior, mas é anterior ao fato (${br(data2!)}): confira a ligação.` });
+  }
   if (!temVinculo && pagamentos.some((p) => p.fato)) pendencias.push("Confirme a qual fato gerador se refere cada pagamento de auxílio-fardamento das fichas (a ligação foi sugerida pelas datas).");
   const pagos1 = pagamentos.filter((p) => p.fato === 1), pagos2 = pagamentos.filter((p) => p.fato === 2);
   const valorPago1 = centavos(pagos1.reduce((s, p) => s + p.valor, 0));

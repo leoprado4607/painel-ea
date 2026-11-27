@@ -149,6 +149,13 @@ describe("Auxílio-fardamento automático", () => {
     const q = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" }, vinculos: { "2022-1-NR0056": 1, "2023-6-NR0056": 2 } } });
     expect(codigos(q)).toContain("FORA_DA_TESE");
     expect(codigos(q)).not.toContain("SEM_AUXILIO_ANTERIOR");
+    // fev/2025 marcado como recebido posterior (outro fato): fora do cálculo e sem o alerta de auxílio não ligado
+    const r = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" }, vinculos: { "2023-6-NR0056": 2, "2025-2-NR0056": 3 } } });
+    expect(r.recebido).toBe(1000);
+    expect(codigos(r)).not.toContain("AUX_FARD_NAS_FICHAS");
+    // marcado como posterior, mas anterior ao fato: alerta
+    const s = planoAuxFard({ fichas, hoje, dados: { caso: "trienio", fato2: { data: "2023-05-10", categoria: "2-sgt" }, vinculos: { "2022-1-NR0056": 3, "2023-6-NR0056": 2 } } });
+    expect(codigos(s)).toContain("VINCULO_INCOERENTE");
   });
 
   it("somente 3 anos: contados da última promoção do requerimento", () => {
