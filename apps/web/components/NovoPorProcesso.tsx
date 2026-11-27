@@ -8,13 +8,13 @@ import { lerPecaDoProcesso } from "@/lib/acoes/processo-completo";
 import type { Peca } from "@/lib/processo-completo";
 
 /** Peças maiores não são enviadas (a Vercel recusa envios acima de ~4,5 MB): ficam listadas como "grandes". */
-const LIMITE_ENVIO = 3.8 * 1024 * 1024;
-const IGNORAR = /TERMO DE (DES)?ARQUIVAMENTO/i;
+export const LIMITE_ENVIO = 3.8 * 1024 * 1024;
+export const IGNORAR = /TERMO DE (DES)?ARQUIVAMENTO/i;
 const ordem = (nome: string) => Number(/^(\d+)\./.exec(nome)?.[1] ?? 9999);
 const nomeBase = (caminho: string) => caminho.split("/").pop() ?? caminho;
 
 /** Peças do ZIP do SPED (ou os PDFs soltos), na ordem do processo. */
-async function pecasDosArquivos(arquivos: File[]) {
+export async function pecasDosArquivos(arquivos: File[]) {
   const pecas: { nome: string; dados: Uint8Array }[] = [];
   for (const a of arquivos) {
     const dados = new Uint8Array(await a.arrayBuffer());

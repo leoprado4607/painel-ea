@@ -20,10 +20,11 @@ const rubricas = [
 ];
 
 describe("receitas das fichas", () => {
-  it("guarda só as linhas de receita das fichas (o contracheque não entra)", () => {
-    const f = fichasLidasDosDocumentos([doc(2025, [["NR0001", "receita", 100], ["ND0001", "desconto", 10]]),
+  it("guarda as linhas de receita das fichas e, à parte, só os descontos usados na análise do Adic Hab (o contracheque não entra)", () => {
+    const f = fichasLidasDosDocumentos([doc(2025, [["NR0001", "receita", 100], ["ND0001", "desconto", 10], ["ND0010", "desconto", 5]]),
       { ...doc(2026, [["NR0001", "receita", 1]]), tipo: "contracheque" }]);
-    expect(f).toEqual([{ ano: 2025, sistema: "sippes", linhas: [{ codigo: "NR0001", descricao: "NR0001", meses: meses(100) }] }]);
+    expect(f).toEqual([{ ano: 2025, sistema: "sippes", linhas: [{ codigo: "NR0001", descricao: "NR0001", meses: meses(100) }],
+      descontos: [{ codigo: "ND0001", descricao: "ND0001", meses: meses(10) }] }]);
     expect(fichasLidasValidas(f)).toEqual(f);
     expect(fichasLidasValidas([{ ano: "x" }, null])).toEqual([]);
   });

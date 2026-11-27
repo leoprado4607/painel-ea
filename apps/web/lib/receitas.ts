@@ -23,15 +23,28 @@ export interface FichaLida {
   ano: number;
   sistema: "sippes" | "siappes";
   linhas: { codigo: string; descricao: string; meses: number[] }[];
+  /** Alguns descontos (DESCONTOS_GUARDADOS), só para a análise do Adicional de Habilitação. */
+  descontos?: { codigo: string; descricao: string; meses: number[] }[];
 }
 interface Rubrica { posicao: number; codigo: string; tipo?: string }
 
-/** Linhas de receita das fichas enviadas (o contracheque não entra). */
+/**
+ * Descontos guardados à parte (não entram em nenhum cálculo de receita), usados pela análise do Adicional de Habilitação
+ * (lib/analise-adic-hab, 27/11/2026): desconto do adicional pago (G03/DR0003), Fusex, Pensão Militar e Fusex de dependentes.
+ */
+export const DESCONTOS_GUARDADOS = new Set(["G03", "DR0003", "Z01", "ND0001", "Z02", "ZKC", "ND0002", "ND0039", "ZM5", "ZM7", "ND0011"]);
+
+/** Linhas de receita das fichas enviadas (o contracheque não entra) e, à parte, os descontos de DESCONTOS_GUARDADOS. */
 export function fichasLidasDosDocumentos(docs: DocumentoExtraido[]): FichaLida[] {
-  return docs.filter((d) => d.tipo === "ficha" && d.ficha.ano).map((d) => ({
-    ano: d.ficha.ano!, sistema: d.ficha.sistema ?? "sippes",
-    linhas: d.ficha.linhas.filter((l) => l.natureza === "receita").map((l) => ({ codigo: l.codigo, descricao: l.descricao, meses: l.meses })),
-  }));
+  return docs.filter((d) => d.tipo === "ficha" && d.ficha.ano).map((d) => {
+    const descontos = d.ficha.linhas.filter((l) => l.natureza !== "receita" && DESCONTOS_GUARDADOS.has(l.codigo.trim().toUpperCase()))
+      .map((l) => ({ codigo: l.codigo, descricao: l.descricao, meses: l.meses }));
+    return {
+      ano: d.ficha.ano!, sistema: d.ficha.sistema ?? "sippes",
+      linhas: d.ficha.linhas.filter((l) => l.natureza === "receita").map((l) => ({ codigo: l.codigo, descricao: l.descricao, meses: l.meses })),
+      ...(descontos.length ? { descontos } : {}),
+    };
+  });
 }
 
 /** A ficha nova de um ano substitui a guardada do mesmo ano. */

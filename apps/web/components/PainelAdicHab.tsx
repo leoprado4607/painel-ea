@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useMemo, useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
@@ -17,8 +18,10 @@ const R = (v: number) => `R$ ${formatarReais(v)}`;
  * "Lançar valor devido" do Adicional de Habilitação automático (lib/adic-hab): tipo do curso, postos e promoções,
  * reflexos (natalino e férias) e descontos (Fusex e Pensão Militar), cálculo mês a mês, alertas e textos do verso.
  */
-export function PainelAdicHab({ processoId, dados, plano, entrada, inicio, fim, bloqueado }: {
+export function PainelAdicHab({ processoId, dados, plano, entrada, inicio, fim, bloqueado, comAnalise }: {
   processoId: string; dados: DadosAdicHab; plano: PlanoAdicHab; inicio: string; fim: string; bloqueado: boolean;
+  /** Processo criado com a análise (memória de cálculo): mostra o link para ela. */
+  comAnalise?: boolean;
   /** O que o cálculo usa além do quadro (fichas, período…): os textos do verso são refeitos na tela, antes de salvar. */
   entrada?: Omit<Parameters<typeof planoAdicHab>[0], "dados"> | null;
 }) {
@@ -51,6 +54,7 @@ export function PainelAdicHab({ processoId, dados, plano, entrada, inicio, fim, 
           Devido (A03): percentual da tabela da Lei 13.954/2019 (Anexo III) vigente em cada dia × soldo do posto na tabela, de {br(inicio)} a {br(fim)};
           mês incompleto proporcional aos dias do mês no calendário. Recebido: o adicional pago na ficha (NR0003/A03). Reflexos no 13º (A85) e nas férias
           (AD2), e descontos de Fusex e Pensão Militar sobre a diferença: o sistema calcula e você confere.
+          {comAnalise && <> <Link href={`/processos/${processoId}/analise`} className="text-marca-700 underline">Ver a análise (memória de cálculo)</Link>.</>}
         </p>
       </div>
 

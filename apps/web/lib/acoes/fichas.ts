@@ -293,6 +293,8 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
         ...(leitura && card?.id === "aux-fard" ? { auxFard: leitura.auxFard } : {}),
         ...(leitura?.gratRep ? { gratRep: leitura.gratRep } : {}),
         ...(leitura?.adicHab ? { adicHab: leitura.adicHab } : {}),
+        // Adicional de Habilitação: análise (memória de cálculo) antes das Informações, só nos processos novos (27/11/2026)
+        ...(card?.id === "adic-hab" ? { analiseAdicHab: { pendente: true } } : {}),
       },
       // o que o processo completo trouxe (o operador confere em Informações)
       ...(leitura ? {
@@ -307,7 +309,7 @@ export async function criarProcessoDeDocumentos(_: { erro?: string } | undefined
     // com o período (mês do 2º fato) já lido, a A56/A57 e os valores do quadro entram de uma vez
     if (leitura?.periodo) await preencherReceitas(supabase, p.id);
     // ?conferir=banco: a aba Informações abre o aviso para conferir os dados bancários com o Requerimento
-    destino = `/processos/${p.id}/dados?conferir=banco`;
+    destino = card?.id === "adic-hab" ? `/processos/${p.id}/analise` : `/processos/${p.id}/dados?conferir=banco`;
   } catch (e) {
     return { erro: (e as Error).message };
   }

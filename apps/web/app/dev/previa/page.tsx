@@ -1,6 +1,8 @@
 import { notFound } from "next/navigation";
 import { PainelAdicHab } from "@/components/PainelAdicHab";
 import { planoAdicHab } from "@/lib/adic-hab";
+import { PainelAnaliseAdicHab } from "@/components/PainelAnaliseAdicHab";
+import { analisarAdicHab, valorDaAnalise } from "@/lib/analise-adic-hab";
 import { PainelGratMensal } from "@/components/PainelGratMensal";
 import { ESPECIE_GLE, planoGratMensal } from "@/lib/grat-mensal";
 import { CardsNovoCalculo } from "@/components/CardsNovoCalculo";
@@ -57,7 +59,26 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo</h1><p className="text-sm text-suave">Escolha o assunto do cálculo.</p><CardsNovoCalculo /></div>
       ) : tela === "novo-envio" ? (
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo: Auxílio-fardamento</h1><NovoPorProcesso especie="aux-fard" /><NovoPorFichas especie="aux-fard" /></div>
-      ) : tela === "adic-hab" ? (
+      ) : tela === "analise-adic-hab" ? (() => {
+        // 2º Ten Mulatinho: majoração de 12% para 45% a contar de 03/08/2023 (?periodo=pedido: sem a extensão)
+        const L = (codigo: string, meses: number[]) => ({ codigo, descricao: codigo, meses });
+        const doze = (v: number) => Array(12).fill(v) as number[];
+        const a = analisarAdicHab({ hoje: "2026-11-27", inicio: "2023-08-03", fim: "2023-12-31", dataRequerimento: "2025-05-29", averbacao: "BI 97 - HGuN, de 30/05/2025", estender: caso !== "pedido",
+          dados: { tipo: "aperfeicoamento", curso: "Curso de Residência Médica em Dermatologia", documento: "BI nº 123, do HGuN, de 1º JUL 24", percentualPedido: 45 },
+          fichas: [
+            { ano: 2023, sistema: "sippes", linhas: [L("NR0001", [0, 0, 0, 0, 0, 0, 7315, 7315, 7315, 7315, 7315, 7315]), L("NR0003", [0, 0, 0, 0, 0, 0, 0, 0, 877.8, 877.8, 877.8, 877.8]),
+              L("NR0014", [0, 0, 0, 0, 0, 0, 1389.85, 1389.85, 1389.85, 1389.85, 1389.85, 1389.85]), L("NR0085", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4974.2, 0]),
+              L("NR0170", [0, 0, 0, 0, 0, 0, 365.75, 365.75, 365.75, 365.75, 365.75, 365.75]), L("AR0003", [0, 0, 0, 0, 0, 0, 0, 0, 0, 849.48, 0, 0])],
+              descontos: [L("ND0001", [0, 0, 0, 0, 0, 0, 272.12, 272.12, 298.45, 298.45, 298.45, 298.45]), L("ND0039", [0, 0, 0, 0, 0, 0, 952.41, 952.41, 1044.58, 1044.58, 1044.58, 1044.58])] },
+            { ano: 2024, sistema: "sippes", linhas: [L("NR0001", doze(7490)), L("NR0003", [898.8, 898.8, 898.8, 898.8, 898.8, 898.8, 898.8, 898.8, 3370.5, 3370.5, 3370.5, 3370.5]), L("NR0014", doze(1423.1)),
+              L("NR0084", [0, 0, 0, 0, 0, 5093.2, 0, 0, 0, 0, 0, 0]), L("NR0085", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7564.9, 0]), L("NR0092", [0, 0, 0, 0, 3395.47, 0, 0, 0, 0, 0, 0, 0]),
+              L("NR0170", doze(374.5)), L("AR0003", [0, 0, 0, 0, 0, 0, 0, 0, 17301.9, 0, 0, 0])] },
+          ] });
+        const pct = [0.53, 0.84, 0.71, 0.61, 0.23, -0.08, 0.12, 0.23, 0.26, 0.24, 0.28, 0.56, 0.42, 0.83, 0.16, 0.38, 0.46, 0.21, 0.38, -0.02, 0.44, 0.56, 0.39, 0.52,
+          0.16, 1.31, 0.56, 0.43, 0.26, 0.24, 0.26, -0.11, 0.48, 0.18, 0.2, 0.25, 0.2, 0.84, 0.44, 0.89, 0.62, 0.41, 0.06, -0.4, 0.7, 0.32];
+        const valor = valorDaAnalise(a, pct.map((p, i) => ({ ano: 2023 + Math.floor(i / 12), mes: (i % 12) + 1, percentual: p })));
+        return <PainelAnaliseAdicHab processoId="previa" a={a} valor={valor} estender={caso !== "pedido"} pendente />;
+      })() : tela === "adic-hab" ? (
         <PainelAdicHab processoId="previa" dados={{ tipo: "altos2", percentualPedido: 68, curso: "Curso de Gestão e Assessoramento de Estado-Maior – 3º Turno - 2025", documento: "Adt DCEM 4A ao Bol DGP nº 146, de 22 DEZ 25", mesesFerias: ["2025-12"] }}
           inicio="2025-12-12" fim="2025-12-31" bloqueado={false}
           plano={planoAdicHab({ fichas: [{ ano: 2025, sistema: "sippes", linhas: [

@@ -11,6 +11,7 @@ import { PainelAuxFard } from "@/components/PainelAuxFard";
 import { PainelGratMensal } from "@/components/PainelGratMensal";
 import { PainelAdicHab } from "@/components/PainelAdicHab";
 import { adicHabAutomatico, dadosAdicHab, planoAdicHab } from "@/lib/adic-hab";
+import { temAnaliseAdicHab } from "@/lib/analise-adic-hab";
 import { dadosGratMensal, gratMensalAutomatico, planoGratMensal } from "@/lib/grat-mensal";
 import { leituraGuardada } from "@/lib/processo-completo";
 import { auxFardAutomatico, dadosAuxFard, planoAuxFard } from "@/lib/aux-fard";
@@ -118,7 +119,7 @@ export async function PaginaValores({ id, tipo, proximaEtapa, importado }: {
         <PainelGratRep processoId={id} dados={dadosGr} plano={planoGr} entrada={entradaGr} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} leitura={leituraGuardada(processo.complementos)} />
       )}
       {planoAh && (
-        <PainelAdicHab processoId={id} dados={dadosAh} plano={planoAh} entrada={entradaAh} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} />
+        <PainelAdicHab processoId={id} dados={dadosAh} plano={planoAh} entrada={entradaAh} inicio={processo.periodo_inicio} fim={processo.periodo_fim} bloqueado={bloqueado} comAnalise={temAnaliseAdicHab(processo)} />
       )}
       {autoAh && tipo === "recebido" && (
         <Aviso tipo="info">
