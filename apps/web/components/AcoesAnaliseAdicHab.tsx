@@ -5,7 +5,9 @@ import { Aviso } from "@/components/Aviso";
 import { IGNORAR, LIMITE_ENVIO, pecasDosArquivos } from "@/components/NovoPorProcesso";
 import { complementarAnaliseAdicHab, prosseguirAnaliseAdicHab } from "@/lib/acoes/analise-adic-hab";
 import { lerPecaDoProcesso } from "@/lib/acoes/processo-completo";
+import { criarLeitorNavegador } from "@/lib/ocr-navegador";
 import type { Peca } from "@/lib/processo-completo";
+import type { Palavra } from "@painel-ea/leitor-ficha";
 
 const br = (d: string) => `${d.slice(8, 10)}/${d.slice(5, 7)}/${d.slice(0, 4)}`;
 
@@ -39,32 +41,56 @@ export function AcoesAnaliseAdicHab({ processoId, pendente, estender, faltam }: 
     const input = e.currentTarget.elements.namedItem("analise-arquivos") as HTMLInputElement;
     const arquivos = [...(input.files ?? [])];
     if (!arquivos.length) return setMsg({ tipo: "erro", texto: "Selecione os arquivos (PDF ou o ZIP do SPED)." });
+    const leitor = criarLeitorNavegador((texto) => setProgresso(texto));
     try {
       setProgresso("Abrindo os arquivos…");
       const pecas = await pecasDosArquivos(arquivos);
       const lidas: Peca[] = [];
+      // escaneadas (OCR) e grandes demais para enviar: lidas aqui no navegador; o servidor interpreta as palavras
+      const noNavegador: { nome: string; ocr: boolean; palavras: Palavra[] }[] = [];
+      const avisos: string[] = [];
       const fd = new FormData();
       for (const [i, p] of pecas.entries()) {
         setProgresso(`Lendo ${i + 1} de ${pecas.length}: ${p.nome}`);
         if (IGNORAR.test(p.nome)) { lidas.push({ nome: p.nome, tipo: "ignorada" }); continue; }
-        if (p.dados.length > LIMITE_ENVIO) { lidas.push({ nome: p.nome, tipo: "grande" }); continue; }
-        const arquivo = new File([new Uint8Array(p.dados)], /\.pdf$/i.test(p.nome) ? p.nome : `${p.nome}.pdf`, { type: "application/pdf" });
-        const uma = new FormData();
-        uma.append("peca", arquivo);
-        const r = await lerPecaDoProcesso(uma);
-        lidas.push({ nome: p.nome, tipo: r.tipo, texto: r.texto });
-        if (r.tipo === "ficha" || r.tipo === "contracheque") fd.append("documentos", arquivo);
+        const ehPdf = String.fromCharCode(...p.dados.slice(0, 5)) === "%PDF-";
+        let tipo: Peca["tipo"] = "grande";
+        if (p.dados.length <= LIMITE_ENVIO) {
+          const arquivo = new File([new Uint8Array(p.dados)], /\.pdf$/i.test(p.nome) ? p.nome : `${p.nome}.pdf`, { type: "application/pdf" });
+          const uma = new FormData();
+          uma.append("peca", arquivo);
+          const r = await lerPecaDoProcesso(uma);
+          tipo = r.tipo;
+          if (tipo !== "imagem") {
+            lidas.push({ nome: p.nome, tipo, texto: r.texto });
+            if (tipo === "ficha" || tipo === "contracheque") fd.append("documentos", arquivo);
+            continue;
+          }
+        }
+        if (!ehPdf) { lidas.push({ nome: p.nome, tipo: "ignorada" }); continue; }
+        try {
+          const r = await leitor.ler(p.nome, p.dados);
+          noNavegador.push({ nome: p.nome, ocr: r.ocr, palavras: r.palavras });
+          if (r.ocr && r.paginasLidas < r.paginas) avisos.push(`${p.nome}: OCR só das ${r.paginasLidas} primeiras de ${r.paginas} páginas.`);
+          if (r.ocr && !r.palavras.length) avisos.push(`${p.nome}: nenhum texto reconhecido (digitalização ilegível).`);
+        } catch {
+          lidas.push({ nome: p.nome, tipo });
+          avisos.push(`${p.nome}: não foi possível ler no navegador.`);
+        }
       }
+      await leitor.encerrar();
       setProgresso(null);
       fd.append("processo", JSON.stringify(lidas));
+      fd.append("navegador", JSON.stringify(noNavegador));
       iniciar(async () => {
         const r = await complementarAnaliseAdicHab(processoId, fd);
         if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
         input.value = "";
-        setMsg({ tipo: "ok", texto: `${r.resumo} A análise foi refeita.` });
+        setMsg({ tipo: avisos.length ? "info" : "ok", texto: `${r.resumo} A análise foi refeita.${avisos.length ? ` Atenção: ${avisos.join(" ")}` : ""}` });
         router.refresh();
       });
     } catch (x) {
+      await leitor.encerrar();
       setProgresso(null);
       setMsg({ tipo: "erro", texto: (x as Error).message || "Não foi possível ler os arquivos." });
     }
@@ -93,6 +119,8 @@ export function AcoesAnaliseAdicHab({ processoId, pendente, estender, faltam }: 
           onClick={() => { setMsg({ tipo: "info", texto: "Análise refeita com os dados atuais do processo." }); router.refresh(); }}>Reanalisar</button>
       </form>
       <p className="ajuda">
+        PDF escaneado (só imagem) é lido por OCR aqui no navegador: leva de 10 a 40 segundos por página e, na primeira vez, baixa o leitor de português (~10 MB).
+        Confira os valores lidos por OCR; se a digitalização estiver ilegível, digite os dados no quadro acima.
         As fichas enviadas substituem as do mesmo ano; das demais peças, o sistema só completa o que ainda falta (nada já preenchido é trocado).
         Ao prosseguir, o período, o quadro do adicional, os lançamentos e os textos do verso são gravados como mostrados acima, e você pode alterar tudo nas telas seguintes.
       </p>

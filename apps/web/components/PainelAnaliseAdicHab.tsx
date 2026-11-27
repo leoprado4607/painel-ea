@@ -1,6 +1,8 @@
 import { Aviso } from "@/components/Aviso";
 import { AcoesAnaliseAdicHab, EscolhaPeriodoAnalise } from "@/components/AcoesAnaliseAdicHab";
+import { EntradaManualAnalise, type DireitoAnalise } from "@/components/EntradaManualAnalise";
 import type { AnaliseAdicHab } from "@/lib/analise-adic-hab";
+import type { ValoresFicha } from "@/lib/ficha-digitada";
 import { formatarReais } from "@/lib/dinheiro";
 import { MESES_CURTOS } from "@/lib/tipos";
 
@@ -31,9 +33,10 @@ const ROTULO_ATRASADO: Record<AnaliseAdicHab["atrasados"][number]["tipo"], strin
  * Análise do Adicional de Habilitação (lib/analise-adic-hab): a memória de cálculo que o sistema entende como o pagamento
  * correto, antes das Informações. Só nos processos novos (complementos.analiseAdicHab).
  */
-export function PainelAnaliseAdicHab({ processoId, a, valor, estender, pendente }: {
+export function PainelAnaliseAdicHab({ processoId, a, valor, estender, pendente, manual }: {
   processoId: string; a: AnaliseAdicHab; estender: boolean; pendente: boolean;
   valor: { semCorrecao: number; corrigido: number; ate: string | null } | null;
+  manual?: { direito: DireitoAnalise; anos: number[]; fichas: ValoresFicha[] };
 }) {
   const t = a.totais;
   return (
@@ -43,7 +46,8 @@ export function PainelAnaliseAdicHab({ processoId, a, valor, estender, pendente 
           <h2 id="analise-titulo" className="text-lg font-semibold">Análise do Adicional de Habilitação: memória de cálculo</h2>
           <p className="ajuda mt-1">
             Antes das Informações, o sistema mostra o que entende como o pagamento correto, a partir do processo e das fichas financeiras, pelo roteiro
-            conferido com processos já pagos. Confira cada passo. Se faltar documento, carregue no fim da página e clique em Reanalisar. Ao prosseguir,
+            conferido com processos já pagos. Confira cada passo. Se faltar algum dado, carregue o documento no fim da página (o PDF escaneado é lido por OCR)
+            ou digite-o no quadro “Digitar os dados manualmente”. Ao prosseguir,
             as telas seguintes já vêm preenchidas com esta análise, e você pode alterar qualquer campo.
           </p>
         </div>
@@ -56,8 +60,14 @@ export function PainelAnaliseAdicHab({ processoId, a, valor, estender, pendente 
         )}
         {a.faltas.length > 0 && (
           <Aviso tipo="atencao">
-            <p className="font-semibold">Para completar a análise, faltam:</p>
-            <ul className="mt-1 list-disc pl-5">{a.faltas.map((f) => <li key={f}>{f}</li>)}</ul>
+            <p className="font-semibold">{a.pronta ? `Para fechar a análise, falta${a.faltas.length > 1 ? "m" : ""} ${a.faltas.length} dado${a.faltas.length > 1 ? "s" : ""}:` : `A análise não pode ser feita: falta${a.faltas.length > 1 ? "m" : ""} ${a.faltas.length} dado${a.faltas.length > 1 ? "s" : ""}:`}</p>
+            <ol className="mt-1 list-decimal space-y-1 pl-5">{a.faltas.map((f) => <li key={f}>{f}</li>)}</ol>
+          </Aviso>
+        )}
+        {a.conferir.length > 0 && (
+          <Aviso tipo="info">
+            <p className="font-semibold">Leitura a conferir:</p>
+            <ul className="mt-1 list-disc space-y-1 pl-5">{a.conferir.map((f) => <li key={f}>{f}</li>)}</ul>
           </Aviso>
         )}
       </section>
@@ -167,6 +177,11 @@ export function PainelAnaliseAdicHab({ processoId, a, valor, estender, pendente 
             <p className="ajuda">Ao prosseguir, estes textos vão para o verso. Você pode editá-los em Lançar valor devido (quadro do adicional) ou em Informações.</p>
           </Secao>
         </section>
+      )}
+
+      {pendente && manual && manual.anos.length > 0 && (
+        <EntradaManualAnalise processoId={processoId} direito={manual.direito} anos={manual.anos} fichas={manual.fichas}
+          aberto={a.faltas.length > 0 || a.conferir.some((c) => /OCR/.test(c))} />
       )}
 
       <AcoesAnaliseAdicHab processoId={processoId} pendente={pendente} estender={estender} faltam={a.faltas.length > 0} />

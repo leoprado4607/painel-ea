@@ -25,6 +25,21 @@ export interface FichaLida {
   linhas: { codigo: string; descricao: string; meses: number[] }[];
   /** Alguns descontos (DESCONTOS_GUARDADOS), só para a análise do Adicional de Habilitação. */
   descontos?: { codigo: string; descricao: string; meses: number[] }[];
+  /**
+   * Análise do Adicional de Habilitação (27/11/2026): "ocr" = lida por OCR de um PDF escaneado (no navegador);
+   * "manual" = digitada pelo operador. Sem o campo: lida do PDF com texto.
+   */
+  origem?: "ocr" | "manual";
+  /** Valores alterados à mão sobre a ficha lida. */
+  editada?: boolean;
+  /** Arquivo de onde veio (OCR). */
+  arquivo?: string;
+  /**
+   * Conferência dos totais impressos (OCR): linhas cuja soma não bate com o total, meses cujo líquido não fecha e
+   * linhas não reconhecidas inteiras (descartadas: faltou ou sobrou valor); semTotais: a linha dos totais líquidos não foi
+   * lida, e a conferência por mês não foi possível.
+   */
+  conferencia?: { linhas: string[]; meses: number[]; incompletas?: string[]; semTotais?: boolean };
 }
 interface Rubrica { posicao: number; codigo: string; tipo?: string }
 

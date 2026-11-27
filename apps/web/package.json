@@ -19,7 +19,9 @@
     "fflate": "0.8.3",
     "next": "15.5.28",
     "react": "19.1.1",
-    "react-dom": "19.1.1"
+    "react-dom": "19.1.1",
+    "pdfjs-dist": "4.10.38",
+    "tesseract.js": "5.1.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "4.1.13",

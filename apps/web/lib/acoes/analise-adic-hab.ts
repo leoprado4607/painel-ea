@@ -1,13 +1,15 @@
 "use server";
-import { lerDocumentosPdf, PdfSemTexto } from "@painel-ea/leitor-ficha";
+import { lerDocumentosPalavras, lerDocumentosPdf, PdfSemTexto, type DocumentoLido, type Palavra } from "@painel-ea/leitor-ficha";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { adicHabAutomatico, dadosAdicHab, rubricasAdicHab, RUBRICA_ADIC_HAB, type DadosAdicHab } from "@/lib/adic-hab";
-import { analiseAdicHabPendente, analisarAdicHab } from "@/lib/analise-adic-hab";
+import { adicHabAutomatico, dadosAdicHab, rubricasAdicHab, RUBRICA_ADIC_HAB, TIPOS_CURSO, type DadosAdicHab, type TipoCurso } from "@/lib/adic-hab";
+import { analiseAdicHabPendente, analisarAdicHab, type ComAnalise } from "@/lib/analise-adic-hab";
+import { aplicarFichaDigitada, fichaDigitadaValida } from "@/lib/ficha-digitada";
 import { textoBoletim } from "@/lib/averbacao";
 import { dadosDoFavorecido, type DocumentoExtraido } from "@/lib/favorecido";
+import { textoDasPalavras } from "@/lib/ler-peca";
 import { lerProcesso, type Peca, type TipoPeca } from "@/lib/processo-completo";
-import { fichasLidasDosDocumentos, fichasLidasValidas, mesclarFichasLidas, preencherReceitas } from "@/lib/receitas";
+import { fichasLidasDosDocumentos, fichasLidasValidas, mesclarFichasLidas, preencherReceitas, type FichaLida } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { gravarTextosVerso, textosSugeridos } from "@/lib/textos-verso";
 
@@ -29,6 +31,56 @@ async function lerPdfs(form: FormData): Promise<DocumentoExtraido[]> {
     }
   }
   return lidos;
+}
+
+/** Peças lidas no navegador (OCR de PDF escaneado, ou texto de PDF grande demais para enviar): as palavras com posição. */
+interface LidaNavegador { nome: string; ocr: boolean; palavras: Palavra[] }
+function lidasNoNavegador(form: FormData): LidaNavegador[] {
+  const bruto = form.get("navegador");
+  if (typeof bruto !== "string" || !bruto) return [];
+  let lista: unknown;
+  try { lista = JSON.parse(bruto); } catch { return []; }
+  if (!Array.isArray(lista)) return [];
+  const num = (v: unknown) => typeof v === "number" && Number.isFinite(v);
+  return lista.slice(0, 60).flatMap((x) => {
+    if (!x || typeof x !== "object" || typeof x.nome !== "string" || !Array.isArray(x.palavras)) return [];
+    const palavras = (x.palavras as unknown[]).slice(0, 40_000).filter((p): p is Palavra => !!p && typeof p === "object"
+      && typeof (p as Palavra).texto === "string" && num((p as Palavra).x) && num((p as Palavra).y) && num((p as Palavra).largura) && Number.isInteger((p as Palavra).pagina))
+      .map((p) => ({ texto: p.texto.slice(0, 80), x: p.x, y: p.y, largura: p.largura, pagina: p.pagina, tamanho: num(p.tamanho) ? p.tamanho : undefined, inclinada: !!p.inclinada }));
+    return [{ nome: x.nome.slice(0, 300), ocr: !!x.ocr, palavras }];
+  });
+}
+
+/** Interpreta as peças lidas no navegador: ficha, contracheque (com os dados bancários) ou texto do processo. */
+function interpretarLidas(lidas: LidaNavegador[]) {
+  const docs: DocumentoExtraido[] = [], docsOcr: DocumentoExtraido[] = [], pecas: Peca[] = [];
+  for (const l of lidas) {
+    if (!l.palavras.length) { pecas.push({ nome: l.nome, tipo: "imagem" }); continue; }
+    let lidos: DocumentoLido[] = [];
+    try { lidos = lerDocumentosPalavras(l.palavras); } catch { /* segue como texto */ }
+    const [cc] = lidos;
+    const destino = l.ocr ? docsOcr : docs;
+    if (cc?.tipo === "contracheque" && (cc.contracheque.cabecalho.banco || cc.contracheque.cabecalho.conta)) {
+      destino.push({ arquivo: l.nome, tipo: "contracheque", ficha: cc.ficha, contracheque: cc.contracheque });
+      continue;
+    }
+    const fichas = lidos.filter((d) => d.tipo === "ficha" && d.ficha.ano && d.ficha.linhas.length);
+    if (fichas.length) {
+      for (const d of fichas) destino.push({ arquivo: fichas.length > 1 ? `${l.nome} (${d.ficha.ano})` : l.nome, tipo: "ficha", ficha: d.ficha });
+      continue;
+    }
+    pecas.push({ nome: l.nome, tipo: "texto", texto: textoDasPalavras(l.palavras) });
+  }
+  // fichas lidas por OCR: marcadas, com a conferência dos totais impressos (onde o OCR pode ter errado um número)
+  const fichasOcr: FichaLida[] = fichasLidasDosDocumentos(docsOcr).map((f) => {
+    const d = docsOcr.find((x) => x.tipo === "ficha" && x.ficha.ano === f.ano)!;
+    return { ...f, origem: "ocr", arquivo: d.arquivo, conferencia: {
+      linhas: d.ficha.conferencias.linhasDivergentes, meses: d.ficha.conferencias.mesesDivergentes,
+      incompletas: d.ficha.avisos.map((x) => /^([A-Z0-9]{3,6}): esperava/.exec(x)?.[1]).filter((x): x is string => !!x),
+      semTotais: !d.ficha.totaisLiquidos,
+    } };
+  });
+  return { docs, docsOcr, fichasOcr, pecas };
 }
 
 function pecasDoFormulario(form: FormData): Peca[] {
@@ -56,16 +108,28 @@ export async function complementarAnaliseAdicHab(processoId: string, form: FormD
     if (!p) return { erro: "Processo não encontrado." };
     if (p.situacao !== "rascunho") return { erro: "Processo já emitido." };
     if (!analiseAdicHabPendente(p)) return { erro: "A análise já foi concluída para este processo." };
-    const docs = await lerPdfs(form);
-    const pecas = pecasDoFormulario(form);
-    if (!docs.length && !pecas.some((x) => x.tipo === "texto")) return { erro: "Nenhum documento com texto foi lido (as peças digitalizadas não são lidas)." };
+    const lidasNav = lidasNoNavegador(form);
+    const nav = interpretarLidas(lidasNav);
+    const docs = [...await lerPdfs(form), ...nav.docs];
+    const pecas = [...pecasDoFormulario(form), ...nav.pecas];
+    if (!docs.length && !nav.docsOcr.length && !pecas.some((x) => x.tipo === "texto")) {
+      const ilegiveis = pecas.filter((x) => x.tipo === "imagem").map((x) => x.nome);
+      return { erro: ilegiveis.length
+        ? `Nenhum texto foi reconhecido em: ${ilegiveis.join("; ")}. Se a digitalização estiver ilegível, digite os dados em “Dados do direito” e “Digitar valores da ficha”.`
+        : "Nenhum documento do processo foi lido nos arquivos enviados." };
+    }
     const feitos: string[] = [];
     const mudancas: Record<string, unknown> = {};
-    const novas = fichasLidasDosDocumentos(docs);
+    // as do PDF com texto valem mais que as do OCR do mesmo ano
+    const novas = mesclarFichasLidas(nav.fichasOcr, fichasLidasDosDocumentos(docs));
     if (novas.length) {
       mudancas.fichas_lidas = mesclarFichasLidas(fichasLidasValidas(p.fichas_lidas), novas);
-      feitos.push(`fichas de ${novas.map((f) => f.ano).sort().join(", ")}`);
+      const ocr = novas.filter((f) => f.origem === "ocr").map((f) => f.ano);
+      feitos.push(`fichas de ${novas.map((f) => f.ano).sort().join(", ")}${ocr.length ? ` (${ocr.join(", ")} por OCR: confira os valores)` : ""}`);
     }
+    docs.push(...nav.docsOcr.filter((d) => d.tipo === "contracheque"));
+    const comOcr = lidasNav.filter((l) => l.ocr && l.palavras.length).length;
+    if (comOcr) feitos.push(`${comOcr} peça(s) escaneada(s) lida(s) por OCR`);
     const leitura = pecas.length ? lerProcesso(pecas, "adic-hab") : null;
     const atual = dadosAdicHab(p.complementos);
     const lido: DadosAdicHab = leitura?.adicHab ?? {};
@@ -158,4 +222,68 @@ export async function prosseguirAnaliseAdicHab(processoId: string, estender: boo
     return { erro: (e as Error).message };
   }
   redirect(`/processos/${processoId}/dados?conferir=banco`);
+}
+
+/** Abre a ação só no processo novo de Adic Hab com a análise pendente (os já registrados não mudam). */
+async function processoDaAnalise(processoId: string, colunas: string) {
+  const { supabase } = await sessao();
+  const { data: p } = await supabase.from("processo").select(`situacao, especie_divida, complementos, ${colunas}`).eq("id", processoId).maybeSingle<Record<string, unknown> & ComAnalise & { situacao: string }>();
+  if (!p) return { erro: "Processo não encontrado." } as const;
+  if (p.situacao !== "rascunho") return { erro: "Processo já emitido." } as const;
+  if (!analiseAdicHabPendente(p)) return { erro: "A análise já foi concluída para este processo: altere os dados nas telas seguintes." } as const;
+  return { supabase, p } as const;
+}
+
+const DATA = /^\d{4}-\d{2}-\d{2}$/;
+
+/**
+ * Dados do direito digitados na análise, quando o processo (escaneado ou ilegível) não os trouxe: início do direito, fim
+ * do período pedido, data do requerimento, tipo e nome do curso, ato que reconheceu o direito e percentual pedido.
+ * Grava o que o operador deixou no formulário (já vem preenchido com o que foi lido).
+ */
+export async function informarDireitoAdicHab(processoId: string, d: {
+  inicio: string; fim: string; dataRequerimento: string; tipo: string; curso: string; documento: string; percentualPedido: string;
+}): Promise<{ erro?: string }> {
+  try {
+    const r = await processoDaAnalise(processoId, "periodo_inicio, periodo_fim, data_requerimento");
+    if ("erro" in r) return { erro: r.erro };
+    const { supabase, p } = r;
+    for (const [rotulo, v] of [["início do direito", d.inicio], ["fim do período", d.fim], ["data do requerimento", d.dataRequerimento]] as const)
+      if (v && !DATA.test(v)) return { erro: `Data inválida: ${rotulo}.` };
+    if (d.inicio && d.fim && d.fim < d.inicio) return { erro: "O fim do período é anterior ao início do direito." };
+    if (d.tipo && !TIPOS_CURSO.includes(d.tipo as TipoCurso)) return { erro: "Tipo do curso inválido." };
+    const pct = d.percentualPedido.trim() ? Number(d.percentualPedido.replace(",", ".")) : null;
+    if (pct !== null && (!Number.isFinite(pct) || pct <= 0 || pct > 100)) return { erro: "Percentual pedido inválido." };
+    const atual = dadosAdicHab(p.complementos);
+    const adicHab: DadosAdicHab = { ...atual, curso: d.curso.trim().slice(0, 200) || undefined, documento: d.documento.trim().slice(0, 200) || undefined,
+      tipo: (d.tipo || undefined) as TipoCurso | undefined, percentualPedido: pct };
+    const { error } = await supabase.from("processo").update({
+      periodo_inicio: d.inicio || null, periodo_fim: d.fim || null, data_requerimento: d.dataRequerimento || null,
+      complementos: { ...((p.complementos as object) ?? {}), adicHab },
+    }).eq("id", processoId);
+    if (error) return { erro: error.message };
+    revalidatePath(`/processos/${processoId}`, "layout");
+    return {};
+  } catch (e) {
+    return { erro: (e as Error).message };
+  }
+}
+
+/** Valores da ficha de um ano digitados na análise (PDF ilegível, ou correção de um número lido por OCR). */
+export async function gravarFichaDigitadaAdicHab(processoId: string, ano: number, valores: unknown): Promise<{ erro?: string }> {
+  try {
+    if (!Number.isInteger(ano) || ano < 2000 || ano > 2100) return { erro: "Ano inválido." };
+    const d = fichaDigitadaValida(valores);
+    if (!d) return { erro: "Valores inválidos: use números como 1.234,56 (deixe em branco o que for zero)." };
+    const r = await processoDaAnalise(processoId, "fichas_lidas");
+    if ("erro" in r) return { erro: r.erro };
+    const { supabase, p } = r;
+    const fichas = aplicarFichaDigitada(fichasLidasValidas(p.fichas_lidas), ano, d);
+    const { error } = await supabase.from("processo").update({ fichas_lidas: fichas }).eq("id", processoId);
+    if (error) return { erro: error.message };
+    revalidatePath(`/processos/${processoId}`, "layout");
+    return {};
+  } catch (e) {
+    return { erro: (e as Error).message };
+  }
 }

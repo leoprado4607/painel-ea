@@ -36,7 +36,7 @@ const NATAL_1 = new Set(["NR0084", "A84"]);
 /** Remuneração de dezembro que serve de base ao 13º: soldo, adicionais e gratificações mensais. */
 const BASE_13 = new Set(["NR0001", "A01", "NR0003", "A03", "NR0014", "A14", "NR0170", "AL0", "A07", "A08", "NR0007", "NR0008", "NR0010", "A10"]);
 
-type ComAnalise = { especie_divida?: string | null; complementos?: unknown };
+export type ComAnalise = { especie_divida?: string | null; complementos?: unknown };
 const marcador = (p: ComAnalise) => (p.complementos as { analiseAdicHab?: { pendente?: boolean; concluida?: string } } | null | undefined)?.analiseAdicHab;
 /** Processo novo de Adicional de Habilitação criado com a análise (marcador gravado na criação, a partir de 27/11/2026). */
 export const temAnaliseAdicHab = (p: ComAnalise) => p.especie_divida === ESPECIE_ADIC_HAB && !!marcador(p);
@@ -91,7 +91,11 @@ export interface AnaliseAdicHab {
   descontosDaFicha: { pensao: boolean; dependentes: boolean };
   /** Lançamentos que o cálculo automático gravará (origem pdf). */
   plano: PlanoAdicHab | null;
-  faltas: string[]; pendencias: string[]; alertas: Alerta[];
+  /** Dados que faltam para a análise, cada um com o que é preciso e onde obter (carregar o PDF ou digitar). */
+  faltas: string[];
+  /** Leitura a conferir: fichas lidas por OCR (totais que não fecham) ou digitadas à mão. */
+  conferir: string[];
+  pendencias: string[]; alertas: Alerta[];
   textos: { explicacao: string | null; documentos: string[] };
   fichasAnos: number[];
 }
@@ -151,21 +155,94 @@ export function postosPelaFicha(fichas: FichaLida[], inicio: string, fim: string
   return postos;
 }
 
+const ONDE_LIDO = "no requerimento nem no BI lidos";
+const INFORME = "Informe em “Dados do direito”, abaixo";
+const COMO_FICHA = "Carregue o PDF da ficha (o escaneado é lido por OCR) ou digite os valores em “Digitar valores da ficha”, abaixo";
+
+/** Trecho de meses do período num ano ("MAR a DEZ/2022", "JUL/2023"). */
+function trecho(ano: number, m0: number, m1: number) {
+  return m0 === m1 ? mmm(ano, m0) : `${MESES[m0 - 1]} a ${MESES[m1 - 1]}/${ano}`;
+}
+
+/** Fichas que faltam, ano a ano, e meses do período sem o soldo lido (ficha incompleta ou OCR que não reconheceu a linha). */
+export function faltasDasFichas(fichas: FichaLida[], inicio: string, fim: string): string[] {
+  const soldo = porMes(fichas, CODIGOS_SOLDO);
+  const out: string[] = [];
+  const a0 = +inicio.slice(0, 4), a1 = +fim.slice(0, 4);
+  const semFicha: { ano: number; m0: number; m1: number }[] = [];
+  for (let ano = a0; ano <= a1; ano++) {
+    const m0 = ano === a0 ? +inicio.slice(5, 7) : 1, m1 = ano === a1 ? +fim.slice(5, 7) : 12;
+    const f = fichas.find((x) => x.ano === ano);
+    if (!f) { semFicha.push({ ano, m0, m1 }); continue; }
+    const sem: number[] = [];
+    for (let m = m0; m <= m1; m++) if (!soldo.get(k(ano, m))) sem.push(m);
+    if (sem.length) out.push(`Soldo (NR0001/A01) de ${sem.length === m1 - m0 + 1 ? trecho(ano, m0, m1) : `${sem.map((m) => MESES[m - 1]).join(", ")}/${ano}`}: a ficha de ${ano}${f.origem === "ocr" ? " (lida por OCR)" : f.origem === "manual" ? " (digitada)" : ""} não traz esse valor${f.origem === "ocr" ? ", talvez o OCR não tenha reconhecido a linha" : ""}. Digite o soldo e o adicional pago desses meses em “Digitar valores da ficha”, abaixo.`);
+  }
+  if (semFicha.length) out.unshift(...semFicha.map(({ ano, m0, m1 }) => `Ficha financeira de ${ano} (meses do período: ${trecho(ano, m0, m1)}): soldo (NR0001/A01) e adicional de habilitação pago (NR0003/A03) de cada mês. ${COMO_FICHA}.`));
+  return out;
+}
+
+/** Fichas lidas por OCR (com os totais que não fecham) e fichas digitadas: o que o operador deve conferir. */
+export function conferenciaDasFichas(fichas: FichaLida[]): string[] {
+  const out: string[] = [];
+  for (const f of fichas) {
+    const de = `Ficha de ${f.ano} lida por OCR${f.arquivo ? ` (${f.arquivo})` : ""}`;
+    if (f.origem === "ocr" && f.editada) out.push(`${de} e corrigida à mão: confira os valores da memória com a ficha.`);
+    else if (f.origem === "ocr") {
+      const c = f.conferencia ?? { linhas: [], meses: [] };
+      const presentes = new Set(f.linhas.map((l) => l.codigo));
+      const incompletas = (c.incompletas ?? []).filter((x) => !presentes.has(x));
+      const erros = [
+        incompletas.length ? (incompletas.length > 1 ? `as linhas ${incompletas.join(", ")} não foram reconhecidas inteiras e ficaram de fora` : `a linha ${incompletas[0]} não foi reconhecida inteira e ficou de fora`) : "",
+        c.linhas.length ? `a soma dos meses não bate com o total impresso ${c.linhas.length > 1 ? `nas linhas ${c.linhas.join(", ")}` : `na linha ${c.linhas[0]}`}` : "",
+        c.meses.length ? `receitas menos descontos não fecham com o líquido em ${c.meses.map((m) => MESES[m - 1]).join(", ")}` : "",
+        c.semTotais ? "a linha dos totais líquidos não foi lida, então os meses não puderam ser conferidos: compare todas as linhas com a ficha" : "",
+      ].filter(Boolean);
+      out.push(erros.length
+        ? `${de}: ${erros.join("; ")}. Algum número foi mal reconhecido: compare com a ficha e corrija em “Digitar valores da ficha” (os meses a conferir ficam destacados).`
+        : `${de}: os totais impressos conferem com os meses; mesmo assim, compare o soldo e o adicional da memória com a ficha.`);
+    } else if (f.origem === "manual") out.push(`Ficha de ${f.ano} digitada à mão: anexe a ficha ao processo (mesmo escaneada) para a conferência do CPEx.`);
+    else if (f.editada) out.push(`Ficha de ${f.ano}: valores alterados à mão sobre a ficha lida.`);
+  }
+  return out;
+}
+
+/** Linhas essenciais (soldo e adicional) que o OCR não reconheceu inteiras: sem elas, a análise tomaria o recebido por zero. */
+export function faltasDaLeituraOcr(fichas: FichaLida[]): string[] {
+  const nomes: Record<string, string> = { NR0001: "soldo", A01: "soldo", NR0003: "adicional de habilitação pago", A03: "adicional de habilitação pago",
+    AR0003: "adicional atrasado", A23: "adicional atrasado" };
+  return fichas.filter((f) => f.origem === "ocr").flatMap((f) => {
+    const presentes = new Set(f.linhas.map((l) => l.codigo));
+    const essenciais = (f.conferencia?.incompletas ?? []).filter((x) => nomes[x] && !presentes.has(x));
+    const out = essenciais.length ? [`Ficha de ${f.ano} (lida por OCR): ${essenciais.map((x) => `a linha ${x} (${nomes[x]})`).join(" e ")} não foi reconhecida inteira. Digite os 12 meses em “Digitar valores da ficha”, abaixo; sem isso, a análise toma o valor como não pago.`] : [];
+    // a linha inteira (com o código) pode ter se perdido: com soldo e sem nenhum adicional, pergunta
+    const temSoldo = f.linhas.some((l) => CODIGOS_SOLDO.has(l.codigo) && l.meses.some((v) => v));
+    if (temSoldo && !f.editada && !f.linhas.some((l) => CODIGOS_AH.has(l.codigo)) && !essenciais.some((x) => /0003$|^A03$/.test(x)))
+      out.push(`Ficha de ${f.ano} (lida por OCR): a linha do adicional de habilitação pago (NR0003/A03) não foi encontrada. Se o militar recebia o adicional nesse ano, digite os valores em “Digitar valores da ficha”, abaixo; sem isso, a análise toma o adicional como não pago.`);
+    return out;
+  });
+}
+
 export function analisarAdicHab(e: EntradaAnaliseAdicHab): AnaliseAdicHab {
   const { fichas, hoje } = e;
-  const faltas: string[] = [], pendencias: string[] = [], alertas: Alerta[] = [];
+  const faltas: string[] = [], pendencias: string[] = [], alertas: Alerta[] = [], conferir: string[] = [];
   const fichasAnos = [...new Set(fichas.map((f) => f.ano))].sort();
-  const vazio: AnaliseAdicHab = {
+  const vazio: AnaliseAdicHab = { conferir,
     pronta: false, inicio: e.inicio, fimPedido: e.fim, fim: e.fim, fimSugerido: null, fimPossivel: null, tipo: null, tipoNome: null, percentualRecebido: null,
     faixas: [], postos: [], postosSugeridos: false, natalino: [], ferias: [], atrasados: [], memoria: [],
     totais: { a03: 0, natal: 0, ferias: 0, fusex: 0, pensao: 0, pensao15: 0, dependente: 0, liquido: 0 },
     dados: e.dados, lancamentosDigitados: [], descontosDaFicha: { pensao: false, dependentes: false }, plano: null, faltas, pendencias, alertas, textos: { explicacao: null, documentos: [] }, fichasAnos,
   };
   const tipo = e.dados.tipo && TABELA_AH[e.dados.tipo] ? e.dados.tipo : null;
-  if (!e.inicio) faltas.push("A data em que o direito começou (conclusão do curso ou termo inicial do reconhecimento): não foi lida no processo. Envie o requerimento/informação ou o BI que a contenha, ou preencha o período em Informações.");
-  if (!tipo) faltas.push("O tipo do curso (formação, especialização, aperfeiçoamento ou altos estudos) ou o percentual pedido: envie o requerimento ou o BI que reconheceu o direito, ou escolha o tipo no quadro do adicional.");
-  if (!fichas.length) faltas.push("As fichas financeiras do período (baixadas do SIPPES ou do SIAPPES, com texto).");
-  if (!e.inicio || !tipo || !fichas.length) return vazio;
+  if (!e.inicio) faltas.push(`Início do direito (data de conclusão do curso ou termo inicial do reconhecimento): não encontrado ${ONDE_LIDO}. ${INFORME}.`);
+  if (!tipo) faltas.push(`Tipo do curso (formação, especialização, aperfeiçoamento ou altos estudos): ${e.dados.percentualPedido ? `o percentual pedido (${String(e.dados.percentualPedido).replace(".", ",")}%) não indica o tipo` : `não identificado ${ONDE_LIDO}`}. ${INFORME}.`);
+  conferir.push(...conferenciaDasFichas(fichas));
+  faltas.push(...faltasDaLeituraOcr(fichas));
+  if (!e.inicio || !tipo || !fichas.length) {
+    if (!fichas.length) faltas.push(...(e.inicio ? faltasDasFichas(fichas, e.inicio, e.fim && e.fim >= e.inicio ? e.fim : ultimoDia(+e.inicio.slice(0, 4), 12))
+      : [`Fichas financeiras do período (SIPPES ou SIAPPES): soldo (NR0001/A01) e adicional de habilitação pago (NR0003/A03) de cada mês. ${COMO_FICHA}.`]));
+    return vazio;
+  }
   const inicio = e.inicio;
   const anoFechado = +hoje.slice(0, 4) - 1;
   let fimPedido = e.fim && e.fim >= inicio ? e.fim : ultimoDia(+inicio.slice(0, 4), 12);
@@ -265,7 +342,7 @@ export function analisarAdicHab(e: EntradaAnaliseAdicHab): AnaliseAdicHab {
     if (p > fi && !antes.length) continue;
     atrasados.push({ ano, mes, valor, tipo: "indefinido", meses: [],
       explicacao: `R$ ${reais(valor)} não corresponde a meses inteiros da diferença nem ao adicional antigo de um mês: confira no demonstrativo a que meses se refere e lance o recebido em "Lançar valor recebido".` });
-    faltas.push(`O demonstrativo do adicional atrasado de R$ ${reais(valor)} pago em ${mmm(ano, mes)} (a que meses se refere).`);
+    faltas.push(`Demonstrativo do adicional atrasado de R$ ${reais(valor)} pago em ${mmm(ano, mes)}: a que meses ele se refere (o valor não bate com meses inteiros da diferença). Carregue o demonstrativo, ou lance esse recebido em “Lançar valor recebido” depois de prosseguir.`);
   }
 
   // adicional pago e descontado depois (G03/DR0003): o mês volta a ficar sem pagamento
@@ -278,7 +355,7 @@ export function analisarAdicHab(e: EntradaAnaliseAdicHab): AnaliseAdicHab {
         explicacao: `Desconto do adicional de R$ ${reais(valor)} em ${mmm(ano, mes)}: estorna o adicional pago em ${mmm(de(alvo).ano, de(alvo).mes)}, que passa a contar como não pago (com o Fusex e a Pensão Militar devidos de novo).` });
     } else {
       atrasados.push({ ano, mes, valor, tipo: "indefinido", meses: [], explicacao: `Desconto do adicional de R$ ${reais(valor)} em ${mmm(ano, mes)} que não corresponde a um adicional pago nos meses anteriores: confira a que mês se refere.` });
-      faltas.push(`O demonstrativo do desconto do adicional (R$ ${reais(valor)}) feito em ${mmm(ano, mes)}.`);
+      faltas.push(`Demonstrativo do desconto do adicional de R$ ${reais(valor)} feito em ${mmm(ano, mes)}: a que mês ele se refere (não corresponde ao adicional pago nos 3 meses anteriores). Carregue o demonstrativo, ou ajuste o recebido em “Lançar valor recebido” depois de prosseguir.`);
     }
   }
 
@@ -339,11 +416,12 @@ export function analisarAdicHab(e: EntradaAnaliseAdicHab): AnaliseAdicHab {
   natalino.sort((a, b) => a.ano - b.ano);
 
   // documentos que faltam
-  for (let ano = +inicio.slice(0, 4); ano <= +fim.slice(0, 4); ano++) if (!fichasAnos.includes(ano)) faltas.push(`A ficha financeira de ${ano} (baixada do SIPPES ou do SIAPPES, com texto).`);
+  faltas.push(...faltasDasFichas(fichas, inicio, fim));
   const seguinte = +fim.slice(0, 4) + 1;
-  if (seguinte <= +hoje.slice(0, 4) && !fichasAnos.includes(seguinte)) faltas.push(`A ficha financeira de ${seguinte}, para conferir se houve retroativo ou acerto do adicional depois do período e se o novo percentual já foi implantado.`);
-  if (!dados.documento?.trim()) faltas.push("O ato que reconheceu o direito (BI, Adt ou despacho): sem ele, preencha no quadro do adicional.");
-  if (!e.dataRequerimento) faltas.push("O requerimento (a data): preencha em Informações.");
+  if (seguinte <= +hoje.slice(0, 4) && !fichasAnos.includes(seguinte)) faltas.push(`Ficha financeira de ${seguinte} (o ano seguinte ao período): para conferir se houve retroativo (AR0003/A23) ou desconto (DR0003/G03) do adicional depois do período e se o novo percentual já foi implantado. ${COMO_FICHA}.`);
+  if (!e.fim) faltas.push(`Fim do período pedido: não encontrado ${ONDE_LIDO}; a análise usou ${br(fimPedido)}. ${INFORME}.`);
+  if (!dados.documento?.trim()) faltas.push(`Ato que reconheceu o direito (nº e data do BI, Adt ou despacho): não encontrado ${ONDE_LIDO}. ${INFORME}.`);
+  if (!e.dataRequerimento) faltas.push(`Data do requerimento: não encontrada nas peças lidas. ${INFORME}.`);
   if (fimSugerido) pendencias.push(`O pedido vai até ${br(fimPedido)}, mas as fichas mostram o percentual antigo até ${br(fimSugerido)}: o período foi estendido até lá. A OM deve aditar o requerimento para incluir esse trecho (ou desmarque a extensão).`);
   else if (fimPossivel) pendencias.push(`As fichas mostram o percentual antigo até ${br(fimPossivel)}, depois do fim pedido (${br(fimPedido)}). O cálculo segue o pedido; se a OM aditar o requerimento, marque a extensão do período.`);
   if (!postosInformados.length && postos.length) pendencias.push(`Posto e promoções sugeridos pelo soldo das fichas: ${postos.map((p) => `${categoriaSoldo(p.categoria)!.nome} desde ${br(p.desde)}`).join("; ")}. Confira com as promoções do militar.`);
@@ -365,7 +443,7 @@ export function analisarAdicHab(e: EntradaAnaliseAdicHab): AnaliseAdicHab {
   if (explicacao.length > 800) explicacao = `${explicacao.slice(0, 797)}...`;
 
   return {
-    pronta: true, inicio, fimPedido, fim, fimSugerido, fimPossivel, tipo, tipoNome: TABELA_AH[tipo].nome, percentualRecebido, faixas,
+    conferir, pronta: true, inicio, fimPedido, fim, fimSugerido, fimPossivel, tipo, tipoNome: TABELA_AH[tipo].nome, percentualRecebido, faixas,
     postos: postos.map((p) => ({ ...p, nome: categoriaSoldo(p.categoria)!.nome })), postosSugeridos: !postosInformados.length && postos.length > 0,
     natalino, ferias: plano.ferias, atrasados, memoria, totais, dados, lancamentosDigitados, descontosDaFicha: { pensao: pensaoDaFicha, dependentes: dependentesDaFicha }, plano, faltas, pendencias, alertas,
     textos: { explicacao, documentos: plano.textos.documentos }, fichasAnos,

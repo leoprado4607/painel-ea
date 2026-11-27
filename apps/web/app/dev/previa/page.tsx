@@ -3,6 +3,8 @@ import { PainelAdicHab } from "@/components/PainelAdicHab";
 import { planoAdicHab } from "@/lib/adic-hab";
 import { PainelAnaliseAdicHab } from "@/components/PainelAnaliseAdicHab";
 import { analisarAdicHab, valorDaAnalise } from "@/lib/analise-adic-hab";
+import { valoresDaFicha } from "@/lib/ficha-digitada";
+import type { FichaLida } from "@/lib/receitas";
 import { PainelGratMensal } from "@/components/PainelGratMensal";
 import { ESPECIE_GLE, planoGratMensal } from "@/lib/grat-mensal";
 import { CardsNovoCalculo } from "@/components/CardsNovoCalculo";
@@ -70,9 +72,7 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         // 2º Ten Mulatinho: majoração de 12% para 45% a contar de 03/08/2023 (?periodo=pedido: sem a extensão)
         const L = (codigo: string, meses: number[]) => ({ codigo, descricao: codigo, meses });
         const doze = (v: number) => Array(12).fill(v) as number[];
-        const a = analisarAdicHab({ hoje: "2026-11-27", inicio: "2023-08-03", fim: "2023-12-31", dataRequerimento: "2025-05-29", averbacao: "BI 97 - HGuN, de 30/05/2025", estender: caso !== "pedido",
-          dados: { tipo: "aperfeicoamento", curso: "Curso de Residência Médica em Dermatologia", documento: "BI nº 123, do HGuN, de 1º JUL 24", percentualPedido: 45 },
-          fichas: [
+        const fichasPrevia: FichaLida[] = ([
             { ano: 2023, sistema: "sippes", linhas: [L("NR0001", [0, 0, 0, 0, 0, 0, 7315, 7315, 7315, 7315, 7315, 7315]), L("NR0003", [0, 0, 0, 0, 0, 0, 0, 0, 877.8, 877.8, 877.8, 877.8]),
               L("NR0014", [0, 0, 0, 0, 0, 0, 1389.85, 1389.85, 1389.85, 1389.85, 1389.85, 1389.85]), L("NR0085", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4974.2, 0]),
               L("NR0170", [0, 0, 0, 0, 0, 0, 365.75, 365.75, 365.75, 365.75, 365.75, 365.75]), L("AR0003", [0, 0, 0, 0, 0, 0, 0, 0, 0, 849.48, 0, 0])],
@@ -80,11 +80,20 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
             { ano: 2024, sistema: "sippes", linhas: [L("NR0001", doze(7490)), L("NR0003", [898.8, 898.8, 898.8, 898.8, 898.8, 898.8, 898.8, 898.8, 3370.5, 3370.5, 3370.5, 3370.5]), L("NR0014", doze(1423.1)),
               L("NR0084", [0, 0, 0, 0, 0, 5093.2, 0, 0, 0, 0, 0, 0]), L("NR0085", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7564.9, 0]), L("NR0092", [0, 0, 0, 0, 3395.47, 0, 0, 0, 0, 0, 0, 0]),
               L("NR0170", doze(374.5)), L("AR0003", [0, 0, 0, 0, 0, 0, 0, 0, 17301.9, 0, 0, 0])] },
-          ] });
+          ] as FichaLida[]).map((f): FichaLida => (caso === "ocr" && f.ano === 2023
+            // ?caso=ocr: a ficha de 2023 lida por OCR sem a linha do adicional e sem a de 2024; sem o ato e sem o requerimento
+            ? { ...f, origem: "ocr" as const, arquivo: "13. Outro-Ficha Financeira - 2023.pdf", linhas: f.linhas.filter((l) => l.codigo !== "NR0003"),
+                conferencia: { linhas: [], meses: [9, 10], incompletas: ["NR0003"] } }
+            : f)).filter((f) => caso !== "ocr" || f.ano === 2023);
+        const a = analisarAdicHab({ hoje: "2026-11-27", inicio: "2023-08-03", fim: "2023-12-31", dataRequerimento: "2025-05-29", averbacao: "BI 97 - HGuN, de 30/05/2025", estender: caso !== "pedido",
+          dados: { tipo: "aperfeicoamento", curso: "Curso de Residência Médica em Dermatologia", documento: caso === "ocr" ? undefined : "BI nº 123, do HGuN, de 1º JUL 24", percentualPedido: 45 },
+          fichas: fichasPrevia });
         const pct = [0.53, 0.84, 0.71, 0.61, 0.23, -0.08, 0.12, 0.23, 0.26, 0.24, 0.28, 0.56, 0.42, 0.83, 0.16, 0.38, 0.46, 0.21, 0.38, -0.02, 0.44, 0.56, 0.39, 0.52,
           0.16, 1.31, 0.56, 0.43, 0.26, 0.24, 0.26, -0.11, 0.48, 0.18, 0.2, 0.25, 0.2, 0.84, 0.44, 0.89, 0.62, 0.41, 0.06, -0.4, 0.7, 0.32];
         const valor = valorDaAnalise(a, pct.map((p, i) => ({ ano: 2023 + Math.floor(i / 12), mes: (i % 12) + 1, percentual: p })));
-        return <PainelAnaliseAdicHab processoId="previa" a={a} valor={valor} estender={caso !== "pedido"} pendente />;
+        const manual = { direito: { inicio: "2023-08-03", fim: "2023-12-31", dataRequerimento: "2025-05-29", tipo: "aperfeicoamento", curso: "Curso de Residência Médica em Dermatologia",
+          documento: a.dados.documento ?? "", percentualPedido: "45" }, anos: [2023, 2024], fichas: fichasPrevia.map(valoresDaFicha) };
+        return <PainelAnaliseAdicHab processoId="previa" a={a} valor={valor} estender={caso !== "pedido"} pendente manual={manual} />;
       })() : tela === "adic-hab" ? (
         <PainelAdicHab processoId="previa" dados={{ tipo: "altos2", percentualPedido: 68, curso: "Curso de Gestão e Assessoramento de Estado-Maior – 3º Turno - 2025", documento: "Adt DCEM 4A ao Bol DGP nº 146, de 22 DEZ 25", mesesFerias: ["2025-12"] }}
           inicio="2025-12-12" fim="2025-12-31" bloqueado={false}

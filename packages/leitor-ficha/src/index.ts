@@ -1,5 +1,5 @@
 import { lerContracheque, contrachequeComoFicha, type Contracheque } from "./contracheque";
-import { ehFichaSiappes, lerFicha, lerFichasSiappes, type FichaFinanceira } from "./leitor";
+import { ehFichaSiappes, lerFicha, lerFichasSiappes, type FichaFinanceira, type Palavra } from "./leitor";
 import { palavrasDoPdf } from "./pdf";
 
 export * from "./leitor";
@@ -39,6 +39,11 @@ export type DocumentoLido =
 export async function lerDocumentosPdf(dados: Uint8Array): Promise<DocumentoLido[]> {
   const palavras = await palavrasDoPdf(dados);
   if (!palavras.length) throw new PdfSemTexto();
+  return lerDocumentosPalavras(palavras);
+}
+
+/** O mesmo, a partir das palavras já extraídas (do PDF com texto ou do OCR de um PDF escaneado, feito no navegador). */
+export function lerDocumentosPalavras(palavras: Palavra[]): DocumentoLido[] {
   const texto = palavras.slice(0, 400).map((p) => p.texto.toUpperCase()).join(" ");
   if (/COMPROVANTE MENSAL DE RENDIMENTOS/.test(texto)) {
     const contracheque = lerContracheque(palavras);
