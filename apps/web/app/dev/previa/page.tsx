@@ -13,6 +13,7 @@ import { AbasProcesso } from "@/components/AbasProcesso";
 import { DadosFavorecido } from "@/components/DadosFavorecido";
 import { BarraLateral, ProvedorProcesso, RegistrarProcesso } from "@/components/BarraLateral";
 import { FormularioProcesso } from "@/components/FormularioProcesso";
+import { GestaoOperadores } from "@/components/GestaoOperadores";
 import { FormularioRubricas } from "@/components/FormularioRubricas";
 import { ListaProcessos } from "@/components/ListaProcessos";
 import { normalizarBusca } from "@/lib/busca";
@@ -57,6 +58,12 @@ export default async function Previa({ searchParams }: { searchParams: Promise<{
         </ProvedorProcesso>
       ) : <main className="mx-auto max-w-7xl px-4 py-6">{tela === "novo" ? (
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo</h1><p className="text-sm text-suave">Escolha o assunto do cálculo.</p><CardsNovoCalculo /></div>
+      ) : tela === "operadores" ? (
+        <div className="space-y-4"><h1 className="titulo-pagina">Operadores</h1>
+          <GestaoOperadores euId="a" oms={[{ id: "om1", nome: "7º Depósito de Suprimento" }]} usuarios={[
+            { usuario_id: "a", nome: "FULANO DE TAL", posto: "Maj", cpf: "52998224725", om_id: null, om: null, papel: "admin", ativo: true, trocar_senha: false },
+            { usuario_id: "b", nome: "Beltrano da Silva", posto: "Sd Ev", cpf: "11144477735", om_id: "om1", om: "7º Depósito de Suprimento", papel: "operador", ativo: true, trocar_senha: false },
+          ]} /></div>
       ) : tela === "novo-envio" ? (
         <div className="space-y-4"><h1 className="titulo-pagina">Novo cálculo: Auxílio-fardamento</h1><NovoPorProcesso especie="aux-fard" /><NovoPorFichas especie="aux-fard" /></div>
       ) : tela === "analise-adic-hab" ? (() => {
