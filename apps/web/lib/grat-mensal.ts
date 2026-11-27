@@ -214,7 +214,7 @@ export function planoGratMensal(entrada: {
 }
 
 interface Rubrica { posicao: number; codigo: string; tipo: string }
-const ULTIMA_RECEITA = 12;
+const ULTIMA_RECEITA = 6;
 
 /** A rubrica da gratificação (Receita): a que já houver, a posição 1 vazia ou a 1ª receita vazia. */
 export function rubricasGratMensal(rubricas: Rubrica[], codigo: string) {

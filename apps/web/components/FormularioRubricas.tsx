@@ -9,8 +9,12 @@ import { ehRubricaGr } from "@/lib/compl-sal-min";
 
 interface R { posicao: number; codigo: string; tipo: TipoRubrica }
 
-/** Posições 1 a 12: receitas, escolhidas na lista da Tab_pag do SIAPPES (13 a 17: despesas). */
+/**
+ * Posições 1 a 12: receitas, escolhidas na lista da Tab_pag do SIAPPES (13 a 17: despesas). A tela mostra só 6 campos de
+ * receita (pedido do usuário, 26/11/2026); as posições 7 a 12 continuam no banco e aparecem só se já tiverem código.
+ */
 const ULTIMA_RECEITA = 12;
+const RECEITAS_NA_TELA = 6;
 
 export function FormularioRubricas({ processoId, rubricas, bloqueado }: { processoId: string; rubricas: R[]; bloqueado: boolean }) {
   const [lista, setLista] = useState<R[]>(rubricas);
@@ -30,13 +34,13 @@ export function FormularioRubricas({ processoId, rubricas, bloqueado }: { proces
   return (
     <div className="space-y-4">
       <p className="text-sm text-suave">
-        São até 17 rubricas, como na planilha. Nas posições 1 a 12 (receitas), escolha a rubrica do pessoal da ativa na lista da Tabela de Pagamento
+        Nas posições 1 a {RECEITAS_NA_TELA} (receitas), escolha a rubrica do pessoal da ativa na lista da Tabela de Pagamento
         do SIAPPES (digite o código ou parte do nome para filtrar). Deixe em branco as posições que não usar. O tipo define se o valor
         soma (Receita), subtrai (Despesa) ou só aparece no detalhamento (“-”).
       </p>
       {msg && <Aviso tipo={msg.tipo}>{msg.texto}</Aviso>}
       <div className="cartao divide-y divide-borda p-0">
-        {lista.map((r) => (
+        {lista.filter((r) => r.posicao <= RECEITAS_NA_TELA || r.posicao > ULTIMA_RECEITA || r.codigo.trim()).map((r) => (
           <div key={r.posicao} className="grid grid-cols-[2.5rem_1fr_9rem] items-center gap-3 px-4 py-2">
             <span className="text-sm font-semibold text-suave">{r.posicao}</span>
             <label className="sr-only" htmlFor={`cod-${r.posicao}`}>Código da posição {r.posicao}</label>

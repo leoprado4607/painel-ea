@@ -291,7 +291,8 @@ export function planoAdicHab(entrada: {
 }
 
 interface Rubrica { posicao: number; codigo: string; tipo: string }
-const ULTIMA_RECEITA = 12;
+const ULTIMA_RECEITA = 6;
+const PRIMEIRA_DESPESA = 13;
 
 /**
  * Rubricas do adicional: as receitas (A03, A85, AD2) na que já houver ou na 1ª receita vazia; as despesas (Z01, Z02) na
@@ -305,7 +306,7 @@ export function rubricasAdicHab(rubricas: Rubrica[], codigos: string[]) {
     const despesa = codigo.startsWith("Z");
     const existente = lista.find((r) => r.codigo.trim().toUpperCase() === codigo.toUpperCase());
     if (existente) { posicoes[codigo] = existente.posicao; continue; }
-    const vazia = lista.find((r) => !r.codigo.trim() && (despesa ? r.posicao > ULTIMA_RECEITA : r.posicao <= ULTIMA_RECEITA));
+    const vazia = lista.find((r) => !r.codigo.trim() && (despesa ? r.posicao >= PRIMEIRA_DESPESA : r.posicao <= ULTIMA_RECEITA));
     if (!vazia) continue;
     vazia.codigo = codigo;
     vazia.tipo = despesa ? "Despesa" : "Receita";

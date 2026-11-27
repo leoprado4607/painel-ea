@@ -421,7 +421,7 @@ export function planoAuxFard(entrada: {
 }
 
 interface Rubrica { posicao: number; codigo: string; tipo: string }
-const ULTIMA_RECEITA = 12;
+const ULTIMA_RECEITA = 6;
 
 /** A56 ou A57 (Receita): a que já houver, a posição 1 vazia ou a 1ª receita vazia. */
 export function rubricasAuxFard(rubricas: Rubrica[], codigo: string) {

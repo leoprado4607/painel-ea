@@ -250,7 +250,7 @@ export function planoGratRep(entrada: {
 }
 
 interface Rubrica { posicao: number; codigo: string; tipo: string }
-const ULTIMA_RECEITA = 12;
+const ULTIMA_RECEITA = 6;
 const ehA62 = (r: Rubrica) => r.codigo.trim().toUpperCase().startsWith("A62 ");
 
 /** "A62 - GRAT REP 2%" (Receita): a que já houver, a posição 1 vazia ou a 1ª receita vazia. */

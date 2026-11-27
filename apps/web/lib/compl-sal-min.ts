@@ -140,7 +140,7 @@ export function planoComplSalMin(fichas: FichaLida[], inicio: string, fim: strin
 }
 
 interface Rubrica { posicao: number; codigo: string; tipo: string }
-const ULTIMA_RECEITA = 12;
+const ULTIMA_RECEITA = 6;
 const ehAga = (r: Rubrica) => r.codigo.trim().toUpperCase().startsWith("AGA ");
 /** AR0061 / GRAT REPRESENT EVENTUAL: sempre Receita e sem campo em "Lançar valor devido". */
 export const ehRubricaGr = (codigo: string | null | undefined) => (codigo ?? "").trim().toUpperCase().startsWith("AR0061");
