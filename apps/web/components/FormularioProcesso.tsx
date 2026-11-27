@@ -1,8 +1,9 @@
 "use client";
 import { cpfValido, identidadeValida, precCpValido } from "@painel-ea/engine";
-import { useActionState, useRef, useState } from "react";
+import { Fragment, useActionState, useRef, useState } from "react";
 import { documentosDoAmparo, LIMITE_DOCUMENTO } from "@/lib/amparo";
 import { auxFardAutomatico } from "@/lib/aux-fard";
+import { DOCUMENTO_COMPL_SAL_MIN, ESPECIE_COMPL_SAL_MIN, explicacaoComplSalMin } from "@/lib/compl-sal-min";
 import { PopupPendencias, pendenciasDoFormulario, type Pendencia } from "@/components/PopupPendencias";
 import { Aviso } from "@/components/Aviso";
 import { EditorFormatado } from "@/components/EditorFormatado";
@@ -35,15 +36,16 @@ function Campo({ nome, rotulo, valor, tipo = "text", ajuda, erro, obrigatorio, v
   );
 }
 
-function Lista({ nome, rotulo, valor, opcoes, aceitaOutro, obrigatorio, erro }: {
+function Lista({ nome, rotulo, valor, opcoes, aceitaOutro, obrigatorio, erro, onChange }: {
   nome: string; rotulo: string; valor?: string | null; opcoes: string[]; aceitaOutro?: boolean; obrigatorio?: boolean; erro?: string;
+  onChange?: (valor: string) => void;
 }) {
   const atual = valor && (aceitaOutro || opcoes.includes(valor)) ? valor : "";
   return (
     <div>
       <label htmlFor={nome} className="rotulo">{rotulo}{obrigatorio && <span className="text-red-700"> *</span>}</label>
       <select id={nome} name={nome} defaultValue={atual} required={obrigatorio} aria-invalid={!!erro}
-        className={`entrada ${erro ? "entrada-erro" : ""}`}>
+        className={`entrada ${erro ? "entrada-erro" : ""}`} onChange={onChange ? (e) => onChange(e.target.value) : undefined}>
         <option value="">Selecione…</option>
         {/* valor lido de um documento e fora da lista (ex.: banco "077") continua aparecendo */}
         {atual && !opcoes.includes(atual) && <option>{atual}</option>}
@@ -106,15 +108,23 @@ export function EscolhaOm({ oms, id = "om_id", erro }: { oms: { id: string; nome
   );
 }
 
-/** Documentos que materializam o direito: uma linha cada; "+" acrescenta outro, "−" tira (o primeiro é obrigatório). */
-function DocumentosDireito({ valor, erros, bloqueado, recentes }: { valor?: string | null; erros: Record<string, string>; bloqueado?: boolean; recentes: string[] }) {
+/**
+ * Documentos que materializam o direito: uma linha cada; "+" acrescenta outro, "−" tira (o primeiro é obrigatório).
+ * Com `fixo` (complemento de salário mínimo), esse documento aparece travado na 2ª posição e é gravado pelo servidor.
+ */
+function DocumentosDireito({ valor, erros, bloqueado, recentes, fixo }: { valor?: string | null; erros: Record<string, string>; bloqueado?: boolean; recentes: string[]; fixo?: string }) {
   const proximo = useRef(0);
-  const [docs, setDocs] = useState(() => documentosDoAmparo(valor).map((texto) => ({ id: proximo.current++, texto })));
+  const [docs, setDocs] = useState(() => {
+    const lista = documentosDoAmparo(valor).filter((t) => t.trim() !== DOCUMENTO_COMPL_SAL_MIN);
+    return (lista.length ? lista : [""]).map((texto) => ({ id: proximo.current++, texto }));
+  });
   const botao = "grid h-[38px] w-[38px] shrink-0 place-items-center border border-borda bg-white text-lg leading-none hover:border-ouro/50 hover:bg-creme disabled:opacity-50";
   return (
     <div className="space-y-3">
       {docs.map((d, i) => (
-        <EditorFormatado key={d.id} nome="c.amparo" idBase={`c.amparo-${d.id}`} rotulo={i ? `Nº/data do documento ${i + 1}` : "Nº/data do documento"}
+        <Fragment key={d.id}>
+        {i === 1 && fixo && <DocumentoFixo texto={fixo} />}
+        <EditorFormatado nome="c.amparo" idBase={`c.amparo-${d.id}`} rotulo={i ? `Nº/data do documento ${i + 1}` : "Nº/data do documento"}
           rotuloOculto ferramentasAEsquerda umaLinha valor={d.texto} limite={LIMITE_DOCUMENTO} obrigatorio={i === 0}
           erro={erros[i ? `c.amparo.${i}` : "c.amparo"]} bloqueado={bloqueado} sugestoes={recentes}
           aoLado={!bloqueado && (
@@ -125,7 +135,19 @@ function DocumentosDireito({ valor, erros, bloqueado, recentes }: { valor?: stri
                 title="Adicionar outro documento" onClick={() => setDocs((l) => [...l, { id: proximo.current++, texto: "" }])}>+</button>}
             </>
           )} />
+        {i === 0 && docs.length === 1 && fixo && <DocumentoFixo texto={fixo} />}
+        </Fragment>
       ))}
+    </div>
+  );
+}
+
+/** Documento fixo do complemento de salário mínimo: só leitura (o servidor o grava na 2ª posição). */
+function DocumentoFixo({ texto }: { texto: string }) {
+  return (
+    <div>
+      <p className="entrada bg-gray-50 [font-family:Helvetica,Arial,sans-serif]" title="Documento fixo do complemento de salário mínimo">{texto}</p>
+      <p className="ajuda">2º documento fixo do complemento de salário mínimo (automático).</p>
     </div>
   );
 }
@@ -143,6 +165,15 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
   const [fim, setFim] = useState(valores.periodo_fim ?? "");
   const qtdeMeses = quantidadeMeses(inicio, fim);
   const ocultarVerso = auxFardAutomatico(valores);
+  // complemento de salário mínimo: explicação automática (ano do requerimento e período da dívida); "Editar" a libera
+  const [especie, setEspecie] = useState(valores.especie_divida ?? "");
+  const [requerimento, setRequerimento] = useState(valores.data_requerimento ?? "");
+  const complSalMin = especie === ESPECIE_COMPL_SAL_MIN;
+  const editadaAntes = (valores.complementos as { explicacaoEditada?: unknown } | null | undefined)?.explicacaoEditada === true;
+  const [explicacaoEditada, setExplicacaoEditada] = useState(editadaAntes);
+  const explicacaoAutomatica = explicacaoComplSalMin(requerimento, inicio, fim);
+  // ao editar: parte do texto já editado e salvo ou, sem ele, do automático do momento
+  const [inicioEdicao, setInicioEdicao] = useState<string | null>(null);
   // ao salvar com campo obrigatório vazio: pop-up com as pendências (no lugar do balão do navegador)
   const [pendentes, setPendentes] = useState<{ pendencias: Pendencia[]; primeiro: HTMLElement | null } | null>(null);
   return (
@@ -207,7 +238,8 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
               <output id="qtde_meses" htmlFor="periodo_inicio periodo_fim" aria-live="polite"
                 className="entrada block bg-gray-50 text-center tabular-nums">{qtdeMeses ?? "–"}</output>
             </div>
-            <Lista nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} opcoes={ESPECIES_DIVIDA} obrigatorio erro={c.especie_divida} />
+            <Lista nome="especie_divida" rotulo="Espécie da dívida" valor={valores.especie_divida} opcoes={ESPECIES_DIVIDA} obrigatorio erro={c.especie_divida}
+              onChange={setEspecie} />
           </div>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             <Campo nome="numero" rotulo="Nº do processo" valor={mascaraNumeroProcesso(valores.numero)} obrigatorio erro={c.numero}
@@ -221,7 +253,8 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
                 if (ano && campoAno instanceof HTMLInputElement) campoAno.value = ano;
               }} />
             <Campo nome="ano" rotulo="Ano do processo" tipo="number" valor={valores.ano} min={2000} max={2100} obrigatorio erro={c.ano} />
-            <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} obrigatorio erro={c.data_requerimento} />
+            <Campo nome="data_requerimento" rotulo="Data do requerimento" tipo="date" valor={valores.data_requerimento} obrigatorio erro={c.data_requerimento}
+              onChange={(e) => setRequerimento(e.target.value)} />
           </div>
           <CamposAverbacao valores={valores} erros={c} />
           <div className="mt-4">
@@ -237,11 +270,19 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
         {!ocultarVerso && <>
         <section className="cartao">
           <h2 className="mb-3 font-semibold">Documento que materializa o direito</h2>
-          <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} recentes={documentosRecentes} />
+          <DocumentosDireito valor={valores.complementos?.amparo} erros={c} bloqueado={bloqueado} recentes={documentosRecentes}
+            fixo={complSalMin ? DOCUMENTO_COMPL_SAL_MIN : undefined} />
         </section>
         <section className="cartao">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h2 className="font-semibold">Explicação do não pagamento à época</h2>
+            {complSalMin ? (!bloqueado && (explicacaoEditada ? (
+              <button type="button" className="botao-sec px-3 py-1.5 text-sm" title="Volta ao texto automático (ano do requerimento e período da dívida)"
+                onClick={() => setExplicacaoEditada(false)}>Usar texto automático</button>
+            ) : (
+              <button type="button" className="botao-sec px-3 py-1.5 text-sm" title="Libera a explicação para edição"
+                onClick={() => { setInicioEdicao(editadaAntes ? null : explicacaoAutomatica); setExplicacaoEditada(true); }}>Editar explicação</button>
+            ))) : (<>
             {/* baixa um .txt (Bloco de Notas) com as explicações já registradas para a espécie da dívida escolhida acima */}
             <button type="button" className="botao-sec px-3 py-1.5 text-sm"
               title="Baixa um arquivo de texto com as explicações já registradas no sistema para a espécie da dívida escolhida"
@@ -253,10 +294,20 @@ export function FormularioProcesso({ processoId, valores = {}, bloqueado, oms = 
               }}>
               Repositório
             </button>
+            </>)}
           </div>
-          <EditorFormatado nome="c.explicacao" rotulo="Explicação" rotuloOculto ferramentasAEsquerda valor={valores.complementos?.explicacao} limite={800}
-            arrumarColado justificado obrigatorio erro={c["c.explicacao"]} bloqueado={bloqueado}
-            placeholder="Ex.: O militar fazia jus a … no período de … e não recebeu à época porque …" />
+          {complSalMin && <input type="hidden" name="c.explicacao_editada" value={explicacaoEditada ? "1" : "0"} />}
+          {complSalMin && !explicacaoEditada ? (
+            <>
+              <p className="entrada min-h-24 whitespace-pre-wrap bg-gray-50 text-justify leading-snug [font-family:Helvetica,Arial,sans-serif]">{explicacaoAutomatica}</p>
+              <p className="ajuda">Texto automático do complemento de salário mínimo: o ano do requerimento e o período da dívida vêm dos campos acima.</p>
+            </>
+          ) : (
+            <EditorFormatado key={complSalMin ? `editada-${inicioEdicao ?? "salva"}` : "livre"} nome="c.explicacao" rotulo="Explicação" rotuloOculto ferramentasAEsquerda
+              valor={complSalMin && inicioEdicao !== null ? inicioEdicao : valores.complementos?.explicacao} limite={800}
+              arrumarColado justificado obrigatorio erro={c["c.explicacao"]} bloqueado={bloqueado}
+              placeholder="Ex.: O militar fazia jus a … no período de … e não recebeu à época porque …" />
+          )}
         </section>
         </>}
       </fieldset>

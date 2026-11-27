@@ -3,6 +3,8 @@ import type { LeituraGuardada } from "@/lib/processo-completo";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
+import { QuadroTextosVerso } from "@/components/QuadroTextosVerso";
+import { textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { salvarGratRep } from "@/lib/acoes/grat-rep";
 import { formatarReais, lerReais } from "@/lib/dinheiro";
 import type { DadosGratRep, PlanoGratRep } from "@/lib/grat-rep";
@@ -24,6 +26,8 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
   const [d, setD] = useState<DadosGratRep>(dados);
   const [valorAut, setValorAut] = useState(dados.autorizacao?.valor != null ? formatarReais(dados.autorizacao.valor) : "");
   const [usarTextos, setUsarTextos] = useState(false);
+  const [textosEditados, setTextosEditados] = useState<TextosVerso | null>(dados.textosVerso ?? null);
+  const sugeridos = textosSugeridos(plano.textos);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
   const aut = d.autorizacao ?? {};
@@ -36,7 +40,7 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
   const salvar = () => iniciar(async () => {
     const valor = lerReais(valorAut);
     if (Number.isNaN(valor)) return setMsg({ tipo: "erro", texto: "Valor autorizado inválido. Use o formato 1.234,56." });
-    const r = await salvarGratRep(processoId, { ...d, autorizacao: { ...aut, valor } }, usarTextos);
+    const r = await salvarGratRep(processoId, { ...d, autorizacao: { ...aut, valor } }, usarTextos, textosEditados);
     if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
     setMsg({ tipo: "ok", texto: "Dados salvos e cálculo refeito." });
     setUsarTextos(false);
@@ -175,16 +179,9 @@ export function PainelGratRep({ processoId, dados, plano, inicio, fim, bloqueado
           </label>
         </div>
 
-        {(plano.textos.explicacao || plano.textos.documentos.length > 0) && (
-          <div className="border border-borda p-3 text-sm">
-            <h3 className="rotulo-secao">Textos sugeridos para o verso</h3>
-            {plano.textos.explicacao && <p><span className="text-suave">Explicação do não pagamento:</span> {plano.textos.explicacao}</p>}
-            {plano.textos.documentos.length > 0 && <p className="mt-1"><span className="text-suave">Documento que materializou o direito:</span> {plano.textos.documentos.join(" / ")}</p>}
-            <label className="mt-2 flex items-start gap-2">
-              <input type="checkbox" className="mt-1" checked={usarTextos} onChange={(e) => setUsarTextos(e.target.checked)} />
-              <span>Ao salvar, substituir os textos do verso (Informações) por estes.</span>
-            </label>
-          </div>
+        {(sugeridos.explicacao || sugeridos.documentos.length > 0 || textosEditados) && (
+          <QuadroTextosVerso sugeridos={sugeridos} editados={textosEditados} aoEditar={setTextosEditados}
+            usar={usarTextos} aoUsar={setUsarTextos} bloqueado={bloqueado} />
         )}
       </fieldset>
 

@@ -29,7 +29,7 @@ const paraHtml = (marcacao: string) => marcacao.replace(/\n/g, "<br>");
  * Caixa de texto com negrito, itálico e sublinhado, na Helvetica dos documentos. O valor vai num campo oculto
  * (nome do formulário) como marcação <b>/<i>/<u>; o limite conta só os caracteres do texto.
  */
-export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, ferramentasAEsquerda, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado, umaLinha, aoLado, sugestoes = [] }: {
+export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, ferramentasAEsquerda, valor, limite, obrigatorio, erro, placeholder, bloqueado, arrumarColado, justificado, umaLinha, aoLado, sugestoes = [], aoMudar }: {
   nome: string;
   /** prefixo dos ids (rótulo, contador) quando há vários editores com o mesmo nome */
   idBase?: string;
@@ -49,10 +49,19 @@ export function EditorFormatado({ nome, idBase = nome, rotulo, rotuloOculto, fer
   aoLado?: ReactNode;
   /** opções para preencher a caixa (marcação): aparecem ao clicar nela e são filtradas pelo que for digitado */
   sugestoes?: string[];
+  /** avisa a cada mudança do texto (marcação), para quem usa o editor fora de um formulário */
+  aoMudar?: (marcacao: string) => void;
 }) {
   const editor = useRef<HTMLDivElement>(null);
   const valido = useRef("");
   const [marcacao, setMarcacao] = useState(() => normalizarFormatado(valor));
+  const avisado = useRef(marcacao);
+  useEffect(() => {
+    if (marcacao === avisado.current) return;
+    avisado.current = marcacao;
+    aoMudar?.(marcacao);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [marcacao]);
   const total = textoSemFormatacao(marcacao).length;
   const [listaAberta, setListaAberta] = useState(false);
   const [ativa, setAtiva] = useState(-1);

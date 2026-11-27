@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { complSalMinAutomatico, planoComplSalMin, rubricasComplSalMin, RUBRICA_AGA, RUBRICA_GR } from "./compl-sal-min";
+import { complSalMinAutomatico, documentosComplSalMin, DOCUMENTO_COMPL_SAL_MIN, explicacaoComplSalMin, planoComplSalMin, rubricasComplSalMin, RUBRICA_AGA, RUBRICA_GR } from "./compl-sal-min";
 import type { FichaLida } from "./receitas";
 
 /** meses: { 5: 10 } → maio = 10 */
@@ -76,5 +76,18 @@ describe("complemento de salário mínimo automático", () => {
     // já escolhidas: nada muda
     const prontas = vazias.map((r) => (r.posicao === 1 ? { ...r, codigo: RUBRICA_AGA } : r.posicao === 2 ? { ...r, codigo: RUBRICA_GR } : r));
     expect(rubricasComplSalMin(prontas, true)).toEqual({ mudadas: [], posicaoAga: 1, posicaoGr: 2 });
+  });
+});
+
+describe("verso do complemento de salário mínimo", () => {
+  it("explicação com o ano do requerimento e o período da dívida", () => {
+    const t = explicacaoComplSalMin("2023-06-10", "2022-03-01", "2023-02-17");
+    expect(t).toContain("solicitou em 2023 os valores");
+    expect(t).toContain("no período de 1º MAR 22 a 17 FEV 23 e o valor");
+    expect(explicacaoComplSalMin("2023-06-10", "2022-05-15", "2022-05-31")).toContain("15 MAIO 22 a 31 MAIO 22");
+  });
+  it("DIEx da base de cálculo fixo como 2º documento, sem repetir", () => {
+    expect(documentosComplSalMin(["BI 1"])).toEqual(["BI 1", DOCUMENTO_COMPL_SAL_MIN]);
+    expect(documentosComplSalMin(["BI 1", DOCUMENTO_COMPL_SAL_MIN, "BI 2"])).toEqual(["BI 1", DOCUMENTO_COMPL_SAL_MIN, "BI 2"]);
   });
 });

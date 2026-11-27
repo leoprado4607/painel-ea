@@ -19,6 +19,7 @@
  */
 import type { FichaLida } from "./receitas";
 import { categoriasComSoldo, categoriaSoldo, soldoNaData } from "./soldos";
+import type { TextosVerso } from "@/lib/textos-verso";
 
 export const ESPECIE_ADIC_HAB = "Adicional Habilitação";
 export const RUBRICA_ADIC_HAB = "A03 - ADIC HAB";
@@ -63,6 +64,8 @@ export function tipoPeloPercentual(pct: number, data: string): TipoCurso | null 
 
 /** O que o operador informa no quadro (complementos.adicHab). */
 export interface DadosAdicHab {
+  /** Textos do verso editados pelo operador (lib/textos-verso); sem eles, valem os sugeridos pelo cálculo. */
+  textosVerso?: TextosVerso;
   /** Tipo do curso concluído (o novo adicional). */
   tipo?: TipoCurso;
   /** Nome do curso e onde foi feito. */

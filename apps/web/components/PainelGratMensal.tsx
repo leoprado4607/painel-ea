@@ -2,6 +2,8 @@
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Aviso } from "@/components/Aviso";
+import { QuadroTextosVerso } from "@/components/QuadroTextosVerso";
+import { textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { salvarGratMensal } from "@/lib/acoes/grat-mensal";
 import { formatarReais } from "@/lib/dinheiro";
 import { ESPECIE_GR_CMDO, PERCENTUAL, type DadosGratMensal, type PlanoGratMensal } from "@/lib/grat-mensal";
@@ -21,6 +23,8 @@ export function PainelGratMensal({ processoId, especie, dados, plano, inicio, fi
   const router = useRouter();
   const [d, setD] = useState<DadosGratMensal>(dados);
   const [usarTextos, setUsarTextos] = useState(false);
+  const [textosEditados, setTextosEditados] = useState<TextosVerso | null>(dados.textosVerso ?? null);
+  const sugeridos = textosSugeridos(plano.textos);
   const [msg, setMsg] = useState<{ tipo: "ok" | "erro"; texto: string } | null>(null);
   const [salvando, iniciar] = useTransition();
   const comando = especie === ESPECIE_GR_CMDO;
@@ -28,7 +32,7 @@ export function PainelGratMensal({ processoId, especie, dados, plano, inicio, fi
   const marcar = (chave: string, sim: boolean) =>
     setD((x) => ({ ...x, considerados: sim ? [...(x.considerados ?? []), chave] : (x.considerados ?? []).filter((c) => c !== chave) }));
   const salvar = () => iniciar(async () => {
-    const r = await salvarGratMensal(processoId, d, usarTextos);
+    const r = await salvarGratMensal(processoId, d, usarTextos, textosEditados);
     if (r.erro) return setMsg({ tipo: "erro", texto: r.erro });
     setMsg({ tipo: "ok", texto: "Dados salvos e cálculo refeito." });
     setUsarTextos(false);
@@ -125,16 +129,9 @@ export function PainelGratMensal({ processoId, especie, dados, plano, inicio, fi
           )}
         </div>
 
-        {(plano.textos.explicacao || plano.textos.documentos.length > 0) && (
-          <div className="border border-borda p-3 text-sm">
-            <h3 className="rotulo-secao">Textos sugeridos para o verso</h3>
-            {plano.textos.explicacao && <p><span className="text-suave">Explicação do não pagamento:</span> {plano.textos.explicacao}</p>}
-            {plano.textos.documentos.length > 0 && <p className="mt-1"><span className="text-suave">Documento que materializou o direito:</span> {plano.textos.documentos.join(" / ")}</p>}
-            <label className="mt-2 flex items-start gap-2">
-              <input type="checkbox" className="mt-1" checked={usarTextos} onChange={(e) => setUsarTextos(e.target.checked)} />
-              <span>Ao salvar, substituir os textos do verso (Informações) por estes.</span>
-            </label>
-          </div>
+        {(sugeridos.explicacao || sugeridos.documentos.length > 0 || textosEditados) && (
+          <QuadroTextosVerso sugeridos={sugeridos} editados={textosEditados} aoEditar={setTextosEditados}
+            usar={usarTextos} aoUsar={setUsarTextos} bloqueado={bloqueado} />
         )}
       </fieldset>
 

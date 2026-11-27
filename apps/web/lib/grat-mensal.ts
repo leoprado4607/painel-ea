@@ -18,6 +18,7 @@
 import type { FichaLida } from "./receitas";
 import { sugerirLocalidade } from "./localidades-especiais";
 import { categoriasComSoldo, categoriaSoldo, soldoNaData } from "./soldos";
+import type { TextosVerso } from "@/lib/textos-verso";
 
 export const ESPECIE_GLE = "Gratificação de Localidade Especial";
 export const ESPECIE_GR_CMDO = "Gratificação de Representação de Comando";
@@ -31,6 +32,8 @@ const CODIGOS_SOLDO = new Set(["NR0001", "A01"]);
 
 /** O que o operador informa no quadro (complementos.gratMensal). */
 export interface DadosGratMensal {
+  /** Textos do verso editados pelo operador (lib/textos-verso); sem eles, valem os sugeridos pelo cálculo. */
+  textosVerso?: TextosVerso;
   /** Posto/graduação no período (id de lib/soldos). Vazio: o sugerido pela NR0001 da ficha. */
   categoria?: string;
   /** Localidade especial: categoria da localidade (Portaria GM-MD 379/2022). */

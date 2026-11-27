@@ -22,6 +22,34 @@ export const RUBRICA_GR = "AR0061 - GRAT REPRESENT EVENTUAL";
 /** Valor do complemento por mês, por ano. */
 export const VALOR_FIXADO: Readonly<Record<number, number>> = { 2022: 80.1, 2023: 170.1 };
 
+/**
+ * Verso do complemento de salário mínimo (decisão de 26/11/2026), pela espécie: o 2º documento que materializa o direito
+ * é sempre este, e a explicação do não pagamento é automática (ano do requerimento e período da dívida), salvo se o
+ * operador a editar em Informações (complementos.explicacaoEditada).
+ */
+export const DOCUMENTO_COMPL_SAL_MIN = "DIEx Nº 257-ASSEJUR/SSEF/SEF, de 28 ABR 23 - Base de Cálculo - Complemento de Salário Mínimo";
+const MESES_MILITAR = ["JAN", "FEV", "MAR", "ABR", "MAIO", "JUN", "JUL", "AGO", "SET", "OUT", "NOV", "DEZ"];
+const data = (v: string | null | undefined) => (v && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : null);
+/** "2022-03-01" → "1º MAR 22". */
+const dataMilitar = (d: string) => `${d.slice(8, 10) === "01" ? "1º" : d.slice(8, 10)} ${MESES_MILITAR[+d.slice(5, 7) - 1]} ${d.slice(2, 4)}`;
+
+export function explicacaoComplSalMin(dataRequerimento: string | null | undefined, inicio: string | null | undefined, fim: string | null | undefined): string {
+  const req = data(dataRequerimento), ini = data(inicio), f = data(fim);
+  const ano = req ? req.slice(0, 4) : "(ano do requerimento)";
+  const periodo = ini && f ? `${dataMilitar(ini)} a ${dataMilitar(f)}` : "(período da dívida)";
+  return `O ex-militar em tela solicitou em ${ano} os valores referentes a diferença entre a remuneração recebida no período de ${periodo} `
+    + "e o valor dos novos salários-mínimos estabelecidos a partir de 2022, em concordância com DIEx Nº 257-ASSEJUR/SSEF/SEF, de 28 ABR 23, "
+    + "com o DIEx Nº 152-SIPPES/S1/Gab, de 15 MAIO 23, e com a MP nº 2215-10, de 31 de agosto de 2001 (LRM), que pacificam o entendimento "
+    + "que todo militar que receber remuneração inferior ao salário mínimo fará jus a um complemento em valor equivalente à diferença encontrada.";
+}
+
+/** Documentos do verso com o do complemento fixo na 2ª posição (sem repetir, se o operador o tiver digitado). */
+export function documentosComplSalMin(documentos: string[]): string[] {
+  const fixo = DOCUMENTO_COMPL_SAL_MIN.toLocaleLowerCase("pt-BR");
+  const proprios = documentos.filter((d) => d.replace(/<[^>]+>/g, "").trim().toLocaleLowerCase("pt-BR") !== fixo);
+  return [...proprios.slice(0, 1), DOCUMENTO_COMPL_SAL_MIN, ...proprios.slice(1)];
+}
+
 /** Linhas da ficha: AR0026 / COMPLEMENTO SALARIO MINIMO (SIPPES) ou AGA (SIAPPES); AR0061 / GRAT REPRESENT EVENTUAL. */
 const CODIGOS_AGA = new Set(["AR0026", "AGA"]);
 const CODIGOS_GR = new Set(["AR0061"]);

@@ -25,6 +25,7 @@
  */
 import type { FichaLida } from "./receitas";
 import { categoriaSoldo, soldoNaData } from "./soldos";
+import type { TextosVerso } from "@/lib/textos-verso";
 
 export const ESPECIE_AUX_FARD = "Auxílio fardamento";
 export const RUBRICA_AUX_FARD_1 = "A56 - AUX FARD 1 SOLDO";
@@ -69,6 +70,8 @@ export const casoUnico = (c: CasoAuxFard): c is "promocao" | "trienio" => c === 
 
 /** O que o operador informa no quadro (complementos.auxFard). */
 export interface DadosAuxFard {
+  /** Textos do verso editados pelo operador (lib/textos-verso); sem eles, valem os sugeridos pelo cálculo. */
+  textosVerso?: TextosVerso;
   caso?: CasoAuxFard;
   fato1?: FatoGerador;
   fato2?: FatoGerador;

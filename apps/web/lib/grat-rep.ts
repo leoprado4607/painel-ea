@@ -18,6 +18,7 @@
  */
 import type { FichaLida } from "./receitas";
 import { categoriasComSoldo, categoriaSoldo, soldoNaData } from "./soldos";
+import type { TextosVerso } from "@/lib/textos-verso";
 
 export const ESPECIE_GRAT_REP = "Gratificação de Representação";
 export const RUBRICA_GRAT_REP = "A62 - GRAT REP 2%";
@@ -28,6 +29,8 @@ export const PERCENTUAL_DIARIO = 0.02;
 
 /** O que o operador informa no quadro da Grat Rep (complementos.gratRep). */
 export interface DadosGratRep {
+  /** Textos do verso editados pelo operador (lib/textos-verso); sem eles, valem os sugeridos pelo cálculo. */
+  textosVerso?: TextosVerso;
   /** Posto/graduação na data do fato (id de lib/soldos). Vazio: o sugerido pela NR0001 da ficha. */
   categoria?: string;
   /** "HH:MM" da saída (BI de ida) e do retorno (BI de retorno). */

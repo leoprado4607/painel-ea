@@ -5,6 +5,7 @@ import { textoBoletim } from "@/lib/averbacao";
 import { gratRepAutomatico, planoGratRep, type DadosGratRep } from "@/lib/grat-rep";
 import { fichasLidasValidas, preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
+import { gravarTextosVerso, textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { categoriaSoldo } from "@/lib/soldos";
 
 const texto = (v: unknown, max = 200) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -30,9 +31,10 @@ function limpar(d: DadosGratRep): DadosGratRep {
 
 /**
  * Grava o quadro da Gratificação de Representação e refaz devido e recebidos automáticos.
- * Com usarTextos, a explicação do não pagamento e o documento que materializa o direito (verso) recebem os textos sugeridos.
+ * Os textos do verso editados pelo operador ficam no quadro (lib/textos-verso).
+ * Com usarTextos, a explicação do não pagamento e o documento que materializa o direito (verso) recebem os editados ou, sem eles, os sugeridos.
  */
-export async function salvarGratRep(processoId: string, dados: DadosGratRep, usarTextos: boolean): Promise<{ erro?: string; ok?: true }> {
+export async function salvarGratRep(processoId: string, dados: DadosGratRep, usarTextos: boolean, textosEditados?: TextosVerso | null): Promise<{ erro?: string; ok?: true }> {
   try {
     const { supabase } = await sessao();
     const { data: p } = await supabase.from("processo")
@@ -42,14 +44,12 @@ export async function salvarGratRep(processoId: string, dados: DadosGratRep, usa
     if (!gratRepAutomatico(p)) return { erro: "Este processo não usa o cálculo automático da Gratificação de Representação." };
     const gratRep = limpar(dados);
     const complementos: Record<string, unknown> = { ...((p.complementos as object) ?? {}), gratRep };
-    if (usarTextos && p.periodo_inicio && p.periodo_fim) {
-      const plano = planoGratRep({
-        fichas: fichasLidasValidas(p.fichas_lidas), inicio: p.periodo_inicio, fim: p.periodo_fim, dados: gratRep,
-        dataRequerimento: p.data_requerimento, averbacao: textoBoletim(p), hoje: new Date().toISOString().slice(0, 10),
-      });
-      if (plano.textos.explicacao) complementos.explicacao = plano.textos.explicacao;
-      if (plano.textos.documentos.length) complementos.amparo = plano.textos.documentos.join("\n");
-    }
+    const plano = p.periodo_inicio && p.periodo_fim ? planoGratRep({
+      fichas: fichasLidasValidas(p.fichas_lidas), inicio: p.periodo_inicio, fim: p.periodo_fim, dados: gratRep,
+      dataRequerimento: p.data_requerimento, averbacao: textoBoletim(p), hoje: new Date().toISOString().slice(0, 10),
+    }) : null;
+    const erroTextos = gravarTextosVerso({ complementos, quadro: gratRep, sugeridos: textosSugeridos(plano?.textos ?? { explicacao: null, documentos: [] }), editados: textosEditados, usar: usarTextos });
+    if (erroTextos) return { erro: erroTextos };
     const { error } = await supabase.from("processo").update({ complementos }).eq("id", processoId);
     if (error) return { erro: error.message };
     await preencherReceitas(supabase, processoId);

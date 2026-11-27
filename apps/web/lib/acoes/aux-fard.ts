@@ -4,6 +4,7 @@ import { textoBoletim } from "@/lib/averbacao";
 import { auxFardAutomatico, casoAuxFard, dataDoFato, planoAuxFard, TIPOS_FATO, type DadosAuxFard, type FatoGerador } from "@/lib/aux-fard";
 import { fichasLidasValidas, preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
+import { gravarTextosVerso, textosSugeridos, type TextosVerso } from "@/lib/textos-verso";
 import { categoriaSoldo } from "@/lib/soldos";
 
 const data = (v: unknown) => (typeof v === "string" && /^\d{4}-\d{2}-\d{2}$/.test(v) ? v : "");
@@ -39,9 +40,10 @@ function limpar(d: DadosAuxFard): DadosAuxFard {
 
 /**
  * Grava o quadro do Auxílio-fardamento e refaz devido e recebido automáticos.
- * Com usarTextos, a explicação do não pagamento e o documento que materializa o direito (verso) recebem os textos sugeridos.
+ * Os textos do verso editados pelo operador ficam no quadro (lib/textos-verso).
+ * Com usarTextos, a explicação do não pagamento e o documento que materializa o direito (verso) recebem os editados ou, sem eles, os sugeridos.
  */
-export async function salvarAuxFard(processoId: string, dados: DadosAuxFard, usarTextos: boolean): Promise<{ erro?: string; ok?: true }> {
+export async function salvarAuxFard(processoId: string, dados: DadosAuxFard, usarTextos: boolean, textosEditados?: TextosVerso | null): Promise<{ erro?: string; ok?: true }> {
   try {
     const { supabase } = await sessao();
     const { data: p } = await supabase.from("processo")
@@ -54,14 +56,12 @@ export async function salvarAuxFard(processoId: string, dados: DadosAuxFard, usa
     // somente 3 anos: a data dos 3 anos é contada da última promoção do requerimento
     if (auxFard.caso === "trienio") auxFard.fato2 = { ...auxFard.fato2, tipo: "trienio", data: dataDoFato(auxFard) ?? "" };
     const complementos: Record<string, unknown> = { ...((p.complementos as object) ?? {}), auxFard };
-    if (usarTextos) {
-      const plano = planoAuxFard({
-        fichas: fichasLidasValidas(p.fichas_lidas), dados: auxFard, dataRequerimento: p.data_requerimento,
-        periodoInicio: p.periodo_inicio, averbacao: textoBoletim(p), hoje: new Date().toISOString().slice(0, 10),
-      });
-      if (plano.textos.explicacao) complementos.explicacao = plano.textos.explicacao;
-      if (plano.textos.documentos.length) complementos.amparo = plano.textos.documentos.join("\n");
-    }
+    const plano = planoAuxFard({
+      fichas: fichasLidasValidas(p.fichas_lidas), dados: auxFard, dataRequerimento: p.data_requerimento,
+      periodoInicio: p.periodo_inicio, averbacao: textoBoletim(p), hoje: new Date().toISOString().slice(0, 10),
+    });
+    const erroTextos = gravarTextosVerso({ complementos, quadro: auxFard, sugeridos: textosSugeridos(plano.textos), editados: textosEditados, usar: usarTextos });
+    if (erroTextos) return { erro: erroTextos };
     // somente 3 anos: o mês em que completou os 3 anos (última promoção + 3 anos) é o de referência da dívida (Informações), no lugar do identificado
     const periodo = auxFard.caso === "trienio" && auxFard.fato2?.data ? periodoDoMes(auxFard.fato2.data) : null;
     const { error } = await supabase.from("processo").update({ complementos, ...(periodo ?? {}) }).eq("id", processoId);

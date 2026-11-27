@@ -8,6 +8,7 @@ import { preencherReceitas } from "@/lib/receitas";
 import { sessao } from "@/lib/sessao";
 import { LIMITE_DOCUMENTO } from "@/lib/amparo";
 import { auxFardAutomatico } from "@/lib/aux-fard";
+import { documentosComplSalMin, ESPECIE_COMPL_SAL_MIN, explicacaoComplSalMin } from "@/lib/compl-sal-min";
 import { ESPECIES_DIVIDA, OMS_VINCULACAO, SITUACOES } from "@/lib/tipos";
 import { BOLETINS_ADT, DOCUMENTOS_AVERBACAO, numeroBoletimValido, OMS_AVERBACAO } from "@/lib/averbacao";
 import { numeroProcessoValido } from "@/lib/numero-processo";
@@ -48,9 +49,15 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     if (!txt(f, k)) campos[k] = "Preencha este campo.";
   }
   // quadros do verso: marcação limpa (só b/i/u), obrigatórios e com limite de caracteres do texto
-  const quadros: Record<string, string> = {};
+  const quadros: Record<string, string | boolean> = {};
+  // complemento de salário mínimo: explicação automática (ano do requerimento e período), salvo se o operador a editou,
+  // e o DIEx da base de cálculo fixo como 2º documento (lib/compl-sal-min)
+  const complSalMin = txt(f, "especie_divida") === ESPECIE_COMPL_SAL_MIN;
+  const explicacaoAutomatica = complSalMin && f.get("c.explicacao_editada") !== "1";
   if (!versoOculto) {
-  for (const { chave, limite } of QUADROS_VERSO) {
+  if (complSalMin) quadros.explicacaoEditada = !explicacaoAutomatica;
+  if (explicacaoAutomatica) quadros.explicacao = explicacaoComplSalMin(txt(f, "data_requerimento"), dataPeriodo(txt(f, "periodo_inicio")), dataPeriodo(txt(f, "periodo_fim")));
+  else for (const { chave, limite } of QUADROS_VERSO) {
     const m = normalizarFormatado(String(f.get(`c.${chave}`) ?? ""));
     const n = textoSemFormatacao(m).trim().length;
     if (!n) campos[`c.${chave}`] = "Preencha este campo.";
@@ -65,7 +72,8 @@ export async function salvarProcesso(processoId: string | null, _: EstadoForm | 
     if (!n && i === 0) campos[chave] = "Preencha este campo.";
     else if (n > LIMITE_DOCUMENTO) campos[chave] = `Use no máximo ${LIMITE_DOCUMENTO} caracteres (tem ${n}).`;
   });
-  quadros.amparo = documentos.filter((m) => textoSemFormatacao(m).trim()).join("\n");
+  const preenchidos = documentos.filter((m) => textoSemFormatacao(m).trim());
+  quadros.amparo = (complSalMin ? documentosComplSalMin(preenchidos) : preenchidos).join("\n");
   }
   const nome = txt(f, "nome");
   const prec = txt(f, "prec_cp");
