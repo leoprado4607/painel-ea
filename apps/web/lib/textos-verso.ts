@@ -1,5 +1,5 @@
 import { normalizarFormatado, textoSemFormatacao } from "@painel-ea/engine";
-import { LIMITE_DOCUMENTO } from "@/lib/amparo";
+import { LIMITE_DOCUMENTO } from "./amparo";
 
 /**
  * Textos do verso (explicação do não pagamento e documentos que materializam o direito) dos cálculos automáticos

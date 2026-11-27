@@ -197,7 +197,7 @@ export function PainelAuxFard({ processoId, dados, plano, entrada, bloqueado }: 
         )}
         {/* os 3 anos no posto não têm BI próprio: o documento que os ampara é o da última promoção */}
         <div>
-          <label htmlFor="af-ato2" className="rotulo">{caso === "promocao" ? "BI do ato da promoção (nº e data)"
+          <label htmlFor="af-ato2" className="rotulo">{caso === "promocao" ? "Documento do ato da promoção (nº e data)"
             : caso === "trienio" ? "BI da última promoção, que ampara os 3 anos (nº e data)" : "BI do ato do 2º fato gerador (nº e data)"}</label>
           <input id="af-ato2" className="entrada" maxLength={100} value={d.ato2 ?? ""} placeholder="Ex.: BI Nr 239 do HGuJP, de 24/12/2021" onChange={(e) => setD((x) => ({ ...x, ato2: e.target.value }))} />
         </div>

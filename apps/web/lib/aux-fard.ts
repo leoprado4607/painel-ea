@@ -409,7 +409,10 @@ export function planoAuxFard(entrada: {
       : `O militar ${f2.tipo === "promocao" || !f2.tipo ? "foi promovido" : FOI[f2.tipo]} em ${dataCurta(data2)}${f2.tipo === "promocao" || !f2.tipo ? posto : ""}; na época, só recebeu a diferença do auxílio-fardamento, pois já havia recebido outro em um intervalo de 1 ano, ocasionando dois fatos geradores. Com a edição do novo decreto, tal restrição foi expressamente suprimida, passando-se a admitir o pagamento integral do auxílio.`;
   }
   // documento que materializou o direito: o dos processos pagos e o documento de averbação
-  const documentos = [DOCUMENTO_DIREITO, ...(entrada.averbacao?.trim() ? [entrada.averbacao.trim().slice(0, 100)] : [])];
+  // somente promoção: o documento do ato da promoção (nº e data) entra como 2º documento
+  const atoPromocao = caso === "promocao" ? dados.ato2?.trim().slice(0, 100) : "";
+  const averbacao = entrada.averbacao?.trim().slice(0, 100);
+  const documentos = [DOCUMENTO_DIREITO, ...(atoPromocao ? [atoPromocao] : []), ...(averbacao && averbacao !== atoPromocao ? [averbacao] : [])];
 
   return {
     caso, pagamentos, multiplicador1, multiplicador2, soldo1, soldo2, devido, recebido, diferenca, competencia, rubrica, prescricao,

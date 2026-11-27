@@ -129,6 +129,7 @@ describe("Auxílio-fardamento automático", () => {
     expect(codigos(p)).not.toContain("FORA_DA_TESE");
     expect(p.textos.explicacao).toContain("foi promovido em 25 DEZ 21 à graduação de Segundo-Sargento; na época, não recebeu o auxílio-fardamento da promoção");
     expect(p.notas["2021-12"]).toContain("auxílio anterior: R$ 3.825,00 em 03/2021");
+    expect(p.textos.documentos[1]).toBe("BI 239");
   });
 
   it("somente 3 anos: recebido em parte, sem auxílio anterior e pago depois sem ligação", () => {
